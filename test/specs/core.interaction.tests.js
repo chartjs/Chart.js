@@ -972,6 +972,26 @@ describe('Core.Interaction', function() {
       data: [12, -1, null, null, null, null, -1, 2],
       clickPointIndex: 4,
       expectedNearestPointIndex: 6
+    },
+    {
+      data: [null, 2],
+      clickPointIndex: 0,
+      expectedNearestPointIndex: 1
+    },
+    {
+      data: [2, null],
+      clickPointIndex: 1,
+      expectedNearestPointIndex: 0
+    },
+    {
+      data: [null, null, 2],
+      clickPointIndex: 0,
+      expectedNearestPointIndex: 2
+    },
+    {
+      data: [2, null, null],
+      clickPointIndex: 2,
+      expectedNearestPointIndex: 0
     }
   ];
   testCases.forEach(({data, clickPointIndex, expectedNearestPointIndex}, i) => {
