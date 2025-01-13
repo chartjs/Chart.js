@@ -106,7 +106,7 @@ const config = {
     },
     hover: {
       mode: 'index',
-      intersec: false
+      intersect: false
     },
     scales: {
       x: {
