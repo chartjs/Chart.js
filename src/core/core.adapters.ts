@@ -19,19 +19,19 @@ export interface DateAdapter<T extends AnyObject = AnyObject> {
    * Returns a map of time formats for the supported formatting units defined
    * in Unit as well as 'datetime' representing a detailed date/time string.
    */
-  formats(this: DateAdapter<T>): Record<string, string>;
+  formats(this: DateAdapter<T>): Record<TimeUnit | 'datetime', string>;
   /**
    * Parses the given `value` and return the associated timestamp.
    * @param value - the value to parse (usually comes from the data)
    * @param [format] - the expected data format
    */
-  parse(this: DateAdapter<T>, value: unknown, format?: TimeUnit): number | null;
+  parse(this: DateAdapter<T>, value: unknown, format?: string): number | null;
   /**
    * Returns the formatted date in the specified `format` for a given `timestamp`.
    * @param timestamp - the timestamp to format
    * @param format - the date/time token
    */
-  format(this: DateAdapter<T>, timestamp: number, format: TimeUnit): string;
+  format(this: DateAdapter<T>, timestamp: number, format: string): string;
   /**
    * Adds the specified `amount` of `unit` to the given `timestamp`.
    * @param timestamp - the input timestamp
@@ -53,13 +53,13 @@ export interface DateAdapter<T extends AnyObject = AnyObject> {
    * @param [weekday] - the ISO day of the week with 1 being Monday
    * and 7 being Sunday (only needed if param *unit* is `isoWeek`).
    */
-  startOf(this: DateAdapter<T>, timestamp: number, unit: TimeUnit | 'isoWeek', weekday?: number): number;
+  startOf(this: DateAdapter<T>, timestamp: number, unit: TimeUnit | 'isoWeek', weekday?: number | boolean): number;
   /**
    * Returns end of `unit` for the given `timestamp`.
    * @param timestamp - the input timestamp
    * @param unit - the unit as string
    */
-  endOf(this: DateAdapter<T>, timestamp: number, unit: TimeUnit | 'isoWeek'): number;
+  endOf(this: DateAdapter<T>, timestamp: number, unit: TimeUnit): number;
 }
 
 function abstract<T = void>(): T {
@@ -92,14 +92,14 @@ class DateAdapterBase implements DateAdapter {
 
   readonly options: AnyObject;
 
-  constructor(options: AnyObject) {
+  constructor(options?: AnyObject) {
     this.options = options || {};
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   init() {}
 
-  formats(): Record<string, string> {
+  formats(): Record<TimeUnit | 'datetime', string> {
     return abstract();
   }
 
@@ -129,5 +129,10 @@ class DateAdapterBase implements DateAdapter {
 }
 
 export default {
-  _date: DateAdapterBase
+  _date: DateAdapterBase as {
+    new (options?: AnyObject): DateAdapter;
+    override<T extends AnyObject = AnyObject>(
+      members: Partial<Omit<DateAdapter<T>, 'options'>>
+    ): void;
+  }
 };
