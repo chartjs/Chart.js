@@ -59,7 +59,7 @@ function parse(scale, input) {
   // Only parse if it's not a timestamp already
   if (!isFinite(value)) {
     value = typeof parser === 'string'
-      ? adapter.parse(value, /** @type {Unit} */ (parser))
+      ? adapter.parse(value, parser)
       : adapter.parse(value);
   }
 
