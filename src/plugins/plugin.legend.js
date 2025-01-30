@@ -16,6 +16,7 @@ import {
 } from '../helpers/index.js';
 import {_alignStartEnd, _textX, _toLeftRightCenter} from '../helpers/helpers.extras.js';
 import {toTRBLCorners} from '../helpers/helpers.options.js';
+import {Color} from '@kurkle/color';
 
 /**
  * @typedef { import('../types/index.js').ChartEvent } ChartEvent
@@ -77,6 +78,7 @@ export class Legend extends Element {
     this.position = undefined;
     this.weight = undefined;
     this.fullSize = undefined;
+    this.navigation = undefined;
   }
 
   update(maxWidth, maxHeight, margins) {
@@ -86,6 +88,7 @@ export class Legend extends Element {
 
     this.setDimensions();
     this.buildLabels();
+    this.buildNavigation();
     this.fit();
   }
 
@@ -118,6 +121,296 @@ export class Legend extends Element {
     }
 
     this.legendItems = legendItems;
+    this._computeNavigation();
+  }
+
+  /**
+   * @private
+   */
+  _initNavigation(override) {
+    if (!this.navigation) {
+      this.navigation = {
+        page: 0,
+        totalPages: 0,
+        itemWidth: 0,
+        itemHeight: 0,
+        navWidth: 0,
+        navHeight: 0,
+        maxBlocks: 0,
+        blocks: undefined,
+        text: undefined,
+        prev: undefined,
+        next: undefined,
+        legendItems: this.legendItems,
+        _width: 0,
+        _height: 0,
+        _maxWidth: 0,
+        _maxHeight: 0,
+      };
+    }
+
+    if (override) {
+      Object.assign(this.navigation, override);
+    }
+  }
+
+  /**
+   * @private
+   */
+  _computeNavigation() {
+    const {ctx, options} = this;
+    const {navigation: navOpts, labels: labelOpts} = options;
+
+    if (!(navOpts && navOpts.display)) {
+      this.navigation = undefined;
+      return;
+    }
+    const isHorizontal = this.isHorizontal();
+
+    this._initNavigation({
+      totalPages: 0,
+      _width: 0,
+      _height: 0,
+      _maxWidth: 0,
+      _maxHeight: 0,
+      itemWidth: 0,
+      itemHeight: 0,
+      maxBlocks: 0,
+    });
+
+    const labelFont = toFont(labelOpts.font);
+    const {boxWidth, itemHeight: _itemHeight} = getBoxSize(labelOpts, labelFont.size);
+    const font = toFont(navOpts.font);
+
+    const padding = toPadding(navOpts.padding);
+    this.navigation.navHeight = Math.max(font.size, navOpts.arrowSize) + padding.height;
+
+    const grid = getGridAxis(navOpts.grid);
+
+    // Find the largest width to keep all items the same width
+    if (grid.x) {
+      this.navigation.itemWidth = this.legendItems.reduce((max, legendItem) => {
+        const width = calculateItemWidth(legendItem, boxWidth, labelFont, ctx);
+        return Math.max(max, width);
+      }, 0);
+    }
+
+    // Find the greatest height to keep all items the same height
+    if (grid.y) {
+      this.navigation.itemHeight = this.legendItems.reduce((max, legendItem) => {
+        const height = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
+        return Math.max(max, height);
+      }, 0);
+    }
+
+    const titleHeight = this._computeTitleHeight();
+
+    if (isHorizontal) {
+      this._computeHorizontalNavigation(titleHeight, _itemHeight, boxWidth, labelFont);
+    } else {
+      this._computeVerticalNavigation(titleHeight, _itemHeight, boxWidth, labelFont);
+    }
+
+    this.navigation.blocks.forEach((block) => {
+      this.navigation._maxWidth = Math.max(this.navigation._maxWidth, block.width);
+      this.navigation._maxHeight = Math.max(this.navigation._maxHeight, block.height);
+    });
+  }
+
+  /**
+   * @private
+   */
+  _computeHorizontalNavigation(titleHeight, _itemHeight, boxWidth, labelFont) {
+    const {labels: labelOpts, navigation: navOpts, maxHeight = this.maxHeight} = this.options;
+    const {navHeight} = this.navigation;
+
+    const widthLimit = this.maxWidth - labelOpts.padding;
+    const rows = this.navigation.blocks = [{start: 0, end: 0, height: 0, width: 0, bottom: 0}];
+    let maxItemHeight = 0;
+
+    this.legendItems.forEach((legendItem, i) => {
+      const {itemWidth, itemHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
+      let row = rows[rows.length - 1];
+
+      if (row.width + itemWidth + labelOpts.padding > widthLimit) {
+        rows.push(row = {start: i, end: i, height: 0, width: 0, bottom: 0});
+      }
+
+      row.end = i + 1;
+      row.width += itemWidth + labelOpts.padding;
+      row.height = Math.max(row.height, itemHeight + labelOpts.padding);
+      row.bottom = (rows.length > 1 ? rows[rows.length - 2].bottom : 0) + row.height;
+      maxItemHeight = Math.max(maxItemHeight, row.height);
+    });
+
+    const totalRows = rows.length;
+    const maxRows = this.navigation.maxBlocks = Math.min(
+      totalRows,
+      navOpts.maxRows || Infinity,
+      maxHeight ? Math.floor((maxHeight - navHeight - labelOpts.padding) / (maxItemHeight + labelOpts.padding)) || 1 : Infinity
+    );
+
+    this.navigation.totalPages = Math.ceil(totalRows / maxRows);
+
+    // Find minimum height required to fit any page
+    let height = 0;
+    for (let i = 0; i < rows.length; i += maxRows) {
+      const l = i > 0 ? rows[i - 1].bottom : 0;
+      const r = rows[Math.min(i + maxRows - 1, rows.length - 1)].bottom;
+      height = Math.max(height, r - l);
+    }
+
+    this.navigation._height = titleHeight + labelOpts.padding + height + navHeight + 10;
+  }
+
+  /**
+   * @private
+   */
+  _computeVerticalNavigation(titleHeight, _itemHeight, boxWidth, labelFont) {
+    const {labels: labelOpts, navigation: navOpts, maxWidth = this.maxWidth} = this.options;
+    const {navHeight} = this.navigation;
+
+    const heightLimit = this.maxHeight - titleHeight - navHeight - labelOpts.padding;
+    const columns = this.navigation.blocks = [{start: 0, end: 0, height: 0, width: 0, right: 0}];
+    let maxItemWidth = 0;
+
+    this.legendItems.forEach((legendItem, i) => {
+      const {itemWidth, itemHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
+      let col = columns[columns.length - 1];
+
+      if (col.height + itemHeight + labelOpts.padding > heightLimit) {
+        columns.push(col = {start: i, end: i, height: 0, width: 0, right: 0});
+      }
+
+      col.end = i + 1;
+      col.height += itemHeight + labelOpts.padding;
+      col.width = Math.max(col.width, itemWidth + labelOpts.padding);
+      col.right = (columns.length > 1 ? columns[columns.length - 2].right : 0) + col.width;
+      maxItemWidth = Math.max(maxItemWidth, col.width);
+    });
+
+    const totalCols = columns.length;
+
+    const maxCols = this.navigation.maxBlocks = Math.min(
+      totalCols,
+      navOpts.maxCols || Infinity,
+      maxWidth ? Math.floor((maxWidth - labelOpts.padding) / (maxItemWidth + labelOpts.padding)) || 1 : Infinity,
+    );
+
+    this.navigation.totalPages = Math.ceil(totalCols / maxCols);
+
+    // Find minimum width required to fit any page
+    let width = 0;
+    for (let i = 0; i < columns.length; i += maxCols) {
+      const l = i > 0 ? columns[i - 1].right : 0;
+      const r = columns[Math.min(i + maxCols - 1, columns.length - 1)].right;
+      width = Math.max(width, r - l);
+    }
+
+    const titleWidth = this._computeTitleWidth();
+    this.navigation._width = Math.max(titleWidth, width) + 10;
+  }
+
+  buildNavigation() {
+    if (!this.navigation) {
+      return;
+    }
+    const {ctx, options: {align, navigation: navOpts, labels: labelOpts}} = this;
+    const {totalPages, navHeight} = this.navigation;
+
+    const font = toFont(navOpts.font);
+
+    if (totalPages < 1 || (totalPages === 1 && navOpts.display === 'auto')) {
+      this.navigation = undefined;
+      return;
+    }
+
+    const page = this.navigation.page = Math.max(0, Math.min(totalPages - 1, this.navigation.page));
+    const text = this.navigation.text = `${page + 1}/${totalPages}`;
+
+    ctx.save();
+    ctx.font = font.string;
+    const textWidth = ctx.measureText(text).width;
+    ctx.restore();
+
+    const padding = toPadding(navOpts.padding);
+    const navWidth = this.navigation.navWidth = (navOpts.arrowSize * 2) + padding.width + textWidth + font.size;
+
+    let left = this.left;
+    let right = this.right;
+
+    if (this.isHorizontal()) {
+      const maxWidth = this.navigation._maxWidth + labelOpts.padding;
+      left = _alignStartEnd(align, this.left, right - maxWidth);
+      right = left + maxWidth;
+    }
+
+    const prev = this.navigation.prev = {
+      x: _alignStartEnd(navOpts.align, left + padding.left, right - (navWidth - padding.left)),
+      y: (this.top || 0) + this.height - navHeight + padding.top,
+      width: navOpts.arrowSize,
+      height: navOpts.arrowSize
+    };
+    this.navigation.next = {
+      x: prev.x + navOpts.arrowSize + textWidth + font.size,
+      y: prev.y,
+      width: navOpts.arrowSize,
+      height: navOpts.arrowSize
+    };
+
+    const {blocks: columns, maxBlocks: maxCols} = this.navigation;
+    const startIdx = Math.min(columns.length - 1, page * maxCols);
+    const endIdx = Math.min(columns.length - 1, startIdx + (maxCols - 1));
+    const start = columns[startIdx].start;
+    const end = columns[endIdx].end;
+    this.navigation.legendItems = totalPages > 1 ? this.legendItems.slice(start, end) : this.legendItems;
+  }
+
+  /**
+   * @private
+   */
+  _getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont) {
+    const width = this._getLegendItemWidth(legendItem, boxWidth, labelFont);
+    const height = this._getLegendItemHeight(legendItem, _itemHeight, labelFont);
+    return {...width, ...height};
+  }
+
+  /**
+   * @private
+   */
+  _getLegendItemWidth(legendItem, boxWidth, labelFont) {
+    const hitboxWidth = calculateItemWidth(legendItem, boxWidth, labelFont, this.ctx);
+    let itemWidth = hitboxWidth;
+
+    if (this.navigation && this.navigation.itemWidth) {
+      itemWidth = this.navigation.itemWidth;
+    }
+
+    return {itemWidth, hitboxWidth};
+  }
+
+  /**
+   * @private
+   */
+  _getLegendItemHeight(legendItem, _itemHeight, labelFont) {
+    const hitboxHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
+    let itemHeight = hitboxHeight;
+
+    if (this.navigation && this.navigation.itemHeight) {
+      itemHeight = this.navigation.itemHeight;
+    }
+
+    return {itemHeight, hitboxHeight};
+  }
+
+  /**
+   * @private
+   */
+  _getVisibleLegendItems() {
+    if (this.navigation) {
+      return this.navigation.legendItems;
+    }
+    return this.legendItems;
   }
 
   fit() {
@@ -137,62 +430,83 @@ export class Legend extends Element {
     const fontSize = labelFont.size;
     const titleHeight = this._computeTitleHeight();
     const {boxWidth, itemHeight} = getBoxSize(labelOpts, fontSize);
+    const isHorizontal = this.isHorizontal();
 
     let width, height;
 
     ctx.font = labelFont.string;
 
-    if (this.isHorizontal()) {
+    if (isHorizontal) {
       width = this.maxWidth; // fill all the width
-      height = this._fitRows(titleHeight, fontSize, boxWidth, itemHeight) + 10;
+      height = this._fitRows(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+
+      if (this.navigation) {
+        height = this.navigation._height;
+      }
     } else {
       height = this.maxHeight; // fill all the height
       width = this._fitCols(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+
+      if (this.navigation) {
+        width = this.navigation._width;
+      }
     }
 
-    this.width = Math.min(width, options.maxWidth || this.maxWidth);
-    this.height = Math.min(height, options.maxHeight || this.maxHeight);
+    const maxWidth = isHorizontal ? this.maxWidth : (options.maxWidth || this.maxWidth);
+    const maxHeight = isHorizontal ? (options.maxHeight || this.maxHeight) : this.maxHeight;
+    this.width = Math.min(width, maxWidth);
+    this.height = Math.min(height, maxHeight);
   }
 
   /**
 	 * @private
 	 */
-  _fitRows(titleHeight, fontSize, boxWidth, itemHeight) {
+  _fitRows(titleHeight, labelFont, boxWidth, _itemHeight) {
     const {ctx, maxWidth, options: {labels: {padding}}} = this;
     const hitboxes = this.legendHitBoxes = [];
     // Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
     const lineWidths = this.lineWidths = [0];
-    const lineHeight = itemHeight + padding;
     let totalHeight = titleHeight;
 
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
-    let row = -1;
-    let top = -lineHeight;
-    this.legendItems.forEach((legendItem, i) => {
-      const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+    let row = 0;
+    let top = 0;
+    let currentLineHeight = 0;
 
-      if (i === 0 || lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
-        totalHeight += lineHeight;
-        lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
-        top += lineHeight;
+    this._getVisibleLegendItems().forEach((legendItem, i) => {
+      const {itemWidth, itemHeight, hitboxWidth, hitboxHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
+
+      if (i > 0 && lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
+        lineWidths.push(0);
+
+        totalHeight += currentLineHeight + padding;
+        top += currentLineHeight + padding;
         row++;
+        currentLineHeight = itemHeight;
+      } else {
+        currentLineHeight = Math.max(currentLineHeight, itemHeight);
       }
 
-      hitboxes[i] = {left: 0, top, row, width: itemWidth, height: itemHeight};
-
+      hitboxes[i] = {left: 0, top, row, width: hitboxWidth, height: hitboxHeight, offsetWidth: itemWidth};
       lineWidths[lineWidths.length - 1] += itemWidth + padding;
     });
+
+    totalHeight += currentLineHeight + padding;
 
     return totalHeight;
   }
 
   _fitCols(titleHeight, labelFont, boxWidth, _itemHeight) {
-    const {ctx, maxHeight, options: {labels: {padding}}} = this;
+    const {maxHeight, options: {labels: {padding}}} = this;
     const hitboxes = this.legendHitBoxes = [];
     const columnSizes = this.columnSizes = [];
-    const heightLimit = maxHeight - titleHeight;
+    let heightLimit = maxHeight - titleHeight;
+
+    if (this.navigation) {
+      heightLimit -= this.navigation.navHeight;
+    }
 
     let totalWidth = padding;
     let currentColWidth = 0;
@@ -201,8 +515,8 @@ export class Legend extends Element {
     let left = 0;
     let col = 0;
 
-    this.legendItems.forEach((legendItem, i) => {
-      const {itemWidth, itemHeight} = calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight);
+    this._getVisibleLegendItems().forEach((legendItem, i) => {
+      const {itemWidth, itemHeight, hitboxWidth, hitboxHeight} = this._getLegendItemSize(legendItem, boxWidth, _itemHeight, labelFont);
 
       // If too tall, go to new column
       if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
@@ -214,7 +528,7 @@ export class Legend extends Element {
       }
 
       // Store the hitbox width and height here. Final position will be updated in `draw`
-      hitboxes[i] = {left, top: currentColHeight, col, width: itemWidth, height: itemHeight};
+      hitboxes[i] = {left, top: currentColHeight, col, width: hitboxWidth, height: hitboxHeight, offsetHeight: itemHeight};
 
       // Get max width
       currentColWidth = Math.max(currentColWidth, itemWidth);
@@ -223,6 +537,9 @@ export class Legend extends Element {
 
     totalWidth += currentColWidth;
     columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
+
+    const titleWidth = this._computeTitleWidth();
+    totalWidth = Math.max(totalWidth, titleWidth);
 
     return totalWidth;
   }
@@ -244,20 +561,26 @@ export class Legend extends Element {
         }
         hitbox.top += this.top + titleHeight + padding;
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(left), hitbox.width);
-        left += hitbox.width + padding;
+        left += hitbox.offsetWidth + padding;
       }
     } else {
+      let bottom = this.bottom;
+
+      if (this.navigation) {
+        bottom -= this.navigation.navHeight;
+      }
+
       let col = 0;
-      let top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
+      let top = _alignStartEnd(align, this.top + titleHeight + padding, bottom - this.columnSizes[col].height);
       for (const hitbox of hitboxes) {
         if (hitbox.col !== col) {
           col = hitbox.col;
-          top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
+          top = _alignStartEnd(align, this.top + titleHeight + padding, bottom - this.columnSizes[col].height);
         }
         hitbox.top = top;
         hitbox.left += this.left + padding;
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(hitbox.left), hitbox.width);
-        top += hitbox.height + padding;
+        top += hitbox.offsetHeight + padding;
       }
     }
   }
@@ -374,6 +697,12 @@ export class Legend extends Element {
     // Horizontal
     const isHorizontal = this.isHorizontal();
     const titleHeight = this._computeTitleHeight();
+    let bottom = this.bottom;
+
+    if (this.navigation) {
+      bottom -= this.navigation.navHeight;
+    }
+
     if (isHorizontal) {
       cursor = {
         x: _alignStartEnd(align, this.left + padding, this.right - lineWidths[0]),
@@ -383,21 +712,21 @@ export class Legend extends Element {
     } else {
       cursor = {
         x: this.left + padding,
-        y: _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[0].height),
+        y: _alignStartEnd(align, this.top + titleHeight + padding, bottom - columnSizes[0].height),
         line: 0
       };
     }
 
     overrideTextDirection(this.ctx, opts.textDirection);
 
-    const lineHeight = itemHeight + padding;
-    this.legendItems.forEach((legendItem, i) => {
+    let currentLineHeight = 0;
+    this._getVisibleLegendItems().forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
-      const textWidth = ctx.measureText(legendItem.text).width;
       const textAlign = rtlHelper.textAlign(legendItem.textAlign || (legendItem.textAlign = labelOpts.textAlign));
-      const width = boxWidth + halfFontSize + textWidth;
+      const width = this._getLegendItemWidth(legendItem, boxWidth, labelFont).itemWidth;
+      const height = this._getLegendItemHeight(legendItem, itemHeight, labelFont).itemHeight + padding;
       let x = cursor.x;
       let y = cursor.y;
 
@@ -405,14 +734,15 @@ export class Legend extends Element {
 
       if (isHorizontal) {
         if (i > 0 && x + width + padding > this.right) {
-          y = cursor.y += lineHeight;
+          y = cursor.y += currentLineHeight;
           cursor.line++;
           x = cursor.x = _alignStartEnd(align, this.left + padding, this.right - lineWidths[cursor.line]);
+          currentLineHeight = 0;
         }
-      } else if (i > 0 && y + lineHeight > this.bottom) {
+      } else if (i > 0 && y + height > bottom) {
         x = cursor.x = x + columnSizes[cursor.line].width + padding;
         cursor.line++;
-        y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[cursor.line].height);
+        y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, bottom - columnSizes[cursor.line].height);
       }
 
       const realX = rtlHelper.x(x);
@@ -426,35 +756,84 @@ export class Legend extends Element {
 
       if (isHorizontal) {
         cursor.x += width + padding;
-      } else if (typeof legendItem.text !== 'string') {
-        const fontLineHeight = labelFont.lineHeight;
-        cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight) + padding;
       } else {
-        cursor.y += lineHeight;
+        cursor.y += height;
       }
+
+      currentLineHeight = Math.max(currentLineHeight, height);
     });
 
     restoreTextDirection(this.ctx, opts.textDirection);
+
+    this._drawNavigation();
+  }
+
+  /**
+   * @private
+   */
+  _drawNavigation() {
+    if (!this.navigation) {
+      return;
+    }
+    const {ctx, options: {navigation: navOpts}} = this;
+    const {page, totalPages, maxBlocks, prev, next, text} = this.navigation;
+
+    if (totalPages <= 1 && navOpts.display === 'auto') {
+      return;
+    }
+
+    const {arrowSize} = navOpts;
+    const font = toFont(navOpts.font);
+    const fontSize = font.size;
+    const halfFontSize = fontSize / 2;
+    const isHorizontal = this.isHorizontal();
+
+    ctx.save();
+
+    const drawArrow = (x, y, rotation = 0, color = navOpts.color) => {
+      const [a, b, c] = getNavArrow(x, y, arrowSize, rotation);
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.lineTo(c.x, c.y);
+      ctx.fill();
+    };
+
+    const rotation = isHorizontal && maxBlocks === 1 || !isHorizontal && maxBlocks > 1 ? 90 : 0;
+    const hasPrev = page > 0;
+    const hasNext = page < totalPages - 1;
+    const colors = [navOpts.inactiveColor, navOpts.activeColor];
+    drawArrow(prev.x + (arrowSize / 2), prev.y + (arrowSize / 2), 180 + rotation, colors[+hasPrev]);
+    drawArrow(next.x + (arrowSize / 2), next.y + (arrowSize / 2), rotation, colors[+hasNext]);
+
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.strokeStyle = navOpts.color;
+    ctx.fillStyle = navOpts.color;
+    ctx.font = font.string;
+
+    renderText(ctx, text, prev.x + arrowSize + halfFontSize, prev.y + (arrowSize / 2), font);
+    ctx.restore();
   }
 
   /**
 	 * @protected
 	 */
   drawTitle() {
-    const opts = this.options;
-    const titleOpts = opts.title;
-    const titleFont = toFont(titleOpts.font);
-    const titlePadding = toPadding(titleOpts.padding);
+    const {ctx, options} = this;
+    const {labels: labelOpts, title: titleOpts} = options;
 
     if (!titleOpts.display) {
       return;
     }
 
-    const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
-    const ctx = this.ctx;
+    const titleFont = toFont(titleOpts.font);
+    const titlePadding = toPadding(titleOpts.padding);
+    const rtlHelper = getRtlAdapter(options.rtl, this.left, this.width);
     const position = titleOpts.position;
-    const halfFontSize = titleFont.size / 2;
-    const topPaddingPlusHalfFontSize = titlePadding.top + halfFontSize;
+    const topPaddingPlusHalfFontSize = titlePadding.top + (titleFont.size / 2);
     let y;
 
     // These defaults are used when the legend is vertical.
@@ -464,18 +843,26 @@ export class Legend extends Element {
 
     if (this.isHorizontal()) {
       // Move left / right so that the title is above the legend lines
-      maxWidth = Math.max(...this.lineWidths);
+      maxWidth = (this.navigation ? this.navigation._maxWidth : Math.max(...this.lineWidths)) + labelOpts.padding;
       y = this.top + topPaddingPlusHalfFontSize;
-      left = _alignStartEnd(opts.align, left, this.right - maxWidth);
+      left = _alignStartEnd(options.align, left, this.right - maxWidth);
     } else {
       // Move down so that the title is above the legend stack in every alignment
-      const maxHeight = this.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0);
-      y = topPaddingPlusHalfFontSize + _alignStartEnd(opts.align, this.top, this.bottom - maxHeight - opts.labels.padding - this._computeTitleHeight());
+      let maxHeight;
+
+      if (this.navigation) {
+        maxHeight = this.navigation._maxHeight + this.navigation.navHeight;
+      } else {
+        maxHeight = this.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0);
+      }
+
+      maxHeight += labelOpts.padding + this._computeTitleHeight();
+      y = topPaddingPlusHalfFontSize + _alignStartEnd(options.align, this.top, this.bottom - maxHeight);
     }
 
     // Now that we know the left edge of the inner legend box, compute the correct
     // X coordinate from the title alignment
-    const x = _alignStartEnd(position, left, left + maxWidth);
+    const x = _alignStartEnd(position, left + titlePadding.left, left + (maxWidth - titlePadding.width));
 
     // Canvas setup
     ctx.textAlign = rtlHelper.textAlign(_toLeftRightCenter(position));
@@ -492,28 +879,92 @@ export class Legend extends Element {
 	 */
   _computeTitleHeight() {
     const titleOpts = this.options.title;
+
+    if (!titleOpts.display) {
+      return 0;
+    }
+
     const titleFont = toFont(titleOpts.font);
     const titlePadding = toPadding(titleOpts.padding);
-    return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
+    const titleText = titleOpts.text;
+
+    let titleHeight = titleFont.lineHeight;
+    if (titleText && typeof titleText !== 'string') {
+      titleHeight *= titleText.length;
+    }
+
+    return titleHeight + titlePadding.height;
+  }
+
+  /**
+	 * @private
+	 */
+  _computeTitleWidth() {
+    const titleOpts = this.options.title;
+
+    if (!titleOpts.display) {
+      return 0;
+    }
+
+    const titleFont = toFont(titleOpts.font);
+    const titlePadding = toPadding(titleOpts.padding);
+    let titleLongestText = titleOpts.text;
+
+    if (titleLongestText && typeof titleLongestText !== 'string') {
+      titleLongestText = titleLongestText.reduce((a, b) => a.length > b.length ? a : b);
+    }
+
+    this.ctx.save();
+    this.ctx.font = titleFont.string;
+    let titleWidth = this.ctx.measureText(titleLongestText).width;
+    this.ctx.restore();
+
+    return titleWidth + titlePadding.width;
+  }
+
+  /**
+   * @private
+   */
+  _getNavigationDirAt(x, y) {
+    if (!(this.navigation && this.navigation.prev && this.navigation.next)) {
+      return 0;
+    }
+    const {prev, next} = this.navigation;
+
+    const {arrowSize} = this.options.navigation;
+    // Add a padding to the clickable area (30% of the arrow size)
+    const padding = arrowSize * 0.3;
+
+    if (_isBetween(x, prev.x - padding, prev.x + arrowSize + (padding / 2))
+      && _isBetween(y, prev.y - padding, prev.y + arrowSize + padding)) {
+      return -1;
+    }
+    if (_isBetween(x, next.x - (padding / 2), next.x + arrowSize + padding)
+      && _isBetween(y, next.y - padding, next.y + arrowSize + padding)) {
+      return 1;
+    }
+
+    return 0;
   }
 
   /**
 	 * @private
 	 */
   _getLegendItemAt(x, y) {
-    let i, hitBox, lh;
-
     if (_isBetween(x, this.left, this.right)
       && _isBetween(y, this.top, this.bottom)) {
       // See if we are touching one of the dataset boxes
-      lh = this.legendHitBoxes;
-      for (i = 0; i < lh.length; ++i) {
+      const lh = this.legendHitBoxes;
+      const legendItems = this._getVisibleLegendItems();
+      let hitBox;
+
+      for (let i = 0; i < lh.length; ++i) {
         hitBox = lh[i];
 
         if (_isBetween(x, hitBox.left, hitBox.left + hitBox.width)
           && _isBetween(y, hitBox.top, hitBox.top + hitBox.height)) {
           // Touching an element
-          return this.legendItems[i];
+          return legendItems[i];
         }
       }
     }
@@ -522,10 +973,38 @@ export class Legend extends Element {
   }
 
   /**
+   * @private
+   */
+  _handleNavigationEvent(e) {
+    if (!this.navigation || this.navigation.totalPages < 2 || e.type !== 'click') {
+      return;
+    }
+
+    const dir = this._getNavigationDirAt(e.x, e.y);
+
+    if (!dir) {
+      return;
+    }
+
+    const {page, totalPages} = this.navigation;
+    const lastPage = totalPages - 1;
+    const newPage = this.navigation.page = Math.max(0, Math.min(lastPage, this.navigation.page + dir));
+
+    if (newPage !== page) {
+      this.buildNavigation();
+      this.fit();
+      this.adjustHitBoxes();
+      this.chart.render();
+    }
+  }
+
+  /**
 	 * Handle an event
 	 * @param {ChartEvent} e - The event to handle
 	 */
   handleEvent(e) {
+    this._handleNavigationEvent(e);
+
     const opts = this.options;
     if (!isListened(e.type, opts)) {
       return;
@@ -552,12 +1031,6 @@ export class Legend extends Element {
   }
 }
 
-function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
-  const itemWidth = calculateItemWidth(legendItem, boxWidth, labelFont, ctx);
-  const itemHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
-  return {itemWidth, itemHeight};
-}
-
 function calculateItemWidth(legendItem, boxWidth, labelFont, ctx) {
   let legendItemText = legendItem.text;
   if (legendItemText && typeof legendItemText !== 'string') {
@@ -568,7 +1041,7 @@ function calculateItemWidth(legendItem, boxWidth, labelFont, ctx) {
 
 function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
   let itemHeight = _itemHeight;
-  if (typeof legendItem.text !== 'string') {
+  if (legendItem.text && typeof legendItem.text !== 'string') {
     itemHeight = calculateLegendItemHeight(legendItem, fontLineHeight);
   }
   return itemHeight;
@@ -587,6 +1060,49 @@ function isListened(type, opts) {
     return true;
   }
   return false;
+}
+
+function getNavArrow(cx, cy, size, rotation = 0) {
+  const x1 = cx; const
+    y1 = cy + (size / 2);
+  const x2 = cx - size / 2; const
+    y2 = cy - (size / 2);
+  const x3 = cx + size / 2; const
+    y3 = y2;
+
+  const result = [
+    {x: x1, y: y1},
+    {x: x2, y: y2},
+    {x: x3, y: y3}
+  ];
+
+  const radians = (Math.PI / 180) * rotation;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+
+  result.forEach(item => {
+    const nx = (cos * (item.x - cx)) + (sin * (item.y - cy)) + cx;
+    const ny = (cos * (item.y - cy)) - (sin * (item.x - cx)) + cy;
+    item.x = nx;
+    item.y = ny;
+  });
+
+  return result;
+}
+
+function getGridAxis(grid) {
+  const result = {x: false, y: false};
+
+  if (grid) {
+    if (typeof grid === 'boolean') {
+      result.x = result.y = true;
+    } else {
+      result.x = !!grid.x;
+      result.y = !!grid.y;
+    }
+  }
+
+  return result;
 }
 
 export default {
@@ -623,6 +1139,7 @@ export default {
   afterUpdate(chart) {
     const legend = chart.legend;
     legend.buildLabels();
+    legend.buildNavigation();
     legend.adjustHitBoxes();
   },
 
@@ -656,6 +1173,27 @@ export default {
 
     onHover: null,
     onLeave: null,
+
+    navigation: {
+      color: (ctx) => ctx.chart.options.color,
+      display: false,
+      arrowSize: 12,
+      maxCols: 1,
+      maxRows: 3,
+      padding: {
+        x: 10,
+        y: 10,
+        top: 0
+      },
+      align: 'start',
+      grid: true,
+      activeColor: (ctx) => ctx.chart.options.color,
+      inactiveColor: (ctx) => new Color(ctx.chart.options.plugins.legend.navigation.activeColor).alpha(0.4).rgbString(),
+      font: {
+        weight: 'bold',
+        size: 14
+      }
+    },
 
     labels: {
       color: (ctx) => ctx.chart.options.color,
