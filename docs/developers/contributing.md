@@ -33,6 +33,8 @@ The following commands are now available from the repository root:
 > pnpm test                  // perform code linting and run unit tests with coverage
 ```
 
+The `chart.js` file you would get from a CDN will be located at [`./dist/chart.umd.js`](https://github.com/chartjs/Chart.js/blob/b51c52336624a24fe1ec814dc47f9a4cb7dd6a8a/package.json) after `pnpm run build`.
+
 `pnpm run dev` and `pnpm test` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugins` will start karma in watch mode for `test/specs/**/*plugin*.js`.
 
 ### Documentation
