@@ -103,6 +103,8 @@ describe('Chart.helpers.math', function() {
     expect(math.isNumber(NaN)).toBe(false);
     expect(math.isNumber(undefined)).toBe(false);
     expect(math.isNumber('cbc')).toBe(false);
+    expect(math.isNumber(Symbol())).toBe(false);
+    expect(math.isNumber(Object.create(null))).toBe(false);
   });
 
   it('should compute shortest distance between angles', function() {
