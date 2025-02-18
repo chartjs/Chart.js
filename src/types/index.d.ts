@@ -3643,7 +3643,7 @@ export interface CartesianParsedData extends Point {
   }
 }
 
-interface BarParsedData extends CartesianParsedData {
+export interface BarParsedData extends CartesianParsedData {
   // Only specified if floating bars are show
   _custom?: {
     barStart: number;
@@ -3655,12 +3655,12 @@ interface BarParsedData extends CartesianParsedData {
   }
 }
 
-interface BubbleParsedData extends CartesianParsedData {
+export interface BubbleParsedData extends CartesianParsedData {
   // The bubble radius value
   _custom: number;
 }
 
-interface RadialParsedData {
+export interface RadialParsedData {
   r: number;
 }
 
