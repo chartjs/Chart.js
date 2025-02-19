@@ -56,6 +56,17 @@ const cfg = {
 }
 ```
 
+```javascript
+const cfg = {
+  type: 'radar',
+  data: {
+    datasets: [{
+      data: [{x: 'Sales', r: 20}, {x: 'Revenue', r: 10}, {x: 'Expenses', r: 10}]
+    }]
+  }
+}
+```
+
 This is also the internal format used for parsed data. In this mode, parsing can be disabled by specifying `parsing: false` at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
 
 The values provided must be parsable by the associated scales or in the internal format of the associated scales. A common mistake would be to provide integers for the `category` scale, which uses integers as an internal format, where each integer represents an index in the labels array. `null` can be used for skipped values.
