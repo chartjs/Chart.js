@@ -635,13 +635,13 @@ export class Tooltip extends Element {
     return tooltipItems;
   }
 
-  update(changed, replay) {
+  update(changed, replay, inChartArea = true) {
     const options = this.options.setContext(this.getContext());
     const active = this._active;
     let properties;
     let tooltipItems = [];
 
-    if (!active.length) {
+    if (!active.length || !inChartArea) {
       if (this.opacity !== 0) {
         properties = {
           opacity: 0
@@ -1152,7 +1152,7 @@ export class Tooltip extends Element {
     const positionChanged = this._positionChanged(active, e);
 
     // Remember Last Actives
-    const changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
+    const changed = replay || !inChartArea || !_elementsEqual(active, lastActive) || positionChanged;
 
     // Only handle target event on tooltip change
     if (changed) {
@@ -1164,7 +1164,7 @@ export class Tooltip extends Element {
           y: e.y
         };
 
-        this.update(true, replay);
+        this.update(true, replay, inChartArea);
       }
     }
 
