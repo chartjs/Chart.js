@@ -442,10 +442,10 @@ const defaultCallbacks = {
  * @param {keyof typeof defaultCallbacks} name
  * @param {*} ctx
  * @param {*} arg
- * @returns {any}
+ * @returns {Promise<any>}
  */
-function invokeCallbackWithFallback(callbacks, name, ctx, arg) {
-  const result = callbacks[name].call(ctx, arg);
+async function invokeCallbackWithFallback(callbacks, name, ctx, arg) {
+  const result = await callbacks[name].call(ctx, arg);
 
   if (typeof result === 'undefined') {
     return defaultCallbacks[name].call(ctx, arg);
