@@ -1838,6 +1838,12 @@ export interface ArcBorderRadius {
 
 export interface ArcOptions extends CommonElementOptions {
   /**
+   * If true, Arc can take up 100% of a circular graph without any visual split or cut. This option doesn't support borderRadius and borderJoinStyle miter
+   * @default true
+   */
+  selfJoin: boolean;
+
+  /**
    * Arc stroke alignment.
    */
   borderAlign: 'center' | 'inner';
