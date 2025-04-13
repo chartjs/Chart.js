@@ -787,7 +787,7 @@ class Chart {
       index: meta.index,
       cancelable: true
     };
-    // @ts-ignore
+    // @ts-expect-error
     const clip = getDatasetClipArea(this, meta);
 
     if (this.notifyPlugins('beforeDatasetDraw', args) === false) {
