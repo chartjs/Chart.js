@@ -429,6 +429,15 @@ export declare const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
 };
+
+interface ChartMetaClip {
+  left: number | boolean;
+  top: number | boolean;
+  right: number | boolean;
+  bottom: number | boolean;
+  disabled: boolean;
+}
+
 interface ChartMetaCommon<TElement extends Element = Element, TDatasetElement extends Element = Element> {
   type: string;
   controller: DatasetController;
@@ -462,6 +471,7 @@ interface ChartMetaCommon<TElement extends Element = Element, TDatasetElement ex
   _sorted: boolean;
   _stacked: boolean | 'single';
   _parsed: unknown[];
+  _clip: ChartMetaClip;
 }
 
 export type ChartMeta<

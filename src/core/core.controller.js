@@ -6,9 +6,8 @@ import {_detectPlatform} from '../platform/index.js';
 import PluginService from './core.plugins.js';
 import registry from './core.registry.js';
 import Config, {determineAxis, getIndexAxis} from './core.config.js';
-import {retinaScale, _isDomSupported} from '../helpers/helpers.dom.js';
 import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core.js';
-import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea} from '../helpers/index.js';
+import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea, _isDomSupported, retinaScale, getDatasetClipArea} from '../helpers/index.js';
 // @ts-ignore
 import {version} from '../../package.json';
 import {debounce} from '../helpers/helpers.extras.js';
@@ -99,23 +98,6 @@ function determineLastEvent(e, lastEvent, inChartArea, isClick) {
     return lastEvent;
   }
   return e;
-}
-
-function getSizeForArea(scale, chartArea, field) {
-  return scale.options.clip ? scale[field] : chartArea[field];
-}
-
-function getDatasetArea(meta, chartArea) {
-  const {xScale, yScale} = meta;
-  if (xScale && yScale) {
-    return {
-      left: getSizeForArea(xScale, chartArea, 'left'),
-      right: getSizeForArea(xScale, chartArea, 'right'),
-      top: getSizeForArea(yScale, chartArea, 'top'),
-      bottom: getSizeForArea(yScale, chartArea, 'bottom')
-    };
-  }
-  return chartArea;
 }
 
 class Chart {
@@ -800,31 +782,25 @@ class Chart {
 	 */
   _drawDataset(meta) {
     const ctx = this.ctx;
-    const clip = meta._clip;
-    const useClip = !clip.disabled;
-    const area = getDatasetArea(meta, this.chartArea);
     const args = {
       meta,
       index: meta.index,
       cancelable: true
     };
+    // @ts-ignore
+    const clip = getDatasetClipArea(this, meta);
 
     if (this.notifyPlugins('beforeDatasetDraw', args) === false) {
       return;
     }
 
-    if (useClip) {
-      clipArea(ctx, {
-        left: clip.left === false ? 0 : area.left - clip.left,
-        right: clip.right === false ? this.width : area.right + clip.right,
-        top: clip.top === false ? 0 : area.top - clip.top,
-        bottom: clip.bottom === false ? this.height : area.bottom + clip.bottom
-      });
+    if (clip) {
+      clipArea(ctx, clip);
     }
 
     meta.controller.draw();
 
-    if (useClip) {
+    if (clip) {
       unclipArea(ctx);
     }
 
