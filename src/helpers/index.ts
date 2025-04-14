@@ -13,3 +13,4 @@ export * from './helpers.options.js';
 export * from './helpers.math.js';
 export * from './helpers.rtl.js';
 export * from './helpers.segment.js';
+export * from './helpers.dataset.js';
