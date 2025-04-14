@@ -24,14 +24,24 @@ function doFill(ctx, cfg) {
 
   ctx.save();
 
-  if (property === 'x' && below !== above) {
-    clipVertical(ctx, target, area.top);
-    fill(ctx, {line, target, color: above, scale, property, clip});
-    ctx.restore();
-    ctx.save();
-    clipVertical(ctx, target, area.bottom);
+  let fillColor = below;
+  if (below !== above) {
+    if (property === 'x') {
+      clipVertical(ctx, target, area.top);
+      fill(ctx, {line, target, color: above, scale, property, clip});
+      ctx.restore();
+      ctx.save();
+      clipVertical(ctx, target, area.bottom);
+    } else if (property === 'y') {
+      clipHorizontal(ctx, target, area.left);
+      fill(ctx, {line, target, color: below, scale, property, clip});
+      ctx.restore();
+      ctx.save();
+      clipHorizontal(ctx, target, area.right);
+      fillColor = above;
+    }
   }
-  fill(ctx, {line, target, color: below, scale, property, clip});
+  fill(ctx, {line, target, color: fillColor, scale, property, clip});
 
   ctx.restore();
 }
@@ -62,6 +72,36 @@ function clipVertical(ctx, target, clipY) {
   }
 
   ctx.lineTo(target.first().x, clipY);
+  ctx.closePath();
+  ctx.clip();
+}
+
+function clipHorizontal(ctx, target, clipX) {
+  const {segments, points} = target;
+  let first = true;
+  let lineLoop = false;
+
+  ctx.beginPath();
+  for (const segment of segments) {
+    const {start, end} = segment;
+    const firstPoint = points[start];
+    const lastPoint = points[_findSegmentEnd(start, end, points)];
+    if (first) {
+      ctx.moveTo(firstPoint.x, firstPoint.y);
+      first = false;
+    } else {
+      ctx.lineTo(clipX, firstPoint.y);
+      ctx.lineTo(firstPoint.x, firstPoint.y);
+    }
+    lineLoop = !!target.pathSegment(ctx, segment, {move: lineLoop});
+    if (lineLoop) {
+      ctx.closePath();
+    } else {
+      ctx.lineTo(clipX, lastPoint.y);
+    }
+  }
+
+  ctx.lineTo(clipX, target.first().y);
   ctx.closePath();
   ctx.clip();
 }
