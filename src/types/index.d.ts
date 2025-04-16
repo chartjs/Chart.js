@@ -1508,7 +1508,7 @@ export declare const Ticks: {
      * @param ticks the list of ticks being converted
      * @return string representation of the tickValue parameter
      */
-    numeric(tickValue: number, index: number, ticks: { value: number }[]): string;
+    numeric(this: Scale, tickValue: number, index: number, ticks: { value: number }[]): string;
     /**
      * Formatter for logarithmic ticks
      * @param tickValue the value to be formatted
@@ -1516,7 +1516,7 @@ export declare const Ticks: {
      * @param ticks the list of ticks being converted
      * @return string representation of the tickValue parameter
      */
-    logarithmic(tickValue: number, index: number, ticks: { value: number }[]): string;
+    logarithmic(this: Scale, tickValue: number, index: number, ticks: { value: number }[]): string;
   };
 };
 
