@@ -1080,9 +1080,10 @@ export interface Plugin<TType extends ChartType = ChartType, O = AnyObject> exte
    * @param {ChartEvent} args.event - The event object.
    * @param {boolean} args.replay - True if this event is replayed from `Chart.update`
    * @param {boolean} args.inChartArea - The event position is inside chartArea
+   * @param {boolean} [args.changed] - Set to true if the plugin needs a render. Should only be changed to true, because this args object is passed through all plugins.
    * @param {object} options - The plugin options.
    */
-  beforeEvent?(chart: Chart<TType>, args: { event: ChartEvent, replay: boolean, cancelable: true, inChartArea: boolean }, options: O): boolean | void;
+  beforeEvent?(chart: Chart<TType>, args: { event: ChartEvent, replay: boolean, changed?: boolean; cancelable: true, inChartArea: boolean }, options: O): boolean | void;
   /**
    * @desc Called after the `event` has been consumed. Note that this hook
    * will not be called if the `event` has been previously discarded.
