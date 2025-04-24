@@ -97,4 +97,4 @@ module.exports = {
 
 ## Internal data format
 
-Internally, the linear scale uses numeric data
+Internally, the linear scale uses numeric data.
