@@ -206,4 +206,4 @@ data: {
 
 ## Internal data format
 
-`{x, y}`
+`{x, r}`
