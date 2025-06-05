@@ -490,18 +490,20 @@ export default class BarController extends DatasetController {
     return this._getAxis().length;
   }
 
-  getFirstScaleIdForXAxis() {
+  getFirstScaleIdForIndexAxis() {
     const scales = this.chart.scales;
-    return Object.keys(scales).filter(key => scales[key].axis === 'x').shift();
+    const indexScaleId = this.chart.options.indexAxis;
+    return Object.keys(scales).filter(key => scales[key].axis === indexScaleId).shift();
   }
 
   _getAxis() {
     const axis = {};
-    const firstScaleAxisId = this.getFirstScaleIdForXAxis();
+    const firstScaleAxisId = this.getFirstScaleIdForIndexAxis();
     for (const dataset of this.chart.data.datasets) {
-      axis[valueOrDefault(dataset.xAxisID, firstScaleAxisId)] = true;
+      axis[valueOrDefault(
+        this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID, firstScaleAxisId
+      )] = true;
     }
-
     return Object.keys(axis);
   }
 
@@ -644,7 +646,9 @@ export default class BarController extends DatasetController {
         ? computeFlexCategoryTraits(index, ruler, options, stackCount * axisCount)
         : computeFitCategoryTraits(index, ruler, options, stackCount * axisCount);
 
-      const axisNumber = this._getAxis().indexOf(valueOrDefault(this.getDataset().xAxisID, this.getFirstScaleIdForXAxis()));
+      const axisNumber = this._getAxis().indexOf(valueOrDefault(
+        this.chart.options.indexAxis === 'x' ? this.getDataset().xAxisID : this.getDataset().yAxisID, this.getFirstScaleIdForIndexAxis()
+      ));
       const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined) + axisNumber;
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
       size = Math.min(maxBarThickness, range.chunk * range.ratio);
