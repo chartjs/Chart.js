@@ -645,10 +645,8 @@ export default class BarController extends DatasetController {
       const range = options.barThickness === 'flex'
         ? computeFlexCategoryTraits(index, ruler, options, stackCount * axisCount)
         : computeFitCategoryTraits(index, ruler, options, stackCount * axisCount);
-
-      const axisNumber = this._getAxis().indexOf(valueOrDefault(
-        this.chart.options.indexAxis === 'x' ? this.getDataset().xAxisID : this.getDataset().yAxisID, this.getFirstScaleIdForIndexAxis()
-      ));
+      const axisID = this.chart.options.indexAxis === 'x' ? this.getDataset().xAxisID : this.getDataset().yAxisID;
+      const axisNumber = this._getAxis().indexOf(valueOrDefault(axisID, this.getFirstScaleIdForIndexAxis()));
       const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined) + axisNumber;
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
       size = Math.min(maxBarThickness, range.chunk * range.ratio);
