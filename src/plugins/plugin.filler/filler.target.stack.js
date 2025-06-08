@@ -65,13 +65,12 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
       continue;
     }
     if (first) {
-      // First point of an segment -> need to add another point before this,
-      // from next line below.
+      // First point of a segment -> need to add another point before this,
       postponed.unshift(point);
     } else {
       points.push(point);
       if (!last) {
-        // In the middle of an segment, no need to add more points.
+        // In the middle of a segment, no need to add more points.
         break;
       }
     }
