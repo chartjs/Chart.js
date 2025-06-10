@@ -20,7 +20,7 @@ module.exports = async function(karma) {
   // we will prefer the unminified build which is easier to browse and works
   // better with source mapping. In other cases, pick the minified build to
   // make sure that the minification process (terser) doesn't break anything.
-  const regex = /chart\.umd\.js$/;
+  const regex = /chart\.umd(\.min)?\.js$/;
   const build = builds.filter(v => v.output.file && v.output.file.match(regex))[0];
 
   if (karma.autoWatch) {
