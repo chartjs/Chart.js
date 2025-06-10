@@ -1613,6 +1613,49 @@ describe('Chart.controllers.bar', function() {
     expect(data[0].y).toBeCloseToPixel(512);
   });
 
+  it('should hide bar dataset beneath the chart for correct animations', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: [1, 2, 3, 4]
+        }, {
+          data: [1, 2, 3, 4]
+        }],
+        labels: ['A', 'B', 'C', 'D']
+      },
+      options: {
+        plugins: {
+          legend: false,
+          title: false
+        },
+        scales: {
+          x: {
+            type: 'category',
+            display: false,
+            stacked: true,
+          },
+          y: {
+            type: 'linear',
+            display: false,
+            stacked: true,
+          }
+        }
+      }
+    });
+
+    var data = chart.getDatasetMeta(0).data;
+    expect(data[0].base).toBeCloseToPixel(512);
+    expect(data[0].y).toBeCloseToPixel(448);
+
+    chart.setDatasetVisibility(0, false);
+    chart.update();
+
+    data = chart.getDatasetMeta(0).data;
+    expect(data[0].base).toBeCloseToPixel(640);
+    expect(data[0].y).toBeCloseToPixel(512);
+  });
+
   describe('Float bar', function() {
     it('Should return correct values from getMinMax', function() {
       var chart = window.acquireChart({
@@ -1674,6 +1717,92 @@ describe('Chart.controllers.bar', function() {
     }
 
     expect(unevenChart).not.toThrow();
+  });
+
+  it('should correctly count the number of stacks when skipNull and different order datasets', function() {
+
+    const chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [
+          {
+            id: '1',
+            label: 'USA',
+            data: [
+              {
+                xScale: 'First',
+                Country: 'USA',
+                yScale: 524
+              },
+              {
+                xScale: 'Second',
+                Country: 'USA',
+                yScale: 325
+              }
+            ],
+
+            yAxisID: 'yScale',
+            xAxisID: 'xScale',
+
+            parsing: {
+              yAxisKey: 'yScale',
+              xAxisKey: 'xScale'
+            }
+          },
+          {
+            id: '2',
+            label: 'BRA',
+            data: [
+              {
+                xScale: 'Second',
+                Country: 'BRA',
+                yScale: 183
+              },
+              {
+                xScale: 'First',
+                Country: 'BRA',
+                yScale: 177
+              }
+            ],
+
+            yAxisID: 'yScale',
+            xAxisID: 'xScale',
+
+            parsing: {
+              yAxisKey: 'yScale',
+              xAxisKey: 'xScale'
+            }
+          },
+          {
+            id: '3',
+            label: 'DEU',
+            data: [
+              {
+                xScale: 'First',
+                Country: 'DEU',
+                yScale: 162
+              }
+            ],
+
+            yAxisID: 'yScale',
+            xAxisID: 'xScale',
+
+            parsing: {
+              yAxisKey: 'yScale',
+              xAxisKey: 'xScale'
+            }
+          }
+        ]
+      },
+      options: {
+        skipNull: true
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.controller._getStackCount(0)).toBe(3);
+    expect(meta.controller._getStackCount(1)).toBe(2);
+
   });
 
   it('should not override tooltip title and label callbacks', async() => {

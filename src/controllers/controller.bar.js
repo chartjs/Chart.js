@@ -437,9 +437,11 @@ export default class BarController extends DatasetController {
       .filter(meta => meta.controller.options.grouped);
     const stacked = iScale.options.stacked;
     const stacks = [];
+    const currentParsed = this._cachedMeta.controller.getParsed(dataIndex);
+    const iScaleValue = currentParsed && currentParsed[iScale.axis];
 
     const skipNull = (meta) => {
-      const parsed = meta.controller.getParsed(dataIndex);
+      const parsed = meta._parsed.find(item => item[iScale.axis] === iScaleValue);
       const val = parsed && parsed[meta.vScale.axis];
 
       if (isNullOrUndef(val) || isNaN(val)) {
@@ -482,6 +484,27 @@ export default class BarController extends DatasetController {
 	 */
   _getStackCount(index) {
     return this._getStacks(undefined, index).length;
+  }
+
+  _getAxisCount() {
+    return this._getAxis().length;
+  }
+
+  getFirstScaleIdForIndexAxis() {
+    const scales = this.chart.scales;
+    const indexScaleId = this.chart.options.indexAxis;
+    return Object.keys(scales).filter(key => scales[key].axis === indexScaleId).shift();
+  }
+
+  _getAxis() {
+    const axis = {};
+    const firstScaleAxisId = this.getFirstScaleIdForIndexAxis();
+    for (const dataset of this.chart.data.datasets) {
+      axis[valueOrDefault(
+        this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID, firstScaleAxisId
+      )] = true;
+    }
+    return Object.keys(axis);
   }
 
   /**
@@ -616,13 +639,15 @@ export default class BarController extends DatasetController {
     const skipNull = options.skipNull;
     const maxBarThickness = valueOrDefault(options.maxBarThickness, Infinity);
     let center, size;
+    const axisCount = this._getAxisCount();
     if (ruler.grouped) {
       const stackCount = skipNull ? this._getStackCount(index) : ruler.stackCount;
       const range = options.barThickness === 'flex'
-        ? computeFlexCategoryTraits(index, ruler, options, stackCount)
-        : computeFitCategoryTraits(index, ruler, options, stackCount);
-
-      const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined);
+        ? computeFlexCategoryTraits(index, ruler, options, stackCount * axisCount)
+        : computeFitCategoryTraits(index, ruler, options, stackCount * axisCount);
+      const axisID = this.chart.options.indexAxis === 'x' ? this.getDataset().xAxisID : this.getDataset().yAxisID;
+      const axisNumber = this._getAxis().indexOf(valueOrDefault(axisID, this.getFirstScaleIdForIndexAxis()));
+      const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined) + axisNumber;
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
       size = Math.min(maxBarThickness, range.chunk * range.ratio);
     } else {
@@ -630,6 +655,7 @@ export default class BarController extends DatasetController {
       center = scale.getPixelForValue(this.getParsed(index)[scale.axis], index);
       size = Math.min(maxBarThickness, ruler.min * ruler.ratio);
     }
+
 
     return {
       base: center - size / 2,
@@ -647,7 +673,7 @@ export default class BarController extends DatasetController {
     let i = 0;
 
     for (; i < ilen; ++i) {
-      if (this.getParsed(i)[vScale.axis] !== null) {
+      if (this.getParsed(i)[vScale.axis] !== null && !rects[i].hidden) {
         rects[i].draw(this._ctx);
       }
     }

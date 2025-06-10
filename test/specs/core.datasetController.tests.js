@@ -1,4 +1,6 @@
 describe('Chart.DatasetController', function() {
+  describe('auto', jasmine.fixture.specs('core.datasetController'));
+
   it('should listen for dataset data insertions or removals', function() {
     var data = [0, 1, 2, 3, 4, 5];
     var chart = acquireChart({

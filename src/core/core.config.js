@@ -400,7 +400,7 @@ function getResolver(resolverCache, scopes, prefixes) {
 }
 
 const hasFunction = value => isObject(value)
-  && Object.getOwnPropertyNames(value).reduce((acc, key) => acc || isFunction(value[key]), false);
+  && Object.getOwnPropertyNames(value).some((key) => isFunction(value[key]));
 
 function needContext(proxy, names) {
   const {isScriptable, isIndexable} = _descriptors(proxy);

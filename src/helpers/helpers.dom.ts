@@ -1,15 +1,7 @@
 import type {ChartArea, Scale} from '../types/index.js';
-import type Chart from '../core/core.controller.js';
-import type {ChartEvent} from '../types.js';
+import type PrivateChart from '../core/core.controller.js';
+import type {Chart, ChartEvent} from '../types.js';
 import {INFINITY} from './helpers.math.js';
-
-/**
- * Note: typedefs are auto-exported, so use a made-up `dom` namespace where
- * necessary to avoid duplicates with `export * from './helpers`; see
- * https://github.com/microsoft/TypeScript/issues/46011
- * @typedef { import('../core/core.controller.js').default } dom.Chart
- * @typedef { import('../../types').ChartEvent } ChartEvent
- */
 
 /**
  * @private
@@ -112,7 +104,7 @@ function getCanvasPosition(
 
 export function getRelativePosition(
   event: Event | ChartEvent | TouchEvent | MouseEvent,
-  chart: Chart
+  chart: Chart | PrivateChart
 ): { x: number; y: number } {
   if ('native' in event) {
     return event;
@@ -142,7 +134,7 @@ function getContainerSize(canvas: HTMLCanvasElement, width: number, height: numb
   let maxWidth: number, maxHeight: number;
 
   if (width === undefined || height === undefined) {
-    const container = _getParentNode(canvas);
+    const container = canvas && _getParentNode(canvas);
     if (!container) {
       width = canvas.clientWidth;
       height = canvas.clientHeight;
@@ -214,7 +206,7 @@ export function getMaximumSize(
  * @returns True if the canvas context size or transformation has changed.
  */
 export function retinaScale(
-  chart: Chart,
+  chart: Chart | PrivateChart,
   forceRatio: number,
   forceStyle?: boolean
 ): boolean | void {
@@ -222,8 +214,8 @@ export function retinaScale(
   const deviceHeight = Math.floor(chart.height * pixelRatio);
   const deviceWidth = Math.floor(chart.width * pixelRatio);
 
-  chart.height = Math.floor(chart.height);
-  chart.width = Math.floor(chart.width);
+  (chart as PrivateChart).height = Math.floor(chart.height);
+  (chart as PrivateChart).width = Math.floor(chart.width);
 
   const canvas = chart.canvas;
 
@@ -238,7 +230,7 @@ export function retinaScale(
   if (chart.currentDevicePixelRatio !== pixelRatio
       || canvas.height !== deviceHeight
       || canvas.width !== deviceWidth) {
-    chart.currentDevicePixelRatio = pixelRatio;
+    (chart as PrivateChart).currentDevicePixelRatio = pixelRatio;
     canvas.height = deviceHeight;
     canvas.width = deviceWidth;
     chart.ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -262,8 +254,10 @@ export const supportsEventListenerOptions = (function() {
       }
     } as EventListenerOptions;
 
-    window.addEventListener('test', null, options);
-    window.removeEventListener('test', null, options);
+    if (_isDomSupported()) {
+      window.addEventListener('test', null, options);
+      window.removeEventListener('test', null, options);
+    }
   } catch (e) {
     // continue regardless of error
   }

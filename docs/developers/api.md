@@ -25,13 +25,19 @@ Triggers an update of the chart. This can be safely called after updating the da
 myLineChart.data.datasets[0].data[2] = 50; // Would update the first dataset's value of 'March' to be 50
 myLineChart.update(); // Calling update now animates the position of March from 90 to 50.
 ```
+A `mode` can be provided to indicate transition configuration should be used. This can be either:
 
-A `mode` string can be provided to indicate transition configuration should be used. Core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`. `'none'` is also a supported mode for skipping animations for single update. Please see [animations](../configuration/animations.md) docs for more details.
+- **string value**: Core calls this method using any of `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'` or `undefined`. `'none'` is also supported for skipping animations for single update. Please see [animations](../configuration/animations.md) docs for more details.
 
-Example:
+- **function**: that receives a context object `{ datasetIndex: number }` and returns a mode string, allowing different modes per dataset.
 
+Examples:
 ```javascript
+// Using string mode
 myChart.update('active');
+
+// Using function mode for dataset-specific animations
+myChart.update(ctx => ctx.datasetIndex === 0 ? 'active' : 'none');
 ```
 
 See [Updating Charts](updates.md) for more details.
@@ -141,6 +147,15 @@ Returns the number of datasets that are currently not hidden.
 ```javascript
 const numberOfVisibleDatasets = chart.getVisibleDatasetCount();
 ```
+## isDatasetVisible(datasetIndex)
+
+Returns a boolean if a dataset at the given index is currently visible.
+
+The visibility is determined by first checking the hidden property in the dataset metadata (set via [`setDatasetVisibility()`](#setdatasetvisibility-datasetindex-visibility) and accessible through [`getDatasetMeta()`](#getdatasetmeta-index)). If this is not set, the hidden property of the dataset object itself (`chart.data.datasets[n].hidden`) is returned.
+
+```javascript
+chart.isDatasetVisible(1);
+```
 
 ## setDatasetVisibility(datasetIndex, visibility)
 
@@ -162,7 +177,7 @@ chart.update(); // chart now renders with item hidden
 
 ## getDataVisibility(index)
 
-Returns the stored visibility state of a data index for all datasets. Set by [toggleDataVisibility](#toggleDataVisibility). A dataset controller should use this method to determine if an item should not be visible.
+Returns the stored visibility state of a data index for all datasets. Set by [toggleDataVisibility](#toggledatavisibility-index). A dataset controller should use this method to determine if an item should not be visible.
 
 ```javascript
 const visible = chart.getDataVisibility(2);
@@ -229,3 +244,9 @@ Chart.register(Tooltip, LinearScale, PointElement, BubbleController);
 ## Static: unregister(chartComponentLike)
 
 Used to unregister plugins, axis types or chart types globally from all your charts.
+
+```javascript
+import { Chart, Tooltip, LinearScale, PointElement, BubbleController } from 'chart.js';
+
+Chart.unregister(Tooltip, LinearScale, PointElement, BubbleController);
+```

@@ -4,6 +4,10 @@
 
 Namespace: `options.plugins.tooltip`, the global options for the chart tooltips is defined in `Chart.defaults.plugins.tooltip`.
 
+:::warning
+The `titleFont`, `bodyFont` and `footerFont` options default to the `Chart.defaults.font` options. To change the overrides for those options, you will need to pass a function that returns a font object. See section about [overriding default fonts](#default-font-overrides) for extra information below.
+:::
+
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `enabled` | `boolean` | `true` | Are on-canvas tooltips enabled?
@@ -420,7 +424,7 @@ Tooltip.positioners.myCustomPositioner = function(elements, eventPosition) {
 };
 
 // Then, to use it...
-new Chart.js(ctx, {
+new Chart(ctx, {
     data,
     options: {
         plugins: {
@@ -442,4 +446,16 @@ declare module 'chart.js' {
     myCustomPositioner: TooltipPositionerFunction<ChartType>;
   }
 }
+```
+
+## Default font overrides
+
+By default, the `titleFont`, `bodyFont` and `footerFont` listen to the `Chart.defaults.font` options for setting its values.
+Overriding these normally by accessing the object won't work because it is backed by a get function that looks to the default `font` namespace.
+So you will need to override this get function with your own function that returns the desired config.
+
+Example:
+
+```javascript
+Chart.defaults.plugins.tooltip.titleFont = () => ({ size: 20, lineHeight: 1.2, weight: 800 });
 ```

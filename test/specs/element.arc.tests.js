@@ -281,4 +281,26 @@ describe('Arc element tests', function() {
 
     expect(ctx.getCalls().length).toBeGreaterThan(0);
   });
+
+  it ('should determine not in range when angle 0', function() {
+    // Mock out the arc as if the controller put it there
+    var arc = new Chart.elements.ArcElement({
+      startAngle: 0,
+      endAngle: 0,
+      x: 0,
+      y: 0,
+      innerRadius: 0,
+      outerRadius: 10,
+      circumference: 0,
+      options: {
+        spacing: 0,
+        offset: 0,
+        borderWidth: 0
+      }
+    });
+
+    var center = arc.getCenterPoint();
+
+    expect(arc.inRange(center.x, 1)).toBe(false);
+  });
 });

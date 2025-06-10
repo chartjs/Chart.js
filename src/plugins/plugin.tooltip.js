@@ -24,7 +24,7 @@ const positioners = {
     }
 
     let i, len;
-    let x = 0;
+    let xSet = new Set();
     let y = 0;
     let count = 0;
 
@@ -32,14 +32,21 @@ const positioners = {
       const el = items[i].element;
       if (el && el.hasValue()) {
         const pos = el.tooltipPosition();
-        x += pos.x;
+        xSet.add(pos.x);
         y += pos.y;
         ++count;
       }
     }
 
+    // No visible items where found, return false so we don't have to divide by 0 which reduces in NaN
+    if (count === 0 || xSet.size === 0) {
+      return false;
+    }
+
+    const xAverage = [...xSet].reduce((a, b) => a + b) / xSet.size;
+
     return {
-      x: x / count,
+      x: xAverage,
       y: y / count
     };
   },
@@ -1182,7 +1189,11 @@ export class Tooltip extends Element {
 
     if (!inChartArea) {
       // Let user control the active elements outside chartArea. Eg. using Legend.
-      return lastActive;
+      // But make sure that active elements are still valid.
+      return lastActive.filter(i =>
+        this.chart.data.datasets[i.datasetIndex] &&
+        this.chart.getDatasetMeta(i.datasetIndex).controller.getParsed(i.index) !== undefined
+      );
     }
 
     // Find Active Elements for tooltips

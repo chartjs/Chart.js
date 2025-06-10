@@ -317,7 +317,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount, borderOpts) {
   ctx.save();
   ctx.strokeStyle = color;
   ctx.lineWidth = lineWidth;
-  ctx.setLineDash(borderOpts.dash);
+  ctx.setLineDash(borderOpts.dash || []);
   ctx.lineDashOffset = borderOpts.dashOffset;
 
   ctx.beginPath();
@@ -578,7 +578,7 @@ export default class RadialLinearScale extends LinearScaleBase {
 
     if (grid.display) {
       this.ticks.forEach((tick, index) => {
-        if (index !== 0) {
+        if (index !== 0 || (index === 0 && this.min < 0)) {
           offset = this.getDistanceFromCenterForValue(tick.value);
           const context = this.getContext(index);
           const optsAtIndex = grid.setContext(context);
@@ -606,7 +606,7 @@ export default class RadialLinearScale extends LinearScaleBase {
         ctx.setLineDash(optsAtIndex.borderDash);
         ctx.lineDashOffset = optsAtIndex.borderDashOffset;
 
-        offset = this.getDistanceFromCenterForValue(opts.ticks.reverse ? this.min : this.max);
+        offset = this.getDistanceFromCenterForValue(opts.reverse ? this.min : this.max);
         position = this.getPointPosition(i, offset);
         ctx.beginPath();
         ctx.moveTo(this.xCenter, this.yCenter);
@@ -645,7 +645,7 @@ export default class RadialLinearScale extends LinearScaleBase {
     ctx.textBaseline = 'middle';
 
     this.ticks.forEach((tick, index) => {
-      if (index === 0 && !opts.reverse) {
+      if ((index === 0 && this.min >= 0) && !opts.reverse) {
         return;
       }
 

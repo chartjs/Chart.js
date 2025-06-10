@@ -1,4 +1,4 @@
-import { Chart } from '../../src/types.js';
+import { Chart, ChartOptions, ChartType, DoughnutControllerChartOptions } from '../../src/types.js';
 
 const chart = new Chart('test', {
   type: 'bar',
@@ -31,3 +31,15 @@ const chart = new Chart('test', {
     }
   }
 });
+
+const doughnutOptions: DoughnutControllerChartOptions = {
+  circumference: 360,
+  cutout: '50%',
+  offset: 0,
+  radius: 100,
+  rotation: 0,
+  spacing: 0,
+  animation: false,
+};
+
+const chartOptions: ChartOptions<ChartType> = doughnutOptions;

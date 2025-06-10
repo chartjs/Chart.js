@@ -294,6 +294,7 @@ export default defineConfig({
             'getting-started/installation',
             'getting-started/integration',
             'getting-started/usage',
+            'getting-started/using-from-node-js',
           ]
         },
         {

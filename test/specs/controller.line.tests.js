@@ -1071,6 +1071,93 @@ describe('Chart.controllers.line', function() {
     expect(visiblePoints.length).toBe(6);
   }, 500);
 
+  it('should correctly calc _drawStart and _drawCount when first points beyond scale limits are null and spanGaps=true', async() => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [3, null, 2, 3, null, 1.5],
+          spanGaps: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
+          }
+        }
+      }
+    });
+
+    chart.update();
+    var controller = chart.getDatasetMeta(0).controller;
+
+    expect(controller._drawStart).toBe(0);
+    expect(controller._drawCount).toBe(6);
+  }, 500);
+
+  it('should correctly calc _drawStart and _drawCount when all points beyond scale limits are null and spanGaps=true', async() => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [null, null, 2, 3, null, null],
+          spanGaps: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
+          }
+        }
+      }
+    });
+
+    chart.update();
+    var controller = chart.getDatasetMeta(0).controller;
+
+    expect(controller._drawStart).toBe(1);
+    expect(controller._drawCount).toBe(4);
+  }, 500);
+
+  it('should correctly calc _drawStart and _drawCount when spanGaps=false', async() => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [3, null, 2, 3, null, 1.5],
+          spanGaps: false,
+          tension: 0.4
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
+          }
+        }
+      }
+    });
+
+    chart.update();
+    var controller = chart.getDatasetMeta(0).controller;
+
+    expect(controller._drawStart).toBe(1);
+    expect(controller._drawCount).toBe(4);
+  }, 500);
+
   it('should not override tooltip title and label callbacks', async() => {
     const chart = window.acquireChart({
       type: 'line',

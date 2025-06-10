@@ -30,14 +30,14 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4.1.0
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
           cache: pnpm
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |

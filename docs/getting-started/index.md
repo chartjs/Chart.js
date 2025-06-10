@@ -3,8 +3,9 @@
 Let's get started with Chart.js!
 
 * **[Follow a step-by-step guide](./usage) to get up to speed with Chart.js**
-* [Install Chart.js](./installation) from npm or a CDN 
+* [Install Chart.js](./installation) from npm or a CDN
 * [Integrate Chart.js](./integration) with bundlers, loaders, and front-end frameworks
+* [Use Chart.js from Node.js](./using-from-node-js)
 
 Alternatively, see the example below or check [samples](../samples).
 
@@ -63,7 +64,7 @@ Now that we have a canvas, we can include Chart.js from a CDN.
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 ```
 
-Finally, we can create a chart. We add a script that acquires the `myChart` canvas element and instantiates `new Chart` with desired configuration: `bar` chart type, labels, data points, and options. 
+Finally, we can create a chart. We add a script that acquires the `myChart` canvas element and instantiates `new Chart` with desired configuration: `bar` chart type, labels, data points, and options.
 
 ```html
 <script>

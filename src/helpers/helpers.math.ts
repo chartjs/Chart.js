@@ -57,8 +57,15 @@ export function _factorize(value: number) {
   return result;
 }
 
+/**
+ * Verifies that attempting to coerce n to string or number won't throw a TypeError.
+ */
+function isNonPrimitive(n: unknown) {
+  return typeof n === 'symbol' || (typeof n === 'object' && n !== null && !(Symbol.toPrimitive in n || 'toString' in n || 'valueOf' in n));
+}
+
 export function isNumber(n: unknown): n is number {
-  return !isNaN(parseFloat(n as string)) && isFinite(n as number);
+  return !isNonPrimitive(n) && !isNaN(parseFloat(n as string)) && isFinite(n as number);
 }
 
 export function almostWhole(x: number, epsilon: number) {

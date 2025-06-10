@@ -16,7 +16,7 @@ jobs:
       version: ${{ steps.trim.outputs.version }}
     steps:
       - id: trim
-        run: echo "::set-output name=version::${TAG:1}"
+        run: echo "version=${TAG:1}" >> $GITHUB_OUTPUT
         env:
           TAG: ${{ github.event.release.tag_name }}
 
@@ -26,9 +26,9 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.4.0
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4.1.0
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 16
@@ -71,9 +71,9 @@ jobs:
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.4.0
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4.1.0
+      - uses: actions/setup-node@v4
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 16

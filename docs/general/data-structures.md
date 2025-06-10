@@ -2,8 +2,8 @@
 
 The `data` property of a dataset can be passed in various formats. By default, that `data` is parsed using the associated chart type and scales.
 
-If the `labels` property of the main `data` property is used, it has to contain the same amount of elements as the dataset with the most values. These labels are used to label the index axis (default x axes). The values for the labels have to be provided in an array.
-The provided labels can be of the type string or number to be rendered correctly. In case you want multiline labels you can provide an array with each line as one entry in the array.
+If the `labels` property of the main `data` property is used, it has to contain the same amount of elements as the dataset with the most values. These labels are used to label the index axis (default `x` axis). The values for the labels have to be provided in an array.
+The provided labels can be of the type string or number to be rendered correctly. If you want multiline labels, you can provide an array with each line as one entry in the array.
 
 ## Primitive[]
 
@@ -19,7 +19,22 @@ const cfg = {
 }
 ```
 
-When the `data` is an array of numbers, values from `labels` array at the same index are used for the index axis (`x` for vertical, `y` for horizontal charts).
+When `data` is an array of numbers, values from the `labels` array at the same index are used for the index axis (`x` for vertical, `y` for horizontal charts).
+
+## Array[]
+
+```javascript
+const cfg = {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [[10, 20], [15, null], [20, 10]]
+    }]
+  }
+}
+```
+
+When `data` is an array of arrays (or what TypeScript would call tuples), the first element of each tuple is the index  (`x` for vertical, `y` for horizontal charts) and the second element is the value (`y` by default).
 
 ## Object[]
 
@@ -58,7 +73,9 @@ const cfg = {
 
 This is also the internal format used for parsed data. In this mode, parsing can be disabled by specifying `parsing: false` at chart options or dataset. If parsing is disabled, data must be sorted and in the formats the associated chart type and scales use internally.
 
-The values provided must be parsable by the associated scales or in the internal format of the associated scales. A common mistake would be to provide integers for the `category` scale, which uses integers as an internal format, where each integer represents an index in the labels array. `null` can be used for skipped values.
+The values provided must be parsable by the associated scales or in the internal format of the associated scales. For example, the `category` scale uses integers as an internal format, where each integer represents an index in the labels array; but, if parsing is enabled, it can also parse string labels.
+
+`null` can be used for skipped values.
 
 ## Object[] using custom properties
 
@@ -117,7 +134,7 @@ const cfg = {
 ```
 
 :::warning
-When using object notation in a radar chart, you still need a labels array with labels for the chart to show correctly.
+When using object notation in a radar chart, you still need a `labels` array with labels for the chart to show correctly.
 :::
 
 ## Object
@@ -136,7 +153,7 @@ const cfg = {
 }
 ```
 
-In this mode, property name is used for `index` scale and value for `value` scale. For vertical charts, index scale is `x` and value scale is `y`.
+In this mode, the property name is used for the `index` scale and value for the `value` scale. For vertical charts, the index scale is `x` and value scale is `y`.
 
 ## Dataset Configuration
 
@@ -180,9 +197,9 @@ const cfg = {
 };
 ```
 
-## Typescript
+## TypeScript
 
-When using typescript, if you want to use a data structure that is not the default data structure, you will need to pass it to the type interface when instantiating the data variable.
+When using TypeScript, if you want to use a data structure that is not the default data structure, you will need to pass it to the type interface when instantiating the data variable.
 
 ```ts
 import {ChartData} from 'chart.js';

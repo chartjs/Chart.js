@@ -1,8 +1,41 @@
 import Element from '../core/core.element.js';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '../helpers/index.js';
-import {PI, _isBetween, _limitValue} from '../helpers/helpers.math.js';
+import {PI, _angleDiff, _normalizeAngle, _isBetween, _limitValue} from '../helpers/helpers.math.js';
 import {_readValueToProps} from '../helpers/helpers.options.js';
 import type {ArcOptions, Point} from '../types/index.js';
+
+function clipSelf(ctx: CanvasRenderingContext2D, element: ArcElement, endAngle: number) {
+  const {startAngle, x, y, outerRadius, innerRadius, options} = element;
+  const {borderWidth, borderJoinStyle} = options;
+  const outerAngleClip = Math.min(borderWidth / outerRadius, _normalizeAngle(startAngle - endAngle));
+  ctx.beginPath();
+  ctx.arc(x, y, outerRadius - borderWidth / 2, startAngle + outerAngleClip / 2, endAngle - outerAngleClip / 2);
+
+  if (innerRadius > 0) {
+    const innerAngleClip = Math.min(borderWidth / innerRadius, _normalizeAngle(startAngle - endAngle));
+    ctx.arc(x, y, innerRadius + borderWidth / 2, endAngle - innerAngleClip / 2, startAngle + innerAngleClip / 2, true);
+  } else {
+    const clipWidth = Math.min(borderWidth / 2, outerRadius * _normalizeAngle(startAngle - endAngle));
+
+    if (borderJoinStyle === 'round') {
+      ctx.arc(x, y, clipWidth, endAngle - PI / 2, startAngle + PI / 2, true);
+    } else if (borderJoinStyle === 'bevel') {
+      const r = 2 * clipWidth * clipWidth;
+      const endX = -r * Math.cos(endAngle + PI / 2) + x;
+      const endY = -r * Math.sin(endAngle + PI / 2) + y;
+      const startX = r * Math.cos(startAngle + PI / 2) + x;
+      const startY = r * Math.sin(startAngle + PI / 2) + y;
+      ctx.lineTo(endX, endY);
+      ctx.lineTo(startX, startY);
+    }
+  }
+  ctx.closePath();
+
+  ctx.moveTo(0, 0);
+  ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  ctx.clip('evenodd');
+}
 
 
 function clipArc(ctx: CanvasRenderingContext2D, element: ArcElement, endAngle: number) {
@@ -213,7 +246,7 @@ function drawBorder(
   circular: boolean,
 ) {
   const {fullCircles, startAngle, circumference, options} = element;
-  const {borderWidth, borderJoinStyle, borderDash, borderDashOffset} = options;
+  const {borderWidth, borderJoinStyle, borderDash, borderDashOffset, borderRadius} = options;
   const inner = options.borderAlign === 'inner';
 
   if (!borderWidth) {
@@ -246,6 +279,10 @@ function drawBorder(
     clipArc(ctx, element, endAngle);
   }
 
+  if (options.selfJoin && endAngle - startAngle >= PI && borderRadius === 0 && borderJoinStyle !== 'miter') {
+    clipSelf(ctx, element, endAngle);
+  }
+
   if (!fullCircles) {
     pathArc(ctx, element, offset, spacing, endAngle, circular);
     ctx.stroke();
@@ -276,6 +313,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     spacing: 0,
     angle: undefined,
     circular: true,
+    selfJoin: false,
   };
 
   static defaultRoutes = {
@@ -324,7 +362,8 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     ], useFinalPosition);
     const rAdjust = (this.options.spacing + this.options.borderWidth) / 2;
     const _circumference = valueOrDefault(circumference, endAngle - startAngle);
-    const betweenAngles = _circumference >= TAU || _angleBetween(angle, startAngle, endAngle);
+    const nonZeroBetween = _angleBetween(angle, startAngle, endAngle) && startAngle !== endAngle;
+    const betweenAngles = _circumference >= TAU || nonZeroBetween;
     const withinRadius = _isBetween(distance, innerRadius + rAdjust, outerRadius + rAdjust);
 
     return (betweenAngles && withinRadius);

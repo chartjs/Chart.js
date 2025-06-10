@@ -301,7 +301,6 @@ export default class Scale extends Element {
 	 * @since 3.0
 	 */
   getMinMax(canStack) {
-    // eslint-disable-next-line prefer-const
     let {min, max, minDefined, maxDefined} = this.getUserBounds();
     let range;
 
@@ -1287,6 +1286,13 @@ export default class Scale extends Element {
           break;
         case 'right':
           left -= width;
+          break;
+        case 'inner':
+          if (i === ilen - 1) {
+            left -= width;
+          } else if (i > 0) {
+            left -= width / 2;
+          }
           break;
         default:
           break;
