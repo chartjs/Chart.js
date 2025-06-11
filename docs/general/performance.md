@@ -161,7 +161,7 @@ new Chart(ctx, {
 
 ### Disable Point Drawing
 
-If you have a lot of data points, it can be more performant to disable rendering of the points for a dataset and only draw line. Doing this means that there is less to draw on the canvas which will improve render performance.
+If you have a lot of data points, it can be more performant to disable rendering of the points for a dataset and only draw lines. Doing this means that there is less to draw on the canvas which will improve render performance.
 
 To disable point drawing:
 
