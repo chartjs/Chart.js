@@ -14,7 +14,7 @@ The latest documentation and samples, including unreleased features, are availab
 Latest builds are available for testing at:
 
 - <https://www.chartjs.org/dist/master/chart.js>
-- <https://www.chartjs.org/dist/master/chart.min.js>
+- <https://www.chartjs.org/dist/master/chart.umd.min.js>
 
 :::warning Warning
 
