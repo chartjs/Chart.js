@@ -2993,6 +2993,14 @@ export interface BorderOptions {
 
 export interface GridLineOptions {
   /**
+   * @default []
+   */
+  dash: number[];
+  /**
+   * @default 0
+   */
+  dashOffset: Scriptable<number, ScriptableScaleContext>;
+  /**
    * @default true
    */
   display: boolean;
