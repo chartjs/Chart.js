@@ -30,6 +30,7 @@ export function applyScaleDefaults(defaults) {
       lineWidth: 1,
       drawOnChartArea: true,
       drawTicks: true,
+      step: 1,
       tickLength: 8,
       tickWidth: (_ctx, options) => options.lineWidth,
       tickColor: (_ctx, options) => options.color,
