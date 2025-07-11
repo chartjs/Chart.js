@@ -14,36 +14,81 @@ describe('Default Configs', function() {
         },
       });
 
+      var expectedCommon = {
+        fontColor: '#666',
+        hidden: false,
+        strokeStyle: '#000',
+        textAlign: undefined,
+        lineWidth: 2,
+        pointStyle: undefined,
+        lineDash: [],
+        lineDashOffset: 0,
+        lineJoin: undefined,
+        borderRadius: undefined,
+      };
+
       var expected = [{
         text: 'label1',
         fillStyle: 'red',
-        fontColor: '#666',
-        hidden: false,
         index: 0,
-        strokeStyle: '#000',
-        textAlign: undefined,
-        lineWidth: 2,
-        pointStyle: undefined
+        ...expectedCommon,
       }, {
         text: 'label2',
         fillStyle: 'green',
-        fontColor: '#666',
-        hidden: false,
         index: 1,
-        strokeStyle: '#000',
-        textAlign: undefined,
-        lineWidth: 2,
-        pointStyle: undefined
+        ...expectedCommon,
       }, {
         text: 'label3',
         fillStyle: 'blue',
+        index: 2,
+        ...expectedCommon,
+      }];
+      expect(chart.legend.legendItems).toEqual(expected);
+    });
+
+    it('should return correct legend label objects with border radius', function() {
+      var chart = window.acquireChart({
+        type: 'doughnut',
+        data: {
+          labels: ['label1'],
+          datasets: [{
+            data: [10],
+            backgroundColor: ['red'],
+            borderWidth: 2,
+            borderColor: '#000',
+            borderDash: [1, 2, 3],
+            borderDashOffset: 1,
+            borderJoinStyle: 'miter',
+            borderRadius: 3,
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: {
+                useBorderRadius: true,
+                borderRadius: 5,
+                textAlign: 'left',
+              }
+            }
+          }
+        }
+      });
+
+      var expected = [{
+        text: 'label1',
+        fillStyle: 'red',
+        index: 0,
         fontColor: '#666',
         hidden: false,
-        index: 2,
         strokeStyle: '#000',
-        textAlign: undefined,
+        textAlign: 'left',
         lineWidth: 2,
-        pointStyle: undefined
+        pointStyle: undefined,
+        lineDash: [1, 2, 3],
+        lineDashOffset: 1,
+        lineJoin: 'miter',
+        borderRadius: 5
       }];
       expect(chart.legend.legendItems).toEqual(expected);
     });
