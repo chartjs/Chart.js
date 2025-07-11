@@ -91,9 +91,8 @@ export default class DoughnutController extends DatasetController {
         labels: {
           generateLabels(chart) {
             const data = chart.data;
+            const {labels: {pointStyle, textAlign, color, useBorderRadius, borderRadius}} = chart.legend.options;
             if (data.labels.length && data.datasets.length) {
-              const {labels: {pointStyle, color}} = chart.legend.options;
-
               return data.labels.map((label, i) => {
                 const meta = chart.getDatasetMeta(0);
                 const style = meta.controller.getStyle(i);
@@ -101,12 +100,16 @@ export default class DoughnutController extends DatasetController {
                 return {
                   text: label,
                   fillStyle: style.backgroundColor,
-                  strokeStyle: style.borderColor,
                   fontColor: color,
-                  lineWidth: style.borderWidth,
-                  pointStyle: pointStyle,
                   hidden: !chart.getDataVisibility(i),
-
+                  lineDash: style.borderDash,
+                  lineDashOffset: style.borderDashOffset,
+                  lineJoin: style.borderJoinStyle,
+                  lineWidth: style.borderWidth,
+                  strokeStyle: style.borderColor,
+                  textAlign: textAlign,
+                  pointStyle: pointStyle,
+                  borderRadius: useBorderRadius && (borderRadius || style.borderRadius),
                   // Extra data used for toggling the correct item
                   index: i
                 };
