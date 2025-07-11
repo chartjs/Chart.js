@@ -480,5 +480,31 @@ describe('Chart.plugins', function() {
       await jasmine.triggerMouseEvent(chart, 'pointerleave', {x: 0, y: 0});
       expect(results).toEqual(['beforetest', 'aftertest', 'beforemouseout', 'aftermouseout']);
     });
+
+    it('should not call plugins after uninstall', async function() {
+      const results = [];
+      const chart = window.acquireChart({
+        options: {
+          events: ['test'],
+          plugins: {
+            testPlugin: {
+              events: ['test']
+            }
+          }
+        },
+        plugins: [{
+          id: 'testPlugin',
+          reset: () => results.push('reset'),
+          afterDestroy: () => results.push('afterDestroy'),
+          uninstall: () => results.push('uninstall'),
+        }]
+      });
+      chart.reset();
+      expect(results).toEqual(['reset']);
+      chart.destroy();
+      expect(results).toEqual(['reset', 'afterDestroy', 'uninstall']);
+      chart.reset();
+      expect(results).toEqual(['reset', 'afterDestroy', 'uninstall']);
+    });
   });
 });
