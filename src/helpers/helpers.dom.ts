@@ -211,11 +211,11 @@ export function retinaScale(
   forceStyle?: boolean
 ): boolean | void {
   const pixelRatio = forceRatio || 1;
-  const deviceHeight = Math.floor(chart.height * pixelRatio);
-  const deviceWidth = Math.floor(chart.width * pixelRatio);
+  const deviceHeight = round1(chart.height * pixelRatio);
+  const deviceWidth = round1(chart.width * pixelRatio);
 
-  (chart as PrivateChart).height = Math.floor(chart.height);
-  (chart as PrivateChart).width = Math.floor(chart.width);
+  (chart as PrivateChart).height = round1(chart.height);
+  (chart as PrivateChart).width = round1(chart.width);
 
   const canvas = chart.canvas;
 
