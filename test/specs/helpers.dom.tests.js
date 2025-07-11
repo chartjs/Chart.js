@@ -268,8 +268,8 @@ describe('DOM helpers tests', function() {
     helpers.retinaScale(chart, devicePixelRatio, true);
 
     var canvas = chart.canvas;
-    expect(canvas.width).toBe(Math.floor(chartWidth * devicePixelRatio));
-    expect(canvas.height).toBe(Math.floor(chartHeight * devicePixelRatio));
+    expect(canvas.width).toBe(Math.round(chartWidth * devicePixelRatio));
+    expect(canvas.height).toBe(Math.round(chartHeight * devicePixelRatio));
 
     expect(chart.width).toBe(chartWidth);
     expect(chart.height).toBe(chartHeight);
