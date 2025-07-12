@@ -19,7 +19,7 @@ import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helper
 
 export default class PluginService {
   constructor() {
-    this._init = [];
+    this._init = undefined;
   }
 
   /**
@@ -38,12 +38,17 @@ export default class PluginService {
       this._notify(this._init, chart, 'install');
     }
 
+    if (this._init === undefined) { // Do not trigger events before install
+      return;
+    }
+
     const descriptors = filter ? this._descriptors(chart).filter(filter) : this._descriptors(chart);
     const result = this._notify(descriptors, chart, hook, args);
 
     if (hook === 'afterDestroy') {
       this._notify(descriptors, chart, 'stop');
       this._notify(this._init, chart, 'uninstall');
+      this._init = undefined; // Do not trigger events after uninstall
     }
     return result;
   }
