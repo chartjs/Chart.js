@@ -7,11 +7,9 @@ module.exports = {
           position: {y: 0},
           min: -10,
           max: 10,
-          border: {
-            dash: (ctx) => ctx.index % 2 === 0 ? [6, 3] : [],
-          },
           grid: {
             color: 'lightGray',
+            dash: (ctx) => ctx.index % 2 === 0 ? [6, 3] : [],
             lineWidth: 3,
           },
           ticks: {
@@ -22,11 +20,9 @@ module.exports = {
           position: {x: 0},
           min: -10,
           max: 10,
-          border: {
-            dash: (ctx) => ctx.index % 2 === 0 ? [6, 3] : [],
-          },
           grid: {
             color: 'lightGray',
+            dash: (ctx) => ctx.index % 2 === 0 ? [6, 3] : [],
             lineWidth: 3,
           },
           ticks: {
