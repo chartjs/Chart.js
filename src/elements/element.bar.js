@@ -124,18 +124,29 @@ function addNormalRectPath(ctx, rect) {
   ctx.rect(rect.x, rect.y, rect.w, rect.h);
 }
 
-function inflateRect(rect, amount, refRect = {}) {
+function inflateRect(rect, amount, refRect = {}, snap = false) {
   const x = rect.x !== refRect.x ? -amount : 0;
   const y = rect.y !== refRect.y ? -amount : 0;
   const w = (rect.x + rect.w !== refRect.x + refRect.w ? amount : 0) - x;
   const h = (rect.y + rect.h !== refRect.y + refRect.h ? amount : 0) - y;
-  return {
+
+  const result = {
     x: rect.x + x,
     y: rect.y + y,
     w: rect.w + w,
     h: rect.h + h,
     radius: rect.radius
   };
+
+  if (snap) {
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) ? window.devicePixelRatio : 1;
+    result.x = Math.round(result.x * dpr) / dpr;
+    result.y = Math.round(result.y * dpr) / dpr;
+    result.w = Math.round(result.w * dpr) / dpr;
+    result.h = Math.round(result.h * dpr) / dpr;
+  }
+  
+  return result;
 }
 
 export default class BarElement extends Element {
@@ -185,15 +196,15 @@ export default class BarElement extends Element {
 
     if (outer.w !== inner.w || outer.h !== inner.h) {
       ctx.beginPath();
-      addRectPath(ctx, inflateRect(outer, inflateAmount, inner));
+      addRectPath(ctx, inflateRect(outer, inflateAmount, inner, true));
       ctx.clip();
-      addRectPath(ctx, inflateRect(inner, -inflateAmount, outer));
+      addRectPath(ctx, inflateRect(inner, -inflateAmount, outer, true));
       ctx.fillStyle = borderColor;
       ctx.fill('evenodd');
     }
 
     ctx.beginPath();
-    addRectPath(ctx, inflateRect(inner, inflateAmount));
+    addRectPath(ctx, inflateRect(inner, inflateAmount, undefined, true));
     ctx.fillStyle = backgroundColor;
     ctx.fill();
 
