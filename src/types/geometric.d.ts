@@ -8,8 +8,8 @@ export interface ChartArea {
 }
 
 export interface Point {
-  x: number;
-  y: number;
+  x: number | null;
+  y: number | null;
 }
 
 export type TRBL = {
@@ -17,7 +17,7 @@ export type TRBL = {
   right: number;
   bottom: number;
   left: number;
-}
+};
 
 export type TRBLCorners = {
   topLeft: number;
@@ -33,8 +33,8 @@ export type RoundedRect = {
   y: number;
   w: number;
   h: number;
-  radius?: CornerRadius
-}
+  radius?: CornerRadius;
+};
 
 export type Padding = Partial<TRBL> | number | Point;
 
