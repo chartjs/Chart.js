@@ -26,7 +26,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4.1.0
       - uses: actions/setup-node@v5
         with:
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4.1.0
       - uses: actions/setup-node@v5
         with:
