@@ -3022,6 +3022,10 @@ export interface GridLineOptions {
    */
   circular: boolean;
   /**
+   * @default 0
+   */
+  borderRadius: number;
+  /**
    * @default 'rgba(0, 0, 0, 0.1)'
    */
   color: ScriptableAndArray<Color, ScriptableScaleContext>;
