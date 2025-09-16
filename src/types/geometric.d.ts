@@ -8,8 +8,8 @@ export interface ChartArea {
 }
 
 export interface Point {
-  x: number;
-  y: number;
+  x: number | null;
+  y: number | null;
 }
 
 export type TRBL = {
