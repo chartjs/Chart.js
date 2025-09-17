@@ -145,7 +145,7 @@ function inflateRect(rect, amount, refRect = {}, snap = false) {
     result.w = Math.round(result.w * dpr) / dpr;
     result.h = Math.round(result.h * dpr) / dpr;
   }
-  
+
   return result;
 }
 
