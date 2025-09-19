@@ -3627,6 +3627,7 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
 export interface RadialLinearScale<O extends RadialLinearScaleOptions = RadialLinearScaleOptions> extends Scale<O> {
   xCenter: number;
   yCenter: number;
+  readonly drawingArea: number;
   setCenterPoint(leftMovement: number, rightMovement: number, topMovement: number, bottomMovement: number): void;
   getIndexAngle(index: number): number;
   getDistanceFromCenterForValue(value: number): number;
