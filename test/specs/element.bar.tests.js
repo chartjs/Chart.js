@@ -90,11 +90,11 @@ describe('Bar element tests', function() {
 
       const meta = chart.getDatasetMeta(0);
       const bar = meta.data[0];
-      const props = bar.getProps(['width', 'height', 'borderWidth'], true);
+      const props = bar.getProps(['width', 'height'], true);
 
-      expect(props.borderWidth).toBe(15);
-      expect(props.width).toBeGreaterThan(props.borderWidth * 2);
-      expect(props.height).toBeGreaterThan(props.borderWidth * 2);
+      expect(bar.options.borderWidth).toBe(15);
+      expect(props.width).toBeGreaterThan(bar.options.borderWidth * 2);
+      expect(props.height).toBeGreaterThan(bar.options.borderWidth * 2);
     });
 
     it('should handle borderRadius without creating a gap', () => {
@@ -122,12 +122,12 @@ describe('Bar element tests', function() {
 
       const meta = chart.getDatasetMeta(0);
       const bar = meta.data[0];
-      const props = bar.getProps(['width', 'height', 'borderWidth', 'borderRadius'], true);
+      const props = bar.getProps(['width', 'height'], true);
 
-      expect(props.borderWidth).toBe(10);
-      expect(props.borderRadius).toBe(8);
-      expect(props.width).toBeGreaterThan(props.borderRadius + props.borderWidth);
-      expect(props.height).toBeGreaterThan(props.borderRadius + props.borderWidth);
+      expect(bar.options.borderWidth).toBe(10);
+      expect(bar.options.borderRadius).toBe(8);
+      expect(props.width).toBeGreaterThan(bar.options.borderRadius + bar.options.borderWidth);
+      expect(props.height).toBeGreaterThan(bar.options.borderRadius + bar.options.borderWidth);
     });
   });
 });
