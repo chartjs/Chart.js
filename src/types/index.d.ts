@@ -3270,6 +3270,10 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     text: string | string[];
     /** Color of the axis label. */
     color: Color;
+    /** Color of the axis label's stroke. */
+    strokeColor: Color;
+    /** Stroke width of the axis label. */
+    strokeWidth: number;
     /** Information about the axis title font. */
     font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableCartesianScaleContext>;
     /** Padding to apply around scale labels. */
