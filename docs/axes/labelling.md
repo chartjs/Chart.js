@@ -13,7 +13,7 @@ Namespace: `options.scales[scaleId].title`, it defines options for the scale tit
 | `text` | `string`\|`string[]` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
 | `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of label.
 | `strokeColor` | [`Color`](../general/colors.md) |  | Color of text stroke.
-| `strokeWidth` | `number` |  | Size of stroke width.
+| `strokeWidth` | `number` |  | Size of stroke width, in pixels.
 | `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
 | `padding` | [`Padding`](../general/padding.md) | `4` | Padding to apply around scale labels. Only `top`, `bottom` and `y` are implemented.
 
