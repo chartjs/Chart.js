@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Clasificación Detallada de Biopesticidas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background-color: #ffffff;
+            border: 2px solid;
+            min-height: 100px;
+        }
+        .flow-arrow {
+            font-size: 2.5rem;
+            color: #F28F3B;
+            align-self: center;
+            margin: 0 1rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <header class="bg-[#424242] text-white p-8 text-center shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-bold mb-2">Clasificación Detallada de Biopesticidas</h1>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300">La clave para un Manejo Integrado de Plagas (MIP) sostenible y un futuro más verde en la agricultura.</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="overview" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#00A6A6]">Los Dos Pilares de la Bioprotección</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8 text-gray-600">Los biopesticidas se dividen en dos grandes familias, cada una con un enfoque único para el control de plagas. Mientras unos utilizan organismos vivos, otros aprovechan el poder de la química natural.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-[#00A6A6]">
+                    <h3 class="text-2xl font-bold mb-2 text-[#00A6A6]">1. Biopesticidas Microbianos</h3>
+                    <p class="mb-4">Consisten en microorganismos como bacterias, hongos o virus. Actúan como agentes de control biológico, infectando a la plaga, compitiendo por recursos o produciendo sustancias tóxicas específicas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-[#F28F3B]">
+                    <h3 class="text-2xl font-bold mb-2 text-[#F28F3B]">2. Biopesticidas Bioquímicos</h3>
+                    <p class="mb-4">Son sustancias naturales, principalmente extractos de plantas, que controlan plagas mediante mecanismos no tóxicos. Afectan el comportamiento, crecimiento o reproducción de la plaga.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="market-share" class="bg-white p-6 rounded-lg shadow-md mb-12">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#424242]">Composición del Mercado (Conceptual)</h2>
+            <p class="text-center max-w-2xl mx-auto mb-6 text-gray-600">Los biopesticidas microbianos, liderados por el éxito de *Bacillus thuringiensis* (Bt), dominan el mercado gracias a su alta eficacia y especificidad, aunque los agentes bioquímicos ganan terreno rápidamente.</p>
+            <div class="chart-container">
+                <canvas id="marketShareChart"></canvas>
+            </div>
+        </section>
+        
+        <section id="microbials" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#00A6A6]">Análisis Profundo: Agentes Microbianos</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col">
+                    <h3 class="text-xl font-bold text-[#00A6A6] mb-2">Bacterias</h3>
+                    <p class="font-semibold text-gray-700">Ejemplo: <em class="italic">Bacillus thuringiensis (Bt)</em></p>
+                    <p class="mt-2 flex-grow">La bacteria más usada globalmente. Produce proteínas (Cry) que son tóxicas solo para larvas de insectos específicos, causando parálisis intestinal al ser ingeridas. Es inofensiva para otros organismos.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col">
+                    <h3 class="text-xl font-bold text-[#00A6A6] mb-2">Hongos</h3>
+                    <p class="font-semibold text-gray-700">Ejemplos: <em class="italic">Beauveria, Metarhizium</em></p>
+                    <p class="mt-2 flex-grow">Estos hongos "entomopatógenos" infectan a los insectos por contacto. Las esporas germinan sobre la cutícula, la penetran y colonizan el interior del insecto, causando su muerte.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col">
+                    <h3 class="text-xl font-bold text-[#00A6A6] mb-2">Virus</h3>
+                    <p class="font-semibold text-gray-700">Ejemplo: <em class="italic">Baculovirus</em></p>
+                    <p class="mt-2 flex-grow">Son extremadamente específicos, atacando solo a una o pocas especies de insectos. Se replican masivamente dentro de la plaga y se liberan al medio cuando esta muere, propagando la infección.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mechanism-bt" class="bg-white p-6 rounded-lg shadow-md mb-12">
+            <h3 class="text-2xl font-bold text-center mb-6 text-[#E84855]">Mecanismo de Acción: El Poder de *Bacillus thuringiensis* (Bt)</h3>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                <div class="flow-step border-[#00A6A6] w-full md:w-1/4">
+                    <p><span class="font-bold text-lg block">Paso 1: Ingestión</span>La larva de la plaga ingiere las esporas y cristales de proteína Cry de la planta tratada.</p>
+                </div>
+                <div class="flow-arrow hidden md:block">&rarr;</div>
+                 <div class="flow-arrow block md:hidden transform rotate-90">&rarr;</div>
+                <div class="flow-step border-[#F28F3B] w-full md:w-1/4">
+                    <p><span class="font-bold text-lg block">Paso 2: Activación</span>En el intestino alcalino de la larva, los cristales se disuelven y las proteínas se activan.</p>
+                </div>
+                 <div class="flow-arrow hidden md:block">&rarr;</div>
+                 <div class="flow-arrow block md:hidden transform rotate-90">&rarr;</div>
+                <div class="flow-step border-[#E84855] w-full md:w-1/4">
+                    <p><span class="font-bold text-lg block">Paso 3: Perforación</span>Las proteínas activadas se unen a receptores y perforan la pared intestinal, causando parálisis y septicemia.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="biochemicals" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#F28F3B]">Análisis Profundo: Agentes Bioquímicos y Botánicos</h2>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-[#424242]">Comparativa de Persistencia</h3>
+                    <p class="mb-4 text-gray-600">La persistencia en el campo varía significativamente entre los agentes botánicos. El Neem ofrece una acción más prolongada, mientras que el Piretro es de efecto rápido pero fugaz.</p>
+                     <div class="chart-container h-64 md:h-80">
+                        <canvas id="persistenceChart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500">
+                         <h4 class="font-bold text-lg">Neem (<em class="italic">Azadirachta indica</em>)</h4>
+                         <p>Su activo, la Azadiractina, es un potente regulador del crecimiento. No mata al instante, sino que impide que las larvas se alimenten y completen su metamorfosis.</p>
+                    </div>
+                     <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500">
+                         <h4 class="font-bold text-lg">Piretro (Crisantemo)</h4>
+                         <p>Un potente neurotóxico de acción rápida que provoca un derribo inmediato ("knock-down") de los insectos. Sin embargo, se degrada rápidamente con la luz solar.</p>
+                    </div>
+                     <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500">
+                         <h4 class="font-bold text-lg">Aceites Esenciales</h4>
+                         <p>Compuestos volátiles de plantas como ajo o canela. Actúan principalmente como repelentes y agentes de contacto que afectan el sistema respiratorio de las plagas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-300">
+            <p class="text-gray-600">Infografía generada para ilustrar la clasificación y mecanismos de los biopesticidas en el Manejo Integrado de Plagas.</p>
+            <p class="text-sm text-gray-500 mt-2">Tecnologías empleadas: HTML, Tailwind CSS, Chart.js.</p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const processLabel = (label) => {
+                if (typeof label === 'string' && label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = '';
+                    words.forEach(word => {
+                        if ((currentLine + word).length > 16) {
+                            lines.push(currentLine.trim());
+                            currentLine = '';
+                        }
+                        currentLine += word + ' ';
+                    });
+                    lines.push(currentLine.trim());
+                    return lines;
+                }
+                return label;
+            };
+            
+            const tooltipTitleCallback = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const marketShareCtx = document.getElementById('marketShareChart');
+            if(marketShareCtx) {
+                new Chart(marketShareCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Microbianos (Bacterias, Hongos, Virus)', 'Bioquímicos (Botánicos, Extractos)'],
+                        datasets: [{
+                            label: 'Cuota de Mercado',
+                            data: [65, 35],
+                            backgroundColor: ['#00A6A6', '#F28F3B'],
+                            borderColor: ['#ffffff'],
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: tooltipTitleCallback.plugins.tooltip
+                        }
+                    }
+                });
+            }
+
+            const persistenceCtx = document.getElementById('persistenceChart');
+            if(persistenceCtx) {
+                const originalLabels = ['Neem (Azadiractina)', 'Piretro (Piretrinas)', 'Aceites Esenciales'];
+                const processedLabels = originalLabels.map(processLabel);
+                
+                new Chart(persistenceCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: processedLabels,
+                        datasets: [{
+                            label: 'Nivel de Persistencia en Campo',
+                            data: [8, 3, 2],
+                            backgroundColor: ['#00A6A6', '#E84855', '#F28F3B'],
+                            borderColor: ['#008a8a', '#c43a46', '#d37a2f'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Nivel Relativo (Mayor es más persistente)'
+                                }
+                            }
+                        },
+                        ...tooltipTitleCallback
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
