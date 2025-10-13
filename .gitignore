@@ -26,6 +26,7 @@ docs/.vuepress/dist
 .project
 .settings
 .vscode
+.zed
 *.log
 *.swp
 *.stackdump
