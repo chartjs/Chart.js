@@ -1596,8 +1596,6 @@ export default class Scale extends Element {
     const padding = toPadding(title.padding);
     const align = title.align;
     let offset = font.lineHeight / 2;
-    let strokeWidth = title.strokeWidth;
-    let strokeColor = title.strokeColor;
 
     if (position === 'bottom' || position === 'center' || isObject(position)) {
       offset += padding.bottom;
@@ -1617,8 +1615,8 @@ export default class Scale extends Element {
       textAlign: titleAlign(align, position, reverse),
       textBaseline: 'middle',
       translation: [titleX, titleY],
-      strokeColor: strokeColor,
-      strokeWidth: strokeWidth
+      strokeColor: title.strokeColor,
+      strokeWidth: title.strokeWidth
     });
   }
 
