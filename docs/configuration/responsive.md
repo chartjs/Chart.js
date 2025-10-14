@@ -41,9 +41,9 @@ chart.canvas.parentNode.style.width = '128px';
 
 Note that in order for the above code to correctly resize the chart height, the [`maintainAspectRatio`](#configuration-options) option must also be set to `false`.
 
-## Flexbox Layout
+## Flexbox / Grid Layout
 
-To prevent overflow issues when using flexbox layout, you must set the flex child element to have a `min-width` of `0`.
+To prevent overflow issues when using flexbox / grid layout, you must set the flex / grid child element to have a `min-width` of `0`.
 See [issue 4156](https://github.com/chartjs/Chart.js/issues/4156#issuecomment-295180128) for more details.
 
 ```html
