@@ -41,9 +41,18 @@ chart.canvas.parentNode.style.width = '128px';
 
 Note that in order for the above code to correctly resize the chart height, the [`maintainAspectRatio`](#configuration-options) option must also be set to `false`.
 
-## Flex and Grid Containers
+## Flexbox Layout
 
-The chart can automatically fit to the size of a parent flex or grid container. You must set the 'relative' parent element to also have a min-width of 0. This prevents overflow issues when the size of a container changes in response to media query breakpoints.
+To prevent overflow issues when using flexbox layout, you must set the flex child element to have a `min-width` of `0`.
+See [issue 4156](https://github.com/chartjs/Chart.js/issues/4156#issuecomment-295180128) for more details.
+
+```html
+<div class="grid-container" style="display: grid">
+  <div class="chart-container" style="min-width: 0">
+    <canvas id="chart"></canvas>
+  </div>
+</div>
+```
 
 ## Printing Resizable Charts
 
