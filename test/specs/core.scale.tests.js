@@ -817,4 +817,84 @@ describe('Core.scale', function() {
       }
     });
   });
+  describe('Scale Title stroke', ()=>{
+    function getChartWithScaleTitleStroke() {
+      return window.acquireChart({
+        type: 'line',
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'title-x',
+                color: '#ddd',
+                strokeWidth: 1,
+                strokeColor: '#333'
+              }
+            },
+            y: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'title-y',
+                color: '#ddd',
+                strokeWidth: 2,
+                strokeColor: '#222'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function getChartWithoutScaleTitleStroke() {
+      return window.acquireChart({
+        type: 'line',
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'title-x',
+                color: '#ddd'
+              }
+            },
+            y: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'title-y',
+                color: '#ddd'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    it('should draw a scale title stroke when provided x-axis', function() {
+      var chart = getChartWithScaleTitleStroke();
+      var scale = chart.scales.x;
+      expect(scale.options.title.strokeColor).toEqual('#333');
+      expect(scale.options.title.strokeWidth).toEqual(1);
+    });
+
+    it('should draw a scale title stroke when provided y-axis', function() {
+      var chart = getChartWithScaleTitleStroke();
+      var scale = chart.scales.y;
+      expect(scale.options.title.strokeColor).toEqual('#222');
+      expect(scale.options.title.strokeWidth).toEqual(2);
+    });
+
+    it('should not draw a scale title stroke when not provided', function() {
+      var chart = getChartWithoutScaleTitleStroke();
+      var scales = chart.scales;
+      expect(scales.y.options.title.strokeColor).toBeUndefined();
+      expect(scales.y.options.title.strokeWidth).toBeUndefined();
+      expect(scales.x.options.title.strokeColor).toBeUndefined();
+      expect(scales.x.options.title.strokeWidth).toBeUndefined();
+    });
+  });
 });
