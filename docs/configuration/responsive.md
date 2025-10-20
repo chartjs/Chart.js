@@ -41,6 +41,19 @@ chart.canvas.parentNode.style.width = '128px';
 
 Note that in order for the above code to correctly resize the chart height, the [`maintainAspectRatio`](#configuration-options) option must also be set to `false`.
 
+## Flexbox / Grid Layout
+
+To prevent overflow issues when using flexbox / grid layout, you must set the flex / grid child element to have a `min-width` of `0`.
+See [issue 4156](https://github.com/chartjs/Chart.js/issues/4156#issuecomment-295180128) for more details.
+
+```html
+<div class="grid-container" style="display: grid">
+  <div class="chart-container" style="min-width: 0">
+    <canvas id="chart"></canvas>
+  </div>
+</div>
+```
+
 ## Printing Resizable Charts
 
 CSS media queries allow changing styles when printing a page. The CSS applied from these media queries may cause charts to need to resize. However, the resize won't happen automatically. To support resizing charts when printing, you need to hook the [onbeforeprint](https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeprint) event and manually trigger resizing of each chart.
