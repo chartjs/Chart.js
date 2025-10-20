@@ -1615,6 +1615,8 @@ export default class Scale extends Element {
       textAlign: titleAlign(align, position, reverse),
       textBaseline: 'middle',
       translation: [titleX, titleY],
+      strokeColor: title.strokeColor,
+      strokeWidth: title.strokeWidth
     });
   }
 
