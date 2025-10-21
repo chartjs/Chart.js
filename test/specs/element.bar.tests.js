@@ -83,6 +83,7 @@ describe('Bar element tests', function() {
           elements: {
             bar: {
               inflateAmount: 0,
+              snap: false,
             }
           },
         }
@@ -115,6 +116,7 @@ describe('Bar element tests', function() {
           elements: {
             bar: {
               inflateAmount: 0,
+              snap: false,
             }
           },
         }

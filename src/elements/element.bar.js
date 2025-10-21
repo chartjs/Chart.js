@@ -161,7 +161,8 @@ export default class BarElement extends Element {
     borderWidth: 0,
     borderRadius: 0,
     inflateAmount: 'auto',
-    pointStyle: undefined
+    pointStyle: undefined,
+    snap: false,
   };
 
   /**
@@ -188,7 +189,7 @@ export default class BarElement extends Element {
   }
 
   draw(ctx) {
-    const {inflateAmount, options: {borderColor, backgroundColor}} = this;
+    const {inflateAmount, options: {borderColor, backgroundColor, snap}} = this;
     const {inner, outer} = boundingRects(this);
     const addRectPath = hasRadius(outer.radius) ? addRoundedRectPath : addNormalRectPath;
 
@@ -196,15 +197,15 @@ export default class BarElement extends Element {
 
     if (outer.w !== inner.w || outer.h !== inner.h) {
       ctx.beginPath();
-      addRectPath(ctx, inflateRect(outer, inflateAmount, inner, true));
+      addRectPath(ctx, inflateRect(outer, inflateAmount, inner, snap));
       ctx.clip();
-      addRectPath(ctx, inflateRect(inner, -inflateAmount, outer, true));
+      addRectPath(ctx, inflateRect(inner, -inflateAmount, outer, snap));
       ctx.fillStyle = borderColor;
       ctx.fill('evenodd');
     }
 
     ctx.beginPath();
-    addRectPath(ctx, inflateRect(inner, inflateAmount, undefined, true));
+    addRectPath(ctx, inflateRect(inner, inflateAmount, undefined, snap));
     ctx.fillStyle = backgroundColor;
     ctx.fill();
 
