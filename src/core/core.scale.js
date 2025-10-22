@@ -1088,12 +1088,11 @@ export default class Scale extends Element {
     for (i = 0; i < ticksLength; i += step) {
       const context = this.getContext(i);
       const optsAtIndex = grid.setContext(context);
-      const optsAtIndexBorder = border.setContext(context);
 
       const lineWidth = optsAtIndex.lineWidth;
       const lineColor = optsAtIndex.color;
-      const borderDash = optsAtIndexBorder.dash || [];
-      const borderDashOffset = optsAtIndexBorder.dashOffset;
+      const borderDash = optsAtIndex.dash || [];
+      const borderDashOffset = optsAtIndex.dashOffset;
 
       const tickWidth = optsAtIndex.tickWidth;
       const tickColor = optsAtIndex.tickColor;
@@ -1542,6 +1541,8 @@ export default class Scale extends Element {
     ctx.save();
     ctx.lineWidth = borderOpts.width;
     ctx.strokeStyle = borderOpts.color;
+    ctx.lineDashOffset = borderOpts.dashOffset;
+    ctx.setLineDash(borderOpts.dash || []);
 
     ctx.beginPath();
     ctx.moveTo(x1, y1);
