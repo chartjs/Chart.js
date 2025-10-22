@@ -322,7 +322,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
 
   static descriptors = {
     _scriptable: true,
-    _indexable: (name) => name !== 'borderDash'
+    _indexable: (name) => !name.startsWith('borderDash')
   };
 
   circumference: number;
