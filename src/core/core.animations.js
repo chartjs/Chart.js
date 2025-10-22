@@ -1,12 +1,13 @@
 import animator from './core.animator.js';
 import Animation from './core.animation.js';
 import defaults from './core.defaults.js';
-import {isArray, isObject} from '../helpers/helpers.core.js';
+import {isArray, isObject, _splitKey} from '../helpers/helpers.core.js';
 
 export default class Animations {
   constructor(chart, config) {
     this._chart = chart;
     this._properties = new Map();
+    this._pathProperties = new Map();
     this.configure(config);
   }
 
@@ -34,6 +35,9 @@ export default class Animations {
         }
       });
     });
+
+    const pathAnimatedProps = this._pathProperties;
+    loadPathOptions(animatedProps, pathAnimatedProps);
   }
 
   /**
@@ -67,23 +71,15 @@ export default class Animations {
 	 */
   _createAnimations(target, values) {
     const animatedProps = this._properties;
+    const pathAnimatedProps = this._pathProperties;
     const animations = [];
     const running = target.$animations || (target.$animations = {});
     const props = Object.keys(values);
     const date = Date.now();
-    let i;
 
-    for (i = props.length - 1; i >= 0; --i) {
-      const prop = props[i];
-      if (prop.charAt(0) === '$') {
-        continue;
-      }
-
-      if (prop === 'options') {
-        animations.push(...this._animateOptions(target, values));
-        continue;
-      }
-      const value = values[prop];
+    const manageItem = function(tgt, vals, prop, subProp) {
+      const key = subProp || prop;
+      const value = vals[key];
       let animation = running[prop];
       const cfg = animatedProps.get(prop);
 
@@ -91,30 +87,52 @@ export default class Animations {
         if (cfg && animation.active()) {
           // There is an existing active animation, let's update that
           animation.update(cfg, value, date);
-          continue;
-        } else {
-          animation.cancel();
+          return;
         }
+        animation.cancel();
       }
       if (!cfg || !cfg.duration) {
         // not animated, set directly to new value
-        target[prop] = value;
+        tgt[key] = value;
+        return;
+      }
+      running[prop] = animation = new Animation(cfg, tgt, key, value);
+      animations.push(animation);
+    };
+
+    let i;
+    for (i = props.length - 1; i >= 0; --i) {
+      const prop = props[i];
+      if (prop.charAt(0) === '$') {
         continue;
       }
-
-      running[prop] = animation = new Animation(cfg, target, prop, value);
-      animations.push(animation);
+      if (prop === 'options') {
+        animations.push(...this._animateOptions(target, values));
+        continue;
+      }
+      const propValue = pathAnimatedProps.get(prop);
+      if (propValue) {
+        propValue.forEach(function(item) {
+          const newTarget = getInnerObject(target, item);
+          const newValues = newTarget && getInnerObject(values, item);
+          if (newValues) {
+            manageItem(newTarget, newValues, item.prop, item.key);
+          }
+        });
+      } else {
+        manageItem(target, values, prop);
+      }
     }
     return animations;
   }
 
 
   /**
-	 * Update `target` properties to new values, using configured animations
-	 * @param {object} target - object to update
-	 * @param {object} values - new target properties
-	 * @returns {boolean|undefined} - `true` if animations were started
-	 **/
+   * Update `target` properties to new values, using configured animations
+   * @param {object} target - object to update
+   * @param {object} values - new target properties
+   * @returns {boolean|undefined} - `true` if animations were started
+   **/
   update(target, values) {
     if (this._properties.size === 0) {
       // Nothing is animated, just apply the new values.
@@ -129,6 +147,18 @@ export default class Animations {
       return true;
     }
   }
+}
+
+function loadPathOptions(props, pathProps) {
+  props.forEach(function(v, k) {
+    const value = parserPathOptions(k);
+    if (value) {
+      const mapKey = value.path[0];
+      const mapValue = pathProps.get(mapKey) || [];
+      mapValue.push(value);
+      pathProps.set(mapKey, mapValue);
+    }
+  });
 }
 
 function awaitAll(animations, properties) {
@@ -159,4 +189,40 @@ function resolveTargetOptions(target, newOptions) {
     target.options = options = Object.assign({}, options, {$shared: false, $animations: {}});
   }
   return options;
+}
+
+function parserPathOptions(key) {
+  if (key.includes('.')) {
+    return parseKeys(key, _splitKey(key));
+  }
+}
+
+function parseKeys(key, keys) {
+  const result = {
+    prop: key,
+    path: []
+  };
+  for (let i = 0, n = keys.length; i < n; i++) {
+    const k = keys[i];
+    if (!k.trim().length) { // empty string
+      return;
+    }
+    if (i === (n - 1)) {
+      result.key = k;
+    } else {
+      result.path.push(k);
+    }
+  }
+  return result;
+}
+
+function getInnerObject(target, pathOpts) {
+  let obj = target;
+  for (const p of pathOpts.path) {
+    obj = obj[p];
+    if (!isObject(obj)) {
+      return;
+    }
+  }
+  return obj;
 }
