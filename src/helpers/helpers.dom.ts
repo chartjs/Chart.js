@@ -227,12 +227,14 @@ export function retinaScale(
     canvas.style.width = `${chart.width}px`;
   }
 
+  const canvasHeight = Math.floor(deviceHeight);
+  const canvasWidth = Math.floor(deviceWidth);
   if (chart.currentDevicePixelRatio !== pixelRatio
-      || canvas.height !== deviceHeight
-      || canvas.width !== deviceWidth) {
+      || canvas.height !== canvasHeight
+      || canvas.width !== canvasWidth) {
     (chart as PrivateChart).currentDevicePixelRatio = pixelRatio;
-    canvas.height = deviceHeight;
-    canvas.width = deviceWidth;
+    canvas.height = canvasHeight;
+    canvas.width = canvasWidth;
     chart.ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     return true;
   }
