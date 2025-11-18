@@ -217,7 +217,7 @@ function clearStacks(meta, items) {
   for (const parsed of items) {
     const stacks = parsed._stacks;
     if (!stacks || stacks[axis] === undefined || stacks[axis][datasetIndex] === undefined) {
-      return;
+      continue;
     }
     delete stacks[axis][datasetIndex];
     if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
