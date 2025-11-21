@@ -9,18 +9,6 @@ export function fontString(pixelSize: number, fontStyle: string, fontFamily: str
 }
 
 /**
-* Request animation polyfill
-*/
-export const requestAnimFrame = (function() {
-  if (typeof window === 'undefined') {
-    return function(callback) {
-      return callback();
-    };
-  }
-  return window.requestAnimationFrame;
-}());
-
-/**
  * Throttles calling `fn` once per animation frame
  * Latest arguments are used on the actual call
  */
@@ -36,7 +24,7 @@ export function throttled<TArgs extends Array<any>>(
     argsToUse = args;
     if (!ticking) {
       ticking = true;
-      requestAnimFrame.call(window, () => {
+      requestAnimationFrame(() => {
         ticking = false;
         fn.apply(thisArg, argsToUse);
       });
