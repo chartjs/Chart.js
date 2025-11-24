@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: pnpm/action-setup@v4.2.0
     - uses: preactjs/compressed-size-action@v2
       with:
