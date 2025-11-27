@@ -2366,10 +2366,18 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
+export interface LegendNavigation {
+  active: boolean;
+  page: number;
+  totalPages: number;
+  legendItems?: LegendItem[];
+}
+
 export interface LegendElement<TType extends ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
   chart: Chart<TType>;
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
+  navigation: LegendNavigation;
   options: LegendOptions<TType>;
   fit(): void;
 }
@@ -2526,6 +2534,71 @@ export interface LegendOptions<TType extends ChartType> {
      */
     text: string;
   };
+
+  navigation: {
+    /**
+     * Show/hide legend navigation.
+     *
+     * If `auto` is used, the navigation will be shown only if the legend overflows.
+     * @default false
+     */
+    display: 'auto' | boolean;
+    /**
+     * Color of the navigation page count label.
+     * @see Defaults.color
+     */
+    color: Color;
+    /**
+     * Color of active navigation arrows.
+     * @see Defaults.color
+     */
+    activeColor: Color;
+    /**
+     * Color of inactive navigation arrows.
+     *
+     * Defaults to 40% opacity of the active color.
+     */
+    inactiveColor: Color;
+    /**
+     * Size of navigation arrows.
+     * @default 12
+     */
+    arrowSize: number;
+    /**
+     * Maximum number of columns, in vertical legends, for navigation to be activated.
+     * @default 1
+     */
+    maxCols: number;
+    /**
+     * Maximum number of rows, in horizontal legends, for navigation to be activated.
+     * @default 3
+     */
+    maxRows: number;
+    /**
+     * Navigation buttons padding.
+     * @default
+     * { x: 10, y: 10, top: 0 }
+     */
+    padding: number | ChartArea;
+    /**
+     * Alignment of navigation buttons.
+     * @default 'start'
+     */
+    align: 'start' | 'center' | 'end';
+    /**
+     * Align legends horizontally and vertically.
+     *
+     * Fixes the width/height of all legends according to the widest/tallest legend, to form a grid and keep legends aligned when changing pages.
+     * @default true
+     */
+    grid: boolean | { x?: boolean; y?: boolean; },
+    /**
+     * Font style of the navigation page count label.
+     * @default
+     * { weight: 'bold', size: 14 }
+     */
+    font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
+  }
 }
 
 export declare const SubTitle: Plugin;
@@ -3778,7 +3851,7 @@ export type ChartType = keyof ChartTypeRegistry;
 
 export type ScaleOptionsByType<TScale extends ScaleType = ScaleType> =
   { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
-;
+  ;
 
 // Convenience alias for creating and manipulating scale options in user code
 export type ScaleOptions<TScale extends ScaleType = ScaleType> = DeepPartial<ScaleOptionsByType<TScale>>;
