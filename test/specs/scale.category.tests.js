@@ -158,7 +158,7 @@ describe('Category scale tests', function() {
           yAxisID: 'y',
           data: [10, 5, 0, 25, 78]
         }],
-        labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5']
+        labels: ['tick1', 'tick2', 'tick3', '1', 'tick5']
       },
       options: {
         scales: {
@@ -176,6 +176,8 @@ describe('Category scale tests', function() {
     var scale = chart.scales.x;
 
     expect(scale.getLabelForValue(1)).toBe('tick2');
+    expect(scale.getLabelForValue('tick3')).toBe('tick3');
+    expect(scale.getLabelForValue('1')).toBe('1'); // and not 'tick2'
   });
 
   it('Should get the correct pixel for a value when horizontal', function() {
