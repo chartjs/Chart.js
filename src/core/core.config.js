@@ -59,10 +59,10 @@ function getAxisFromDataset(id, axis, dataset) {
 }
 
 function retrieveAxisFromDatasets(id, config) {
-  if (config.data && config.data.datasets) {
-    const boundDs = config.data.datasets.filter((d) => d.xAxisID === id || d.yAxisID === id);
-    if (boundDs.length) {
-      return getAxisFromDataset(id, 'x', boundDs[0]) || getAxisFromDataset(id, 'y', boundDs[0]);
+   if (config.data && config.data.datasets) {
+    const boundDs = config.data.datasets.find((d) => d.xAxisID === id || d.yAxisID === id);
+    if (boundDs) {
+      return getAxisFromDataset(id, 'x', boundDs) || getAxisFromDataset(id, 'y', boundDs);
     }
   }
   return {};
@@ -399,7 +399,7 @@ function getResolver(resolverCache, scopes, prefixes) {
   return cached;
 }
 
-const hasFunction = value => isObject(value)
+var hasFunction = value => isObject(value)
   && Object.getOwnPropertyNames(value).some((key) => isFunction(value[key]));
 
 function needContext(proxy, names) {
