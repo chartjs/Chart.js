@@ -1,0 +1,40 @@
+graph TD
+    %% Core Drivers
+    SUB[Submersion in Subculture] --> LEG(LEGENDS)
+    ACA[Academic/Classical Training] --> PRE(PRESTIGE POP)
+    TEC[Technological Disruption] --> MOD(MODERN GIANTS)
+
+    %% THE LEGENDS
+    subgraph LEGENDS [The Foundation]
+    DR_DRE["<b>Dr. Dre</b><br/>Compton DJing +<br/>Studio Isolation"]
+    MAX_M["<b>Max Martin</b><br/>80s Metal Band +<br/>Denniz PoP Mentorship"]
+    end
+
+    %% THE PRESTIGE ARCHITECTS
+    subgraph PRESTIGE [The Genre-Blenders]
+    JACK_A["<b>Jack Antonoff</b><br/>NJ Indie Scene +<br/>Multi-instrumentalist"]
+    DAN_N["<b>Daniel Nigro</b><br/>Emo-Rock Frontman +<br/>Alt-Pop Pivot"]
+    FRED_A["<b>Fred again..</b><br/>Brian Eno Mentorship +<br/>Found Sound Sampling"]
+    end
+
+    %% THE MODERN HITMAKERS
+    subgraph MODERN [The Specialists]
+    METRO["<b>Metro Boomin</b><br/>FruityLoops Prodigy +<br/>Atlanta Trap Scene"]
+    MOI["<b>Joey Moi</b><br/>Nu-Metal Roots +<br/>Country Radio Precision"]
+    MUST["<b>DJ Mustard</b><br/>House Party DJing +<br/>'Ratchet' Sound Blueprint"]
+    ZICO["<b>Zico</b><br/>Underground Rap +<br/>K-Pop Idol System"]
+    end
+
+    %% Connection to Mastery
+    LEG --> PER[Perfectionism & Signature Sonics]
+    PRE --> LYR[Narrative-Driven Production]
+    MOD --> DATA[Chart Dominance & Cultural Pulse]
+
+    %% Summary Labels
+    classDef legend fill:#f96,stroke:#333,stroke-width:2px;
+    classDef prestige fill:#6cf,stroke:#333,stroke-width:2px;
+    classDef modern fill:#9f9,stroke:#333,stroke-width:2px;
+    
+    class DR_DRE,MAX_M legend;
+    class JACK_A,DAN_N,FRED_A prestige;
+    class METRO,MOI,MUST,ZICO modern;
