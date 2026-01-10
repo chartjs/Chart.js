@@ -45,13 +45,15 @@ export default class LineController extends DatasetController {
     const animationsDisabled = this.chart._animationsDisabled;
     let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
 
-    this._drawStart = start;
-    this._drawCount = count;
-
     if (_scaleRangesChanged(meta)) {
       start = 0;
       count = points.length;
     }
+
+    ({start, count} = this._includeBoundaryPoints(meta, start, count));
+
+    this._drawStart = start;
+    this._drawCount = count;
 
     // Update Line
     line._chart = this.chart;
@@ -71,6 +73,53 @@ export default class LineController extends DatasetController {
 
     // Update Points
     this.updateElements(points, start, count, mode);
+  }
+
+  _includeBoundaryPoints(meta, start, count) {
+    const {iScale, _parsed} = meta;
+    const {min, max, axis: iAxis} = iScale;
+
+    if (!_parsed?.length || !isNumber(min) || !isNumber(max)) {
+      return {start, count};
+    }
+
+    let beforeIndex = -1;
+    let beforeValue = -Infinity;
+    let afterIndex = -1;
+    let afterValue = Infinity;
+
+    for (let i = 0; i < _parsed.length; ++i) {
+      const value = _parsed[i][iAxis];
+      if (!isNumber(value)) {
+        continue;
+      }
+      if (value < min && value > beforeValue) {
+        beforeValue = value;
+        beforeIndex = i;
+      } else if (value > max && value < afterValue) {
+        afterValue = value;
+        afterIndex = i;
+      }
+    }
+
+    let drawStart = start;
+    let drawEnd = count > 0 ? start + count - 1 : -1;
+
+    if (beforeIndex !== -1) {
+      drawStart = drawEnd === -1 ? beforeIndex : Math.min(drawStart, beforeIndex);
+      drawEnd = Math.max(drawEnd, beforeIndex);
+    }
+
+    if (afterIndex !== -1) {
+      drawStart = drawEnd === -1 ? afterIndex : Math.min(drawStart, afterIndex);
+      drawEnd = Math.max(drawEnd, afterIndex);
+    }
+
+    if (drawEnd >= drawStart && drawEnd !== -1) {
+      return {start: drawStart, count: drawEnd - drawStart + 1};
+    }
+
+    return {start, count};
   }
 
   updateElements(points, start, count, mode) {
