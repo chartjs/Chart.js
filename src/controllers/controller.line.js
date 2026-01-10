@@ -83,22 +83,123 @@ export default class LineController extends DatasetController {
       return {start, count};
     }
 
+    const length = _parsed.length;
+
+    // Find the largest value < min (beforeIndex) using binary search.
     let beforeIndex = -1;
     let beforeValue = -Infinity;
+    {
+      let low = 0;
+      let high = length - 1;
+      while (low <= high) {
+        let mid = (low + high) >> 1;
+        let value = _parsed[mid][iAxis];
+
+        // If value is not numeric, search outward from mid to find a nearby numeric value.
+        if (!isNumber(value)) {
+          let left = mid - 1;
+          let right = mid + 1;
+          let found = false;
+          while (left >= low || right <= high) {
+            if (left >= low) {
+              const lv = _parsed[left][iAxis];
+              if (isNumber(lv)) {
+                value = lv;
+                mid = left;
+                found = true;
+                break;
+              }
+              left--;
+            }
+            if (right <= high) {
+              const rv = _parsed[right][iAxis];
+              if (isNumber(rv)) {
+                value = rv;
+                mid = right;
+                found = true;
+                break;
+              }
+              right++;
+            }
+          }
+          if (!found) {
+            // No numeric values in current search window.
+            break;
+          }
+        }
+
+        if (!isNumber(value)) {
+          break;
+        }
+
+        if (value < min) {
+          if (value > beforeValue) {
+            beforeValue = value;
+            beforeIndex = mid;
+          }
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+    }
+
+    // Find the smallest value > max (afterIndex) using binary search.
     let afterIndex = -1;
     let afterValue = Infinity;
+    {
+      let low = 0;
+      let high = length - 1;
+      while (low <= high) {
+        let mid = (low + high) >> 1;
+        let value = _parsed[mid][iAxis];
 
-    for (let i = 0; i < _parsed.length; ++i) {
-      const value = _parsed[i][iAxis];
-      if (!isNumber(value)) {
-        continue;
-      }
-      if (value < min && value > beforeValue) {
-        beforeValue = value;
-        beforeIndex = i;
-      } else if (value > max && value < afterValue) {
-        afterValue = value;
-        afterIndex = i;
+        // If value is not numeric, search outward from mid to find a nearby numeric value.
+        if (!isNumber(value)) {
+          let left = mid - 1;
+          let right = mid + 1;
+          let found = false;
+          while (left >= low || right <= high) {
+            if (left >= low) {
+              const lv = _parsed[left][iAxis];
+              if (isNumber(lv)) {
+                value = lv;
+                mid = left;
+                found = true;
+                break;
+              }
+              left--;
+            }
+            if (right <= high) {
+              const rv = _parsed[right][iAxis];
+              if (isNumber(rv)) {
+                value = rv;
+                mid = right;
+                found = true;
+                break;
+              }
+              right++;
+            }
+          }
+          if (!found) {
+            // No numeric values in current search window.
+            break;
+          }
+        }
+
+        if (!isNumber(value)) {
+          break;
+        }
+
+        if (value > max) {
+          if (value < afterValue) {
+            afterValue = value;
+            afterIndex = mid;
+          }
+          high = mid - 1;
+        } else {
+          low = mid + 1;
+        }
       }
     }
 
