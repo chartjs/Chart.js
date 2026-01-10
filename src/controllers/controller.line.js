@@ -50,7 +50,9 @@ export default class LineController extends DatasetController {
       count = points.length;
     }
 
-    ({start, count} = this._includeBoundaryPoints(meta, start, count));
+    if (count !== points.length) {
+      ({start, count} = this._includeBoundaryPoints(meta, start, count));
+    }
 
     this._drawStart = start;
     this._drawCount = count;
