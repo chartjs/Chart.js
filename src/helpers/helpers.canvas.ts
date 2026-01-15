@@ -326,6 +326,7 @@ export function _isPointInArea(
 }
 
 export function clipArea(ctx: CanvasRenderingContext2D, area: TRBL) {
+  if (!ctx) return;
   ctx.save();
   ctx.beginPath();
   ctx.rect(area.left, area.top, area.right - area.left, area.bottom - area.top);
@@ -333,6 +334,7 @@ export function clipArea(ctx: CanvasRenderingContext2D, area: TRBL) {
 }
 
 export function unclipArea(ctx: CanvasRenderingContext2D) {
+  if (!ctx) return;
   ctx.restore();
 }
 
