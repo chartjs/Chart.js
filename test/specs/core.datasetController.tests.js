@@ -40,6 +40,27 @@ describe('Chart.DatasetController', function() {
     });
   });
 
+  it('should handle splice with a single argument', function() {
+    var data = [0, 1, 2, 3, 4, 5];
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: data
+        }]
+      }
+    });
+
+    // splice(0) with no deleteCount should remove all elements from index 0
+    // and not throw a RangeError due to negative newCount
+    expect(function() {
+      data.splice(0);
+      chart.update();
+    }).not.toThrow();
+
+    expect(data.length).toBe(0);
+  });
+
   it('should not try to delete non existent stacks', function() {
     function createAndUpdateChart() {
       var chart = acquireChart({
