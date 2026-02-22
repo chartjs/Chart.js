@@ -159,6 +159,15 @@ export declare const BarController: ChartComponent & {
   new (chart: Chart, datasetIndex: number): BarController;
 };
 
+export type HistogramControllerDatasetOptions = BarControllerDatasetOptions;
+export type HistogramControllerChartOptions = BarControllerChartOptions;
+
+export type HistogramController = BarController
+export declare const HistogramController: ChartComponent & {
+  prototype: HistogramController;
+  new (chart: Chart, datasetIndex: number): HistogramController;
+};
+
 export interface BubbleControllerDatasetOptions
   extends ControllerDatasetOptions,
   ScriptableAndArrayOptions<PointOptions, ScriptableContext<'bubble'>>,
@@ -3714,6 +3723,14 @@ export interface ChartTypeRegistry {
     defaultDataPoint: number | [number, number] | null;
     metaExtensions: {};
     parsedDataType: BarParsedData,
+    scales: keyof CartesianScaleTypeRegistry;
+  };
+  histogram: {
+    chartOptions: HistogramControllerChartOptions;
+    datasetOptions: HistogramControllerDatasetOptions;
+    defaultDataPoint: ScatterDataPoint | number | null;
+    metaExtensions: {};
+    parsedDataType: BarParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
   line: {

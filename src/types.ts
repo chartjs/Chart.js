@@ -11,6 +11,7 @@ export {
   BarController,
   BubbleController,
   DoughnutController,
+  HistogramController,
   LineController,
   PieController,
   PolarAreaController,
