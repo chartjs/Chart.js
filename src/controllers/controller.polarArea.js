@@ -126,17 +126,49 @@ export default class PolarAreaController extends DatasetController {
       const parsed = this.getParsed(index).r;
 
       if (!isNaN(parsed) && this.chart.getDataVisibility(index)) {
-        if (parsed < range.min) {
-          range.min = parsed;
+        const value = meta.stack !== undefined ? this._getStackedOffset(index) + parsed : parsed;
+
+        if (value < range.min) {
+          range.min = value;
         }
 
-        if (parsed > range.max) {
-          range.max = parsed;
+        if (value > range.max) {
+          range.max = value;
         }
       }
     });
 
     return range;
+  }
+
+  /**
+   * @private
+   */
+  _getStackedOffset(index) {
+    const chart = this.chart;
+    const meta = this._cachedMeta;
+    const myStack = meta.stack;
+
+    if (myStack === undefined) {
+      return 0;
+    }
+
+    let total = 0;
+
+    for (let i = 0; i < chart.data.datasets.length; i++) {
+      if (i === this.index) {
+        break;
+      }
+      const otherMeta = chart.getDatasetMeta(i);
+      if (otherMeta.stack === myStack && !otherMeta.hidden) {
+        const parsed = otherMeta._parsed && otherMeta._parsed[index];
+        if (parsed && !isNaN(parsed.r)) {
+          total += parsed.r;
+        }
+      }
+    }
+
+    return total;
   }
 
   /**
@@ -177,12 +209,20 @@ export default class PolarAreaController extends DatasetController {
       const arc = arcs[i];
       let startAngle = angle;
       let endAngle = angle + this._computeAngle(i, mode, defaultAngle);
-      let outerRadius = chart.getDataVisibility(i) ? scale.getDistanceFromCenterForValue(this.getParsed(i).r) : 0;
+      const isStacked = this._cachedMeta.stack !== undefined;
+      const stackedOffset = isStacked ? this._getStackedOffset(i) : 0;
+      let outerRadius = chart.getDataVisibility(i)
+        ? scale.getDistanceFromCenterForValue(stackedOffset + this.getParsed(i).r)
+        : 0;
+      let innerRadius = isStacked && chart.getDataVisibility(i)
+        ? scale.getDistanceFromCenterForValue(stackedOffset)
+        : 0;
       angle = endAngle;
 
       if (reset) {
         if (animationOpts.animateScale) {
           outerRadius = 0;
+          innerRadius = 0;
         }
         if (animationOpts.animateRotate) {
           startAngle = endAngle = datasetStartAngle;
@@ -192,7 +232,7 @@ export default class PolarAreaController extends DatasetController {
       const properties = {
         x: centerX,
         y: centerY,
-        innerRadius: 0,
+        innerRadius,
         outerRadius,
         startAngle,
         endAngle,
