@@ -956,6 +956,49 @@ describe('Legend block tests', function() {
     expect(chart.legend.options.title.color).toBe('green');
   });
 
+  it('should not crash when defaults font changes before a render', function() {
+    const defaultFont = Object.assign({}, Chart.defaults.font);
+    const labels = Array.from({length: 8}, (_, i) => `L${i}`);
+    const datasets = labels.map((_, i) => ({
+      label: `dataset${i}`,
+      data: [i + 1]
+    }));
+
+    const chart = acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['A'],
+        datasets
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    }, {
+      canvas: {
+        width: 256,
+        height: 180
+      }
+    });
+
+    try {
+      Object.assign(Chart.defaults.font, {
+        size: 42
+      });
+
+      expect(function() {
+        chart.render();
+      }).not.toThrow();
+    } finally {
+      Object.assign(Chart.defaults.font, defaultFont);
+    }
+  });
+
 
   describe('config update', function() {
     it('should update the options', function() {
