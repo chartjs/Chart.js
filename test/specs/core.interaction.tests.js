@@ -40,6 +40,24 @@ describe('Core.Interaction', function() {
       expect(elements).toEqual([point, meta1.data[1]]);
     });
 
+    it('should include the raw data value in the interaction item', function() {
+      var chart = this.chart;
+      var meta0 = chart.getDatasetMeta(0);
+      var point = meta0.data[1];
+
+      var evt = {
+        type: 'click',
+        chart: chart,
+        native: true,
+        x: point.x,
+        y: point.y,
+      };
+
+      var items = Chart.Interaction.modes.point(chart, evt, {});
+      expect(items[0].data).toBe(chart.data.datasets[0].data[1]);
+      expect(items[1].data).toBe(chart.data.datasets[1].data[1]);
+    });
+
     it ('should return an empty array when no items are found', function() {
       var chart = this.chart;
       var evt = {
@@ -52,6 +70,25 @@ describe('Core.Interaction', function() {
 
       var elements = Chart.Interaction.modes.point(chart, evt, {}).map(item => item.element);
       expect(elements).toEqual([]);
+    });
+
+    it('works with object data, returning the exact object reference', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Obj set',
+            data: [{x: 0, y: 5}, {x: 1, y: 10}]
+          }],
+          labels: ['a', 'b']
+        }
+      });
+      var meta = chart.getDatasetMeta(0);
+      var point = meta.data[0];
+      var evt = {type: 'click', chart: chart, native: true, x: point.x, y: point.y};
+      var items = Chart.Interaction.modes.point(chart, evt, {});
+      expect(items.length).toBe(1);
+      expect(items[0].data).toBe(chart.data.datasets[0].data[0]);
     });
   });
 
@@ -91,8 +128,11 @@ describe('Core.Interaction', function() {
           y: point.y,
         };
 
-        var elements = Chart.Interaction.modes.index(chart, evt, {intersect: true}).map(item => item.element);
+        var items = Chart.Interaction.modes.index(chart, evt, {intersect: true});
+        var elements = items.map(i => i.element);
         expect(elements).toEqual([point, meta1.data[1]]);
+        expect(items[0].data).toBe(chart.data.datasets[0].data[1]);
+        expect(items[1].data).toBe(chart.data.datasets[1].data[1]);
       });
 
       it ('returns empty array when nothing found', function() {
@@ -229,8 +269,12 @@ describe('Core.Interaction', function() {
           y: point.y
         };
 
-        var elements = Chart.Interaction.modes.dataset(chart, evt, {intersect: true}).map(item => item.element);
+        var items = Chart.Interaction.modes.dataset(chart, evt, {intersect: true});
+        var elements = items.map(i => i.element);
         expect(elements).toEqual(meta.data);
+        items.forEach((it, idx) => {
+          expect(it.data).toBe(chart.data.datasets[0].data[idx]);
+        });
       });
 
       it ('should return an empty array if nothing found', function() {

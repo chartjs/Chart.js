@@ -16,7 +16,16 @@ jasmine.fixture = {
   specs: specsFromFixtures
 };
 
-jasmine.triggerMouseEvent = triggerMouseEvent;
+// Some tests expect triggerMouseEvent to always resolve even when the chart is not listening
+// (e.g. hover disabled). Wrap with a timeout to avoid hanging the test suite.
+const _triggerMouseEvent = triggerMouseEvent;
+jasmine.triggerMouseEvent = async function(chart, type, el) {
+  const timeout = 100;
+  return Promise.race([
+    _triggerMouseEvent(chart, type, el),
+    new Promise((resolve) => setTimeout(resolve, timeout))
+  ]);
+};
 
 // Set a fixed time zone (and, in particular, disable Daylight Saving Time) for
 // more stable test results.

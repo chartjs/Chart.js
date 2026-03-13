@@ -485,6 +485,10 @@ export type ChartMeta<
 export interface ActiveDataPoint {
   datasetIndex: number;
   index: number;
+  /** The original data value for this point. This mirrors the value returned
+   * on InteractionItem.data and is undefined if the dataset is not available.
+   */
+  data?: unknown;
 }
 
 export interface ActiveElement extends ActiveDataPoint {
@@ -531,7 +535,7 @@ export declare class Chart<
   draw(): void;
 
   isPointInArea(point: Point): boolean;
-  getElementsAtEventForMode(e: Event, mode: string, options: InteractionOptions, useFinalPosition: boolean): InteractionItem[];
+  getElementsAtEventForMode<T = TData>(e: Event, mode: string, options: InteractionOptions, useFinalPosition: boolean): InteractionItem<T>[];
 
   getSortedVisibleDatasetMetas(): ChartMeta[];
   getDatasetMeta(datasetIndex: number): ChartMeta;
@@ -550,7 +554,7 @@ export declare class Chart<
   toBase64Image(type?: string, quality?: unknown): string;
   bindEvents(): void;
   unbindEvents(): void;
-  updateHoverStyle(items: InteractionItem[], mode: 'dataset', enabled: boolean): void;
+  updateHoverStyle<T = TData>(items: InteractionItem<T>[], mode: 'dataset', enabled: boolean): void;
 
   notifyPlugins(hook: string, args?: AnyObject): boolean | void;
 
@@ -724,18 +728,25 @@ export interface InteractionOptions {
   includeInvisible?: boolean;
 }
 
-export interface InteractionItem {
+export interface InteractionItem<T = unknown> {
   element: Element;
   datasetIndex: number;
   index: number;
+  /**
+   * The actual data value from the dataset at the provided index. For
+   * primitive datasets this is the original value (number/string/etc.). For
+   * object datasets it will be the object instance, allowing callbacks like
+   * `onClick` to easily reference the underlying model.
+   */
+  data: T;
 }
 
-export type InteractionModeFunction = (
+export type InteractionModeFunction = <T = unknown>(
   chart: Chart,
   e: ChartEvent,
   options: InteractionOptions,
   useFinalPosition?: boolean
-) => InteractionItem[];
+) => InteractionItem<T>[];
 
 export interface InteractionModeMap {
   /**
@@ -776,13 +787,13 @@ export declare const Interaction: {
   /**
    * Helper function to select candidate elements for interaction
    */
-  evaluateInteractionItems(
+  evaluateInteractionItems<T = unknown>(
     chart: Chart,
     axis: InteractionAxis,
     position: Point,
     handler: (element: Element & VisualElement, datasetIndex: number, index: number) => void,
     intersect?: boolean
-  ): InteractionItem[];
+  ): InteractionItem<T>[];
 };
 
 export declare const layouts: {
