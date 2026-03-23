@@ -3381,7 +3381,7 @@ export declare const LogarithmicScale: ChartComponent & {
   new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: AnyObject): LogarithmicScale<O>;
 };
 
-export type TimeScaleTimeOptions = {
+export interface TimeScaleTimeOptions {
   /**
    * Custom parser for dates.
    */
@@ -3416,7 +3416,7 @@ export type TimeScaleTimeOptions = {
    * @default 'millisecond'
    */
   minUnit: TimeUnit;
-};
+}
 
 export type TimeScaleTickOptions = {
   /**
