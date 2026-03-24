@@ -1,5 +1,5 @@
 import Scale from '../core/core.scale.js';
-import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
+import {isNullOrUndef, valueOrDefault, _limitValue, defined} from '../helpers/index.js';
 
 const addIfString = (labels, raw, index, addedLabels) => {
   if (typeof raw === 'string') {
@@ -54,6 +54,7 @@ export default class CategoryScale extends Scale {
   }
 
   init(scaleOptions) {
+    const data = this.chart.data;
     const added = this._addedLabels;
     if (added.length) {
       const labels = this.getLabels();
@@ -64,7 +65,12 @@ export default class CategoryScale extends Scale {
       }
       this._addedLabels = [];
     }
+
     super.init(scaleOptions);
+
+    if (defined(this.options.stack) && !scaleOptions.labels && !data[this.isHorizontal() ? 'xLabels' : 'yLabels']) {
+      this.options.labels = this.options.labels || [];
+    }
   }
 
   parse(raw, index) {
