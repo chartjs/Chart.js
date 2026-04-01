@@ -104,6 +104,103 @@ const options = {
 
 See the [awesome list](https://github.com/chartjs/awesome#plugins) for plugins that would give you more flexibility defining color palettes.
 
+## Axis label and tick colors
+
+By default, axis tick labels inherit the global `Chart.defaults.color` value (`#666`). If you are displaying your chart on a dark background or need to match your site's theme, you can customize the color of tick labels and axis titles per scale.
+
+### Changing tick label color
+
+Use the `ticks.color` option inside each scale to set the color of the tick labels on that axis:
+
+```javascript
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    scales: {
+      x: {
+        ticks: {
+          color: 'white', // x-axis tick labels
+        }
+      },
+      y: {
+        ticks: {
+          color: 'white', // y-axis tick labels
+        }
+      }
+    }
+  }
+});
+```
+
+### Changing axis title color
+
+If you have an axis title (set via `title.text`), you can control its color with `title.color`:
+
+```javascript
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Month',
+          color: 'white',
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Value',
+          color: 'white',
+        }
+      }
+    }
+  }
+});
+```
+
+### Changing grid line color
+
+To change the color of the grid lines drawn on the chart area, use `grid.color`:
+
+```javascript
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    scales: {
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.2)',
+        }
+      },
+      y: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.2)',
+        }
+      }
+    }
+  }
+});
+```
+
+### Global axis color defaults
+
+You can also change the default tick color globally so it applies to all charts and all axes without repeating it in every config:
+
+```javascript
+Chart.defaults.color = '#ffffff'; // applies to all tick labels globally
+```
+
+:::tip Note
+
+`Chart.defaults.color` controls the default color for all textual elements including tick labels, legend text, and tooltip text. If you only want to change axis ticks, prefer setting `ticks.color` per scale as shown above.
+
+:::
+
 ## Color formats
 
 You can specify the color as a string in either of the following notations:
