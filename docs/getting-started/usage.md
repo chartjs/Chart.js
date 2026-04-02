@@ -96,7 +96,7 @@ Time to run the example with `npm run dev`, `yarn dev`, or `pnpm dev` and naviga
 
 ![result](./usage-1.png)
 
-With just a few lines of code, we’ve got a chart with a lot of features: a [legend](../configuration/legend.md), [grid lines](../samples/scale-options/grid.md), [ticks](../samples/scale-options/ticks.md), and [tooltips](../configuration/tooltip.md) shown on hover. Refresh the web page a few times to see that the chart is also [animated](../configuration/animations.md#animations). Try clicking on the “Acquisitions by year” label to see that you’re also able to toggle datasets visibility (especially useful when you have multiple datasets). 
+With just a few lines of code, we’ve got a chart with a lot of features: a [legend](../configuration/legend.md), [grid lines](../samples/scale-options/grid.md), [ticks](../samples/scale-options/ticks.md), and [tooltips](../configuration/tooltip.md) shown on hover. Refresh the web page a few times to see that the chart is also [animated](../configuration/animations.md#animations). Try clicking on the “Acquisitions by year” label to see that you’re also able to toggle datasets visibility (especially useful when you have multiple datasets).
 
 ### Simple customizations
 
@@ -229,7 +229,7 @@ Let’s see what’s happening there:
 - We `import` the JavaScript client library for [Cube](https://cube.dev/?ref=eco-chartjs), an open-source API for data apps, configure it with the API URL (`apiUrl`) and the authentication token (`cubeToken`), and finally instantiate the client (`cubeApi`).
 - Cube API is hosted in [Cube Cloud](https://cube.dev/cloud/?ref=eco-chartjs) and connected to a database with a [public dataset](https://github.com/MuseumofModernArt/collection) of ~140,000 records representing all of the artworks in the collection of the [Museum of Modern Art](https://www.moma.org) in New York, USA. Certainly, a more real-world dataset than what we’ve got now.
 - We define a couple of asynchronous functions to fetch data from the API: `getAquisitionsByYear` and `getDimensions`. The first one returns the number of artworks by the year of acquisition, the other returns the number of artworks for every width-height pair (we’ll need it for another chart).
-- Let’s take a look at `getAquisitionsByYear`. First, we create a declarative, JSON-based query in the `acquisitionsByYearQuery` variable. As you can see, we specify that for every `yearAcquired` we’d like to get the `count` of artworks; `yearAcquired` has to be set (i.e., not undefined); the result set would be sorted by `yearAcquired` in the ascending order.
+- Let’s take a look at `getAquisitionsByYear`. First, we create a declarative, JSON-based query in the `acquisitionsByYearQuery` variable. As you can see, we specify that for every `yearAcquired` we’d like to get the `count` of artworks; `yearAcquired` has to be set (i.e., not undefined); the result set would be sorted by `yearAcquired` in ascending order.
 - Second, we fetch the `resultSet` by calling `cubeApi.load` and map it to an array of objects with desired `year` and `count` properties.
 
 Now, let’s deliver the real-world data to our chart. Please apply a couple of changes to `src/acquisitions.js`: add an import and replace the definition of the `data` variable.
@@ -276,7 +276,7 @@ import { getDimensions } from './api'
     {
       type: 'bubble',
       data: {
-        labels: data.map(x => x.year),
+        label: 'Dimensions',
         datasets: [
           {
             label: 'Dimensions',
@@ -387,7 +387,7 @@ Perfect, now we have proper units on both axes:
 
 Chart.js plots each dataset independently and allows to apply custom styles to them.
 
-Take a look at the chart: there’s a visible “line” of bubbles with equal `x` and `y` coordinates representing square artworks. It would be cool to put these bubbles in their own dataset and paint them differently. Also, we can separate “taller” artworks from “wider” ones and paint them differently, too. 
+Take a look at the chart: there’s a visible “line” of bubbles with equal `x` and `y` coordinates representing square artworks. It would be cool to put these bubbles in their own dataset and paint them differently. Also, we can separate “taller” artworks from “wider” ones and paint them differently, too.
 
 Here’s how we can do that. Replace the `datasets` with the following code:
 
@@ -434,11 +434,11 @@ As you can see, we define three datasets with different labels. Each dataset get
 
 ![result](./usage-7.png)
 
-Here we rely on the default color palette. However, keep in mind every chart type supports a lot of [dataset options](../charts/bubble.md#dataset-properties) that you can feel free to customize.
+Here we rely on the default color palette. However, keep in mind that every chart type supports a lot of [dataset options](../charts/bubble.md#dataset-properties) that you can feel free to customize.
 
 ### Plugins
 
-Another—and very powerful!—way to customize Chart.js charts is to use plugins. You can find some in the [plugin directory](https://github.com/chartjs/awesome#plugins) or create your own, ad-hoc ones. In Chart.js ecosystem, it’s idiomatic and expected to fine tune charts with plugins. For example, you can customize [canvas background](../configuration/canvas-background.md) or [add a border](../samples/plugins/chart-area-border.md) to it with simple ad-hoc plugins. Let’s try the latter.
+An additional—and very powerful!—way to customize Chart.js charts is to use plugins. You can find some in the [plugin directory](https://github.com/chartjs/awesome#plugins) or create your own, ad-hoc ones. In Chart.js ecosystem, it’s idiomatic and expected to fine-tune charts with plugins. For example, you can customize [canvas background](../configuration/canvas-background.md) or [add a border](../samples/plugins/chart-area-border.md) to it with simple ad-hoc plugins. Let’s try the latter.
 
 Plugins have an [extensive API](../developers/plugins.md) but, in a nutshell, a plugin is defined as an object with a `name` and one or more callback functions defined in the extension points. Insert the following snippet before and in place of the `new Chart(...);` invocation in `src/dimensions.js`:
 
@@ -488,9 +488,9 @@ Our bubble chart looks fancier now:
 
 ### Tree-shaking
 
-In production, we strive to ship as little code as possible, so the end users can load our data applications faster and have better experience. For that, we’ll need to apply [tree-shaking](https://cube.dev/blog/how-to-build-tree-shakeable-javascript-libraries/?ref=eco-chartjs) which is fancy term for removing unused code from the JavaScript bundle.
+In production, we strive to ship as little code as possible, so the end users can load our data applications faster and have better experience. For that, we’ll need to apply [tree-shaking](https://cube.dev/blog/how-to-build-tree-shakeable-javascript-libraries/?ref=eco-chartjs) which is a fancy term for removing unused code from the JavaScript bundle.
 
-Chart.js fully supports tree-shaking with its component design. You can register all Chart.js components at once (which is convenient when you’re prototyping) and get them bundled with your application. Or, you can register only necessary components and get a minimal bundle, much less in size.
+Chart.js fully supports tree-shaking with its component design. You can register all Chart.js components at once (which is convenient when you’re prototyping) and get them bundled with your application. Or, you can register only necessary components and get a minimal bundle, much smaller in size.
 
 Let’s inspect our example application. What’s the bundle size? You can stop the application and run `npm run build`, or `yarn build`, or `pnpm build`. In a few moments, you’ll get something like this:
 
@@ -556,9 +556,9 @@ Chart.register(
 );
 ```
 
-You can see that, in addition to the `Chart` class, we’re also loading a controller for the chart type, scales, and other chart elements (e.g., bars or points). You can look all available components up in the [documentation](./integration.md#bundle-optimization).
+You can see that, in addition to the `Chart` class, we’re also loading a controller for the chart type, scales, and other chart elements (e.g., bars or points). You can find all available components in the [documentation](./integration.md#bundle-optimization).
 
-Alternatively, you can follow Chart.js advice in the console. For example, if you forget to import `BarController` for your bar chart, you’ll see the following message in the browser console:
+Alternatively, you can follow Chart.js' advice in the console. For example, if you forget to import `BarController` for your bar chart, you’ll see the following message in the browser console:
 
 ```
 Unhandled Promise Rejection: Error: "bar" is not a registered controller.
@@ -580,7 +580,7 @@ dist/index.dcb2e865.js       932 B    58ms
 ✨ Done in 0.51s.
 ```
 
-By importing and registering only select components, we’ve removed more than 56 KB of unnecessary code. Given that other dependencies take ~50 KB in the bundle, tree-shaking helps remove ~25% of Chart.js code from the bundle for our example application. 
+By importing and registering only select components, we’ve removed more than 56 KB of unnecessary code. Given that other dependencies take ~50 KB in the bundle, tree-shaking helps remove ~25% of Chart.js code from the bundle for our example application.
 
 ## Next steps
 
