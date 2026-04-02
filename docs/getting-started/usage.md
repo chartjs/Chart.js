@@ -276,7 +276,6 @@ import { getDimensions } from './api'
     {
       type: 'bubble',
       data: {
-        label: 'Dimensions',
         datasets: [
           {
             label: 'Dimensions',
