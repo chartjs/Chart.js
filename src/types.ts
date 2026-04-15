@@ -49,6 +49,7 @@ export {
   ElementOptionsByType,
   ChartDatasetProperties,
   UpdateModeEnum,
+  ArcSpacingMode,
   registerables
 } from './types/index.js';
 export * from './types/index.js';
