@@ -1,0 +1,42 @@
+---
+description: Governance rules for chart.js — quality gates, security, conventions
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+alwaysApply: true
+---
+
+# Governance — chart.js
+
+> Generated from governance.md by crag. Regenerate: `crag compile --target cursor`
+
+**Stack:** node, typescript, php
+
+## Quality Gates
+
+Run these checks in order before committing:
+### Lint
+- `npm run lint`
+- `npx tsc --noEmit`
+- `composer validate --strict`
+
+### Test
+- `npm run test`
+
+### Build
+- `npm run build`
+
+### Ci (inferred from workflow)
+- `pnpm run test-ci --browsers chrome,safari`
+- `xvfb-run --auto-servernum pnpm run test-ci`
+- `pnpm run docs`
+## Security
+
+- No hardcoded secrets — grep for sk_live, AKIA, password= before commit
+
+## Conventions
+
+- Follow project commit conventions
+- Runtimes: node
