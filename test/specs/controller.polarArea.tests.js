@@ -66,6 +66,22 @@ describe('Chart.controllers.polarArea', function() {
     expect(meta.data[3] instanceof Chart.elements.ArcElement).toBe(true);
   });
 
+  it('should mark arcs as circular', function() {
+    var chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        datasets: [{
+          data: [10, 20]
+        }],
+        labels: ['a', 'b']
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data[0].circular).toBe(true);
+    expect(meta.data[1].circular).toBe(true);
+  });
+
   it('should draw all elements', function() {
     var chart = window.acquireChart({
       type: 'polarArea',

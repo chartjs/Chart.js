@@ -135,9 +135,13 @@ function pathArc(
     // the distance is the same as it would be without the spacing
     const noSpacingInnerRadius = innerR > 0 ? innerR - spacing : 0;
     const noSpacingOuterRadius = outerRadius > 0 ? outerRadius - spacing : 0;
-    const avNogSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
-    const adjustedAngle = avNogSpacingRadius !== 0 ? (alpha * avNogSpacingRadius) / (avNogSpacingRadius + spacing) : alpha;
-    spacingOffset = (alpha - adjustedAngle) / 2;
+    const avgNoSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
+    if (circular && avgNoSpacingRadius > 0) {
+      spacingOffset = Math.asin(Math.min(1, spacing / avgNoSpacingRadius));
+    } else {
+      const adjustedAngle = avgNoSpacingRadius !== 0 ? (alpha * avgNoSpacingRadius) / (avgNoSpacingRadius + spacing) : alpha;
+      spacingOffset = (alpha - adjustedAngle) / 2;
+    }
   }
 
   const beta = Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius;
@@ -332,6 +336,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
   outerRadius: number;
   pixelMargin: number;
   startAngle: number;
+  circular: boolean;
 
   constructor(cfg) {
     super();
@@ -344,6 +349,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     this.outerRadius = undefined;
     this.pixelMargin = 0;
     this.fullCircles = 0;
+    this.circular = false;
 
     if (cfg) {
       Object.assign(this, cfg);

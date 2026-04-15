@@ -196,6 +196,7 @@ export default class PolarAreaController extends DatasetController {
         outerRadius,
         startAngle,
         endAngle,
+        circular: true,
         options: this.resolveDataElementOptions(i, arc.active ? 'active' : mode)
       };
 

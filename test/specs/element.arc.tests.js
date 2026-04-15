@@ -303,4 +303,56 @@ describe('Arc element tests', function() {
 
     expect(arc.inRange(center.x, 1)).toBe(false);
   });
+
+  it('should use circular spacing only for circular arcs', function() {
+    function createArc(circular) {
+      return new Chart.elements.ArcElement({
+        startAngle: 0,
+        endAngle: Math.PI / 2,
+        x: 0,
+        y: 0,
+        innerRadius: 0,
+        outerRadius: 100,
+        options: {
+          circular: circular,
+          spacing: 20,
+          offset: 0,
+          borderWidth: 0,
+          borderRadius: 0,
+          backgroundColor: 'red',
+          borderColor: 'black'
+        }
+      });
+    }
+
+    function firstOuterArcStartAngle(arc) {
+      var ctx = window.createMockContext();
+      arc.draw(ctx);
+
+      var arcCall = ctx.getCalls().filter(function(x) {
+        return x.name === 'arc';
+      })[0];
+      if (arcCall) {
+        return arcCall.args[3];
+      }
+
+      var lineToCall = ctx.getCalls().filter(function(x) {
+        return x.name === 'lineTo';
+      })[0];
+      var dx = lineToCall.args[0] - arc.x;
+      var dy = lineToCall.args[1] - arc.y;
+      return Math.atan2(dy, dx);
+    }
+
+    var nonCircularStart = firstOuterArcStartAngle(createArc(false));
+    var circularStart = firstOuterArcStartAngle(createArc(true));
+    var alpha = Math.PI / 2;
+    var spacing = 10; // draw() passes spacing / 2 to pathArc
+    var avgNoSpacingRadius = 50;
+    var adjustedAngle = (alpha * avgNoSpacingRadius) / (avgNoSpacingRadius + spacing);
+    var linearSpacingOffset = (alpha - adjustedAngle) / 2;
+    var circularSpacingOffset = Math.asin(Math.min(1, spacing / avgNoSpacingRadius));
+
+    expect(circularStart - nonCircularStart).toBeCloseTo(circularSpacingOffset - linearSpacingOffset, 6);
+  });
 });

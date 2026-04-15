@@ -279,7 +279,8 @@ export default class DoughnutController extends DatasetController {
         endAngle: startAngle + circumference,
         circumference,
         outerRadius,
-        innerRadius
+        innerRadius,
+        circular: false
       };
       if (includeOptions) {
         properties.options = sharedOptions || this.resolveDataElementOptions(i, arc.active ? 'active' : mode);
