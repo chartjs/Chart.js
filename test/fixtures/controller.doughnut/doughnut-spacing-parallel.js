@@ -23,7 +23,7 @@ module.exports = {
     },
     options: {
       spacing: 20,
-      offset: [0, 50, 0, 0, 0],
+      spacingMode: 'parallel',
     }
   }
 };

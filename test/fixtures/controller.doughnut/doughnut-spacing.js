@@ -22,7 +22,7 @@ module.exports = {
       ],
     },
     options: {
-      spacing: 50,
+      spacing: 20,
     }
   }
 };
