@@ -71,12 +71,15 @@ export default class DoughnutController extends DatasetController {
     // Spacing between arcs
     spacing: 0,
 
+    // Geometry used to apply spacing between arcs
+    spacingMode: 'angular',
+
     indexAxis: 'r',
   };
 
   static descriptors = {
-    _scriptable: (name) => name !== 'spacing',
-    _indexable: (name) => name !== 'spacing' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
+    _scriptable: (name) => name !== 'spacing' && name !== 'spacingMode',
+    _indexable: (name) => name !== 'spacing' && name !== 'spacingMode' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
   };
 
   /**
@@ -279,8 +282,7 @@ export default class DoughnutController extends DatasetController {
         endAngle: startAngle + circumference,
         circumference,
         outerRadius,
-        innerRadius,
-        circular: false
+        innerRadius
       };
       if (includeOptions) {
         properties.options = sharedOptions || this.resolveDataElementOptions(i, arc.active ? 'active' : mode);
