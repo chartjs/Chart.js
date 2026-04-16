@@ -620,7 +620,10 @@ export default class DatasetController {
 	 * @protected
 	 */
   getMinMax(scale, canStack) {
-    const meta = this._cachedMeta;
+  const meta = this._cachedMeta;
+  if (meta.hidden) {
+    return { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY };
+  }
     const _parsed = meta._parsed;
     const sorted = meta._sorted && scale === meta.iScale;
     const ilen = _parsed.length;
@@ -699,10 +702,8 @@ export default class DatasetController {
 	 * @private
 	 */
   _update(mode) {
-    const meta = this._cachedMeta;
-    this.update(mode || 'default');
-    meta._clip = toClip(valueOrDefault(this.options.clip, defaultClip(meta.xScale, meta.yScale, this.getMaxOverflow())));
-  }
+  throw new Error('update() not implemented in DatasetController subclass');
+}
 
   /**
 	 * @param {string} mode
@@ -957,36 +958,39 @@ export default class DatasetController {
   }
 
   /**
-	 * @private
-	 */
+   * @private
+   * Re-sync elements with underlying data, inserting/removing as needed.
+   */
   _resyncElements(resetNewElements) {
-    const data = this._data;
-    const elements = this._cachedMeta.data;
-
-    // Apply changes detected through array listeners
-    for (const [method, arg1, arg2] of this._syncList) {
-      this[method](arg1, arg2);
-    }
-    this._syncList = [];
-
-    const numMeta = elements.length;
-    const numData = data.length;
-    const count = Math.min(numData, numMeta);
-
-    if (count) {
-      // TODO: It is not optimal to always parse the old data
-      // This is done because we are not detecting direct assignments:
-      // chart.data.datasets[0].data[5] = 10;
-      // chart.data.datasets[0].data[5].y = 10;
-      this.parse(0, count);
-    }
-
-    if (numData > numMeta) {
-      this._insertElements(numMeta, numData - numMeta, resetNewElements);
-    } else if (numData < numMeta) {
-      this._removeElements(numData, numMeta - numData);
-    }
+  // Skip if dataset is hidden
+  if (this._cachedMeta.hidden) {
+    return;
   }
+
+  const data = this._data;
+  const elements = this._cachedMeta.data;
+
+  // Apply changes detected through array listeners
+  for (const [method, arg1, arg2] of this._syncList) {
+    this[method](arg1, arg2);
+  }
+  this._syncList = [];
+
+  const numMeta = elements.length;
+  const numData = data.length;
+  const count = Math.min(numData, numMeta);
+
+  if (count) {
+    this.parse(0, count);
+  }
+
+  if (numData > numMeta) {
+    this._insertElements(numMeta, numData - numMeta, resetNewElements);
+  } else if (numData < numMeta) {
+    this._removeElements(numData, numMeta - numData);
+  }
+}
+
 
   /**
 	 * @private
@@ -1019,7 +1023,9 @@ export default class DatasetController {
     }
   }
 
-  updateElements(element, start, count, mode) {} // eslint-disable-line no-unused-vars
+  updateElements(element, start, count, mode) {
+  throw new Error('updateElements() not implemented in DatasetController subclass');
+}
 
   /**
 	 * @private
@@ -1036,42 +1042,43 @@ export default class DatasetController {
   }
 
   /**
-	 * @private
+   * @private
+   * Synchronize dataset changes detected in the data array.
+   * Queues updates if parsing is in progress.
    */
   _sync(args) {
+    const [method, ...methodArgs] = args;
     if (this._parsing) {
-      this._syncList.push(args);
+      this._syncList.push([method, ...methodArgs]);
     } else {
-      const [method, arg1, arg2] = args;
-      this[method](arg1, arg2);
+      this[method](...methodArgs);
     }
     this.chart._dataChanges.push([this.index, ...args]);
   }
 
-  _onDataPush() {
-    const count = arguments.length;
-    this._sync(['_insertElements', this.getDataset().data.length - count, count]);
+  _onDataPush(...items) {
+  const count = items.length;
+  this._sync(['_insertElements', this.getDataset().data.length - count, count]);
+}
+
+  _onDataPop(...items) {
+  this._sync(['_removeElements', this._cachedMeta.data.length - 1, 1]);
+}
+
+  _onDataShift(...items) {
+  this._sync(['_removeElements', 0, 1]);
+}
+
+  _onDataSplice(start, deleteCount, ...items) {
+  if (deleteCount) {
+    this._sync(['_removeElements', start, deleteCount]);
+  }
+    if (items.length) {
+    this._sync(['_insertElements', start, items.length]);
+  }
   }
 
-  _onDataPop() {
-    this._sync(['_removeElements', this._cachedMeta.data.length - 1, 1]);
-  }
-
-  _onDataShift() {
-    this._sync(['_removeElements', 0, 1]);
-  }
-
-  _onDataSplice(start, count) {
-    if (count) {
-      this._sync(['_removeElements', start, count]);
-    }
-    const newCount = arguments.length - 2;
-    if (newCount) {
-      this._sync(['_insertElements', start, newCount]);
-    }
-  }
-
-  _onDataUnshift() {
-    this._sync(['_insertElements', 0, arguments.length]);
-  }
+  _onDataUnshift(...items) {
+  this._sync(['_insertElements', 0, items.length]);
+}
 }
