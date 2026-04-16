@@ -71,12 +71,15 @@ export default class DoughnutController extends DatasetController {
     // Spacing between arcs
     spacing: 0,
 
+    // Geometry used to apply spacing between arcs
+    spacingMode: 'angular',
+
     indexAxis: 'r',
   };
 
   static descriptors = {
-    _scriptable: (name) => name !== 'spacing',
-    _indexable: (name) => name !== 'spacing' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
+    _scriptable: (name) => name !== 'spacing' && name !== 'spacingMode',
+    _indexable: (name) => name !== 'spacing' && name !== 'spacingMode' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
   };
 
   /**

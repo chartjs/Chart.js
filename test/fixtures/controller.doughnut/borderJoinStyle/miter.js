@@ -10,7 +10,7 @@ module.exports = {
           borderColor: '#000',
           borderJoinStyle: 'miter',
           borderWidth: 10,
-          spacing: 50,
+          spacing: 20,
         },
       ]
     },

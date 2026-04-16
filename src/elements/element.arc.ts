@@ -98,6 +98,28 @@ function rThetaToXY(r: number, theta: number, x: number, y: number) {
   };
 }
 
+function pathFullCircle(
+  ctx: CanvasRenderingContext2D,
+  element: ArcElement,
+  offset: number,
+  spacing: number,
+) {
+  const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
+  const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
+  const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
+
+  ctx.beginPath();
+  ctx.arc(x, y, outerRadius, start, start + TAU);
+
+  if (innerRadius > 0) {
+    // Start the inner contour as a separate subpath to avoid a seam connector.
+    ctx.moveTo(x + Math.cos(start) * innerRadius, y + Math.sin(start) * innerRadius);
+    ctx.arc(x, y, innerRadius, start + TAU, start, true);
+  }
+
+  ctx.closePath();
+}
+
 
 /**
  * Path the arc, respecting border radius by separating into left and right halves.
@@ -122,12 +144,23 @@ function pathArc(
   circular: boolean,
 ) {
   const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
+  const {spacingMode = 'angular'} = element.options;
+  const alpha = end - start;
+
+  if (circular && element.options.selfJoin && Math.abs(alpha) >= TAU - 1e-4) {
+    pathFullCircle(ctx, element, offset, spacing);
+    return;
+  }
 
   const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
-  const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
+  let innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
 
-  let spacingOffset = 0;
-  const alpha = end - start;
+  let outerSpacingOffset = 0;
+  let innerSpacingOffset = 0;
+  const beta = outerRadius > 0
+    ? Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius
+    : 0.001;
+  const angleOffset = (alpha - beta) / 2;
 
   if (spacing) {
     // When spacing is present, it is the same for all items
@@ -135,26 +168,64 @@ function pathArc(
     // the distance is the same as it would be without the spacing
     const noSpacingInnerRadius = innerR > 0 ? innerR - spacing : 0;
     const noSpacingOuterRadius = outerRadius > 0 ? outerRadius - spacing : 0;
-    const avNogSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
-    const adjustedAngle = avNogSpacingRadius !== 0 ? (alpha * avNogSpacingRadius) / (avNogSpacingRadius + spacing) : alpha;
-    spacingOffset = (alpha - adjustedAngle) / 2;
+    const avgNoSpacingRadius = (noSpacingInnerRadius + noSpacingOuterRadius) / 2;
+    const proportionalOffset = (() => {
+      const adjustedAngle = avgNoSpacingRadius !== 0 ? (alpha * avgNoSpacingRadius) / (avgNoSpacingRadius + spacing) : alpha;
+      return (alpha - adjustedAngle) / 2;
+    })();
+    const angularOffset = avgNoSpacingRadius > 0 ? Math.asin(Math.min(1, spacing / avgNoSpacingRadius)) : 0;
+
+    // Keep spacing trims below half the available span after base offset trimming.
+    const maxOffset = Math.max(0, beta / 2 - 0.001);
+    const maxOffsetSin = Math.sin(maxOffset);
+
+    if (spacingMode === 'parallel') {
+      if (innerRadius === 0 && maxOffsetSin > 0) {
+        // A root radius of zero cannot realize a non-zero parallel separator width.
+        // Raise the root just enough for the available angular span.
+        const minInnerRadius = spacing / maxOffsetSin;
+        const maxInnerRadius = Math.max(0, outerRadius - 0.001);
+        innerRadius = Math.min(minInnerRadius, maxInnerRadius);
+      }
+
+      // Use one bounded spacing value for both radii so large spacing keeps stable geometry.
+      const maxParallelSpacing = Math.min(
+        outerRadius > 0 ? outerRadius * maxOffsetSin : Number.POSITIVE_INFINITY,
+        innerRadius > 0 ? innerRadius * maxOffsetSin : Number.POSITIVE_INFINITY
+      );
+      const parallelSpacing = Math.min(spacing, maxParallelSpacing);
+
+      outerSpacingOffset = outerRadius > 0
+        ? Math.asin(Math.min(1, parallelSpacing / outerRadius))
+        : Math.min(maxOffset, angularOffset);
+      innerSpacingOffset = innerRadius > 0
+        ? Math.asin(Math.min(1, parallelSpacing / innerRadius))
+        : outerSpacingOffset;
+    } else if (spacingMode === 'proportional') {
+      outerSpacingOffset = Math.min(maxOffset, proportionalOffset);
+      innerSpacingOffset = Math.min(maxOffset, proportionalOffset);
+    } else {
+      outerSpacingOffset = Math.min(maxOffset, angularOffset);
+      innerSpacingOffset = Math.min(maxOffset, angularOffset);
+    }
   }
 
-  const beta = Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius;
-  const angleOffset = (alpha - beta) / 2;
-  const startAngle = start + angleOffset + spacingOffset;
-  const endAngle = end - angleOffset - spacingOffset;
-  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, endAngle - startAngle);
+  const outerStartAngle = start + angleOffset + outerSpacingOffset;
+  const outerEndAngle = end - angleOffset - outerSpacingOffset;
+  const innerStartAngle = start + angleOffset + innerSpacingOffset;
+  const innerEndAngle = end - angleOffset - innerSpacingOffset;
+  const angleDelta = Math.min(outerEndAngle - outerStartAngle, innerEndAngle - innerStartAngle);
+  const {outerStart, outerEnd, innerStart, innerEnd} = parseBorderRadius(element, innerRadius, outerRadius, angleDelta);
 
   const outerStartAdjustedRadius = outerRadius - outerStart;
   const outerEndAdjustedRadius = outerRadius - outerEnd;
-  const outerStartAdjustedAngle = startAngle + outerStart / outerStartAdjustedRadius;
-  const outerEndAdjustedAngle = endAngle - outerEnd / outerEndAdjustedRadius;
+  const outerStartAdjustedAngle = outerStartAngle + outerStart / outerStartAdjustedRadius;
+  const outerEndAdjustedAngle = outerEndAngle - outerEnd / outerEndAdjustedRadius;
 
   const innerStartAdjustedRadius = innerRadius + innerStart;
   const innerEndAdjustedRadius = innerRadius + innerEnd;
-  const innerStartAdjustedAngle = startAngle + innerStart / innerStartAdjustedRadius;
-  const innerEndAdjustedAngle = endAngle - innerEnd / innerEndAdjustedRadius;
+  const innerStartAdjustedAngle = innerStartAngle + innerStart / innerStartAdjustedRadius;
+  const innerEndAdjustedAngle = innerEndAngle - innerEnd / innerEndAdjustedRadius;
 
   ctx.beginPath();
 
@@ -167,38 +238,38 @@ function pathArc(
     // The corner segment from point 2 to point 3
     if (outerEnd > 0) {
       const pCenter = rThetaToXY(outerEndAdjustedRadius, outerEndAdjustedAngle, x, y);
-      ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, endAngle + HALF_PI);
+      ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, outerEndAngle + HALF_PI);
     }
 
     // The line from point 3 to point 4
-    const p4 = rThetaToXY(innerEndAdjustedRadius, endAngle, x, y);
+    const p4 = rThetaToXY(innerEndAdjustedRadius, innerEndAngle, x, y);
     ctx.lineTo(p4.x, p4.y);
 
     // The corner segment from point 4 to point 5
     if (innerEnd > 0) {
       const pCenter = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
-      ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + HALF_PI, innerEndAdjustedAngle + Math.PI);
+      ctx.arc(pCenter.x, pCenter.y, innerEnd, innerEndAngle + HALF_PI, innerEndAdjustedAngle + Math.PI);
     }
 
     // The inner arc from point 5 to point b to point 6
-    const innerMidAdjustedAngle = ((endAngle - (innerEnd / innerRadius)) + (startAngle + (innerStart / innerRadius))) / 2;
-    ctx.arc(x, y, innerRadius, endAngle - (innerEnd / innerRadius), innerMidAdjustedAngle, true);
-    ctx.arc(x, y, innerRadius, innerMidAdjustedAngle, startAngle + (innerStart / innerRadius), true);
+    const innerMidAdjustedAngle = ((innerEndAngle - (innerEnd / innerRadius)) + (innerStartAngle + (innerStart / innerRadius))) / 2;
+    ctx.arc(x, y, innerRadius, innerEndAngle - (innerEnd / innerRadius), innerMidAdjustedAngle, true);
+    ctx.arc(x, y, innerRadius, innerMidAdjustedAngle, innerStartAngle + (innerStart / innerRadius), true);
 
     // The corner segment from point 6 to point 7
     if (innerStart > 0) {
       const pCenter = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
-      ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - HALF_PI);
+      ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, innerStartAngle - HALF_PI);
     }
 
     // The line from point 7 to point 8
-    const p8 = rThetaToXY(outerStartAdjustedRadius, startAngle, x, y);
+    const p8 = rThetaToXY(outerStartAdjustedRadius, outerStartAngle, x, y);
     ctx.lineTo(p8.x, p8.y);
 
     // The corner segment from point 8 to point 1
     if (outerStart > 0) {
       const pCenter = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
-      ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - HALF_PI, outerStartAdjustedAngle);
+      ctx.arc(pCenter.x, pCenter.y, outerStart, outerStartAngle - HALF_PI, outerStartAdjustedAngle);
     }
   } else {
     ctx.moveTo(x, y);
@@ -265,6 +336,7 @@ function drawBorder(
   }
 
   let endAngle = element.endAngle;
+  const isFullCircle = Math.abs(endAngle - startAngle) >= TAU - 1e-4;
   if (fullCircles) {
     pathArc(ctx, element, offset, spacing, endAngle, circular);
     for (let i = 0; i < fullCircles; ++i) {
@@ -279,7 +351,8 @@ function drawBorder(
     clipArc(ctx, element, endAngle);
   }
 
-  if (options.selfJoin && endAngle - startAngle >= PI && borderRadius === 0 && borderJoinStyle !== 'miter') {
+  const skipSelfClip = isFullCircle && element.innerRadius > 0;
+  if (!skipSelfClip && options.selfJoin && endAngle - startAngle >= PI && borderRadius === 0 && borderJoinStyle !== 'miter') {
     clipSelf(ctx, element, endAngle);
   }
 
@@ -311,6 +384,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     borderWidth: 2,
     offset: 0,
     spacing: 0,
+    spacingMode: 'angular',
     angle: undefined,
     circular: true,
     selfJoin: false,
@@ -332,6 +406,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
   outerRadius: number;
   pixelMargin: number;
   startAngle: number;
+  circular: boolean;
 
   constructor(cfg) {
     super();
@@ -344,6 +419,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     this.outerRadius = undefined;
     this.pixelMargin = 0;
     this.fullCircles = 0;
+    this.circular = false;
 
     if (cfg) {
       Object.assign(this, cfg);

@@ -274,11 +274,20 @@ export interface DoughnutControllerDatasetOptions
   weight: number;
 
   /**
-   * Similar to the `offset` option, but applies to all arcs. This can be used to to add spaces
-   * between arcs
-   * @default 0
-   */
+    * Similar to the `offset` option, but applies to all arcs. This can be used to to add spaces
+    * between arcs
+    * @default 0
+    */
   spacing: number;
+
+  /**
+    * Geometry used to apply arc spacing.
+    * - `proportional`: legacy behavior (default for polarArea).
+    * - `angular`: constant angular trim (default for doughnut/pie).
+    * - `parallel`: separate inner/outer trims for constant-width separators (best for small-moderate spacings).
+    * @default 'angular'
+    */
+  spacingMode: ArcSpacingMode;
 }
 
 export interface DoughnutAnimationOptions extends AnimationSpec<'doughnut'> {
@@ -327,10 +336,19 @@ export interface DoughnutControllerChartOptions {
   rotation: number;
 
   /**
-   * Spacing between the arcs
-   * @default 0
-   */
+    * Spacing between the arcs
+    * @default 0
+    */
   spacing: number;
+
+  /**
+    * Geometry used to apply arc spacing.
+    * - `proportional`: legacy behavior (default for polarArea).
+    * - `angular`: constant angular trim (default for doughnut/pie).
+    * - `parallel`: separate inner/outer trims for constant-width separators (best for small-moderate spacings).
+    * @default 'angular'
+    */
+  spacingMode: ArcSpacingMode;
 
   animation: false | DoughnutAnimationOptions;
 }
@@ -385,6 +403,18 @@ export interface PolarAreaControllerChartOptions {
    * @default 0
    */
   startAngle: number;
+
+  /**
+   * Spacing between the arcs
+   * @default 0
+   */
+  spacing: number;
+
+  /**
+   * Geometry used to apply arc spacing.
+   * @default 'proportional'
+   */
+  spacingMode: ArcSpacingMode;
 
   animation: false | PolarAreaAnimationOptions;
 }
@@ -1847,6 +1877,8 @@ export interface ArcBorderRadius {
   innerEnd: number;
 }
 
+export type ArcSpacingMode = 'proportional' | 'angular' | 'parallel';
+
 export interface ArcOptions extends CommonElementOptions {
   /**
    * If true, Arc can take up 100% of a circular graph without any visual split or cut. This option doesn't support borderRadius and borderJoinStyle miter
@@ -1893,7 +1925,20 @@ export interface ArcOptions extends CommonElementOptions {
   /**
    * Spacing between arcs
    */
-  spacing: number
+  spacing: number;
+
+  /**
+   * Geometry used to apply arc spacing. Only applies to chart types with arc elements (doughnut, pie, polarArea).
+   * Radar charts use line elements and do not support arc spacing modes.
+   *
+   * - `proportional`: keeps the legacy proportional spacing behavior.
+   * - `angular`: applies a constant angular trim based on average radius.
+   * - `parallel`: applies separate inner/outer trims to keep separator width constant.
+   *   Works best for small to moderate spacings. For very large spacings, the offset is capped
+   *   to prevent arc angle reversals.
+   * @default 'angular'
+   */
+  spacingMode: ArcSpacingMode;
 }
 
 export interface ArcHoverOptions extends CommonHoverOptions {

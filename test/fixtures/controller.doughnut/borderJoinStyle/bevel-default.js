@@ -9,7 +9,7 @@ module.exports = {
           backgroundColor: 'transparent',
           borderColor: '#000',
           borderWidth: 10,
-          spacing: 50,
+          spacing: 20,
         },
       ]
     },

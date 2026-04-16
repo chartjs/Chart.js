@@ -71,6 +71,8 @@ The following options can be included in a polar area chart dataset to configure
 | [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
 | [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
 | [`circular`](#styling) | `boolean` | Yes | Yes | `true`
+| [`spacing`](#styling)                    | `number`                        | - | - | `0`
+| [`spacingMode`](#styling)                | `angular`\|`proportional`\|`parallel`                       | - | - | `proportional`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 

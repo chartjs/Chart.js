@@ -100,30 +100,31 @@ Namespaces:
 
 The doughnut/pie chart allows a number of properties to be specified for each dataset. These are used to set display properties for a specific dataset. For example, the colours of the dataset's arcs are generally set this way.
 
-| Name | Type | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
-| ---- | ---- | :----: | :----: | ----
-| [`backgroundColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
-| [`borderAlign`](#border-alignment) | `'center'`\|`'inner'` | Yes | Yes | `'center'`
-| [`borderColor`](#styling) | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
-| [`borderDash`](#styling) | `number[]` | Yes | - | `[]`
-| [`borderDashOffset`](#styling) | `number` | Yes | - | `0.0`
-| [`borderJoinStyle`](#styling) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
-| [`borderRadius`](#border-radius) | `number`\|`object` | Yes | Yes | `0`
-| [`borderWidth`](#styling) | `number` | Yes | Yes | `2`
-| [`circumference`](#general) | `number` | - | - | `undefined`
-| [`clip`](#general) | `number`\|`object`\|`false` | - | - | `undefined`
-| [`data`](#data-structure) | `number[]` | - | - | **required**
-| [`hoverBackgroundColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderColor`](#interactions) | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
-| [`hoverBorderDash`](#interactions) | `number[]` | Yes | - | `undefined`
-| [`hoverBorderDashOffset`](#interactions) | `number` | Yes | - | `undefined`
-| [`hoverBorderJoinStyle`](#interactions) | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
-| [`hoverBorderWidth`](#interactions) | `number` | Yes | Yes | `undefined`
-| [`hoverOffset`](#interactions) | `number` | Yes | Yes | `0`
-| [`offset`](#styling) | `number`\|`number[]` | Yes | Yes | `0`
-| [`rotation`](#general) | `number` | - | - | `undefined`
-| [`spacing`](#styling) | `number` | - | - | `0`
-| [`weight`](#styling) | `number` | - | - | `1`
+| Name                                     | Type                            | [Scriptable](../general/options.md#scriptable-options) | [Indexable](../general/options.md#indexable-options) | Default
+|------------------------------------------|---------------------------------| :----: | :----: | ----
+| [`backgroundColor`](#styling)            | [`Color`](../general/colors.md) | Yes | Yes | `'rgba(0, 0, 0, 0.1)'`
+| [`borderAlign`](#border-alignment)       | `'center'`\|`'inner'`           | Yes | Yes | `'center'`
+| [`borderColor`](#styling)                | [`Color`](../general/colors.md) | Yes | Yes | `'#fff'`
+| [`borderDash`](#styling)                 | `number[]`                      | Yes | - | `[]`
+| [`borderDashOffset`](#styling)           | `number`                        | Yes | - | `0.0`
+| [`borderJoinStyle`](#styling)            | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
+| [`borderRadius`](#border-radius)         | `number`\|`object`              | Yes | Yes | `0`
+| [`borderWidth`](#styling)                | `number`                        | Yes | Yes | `2`
+| [`circumference`](#general)              | `number`                        | - | - | `undefined`
+| [`clip`](#general)                       | `number`\|`object`\|`false`     | - | - | `undefined`
+| [`data`](#data-structure)                | `number[]`                      | - | - | **required**
+| [`hoverBackgroundColor`](#interactions)  | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderColor`](#interactions)      | [`Color`](../general/colors.md) | Yes | Yes | `undefined`
+| [`hoverBorderDash`](#interactions)       | `number[]`                      | Yes | - | `undefined`
+| [`hoverBorderDashOffset`](#interactions) | `number`                        | Yes | - | `undefined`
+| [`hoverBorderJoinStyle`](#interactions)  | `'round'`\|`'bevel'`\|`'miter'` | Yes | Yes | `undefined`
+| [`hoverBorderWidth`](#interactions)      | `number`                        | Yes | Yes | `undefined`
+| [`hoverOffset`](#interactions)           | `number`                        | Yes | Yes | `0`
+| [`offset`](#styling)                     | `number`\|`number[]`            | Yes | Yes | `0`
+| [`rotation`](#general)                   | `number`                        | - | - | `undefined`
+| [`spacing`](#styling)                    | `number`                        | - | - | `0`
+| [`spacingMode`](#styling)                | `angular`\|`proportional`\|`parallel`                       | - | - | `angular`
+| [`weight`](#styling)                     | `number`                        | - | - | `1`
 
 All these values, if `undefined`, fallback to the scopes described in [option resolution](../general/options)
 

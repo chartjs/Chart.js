@@ -22,6 +22,8 @@ export default class PolarAreaController extends DatasetController {
     },
     indexAxis: 'r',
     startAngle: 0,
+    spacing: 0,
+    spacingMode: 'proportional',
   };
 
   /**
@@ -198,6 +200,14 @@ export default class PolarAreaController extends DatasetController {
         endAngle,
         options: this.resolveDataElementOptions(i, arc.active ? 'active' : mode)
       };
+
+      // Arc defaults (`spacing=0`, `spacingMode='angular'`) can mask polarArea-level values.
+      if (properties.options.spacing === 0) {
+        properties.options.spacing = this.options.spacing;
+      }
+      if (properties.options.spacingMode === 'angular') {
+        properties.options.spacingMode = this.options.spacingMode;
+      }
 
       this.updateElement(arc, i, properties, mode);
     }

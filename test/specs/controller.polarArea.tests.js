@@ -66,6 +66,44 @@ describe('Chart.controllers.polarArea', function() {
     expect(meta.data[3] instanceof Chart.elements.ArcElement).toBe(true);
   });
 
+  it('should default arc spacingMode to proportional', function() {
+    var chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        datasets: [{
+          data: [10, 20]
+        }],
+        labels: ['a', 'b']
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data[0].options.spacingMode).toBe('proportional');
+    expect(meta.data[1].options.spacingMode).toBe('proportional');
+  });
+
+  it('should respect chart-level spacingMode override', function() {
+    var chart = window.acquireChart({
+      type: 'polarArea',
+      data: {
+        datasets: [{
+          data: [10, 20]
+        }],
+        labels: ['a', 'b']
+      },
+      options: {
+        spacing: 12,
+        spacingMode: 'parallel'
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data[0].options.spacingMode).toBe('parallel');
+    expect(meta.data[1].options.spacingMode).toBe('parallel');
+    expect(meta.data[0].options.spacing).toBe(12);
+    expect(meta.data[1].options.spacing).toBe(12);
+  });
+
   it('should draw all elements', function() {
     var chart = window.acquireChart({
       type: 'polarArea',

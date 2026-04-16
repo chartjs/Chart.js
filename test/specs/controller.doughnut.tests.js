@@ -46,6 +46,22 @@ describe('Chart.controllers.doughnut', function() {
     expect(meta.data[3] instanceof Chart.elements.ArcElement).toBe(true);
   });
 
+  it('should default arc spacingMode to angular', function() {
+    var chart = window.acquireChart({
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [10, 20]
+        }],
+        labels: ['a', 'b']
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data[0].options.spacingMode).toBe('angular');
+    expect(meta.data[1].options.spacingMode).toBe('angular');
+  });
+
   it ('should reset and update elements', function() {
     var chart = window.acquireChart({
       type: 'doughnut',
