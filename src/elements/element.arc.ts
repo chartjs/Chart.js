@@ -98,6 +98,28 @@ function rThetaToXY(r: number, theta: number, x: number, y: number) {
   };
 }
 
+function pathFullCircle(
+  ctx: CanvasRenderingContext2D,
+  element: ArcElement,
+  offset: number,
+  spacing: number,
+) {
+  const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
+  const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
+  const innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
+
+  ctx.beginPath();
+  ctx.arc(x, y, outerRadius, start, start + TAU);
+
+  if (innerRadius > 0) {
+    // Start the inner contour as a separate subpath to avoid a seam connector.
+    ctx.moveTo(x + Math.cos(start) * innerRadius, y + Math.sin(start) * innerRadius);
+    ctx.arc(x, y, innerRadius, start + TAU, start, true);
+  }
+
+  ctx.closePath();
+}
+
 
 /**
  * Path the arc, respecting border radius by separating into left and right halves.
@@ -123,13 +145,18 @@ function pathArc(
 ) {
   const {x, y, startAngle: start, pixelMargin, innerRadius: innerR} = element;
   const {spacingMode = 'angular'} = element.options;
+  const alpha = end - start;
+
+  if (circular && element.options.selfJoin && Math.abs(alpha) >= TAU - 1e-4) {
+    pathFullCircle(ctx, element, offset, spacing);
+    return;
+  }
 
   const outerRadius = Math.max(element.outerRadius + spacing + offset - pixelMargin, 0);
   let innerRadius = innerR > 0 ? innerR + spacing + offset + pixelMargin : 0;
 
   let outerSpacingOffset = 0;
   let innerSpacingOffset = 0;
-  const alpha = end - start;
   const beta = outerRadius > 0
     ? Math.max(0.001, alpha * outerRadius - offset / PI) / outerRadius
     : 0.001;
@@ -309,6 +336,7 @@ function drawBorder(
   }
 
   let endAngle = element.endAngle;
+  const isFullCircle = Math.abs(endAngle - startAngle) >= TAU - 1e-4;
   if (fullCircles) {
     pathArc(ctx, element, offset, spacing, endAngle, circular);
     for (let i = 0; i < fullCircles; ++i) {
@@ -323,7 +351,8 @@ function drawBorder(
     clipArc(ctx, element, endAngle);
   }
 
-  if (options.selfJoin && endAngle - startAngle >= PI && borderRadius === 0 && borderJoinStyle !== 'miter') {
+  const skipSelfClip = isFullCircle && element.innerRadius > 0;
+  if (!skipSelfClip && options.selfJoin && endAngle - startAngle >= PI && borderRadius === 0 && borderJoinStyle !== 'miter') {
     clipSelf(ctx, element, endAngle);
   }
 
