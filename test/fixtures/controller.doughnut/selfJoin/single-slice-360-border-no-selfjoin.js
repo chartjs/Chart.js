@@ -1,12 +1,13 @@
 module.exports = {
+  tolerance: 0.015,
   config: {
     type: 'doughnut',
     data: {
       labels: ['A'],
       datasets: [{
         data: [360],
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        borderColor: 'rgba(0,0,0,1)',
+        backgroundColor: '#dda7ee',
+        borderColor: '#6e0d8f',
         borderWidth: 1,
         selfJoin: false,
       }]
