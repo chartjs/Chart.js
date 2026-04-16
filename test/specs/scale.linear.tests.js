@@ -684,6 +684,37 @@ describe('Linear Scale', function() {
     expect(getLabels(chart.scales.y)).toEqual(['1', '3', '5', '7', '9', '11']);
   });
 
+  it('Should not autoSkip ticks when stepSize is set', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          yAxisID: 'y',
+          data: [10, 3, 6, 8, 3, 1]
+        }],
+        labels: ['a', 'b', 'c', 'd', 'e', 'f']
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 10,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+
+    var ticks = chart.scales.y.ticks;
+    var visibleTicks = ticks.filter(t => !t.skip);
+
+    expect(visibleTicks.length).toBe(ticks.length);
+    expect(getLabels(chart.scales.y)).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
+  });
+
   it('Should not generate any ticks > max if max is specified', function() {
     var chart = window.acquireChart({
       type: 'line',
