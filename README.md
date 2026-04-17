@@ -2,7 +2,11 @@
   <a href="https://www.chartjs.org/" target="_blank">
     <img src="https://www.chartjs.org/media/logo-title.svg" alt="https://www.chartjs.org/"><br/>
   </a>
-    Simple yet flexible JavaScript charting for designers & developers
+  <a href="https://github.com/chartjs/Chart.js/actions?query=workflow%3ACI+branch%3Amaster">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/chartjs/Chart.js/ci.yml?branch=master&style=flat-square">
+</a> ← Current CI build status
+    Simple, flexible, and powerful JavaScript charting library for designers and developers.
+
 </p>
 
 <p align="center">
@@ -26,12 +30,21 @@ All the links point to the new version 4 of the lib.
 * [Developers](https://www.chartjs.org/docs/latest/developers/index)
 * [Popular Extensions](https://github.com/chartjs/awesome)
 * [Samples](https://www.chartjs.org/samples/)
+* [Tutorials and Examples](https://www.chartjs.org/docs/latest/samples/)
 
 In case you are looking for an older version of the docs, you will have to specify the specific version in the url like this: [https://www.chartjs.org/docs/2.9.4/](https://www.chartjs.org/docs/2.9.4/)
 
-## Contributing
+### Contributing Started
 
 Instructions on building and testing Chart.js can be found in [the documentation](https://www.chartjs.org/docs/master/developers/contributing.html#building-and-testing). Before submitting an issue or a pull request, please take a moment to look over the [contributing guidelines](https://www.chartjs.org/docs/master/developers/contributing) first. For support, please post questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/chart.js) with the `chart.js` tag.
+
+### Guides
+
+* [General](https://www.chartjs.org/docs/latest/general/data-structures)
+* [Configuration](https://www.chartjs.org/docs/latest/configuration/index)
+* [Charts](https://www.chartjs.org/docs/latest/charts/line)
+* [Axes](https://www.chartjs.org/docs/latest/axes/index)
+* [Developers](https://www.chartjs.org/docs/latest/developers/index)
 
 ## License
 
