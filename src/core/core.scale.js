@@ -1350,7 +1350,7 @@ export default class Scale extends Element {
   }
 
   _getYAxisLabelAlignment(tl) {
-    const {position, ticks: {crossAlign, mirror, padding}} = this.options;
+    const {position, ticks: {crossAlign, mirror, padding}, title: titleOpts} = this.options;
     const labelSizes = this._getLabelSizes();
     const tickAndPadding = tl + padding;
     const widest = labelSizes.widest.width;
@@ -1379,6 +1379,9 @@ export default class Scale extends Element {
         } else if (crossAlign === 'center') {
           textAlign = 'center';
           x -= (widest / 2);
+        } else if (crossAlign === 'far') {
+          textAlign = 'left';
+          x = this.left + getTitleHeight(titleOpts, this.chart.options.font);
         } else {
           textAlign = 'left';
           x = this.left;
@@ -1405,6 +1408,9 @@ export default class Scale extends Element {
         } else if (crossAlign === 'center') {
           textAlign = 'center';
           x += widest / 2;
+        } else if (crossAlign === 'far') {
+          textAlign = 'right';
+          x = this.right - getTitleHeight(titleOpts, this.chart.options.font);
         } else {
           textAlign = 'right';
           x = this.right;
