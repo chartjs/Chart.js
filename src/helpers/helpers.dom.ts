@@ -111,6 +111,11 @@ export function getRelativePosition(
   }
 
   const {canvas, currentDevicePixelRatio} = chart;
+  // Guard against null canvas to prevent ownerDocument crash
+  if (!canvas) {
+    return {x: 0, y: 0};
+  }
+
   const style = getComputedStyle(canvas);
   const borderBox = style.boxSizing === 'border-box';
   const paddings = getPositionedStyle(style, 'padding');
@@ -166,6 +171,11 @@ export function getMaximumSize(
   bbHeight?: number,
   aspectRatio?: number
 ): { width: number; height: number } {
+  // Guard against null canvas to prevent ownerDocument crash
+  if (!canvas) {
+    return {width: 0, height: 0};
+  }
+
   const style = getComputedStyle(canvas);
   const margins = getPositionedStyle(style, 'margin');
   const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || INFINITY;
