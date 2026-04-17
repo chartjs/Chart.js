@@ -32,6 +32,24 @@ export default class LineController extends DatasetController {
     }
   };
 
+
+  /**
+   * @protected
+   */
+  getLabelAndValue(index) {
+    const meta = this._cachedMeta;
+    const iScale = meta.iScale;
+    const vScale = meta.vScale;
+    const parsed = this.getParsed(index);
+    const value = vScale ? '' + vScale.getLabelForValue(parsed[vScale.axis]) : '';
+    const label = iScale.getLabelForValue(parsed[iScale.axis]);
+
+    return {
+      label: Array.isArray(label) ? label.join(', ') : '' + label,
+      value
+    };
+  }
+
   initialize() {
     this.enableOptionSharing = true;
     this.supportsDecimation = true;
