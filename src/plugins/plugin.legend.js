@@ -17,6 +17,9 @@ import {
 import {_alignStartEnd, _textX, _toLeftRightCenter} from '../helpers/helpers.extras.js';
 import {toTRBLCorners} from '../helpers/helpers.options.js';
 
+
+
+
 /**
  * @typedef { import('../types/index.js').ChartEvent } ChartEvent
  */
@@ -119,40 +122,74 @@ export class Legend extends Element {
 
     this.legendItems = legendItems;
   }
-
-  fit() {
-    const {options, ctx} = this;
-
-    // The legend may not be displayed for a variety of reasons including
-    // the fact that the defaults got set to `false`.
-    // When the legend is not displayed, there are no guarantees that the options
-    // are correctly formatted so we need to bail out as early as possible.
-    if (!options.display) {
-      this.width = this.height = 0;
-      return;
-    }
-
-    const labelOpts = options.labels;
-    const labelFont = toFont(labelOpts.font);
-    const fontSize = labelFont.size;
-    const titleHeight = this._computeTitleHeight();
-    const {boxWidth, itemHeight} = getBoxSize(labelOpts, fontSize);
-
-    let width, height;
-
-    ctx.font = labelFont.string;
-
-    if (this.isHorizontal()) {
-      width = this.maxWidth; // fill all the width
-      height = this._fitRows(titleHeight, fontSize, boxWidth, itemHeight) + 10;
-    } else {
-      height = this.maxHeight; // fill all the height
-      width = this._fitCols(titleHeight, labelFont, boxWidth, itemHeight) + 10;
-    }
-
-    this.width = Math.min(width, options.maxWidth || this.maxWidth);
-    this.height = Math.min(height, options.maxHeight || this.maxHeight);
+fit() {
+  const { options, ctx } = this;
+  if (!options.display) {
+    this.width = this.height = 0;
+    return;
   }
+
+  const labelOpts = options.labels;
+  const labelFont = toFont(labelOpts.font);
+  const fontSize = labelFont.size;
+  const titleHeight = this._computeTitleHeight();
+  const { boxWidth, itemHeight } = getBoxSize(labelOpts, fontSize);
+
+  let width, height;
+  ctx.font = labelFont.string;
+
+  if (this.isHorizontal()) {
+    width = this.maxWidth;
+    height = this._fitRows(titleHeight, fontSize, boxWidth, itemHeight) + 10;
+  } else {
+    height = this.maxHeight;
+    width = this._fitCols(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+  }
+
+  // --- handle scroll height limit ---
+  const scrollOpts = options.scroll || {};
+  if (scrollOpts.enabled && scrollOpts.maxItems) {
+    const singleItemHeight = itemHeight + labelOpts.padding;
+    const visibleHeight = singleItemHeight * scrollOpts.maxItems + titleHeight + labelOpts.padding * 2;
+    this.height = Math.min(this.height, visibleHeight);
+
+    // wrap legend in scroll container
+    this._wrapLegendScroll(visibleHeight);
+  }
+
+  this.width = Math.min(width, options.maxWidth || this.maxWidth);
+  this.height = Math.min(height, options.maxHeight || this.maxHeight);
+}
+
+/**
+ * Private helper to wrap the <ul> legend in a scrollable container
+ */
+_wrapLegendScroll(visibleHeight) {
+  const canvasContainer = this.chart.canvas.parentNode;
+  if (!canvasContainer) return;
+
+  const legendUL = canvasContainer.querySelector('ul.chartjs-legend');
+  if (!legendUL) return;
+
+  // Skip if already wrapped
+  if (canvasContainer.querySelector('.legend-scroll-wrapper')) return;
+
+  const legendWrapper = document.createElement('div');
+  legendWrapper.className = 'legend-scroll-wrapper';
+  legendWrapper.style.overflowY = 'auto';
+  legendWrapper.style.maxHeight = `${visibleHeight}px`;
+  legendWrapper.style.display = 'inline-block';
+
+  // Force single-column layout
+  legendUL.style.display = 'flex';
+  legendUL.style.flexDirection = 'column';
+  legendUL.style.margin = '0';
+  legendUL.style.padding = '0';
+
+  legendUL.parentNode.insertBefore(legendWrapper, legendUL);
+  legendWrapper.appendChild(legendUL);
+}
+
 
   /**
 	 * @private
@@ -188,45 +225,62 @@ export class Legend extends Element {
     return totalHeight;
   }
 
-  _fitCols(titleHeight, labelFont, boxWidth, _itemHeight) {
-    const {ctx, maxHeight, options: {labels: {padding}}} = this;
-    const hitboxes = this.legendHitBoxes = [];
-    const columnSizes = this.columnSizes = [];
-    const heightLimit = maxHeight - titleHeight;
+ _fitCols(titleHeight, labelFont, boxWidth, _itemHeight) {
+  const {ctx, maxHeight, options: {labels: {padding}}} = this;
+  const scrollOpts = this.options.scroll || {};
+  const hitboxes = this.legendHitBoxes = [];
+  const columnSizes = this.columnSizes = [];
 
-    let totalWidth = padding;
-    let currentColWidth = 0;
-    let currentColHeight = 0;
+  const heightLimit = maxHeight - titleHeight;
 
-    let left = 0;
-    let col = 0;
+  // --- SCROLL ENABLED: force single column ---
+  if (scrollOpts.enabled && scrollOpts.maxItems) {
+    let totalWidth = 0;
+    let top = 0;
+    let maxItemWidth = 0;
 
     this.legendItems.forEach((legendItem, i) => {
       const {itemWidth, itemHeight} = calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight);
-
-      // If too tall, go to new column
-      if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
-        totalWidth += currentColWidth + padding;
-        columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
-        left += currentColWidth + padding;
-        col++;
-        currentColWidth = currentColHeight = 0;
-      }
-
-      // Store the hitbox width and height here. Final position will be updated in `draw`
-      hitboxes[i] = {left, top: currentColHeight, col, width: itemWidth, height: itemHeight};
-
-      // Get max width
-      currentColWidth = Math.max(currentColWidth, itemWidth);
-      currentColHeight += itemHeight + padding;
+      hitboxes[i] = {left: 0, top, col: 0, width: itemWidth, height: itemHeight};
+      top += itemHeight + padding;
+      maxItemWidth = Math.max(maxItemWidth, itemWidth);
     });
 
-    totalWidth += currentColWidth;
-    columnSizes.push({width: currentColWidth, height: currentColHeight}); // previous column size
+    columnSizes.push({width: maxItemWidth, height: top});
+    totalWidth = maxItemWidth + 2 * padding;
 
     return totalWidth;
   }
 
+  // --- SCROLL DISABLED: original multi-column logic ---
+  let totalWidth = padding;
+  let currentColWidth = 0;
+  let currentColHeight = 0;
+  let left = 0;
+  let col = 0;
+
+  this.legendItems.forEach((legendItem, i) => {
+    const {itemWidth, itemHeight} = calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight);
+
+    if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
+      totalWidth += currentColWidth + padding;
+      columnSizes.push({width: currentColWidth, height: currentColHeight});
+      left += currentColWidth + padding;
+      col++;
+      currentColWidth = currentColHeight = 0;
+    }
+
+    hitboxes[i] = {left, top: currentColHeight, col, width: itemWidth, height: itemHeight};
+
+    currentColWidth = Math.max(currentColWidth, itemWidth);
+    currentColHeight += itemHeight + padding;
+  });
+
+  totalWidth += currentColWidth;
+  columnSizes.push({width: currentColWidth, height: currentColHeight});
+
+  return totalWidth;
+}
   adjustHitBoxes() {
     if (!this.options.display) {
       return;
@@ -391,7 +445,12 @@ export class Legend extends Element {
     overrideTextDirection(this.ctx, opts.textDirection);
 
     const lineHeight = itemHeight + padding;
-    this.legendItems.forEach((legendItem, i) => {
+    const scrollOpts = this.options.scroll || {};
+    let legendItems = this.legendItems;
+    if (scrollOpts.enabled && scrollOpts.maxItems) {
+        legendItems = legendItems.slice(0, scrollOpts.maxItems);
+    }
+      legendItems.forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
@@ -552,6 +611,15 @@ export class Legend extends Element {
   }
 }
 
+
+
+
+
+
+
+
+
+
 function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
   const itemWidth = calculateItemWidth(legendItem, boxWidth, labelFont, ctx);
   const itemHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
@@ -624,7 +692,21 @@ export default {
     const legend = chart.legend;
     legend.buildLabels();
     legend.adjustHitBoxes();
-  },
+    const scrollOpts = legend.options.scroll || {};
+    if (scrollOpts.enabled && scrollOpts.maxItems) {
+      const canvasContainer = chart.canvas.parentNode;
+      if (canvasContainer) {
+        const legendUL = canvasContainer.querySelector('ul.chartjs-legend');
+        if (legendUL && !canvasContainer.querySelector('.legend-scroll-wrapper')) {
+          const singleItemHeight = legend.legendHitBoxes[0].height + legend.options.labels.padding;
+          const titleHeight = legend._computeTitleHeight();
+          const visibleHeight = singleItemHeight * scrollOpts.maxItems + titleHeight + legend.options.labels.padding * 2;
+          legend._wrapLegendScroll(visibleHeight);
+          console.log('Legend wrapper created inside afterUpdate!');
+        }
+      }
+    }
+    },
 
 
   afterEvent(chart, args) {
@@ -717,4 +799,4 @@ export default {
       _scriptable: (name) => !['generateLabels', 'filter', 'sort'].includes(name),
     }
   },
-};
+}; 
