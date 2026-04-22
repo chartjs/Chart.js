@@ -417,7 +417,7 @@ export class Legend extends Element {
 
       const realX = rtlHelper.x(x);
 
-      drawLegendBox(realX, y, legendItem);
+      drawLegendBox(realX, y + (labelOpts.pointStyleYOffset || 0), legendItem);
 
       x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : this.right, opts.rtl);
 
