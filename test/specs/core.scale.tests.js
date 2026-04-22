@@ -818,8 +818,7 @@ describe('Core.scale', function() {
     });
   });
   describe('Scale Title stroke', ()=>{
-    function getScaleTitleCalls(position, align, reverse) {
-      const axis = position === 'left' || position === 'right' ? 'y' : 'x';
+    function getScaleTitleCalls(axis, position, align, reverse) {
       const chart = window.acquireChart({
         type: 'scatter',
         data: {
@@ -857,6 +856,7 @@ describe('Core.scale', function() {
             },
             y: {
               display: axis === 'y',
+              axis: 'y',
               position: axis === 'y' ? position : 'left',
               min: 0,
               max: 10,
@@ -890,7 +890,17 @@ describe('Core.scale', function() {
     ['top', 'bottom', 'left', 'right'].forEach(function(position) {
       ['start', 'end'].forEach(function(align) {
         it('should not reposition the ' + position + ' scale title when reverse=true and align=' + align, function() {
-          expect(getScaleTitleCalls(position, align, true)).toEqual(getScaleTitleCalls(position, align, false));
+          const axis = position === 'left' || position === 'right' ? 'y' : 'x';
+          expect(getScaleTitleCalls(axis, position, align, true)).toEqual(getScaleTitleCalls(axis, position, align, false));
+        });
+      });
+    });
+
+    ['center', {x: 5}].forEach(function(position) {
+      ['start', 'end'].forEach(function(align) {
+        const positionLabel = typeof position === 'string' ? position : '{x: 5}';
+        it('should not reposition the vertical ' + positionLabel + ' scale title when reverse=true and align=' + align, function() {
+          expect(getScaleTitleCalls('y', position, align, true)).toEqual(getScaleTitleCalls('y', position, align, false));
         });
       });
     });

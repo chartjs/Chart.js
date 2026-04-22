@@ -119,10 +119,10 @@ function createTickContext(parent, index, tick) {
   });
 }
 
-function titleAlign(align, position) {
+function titleAlign(align, position, horizontal) {
   /** @type {CanvasTextAlign} */
   let ret = _toLeftRightCenter(align);
-  if (position === 'right') {
+  if (!horizontal && position !== 'left') {
     ret = reverseAlign(ret);
   }
   return ret;
@@ -1587,6 +1587,7 @@ export default class Scale extends Element {
 	 */
   drawTitle() {
     const {ctx, options: {position, title}} = this;
+    const horizontal = this.isHorizontal();
 
     if (!title.display) {
       return;
@@ -1612,7 +1613,7 @@ export default class Scale extends Element {
       color: title.color,
       maxWidth,
       rotation,
-      textAlign: titleAlign(align, position),
+      textAlign: titleAlign(align, position, horizontal),
       textBaseline: 'middle',
       translation: [titleX, titleY],
       strokeColor: title.strokeColor,
