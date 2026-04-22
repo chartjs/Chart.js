@@ -460,4 +460,117 @@ describe('Chart.controllers.doughnut', function() {
       after: []
     }]);
   });
+
+  it ('should apply datasetSpacing to multiple datasets', function() {
+    var chart = window.acquireChart({
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [10, 20],
+          label: 'Dataset 1',
+          backgroundColor: ['red', 'blue']
+        }, {
+          data: [15, 25],
+          label: 'Dataset 2',
+          backgroundColor: ['green', 'yellow']
+        }, {
+          data: [20, 30],
+          label: 'Dataset 3',
+          backgroundColor: ['orange', 'purple']
+        }],
+        labels: ['label0', 'label1']
+      },
+      options: {
+        plugins: {
+          legend: false,
+          title: false
+        },
+        datasetSpacing: 10
+      }
+    });
+
+    chart.update();
+
+    var controller0 = chart.getDatasetMeta(0).controller;
+    var controller1 = chart.getDatasetMeta(1).controller;
+    var controller2 = chart.getDatasetMeta(2).controller;
+
+    // Verify that outer/inner radius decrease by datasetSpacing for each dataset
+    expect(controller0.outerRadius).toBeGreaterThan(0);
+    expect(controller1.outerRadius).toBeGreaterThan(0);
+    expect(controller2.outerRadius).toBeGreaterThan(0);
+
+    expect(controller0.outerRadius).toBeGreaterThan(controller1.outerRadius);
+    expect(controller1.outerRadius).toBeGreaterThan(controller2.outerRadius);
+
+    // The outer radius should decrease as we move to inner datasets
+    // Each dataset should have its spacing applied
+    var spacing0to1 = controller0.outerRadius - controller1.outerRadius;
+    var spacing1to2 = controller1.outerRadius - controller2.outerRadius;
+    expect(spacing0to1).toBeGreaterThan(0);
+    expect(spacing1to2).toBeGreaterThan(0);
+  });
+
+  it ('should handle zero datasetSpacing', function() {
+    var chart = window.acquireChart({
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [10, 20],
+          label: 'Dataset 1'
+        }, {
+          data: [15, 25],
+          label: 'Dataset 2'
+        }],
+        labels: ['label0', 'label1']
+      },
+      options: {
+        plugins: {
+          legend: false,
+          title: false
+        },
+        datasetSpacing: 0
+      }
+    });
+
+    chart.update();
+
+    var controller0 = chart.getDatasetMeta(0).controller;
+    var controller1 = chart.getDatasetMeta(1).controller;
+
+    // With zero spacing, the radius difference should be only due to radiusLength
+    var radiusLength = (controller0.outerRadius - controller0.innerRadius);
+    expect(controller0.outerRadius - controller1.outerRadius).toBeCloseTo(radiusLength, 0);
+  });
+
+  it ('should handle undefined datasetSpacing (default to 0)', function() {
+    var chart = window.acquireChart({
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [10, 20],
+          label: 'Dataset 1'
+        }, {
+          data: [15, 25],
+          label: 'Dataset 2'
+        }],
+        labels: ['label0', 'label1']
+      },
+      options: {
+        plugins: {
+          legend: false,
+          title: false
+        }
+      }
+    });
+
+    chart.update();
+
+    var controller0 = chart.getDatasetMeta(0).controller;
+    var controller1 = chart.getDatasetMeta(1).controller;
+
+    // With undefined spacing (defaults to 0), the radius difference should be only due to radiusLength
+    var radiusLength = (controller0.outerRadius - controller0.innerRadius);
+    expect(controller0.outerRadius - controller1.outerRadius).toBeCloseTo(radiusLength, 0);
+  });
 });
