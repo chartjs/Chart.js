@@ -234,8 +234,16 @@ export default class DoughnutController extends DatasetController {
 
     meta.total = this.calculateTotal();
 
-    this.outerRadius = outerRadius - radiusLength * this._getRingWeightOffset(this.index);
-    this.innerRadius = Math.max(this.outerRadius - radiusLength * chartWeight, 0);
+    // For index 0, 0 spacing
+    // For index 1, 1 spacing
+    // For index 2, 2 spacings (account for the spacing for previous datasets)
+    // These are triangular numbers, so N*(N+1)/2 are the count of spacings we need to add.
+    const datasetSpacing = this.index > 0 && this.options.datasetSpacing
+      ? (this.options.datasetSpacing || 0) * (this.index * (this.index + 1) / 2)
+      : 0;
+
+    this.outerRadius = outerRadius - radiusLength * this._getRingWeightOffset(this.index) - datasetSpacing;
+    this.innerRadius = Math.max(this.outerRadius - radiusLength * chartWeight - datasetSpacing, 0);
 
     this.updateElements(arcs, 0, arcs.length, mode);
   }
