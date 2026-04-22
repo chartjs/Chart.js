@@ -877,6 +877,55 @@ describe('Legend block tests', function() {
     }]);
   });
 
+  it('should apply pointStyleYOffset to the legend point symbol only', function() {
+    function drawWithOffset(offset) {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A'],
+          datasets: [{
+            label: 'dataset1',
+            data: [1],
+            pointStyle: 'circle'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: {
+                usePointStyle: true,
+                pointStyleYOffset: offset
+              }
+            }
+          }
+        }
+      });
+
+      var mockContext = window.createMockContext();
+      chart.legend.ctx = mockContext;
+      chart.legend.draw();
+
+      var calls = mockContext.getCalls();
+      var arcCall = calls.filter(function(call) {
+        return call.name === 'arc';
+      })[0];
+      var fillTextCall = calls.filter(function(call) {
+        return call.name === 'fillText';
+      })[0];
+
+      return {
+        arcY: arcCall.args[1],
+        textY: fillTextCall.args[2]
+      };
+    }
+
+    var base = drawWithOffset(0);
+    var shifted = drawWithOffset(6);
+
+    expect(shifted.arcY - base.arcY).toBeCloseTo(6, 6);
+    expect(shifted.textY).toBeCloseTo(base.textY, 6);
+  });
+
   it('should not crash when the legend defaults are false', function() {
     const oldDefaults = Chart.defaults.plugins.legend;
 
