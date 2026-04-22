@@ -818,6 +818,83 @@ describe('Core.scale', function() {
     });
   });
   describe('Scale Title stroke', ()=>{
+    function getScaleTitleCalls(position, align, reverse) {
+      const axis = position === 'left' || position === 'right' ? 'y' : 'x';
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 0, y: 0}, {x: 10, y: 10}]
+          }]
+        },
+        options: {
+          events: [],
+          animation: false,
+          plugins: {
+            legend: false
+          },
+          scales: {
+            x: {
+              display: axis === 'x',
+              position: axis === 'x' ? position : 'bottom',
+              min: 0,
+              max: 10,
+              reverse: axis === 'x' ? reverse : false,
+              ticks: {
+                display: false
+              },
+              grid: {
+                display: false
+              },
+              border: {
+                display: false
+              },
+              title: {
+                display: axis === 'x',
+                text: 'title',
+                align
+              }
+            },
+            y: {
+              display: axis === 'y',
+              position: axis === 'y' ? position : 'left',
+              min: 0,
+              max: 10,
+              reverse: axis === 'y' ? reverse : false,
+              ticks: {
+                display: false
+              },
+              grid: {
+                display: false
+              },
+              border: {
+                display: false
+              },
+              title: {
+                display: axis === 'y',
+                text: 'title',
+                align
+              }
+            }
+          }
+        }
+      });
+      const scale = chart.scales[axis];
+
+      scale.ctx = window.createMockContext();
+      chart.draw();
+
+      return scale.ctx.getCalls().filter(({name}) => ['translate', 'setTextAlign', 'fillText'].includes(name));
+    }
+
+    ['top', 'bottom', 'left', 'right'].forEach(function(position) {
+      ['start', 'end'].forEach(function(align) {
+        it('should not reposition the ' + position + ' scale title when reverse=true and align=' + align, function() {
+          expect(getScaleTitleCalls(position, align, true)).toEqual(getScaleTitleCalls(position, align, false));
+        });
+      });
+    });
+
     function getChartWithScaleTitleStroke() {
       return window.acquireChart({
         type: 'line',

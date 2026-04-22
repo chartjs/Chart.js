@@ -119,10 +119,10 @@ function createTickContext(parent, index, tick) {
   });
 }
 
-function titleAlign(align, position, reverse) {
+function titleAlign(align, position) {
   /** @type {CanvasTextAlign} */
   let ret = _toLeftRightCenter(align);
-  if ((reverse && position !== 'right') || (!reverse && position === 'right')) {
+  if (position === 'right') {
     ret = reverseAlign(ret);
   }
   return ret;
@@ -1586,7 +1586,7 @@ export default class Scale extends Element {
 	 * @protected
 	 */
   drawTitle() {
-    const {ctx, options: {position, title, reverse}} = this;
+    const {ctx, options: {position, title}} = this;
 
     if (!title.display) {
       return;
@@ -1612,7 +1612,7 @@ export default class Scale extends Element {
       color: title.color,
       maxWidth,
       rotation,
-      textAlign: titleAlign(align, position, reverse),
+      textAlign: titleAlign(align, position),
       textBaseline: 'middle',
       translation: [titleX, titleY],
       strokeColor: title.strokeColor,
