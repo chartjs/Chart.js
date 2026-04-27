@@ -1203,7 +1203,27 @@ export class Tooltip extends Element {
       active.reverse();
     }
 
+    // When persistOnHover is enabled, keep the tooltip visible while the cursor
+    // is over the tooltip bounding box (even after leaving the data point).
+    if (options.persistOnHover && !active.length && lastActive.length && this._isMouseOverTooltip(e)) {
+      return lastActive;
+    }
+
     return active;
+  }
+
+  /**
+   * Returns true when the event position is inside the tooltip's rendered bounding box.
+   * @param {ChartEvent} e
+   * @returns {boolean}
+   * @private
+   */
+  _isMouseOverTooltip(e) {
+    const {x, y, width, height, opacity} = this;
+    if (!opacity || isNullOrUndef(x) || isNullOrUndef(y)) {
+      return false;
+    }
+    return e.x >= x && e.x <= x + width && e.y >= y && e.y <= y + height;
   }
 
   /**
@@ -1276,6 +1296,7 @@ export default {
     enabled: true,
     external: null,
     position: 'average',
+    persistOnHover: false,
     backgroundColor: 'rgba(0,0,0,0.8)',
     titleColor: '#fff',
     titleFont: {
