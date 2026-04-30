@@ -499,7 +499,7 @@ export default class TimeScale extends Scale {
     if (timeOpts.tooltipFormat) {
       return adapter.format(value, timeOpts.tooltipFormat);
     }
-    return adapter.format(value, timeOpts.displayFormats.datetime);
+    return adapter.format(value, timeOpts.displayFormats[this._unit] || timeOpts.displayFormats.datetime);
   }
 
   /**

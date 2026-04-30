@@ -456,6 +456,42 @@ describe('Time scale tests', function() {
     }
   });
 
+  it('getLabelForValue should use the current unit displayFormat, not datetime (issue #12128)', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          data: [
+            {x: '2015-01-01', y: 10},
+            {x: '2015-02-01', y: 20},
+            {x: '2015-03-01', y: 30}
+          ]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'month',
+              displayFormats: {
+                month: 'MMM YYYY'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    var xScale = chart.scales.x;
+    var controller = chart.getDatasetMeta(0).controller;
+    var value = controller.getParsed(0)[xScale.id];
+
+    // Should use 'month' displayFormat ('MMM YYYY'), not 'datetime'
+    expect(xScale.getLabelForValue(value)).toBe('Jan 2015');
+  });
+
   it('should round to isoWeekday', function() {
     var chart = window.acquireChart({
       type: 'line',
