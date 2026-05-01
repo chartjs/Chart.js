@@ -73,7 +73,8 @@
         "test-ci-integration": "pnpm --filter \"./test/integration/**\" test"
     },
     "dependencies": {
-        "@kurkle/color": "^0.3.0"
+        "@kurkle/color": "^0.3.0",
+        "form-data": "3.0.4"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^23.0.2",
