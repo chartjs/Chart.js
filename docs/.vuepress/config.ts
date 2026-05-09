@@ -145,6 +145,7 @@ export default defineConfig({
             'bar/border-radius',
             'bar/floating',
             'bar/waterfall',
+            'bar/waterfall-stacked',
             'bar/horizontal',
             'bar/stacked',
             'bar/stacked-groups',
