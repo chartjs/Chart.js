@@ -10,7 +10,7 @@ Namespace: `options.scales[scaleId].title`, it defines options for the scale tit
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `false` | If true, display the axis title.
 | `align` | `string` | `'center'` | Alignment of the axis title. Possible options are `'start'`, `'center'` and `'end'`
-| `text` | `string`\|`string[]` | `''` | The text for the title. (i.e. "# of People" or "Response Choices").
+| `text` | `string`\|`string[]` | `''` | The text for the title. (i.e. "# of People" or "Response Choices"). If specified as an array, text is rendered on multiple lines.
 | `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of label.
 | `strokeColor` | [`Color`](../general/colors.md) |  | Color of text stroke.
 | `strokeWidth` | `number` |  | Size of stroke width, in pixels.
