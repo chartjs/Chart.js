@@ -28,7 +28,28 @@ describe('Legend block tests', function() {
         display: false,
         position: 'center',
         text: '',
-      }
+      },
+
+      navigation: {
+        color: jasmine.any(Function),
+        display: false,
+        arrowSize: 12,
+        maxCols: 1,
+        maxRows: 3,
+        padding: {
+          x: 10,
+          y: 10,
+          top: 0
+        },
+        align: 'start',
+        grid: true,
+        activeColor: jasmine.any(Function),
+        inactiveColor: jasmine.any(Function),
+        font: {
+          weight: 'bold',
+          size: 14
+        }
+      },
     });
   });
 
@@ -1053,7 +1074,8 @@ describe('Legend block tests', function() {
         Chart.defaults.plugins.legend,
         {
           labels: {color: Chart.defaults.color},
-          title: {color: Chart.defaults.color}
+          title: {color: Chart.defaults.color},
+          navigation: {color: Chart.defaults.color}
         }
       ));
     });
@@ -1180,6 +1202,1255 @@ describe('Legend block tests', function() {
 
       await jasmine.triggerMouseEvent(chart, 'click', el);
       expect(clickItem).toBe(chart.legend.legendItems[0]);
+    });
+  });
+
+  describe('navigation', function() {
+    it('should not change legendItems when navigation is active', function() {
+      const chart = acquireChart({
+        type: 'doughnut',
+        data: {
+          labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+          datasets: [{
+            data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              navigation: {
+                display: true,
+                maxRows: 1
+              }
+            }
+          },
+        }
+      });
+
+      expect(chart.legend.navigation).toBeTruthy();
+      expect(chart.legend.legendItems.length).toBe(10);
+      expect(chart.legend.navigation.legendItems.length).toBe(4);
+    });
+
+    describe('horizontal', function() {
+      it('should not show navigation by default', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                maxHeight: 100
+              }
+            }
+          }
+        });
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should not show navigation if display false', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should not show navigation if options is false', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top',
+                  navigation: false
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should show navigation if display true', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3'],
+              datasets: [{
+                data: [10, 20, 30]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top',
+                  navigation: {
+                    display: true,
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(3);
+        expect(chart.legend.navigation.legendItems.length).toBe(3);
+      });
+
+      it('should not show navigation if display auto and enough space', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2'],
+              datasets: [{
+                data: [10, 20]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top',
+                  navigation: {
+                    display: 'auto',
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(2);
+      });
+
+      it('should show navigation if display auto and low space', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: 'auto',
+                  maxRows: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+      });
+
+      it('should change pages when clicking on the navigation', async function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: true,
+                  maxRows: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.navigation.page).toBe(0);
+
+        const next = {
+          x: chart.legend.navigation.next.x + (chart.legend.navigation.next.width / 2),
+          y: chart.legend.navigation.next.y + (chart.legend.navigation.next.height / 2)
+        };
+
+        await jasmine.triggerMouseEvent(chart, 'click', next);
+
+        expect(chart.legend.navigation.page).toBe(1);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+        await jasmine.triggerMouseEvent(chart, 'click', next);
+
+        expect(chart.legend.navigation.page).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(2);
+
+        await jasmine.triggerMouseEvent(chart, 'click', next);
+
+        expect(chart.legend.navigation.page).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(2);
+
+        const prev = {
+          x: chart.legend.navigation.prev.x + (chart.legend.navigation.prev.width / 2),
+          y: chart.legend.navigation.prev.y + (chart.legend.navigation.prev.height / 2)
+        };
+
+        await jasmine.triggerMouseEvent(chart, 'click', prev);
+
+        expect(chart.legend.navigation.page).toBe(1);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+        await jasmine.triggerMouseEvent(chart, 'click', prev);
+
+        expect(chart.legend.navigation.page).toBe(0);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+        await jasmine.triggerMouseEvent(chart, 'click', prev);
+
+        expect(chart.legend.navigation.page).toBe(0);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+      });
+
+      it('should show navigation after changing the options', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top',
+                  navigation: {
+                    display: false,
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.display = true;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+      });
+
+      it('should hide navigation after changing the options', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top',
+                  navigation: {
+                    display: true,
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+
+        chart.options.plugins.legend.navigation.display = false;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should show navigation after adding labels when display auto', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4'],
+            datasets: [{
+              data: [10, 20, 30, 40]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: 'auto',
+                  maxRows: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(4);
+
+        chart.data.labels.push('Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10');
+        chart.update();
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should hide navigation after removing labels when display auto', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: 'auto',
+                  maxRows: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.data.labels.splice(4, 6);
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(4);
+      });
+
+      it('should respect max rows', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: 'auto',
+                  maxRows: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.maxRows = 2;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(8);
+        expect(chart.legend.navigation.legendItems.length).toBe(8);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.maxRows = 3;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should respect horizontal grid', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['AAAAAAAAAAAAAAAAAAAA', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: true,
+                  maxRows: 5,
+                  grid: {
+                    x: true
+                  }
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+
+        const largestLabel = chart.legend.legendHitBoxes[0];
+
+        chart.legend.legendHitBoxes.forEach((box) => {
+          expect(box.offsetWidth).toBe(largestLabel.offsetWidth);
+        });
+
+        chart.options.plugins.legend.navigation.grid.x = false;
+        chart.update();
+
+        chart.legend.legendHitBoxes.slice(1).forEach((box) => {
+          expect(largestLabel.offsetWidth).toBeGreaterThan(box.offsetWidth);
+        });
+      });
+
+      it('should respect vertical grid', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: [['Label 1', 'Multiline'], 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                navigation: {
+                  display: true,
+                  maxRows: 5,
+                  grid: {
+                    y: true
+                  }
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+
+        const padding = chart.options.plugins.legend.labels.padding;
+        let highestLabel = chart.legend.legendHitBoxes[0];
+        let topBlock = chart.legend.navigation.blocks[0];
+
+        expect(topBlock.height).toBe(highestLabel.height + padding);
+
+        chart.legend.navigation.blocks.forEach((block, blockIndex) => {
+          for (let i = block.start; i < block.end; i++) {
+            const legend = chart.legend.legendHitBoxes[i];
+            expect(legend.top - padding).toBe(topBlock.height * blockIndex);
+          }
+        });
+
+        chart.options.plugins.legend.navigation.grid.y = false;
+        chart.update();
+
+        highestLabel = chart.legend.legendHitBoxes[0];
+        topBlock = chart.legend.navigation.blocks[0];
+
+        expect(topBlock.height).toBe(highestLabel.height + padding);
+
+        chart.legend.navigation.blocks.slice(1).forEach((block) => {
+          for (let i = block.start; i < block.end; i++) {
+            const legend = chart.legend.legendHitBoxes[i];
+            expect((legend.top + block.height) - topBlock.height - padding).toBeLessThan(topBlock.height);
+          }
+        });
+      });
+
+      it('should show navigation on resize when display auto', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'top',
+                  navigation: {
+                    display: 'auto',
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 800, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(8);
+        expect(chart.legend.legendItems.length).toBe(8);
+
+        chart.resize(512, 512);
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(5);
+        expect(chart.legend.navigation.legendItems.length).toBe(5);
+        expect(chart.legend.legendItems.length).toBe(8);
+      });
+    });
+
+    describe('vertical', function() {
+      it('should not show navigation by default', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10', 'Label 11', 'Label 12', 'Label 13', 'Label 14', 'Label 15'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10, 20, 30, 40, 50, 60]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  maxWidth: 100,
+                }
+              }
+            }
+          },
+          {
+            canvas: {width: 512, height: 250}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(15);
+        expect(chart.legend.legendItems.length).toBe(15);
+      });
+
+      it('should not show navigation if display false', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'right',
+                navigation: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should not show navigation if options is false', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+            datasets: [{
+              data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'right',
+                navigation: false
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should show navigation if display true', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2', 'Label 3'],
+            datasets: [{
+              data: [10, 20, 30]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'right',
+                navigation: {
+                  display: true,
+                  maxCols: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(3);
+        expect(chart.legend.navigation.legendItems.length).toBe(3);
+      });
+
+      it('should not show navigation if display auto and enough space', function() {
+        const chart = acquireChart({
+          type: 'doughnut',
+          data: {
+            labels: ['Label 1', 'Label 2'],
+            datasets: [{
+              data: [10, 20]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true,
+                position: 'right',
+                navigation: {
+                  display: 'auto',
+                  maxCols: 1
+                }
+              }
+            },
+          }
+        });
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(2);
+      });
+
+      it('should show navigation if display auto and low space', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: 'auto',
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should change pages when clicking on the navigation', async function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: true,
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.navigation.page).toBe(0);
+
+        const next = {
+          x: chart.legend.navigation.next.x + (chart.legend.navigation.next.width / 2),
+          y: chart.legend.navigation.next.y + (chart.legend.navigation.next.height / 2)
+        };
+
+        await jasmine.triggerMouseEvent(chart, 'click', next);
+
+        expect(chart.legend.navigation.page).toBe(1);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+        await jasmine.triggerMouseEvent(chart, 'click', next);
+
+        expect(chart.legend.navigation.page).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(2);
+
+        await jasmine.triggerMouseEvent(chart, 'click', next);
+
+        expect(chart.legend.navigation.page).toBe(2);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(2);
+
+        const prev = {
+          x: chart.legend.navigation.prev.x + (chart.legend.navigation.prev.width / 2),
+          y: chart.legend.navigation.prev.y + (chart.legend.navigation.prev.height / 2)
+        };
+
+        await jasmine.triggerMouseEvent(chart, 'click', prev);
+
+        expect(chart.legend.navigation.page).toBe(1);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+        await jasmine.triggerMouseEvent(chart, 'click', prev);
+
+        expect(chart.legend.navigation.page).toBe(0);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+
+        await jasmine.triggerMouseEvent(chart, 'click', prev);
+
+        expect(chart.legend.navigation.page).toBe(0);
+        expect(chart.legend.legendItems.length).toBe(10);
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+      });
+
+      it('should show navigation after changing the options', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: false,
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.display = true;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should hide navigation after changing the options', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: true,
+                    maxRows: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.display = false;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should show navigation after adding labels when display auto', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4'],
+              datasets: [{
+                data: [10, 20, 30, 40]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: 'auto',
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(4);
+
+        chart.data.labels.push('Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10');
+        chart.update();
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should hide navigation after removing labels when display auto', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: 'auto',
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.data.labels.splice(4, 6);
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(4);
+      });
+
+      it('should respect max cols', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: 'auto',
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 800, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.maxCols = 2;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(8);
+        expect(chart.legend.navigation.legendItems.length).toBe(8);
+        expect(chart.legend.legendItems.length).toBe(10);
+
+        chart.options.plugins.legend.navigation.maxCols = 3;
+        chart.update();
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(10);
+        expect(chart.legend.legendItems.length).toBe(10);
+      });
+
+      it('should respect horizontal grid', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['AAAAAAAAAAAAAAA', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  maxWidth: 800,
+                  navigation: {
+                    display: true,
+                    maxCols: 5,
+                    grid: {
+                      x: true
+                    }
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 800, height: 130}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+
+        const padding = chart.options.plugins.legend.labels.padding;
+        let largestLabel = chart.legend.legendHitBoxes[0];
+        let leftBlock = chart.legend.navigation.blocks[0];
+
+        expect(leftBlock.width).toBe(largestLabel.width + padding);
+
+        chart.legend.navigation.blocks.forEach((block, blockIndex) => {
+          for (let i = block.start; i < block.end; i++) {
+            const legend = chart.legend.legendHitBoxes[i];
+            expect(legend.left - padding).toBe(chart.legend.left + (leftBlock.width * blockIndex));
+          }
+        });
+
+        chart.options.plugins.legend.navigation.grid.x = false;
+        chart.update();
+
+        largestLabel = chart.legend.legendHitBoxes[0];
+        leftBlock = chart.legend.navigation.blocks[0];
+
+        expect(leftBlock.width).toBe(largestLabel.width + padding);
+
+        let leftOffset = leftBlock.width;
+        chart.legend.navigation.blocks.slice(1).forEach((block) => {
+          for (let i = block.start; i < block.end; i++) {
+            const legend = chart.legend.legendHitBoxes[i];
+            expect((legend.left - chart.legend.left + block.width) - leftOffset - padding).toBeLessThan(leftBlock.width);
+          }
+          leftOffset += block.width;
+        });
+      });
+
+      it('should respect vertical grid', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: [['Label 1', 'Multiline'], 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: true,
+                    maxCols: 5,
+                    grid: {
+                      y: true
+                    }
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 800, height: 200}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeTruthy();
+
+        const highestLabel = chart.legend.legendHitBoxes[0];
+
+        chart.legend.legendHitBoxes.forEach((box) => {
+          expect(box.offsetHeight).toBe(highestLabel.offsetHeight);
+        });
+
+        chart.options.plugins.legend.navigation.grid.y = false;
+        chart.update();
+
+        chart.legend.legendHitBoxes.slice(1).forEach((box) => {
+          expect(highestLabel.offsetHeight).toBeGreaterThan(box.offsetHeight);
+        });
+      });
+
+      it('should show navigation on resize when display auto', function() {
+        const chart = acquireChart(
+          {
+            type: 'doughnut',
+            data: {
+              labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8'],
+              datasets: [{
+                data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 10]
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'right',
+                  navigation: {
+                    display: 'auto',
+                    maxCols: 1
+                  }
+                }
+              },
+            }
+          },
+          {
+            canvas: {width: 512, height: 512}
+          }
+        );
+
+        expect(chart.legend.navigation).toBeUndefined();
+        expect(chart.legend.legendHitBoxes.length).toBe(8);
+        expect(chart.legend.legendItems.length).toBe(8);
+
+        chart.resize(512, 130);
+
+        expect(chart.legend.navigation).toBeTruthy();
+        expect(chart.legend.legendHitBoxes.length).toBe(4);
+        expect(chart.legend.navigation.legendItems.length).toBe(4);
+        expect(chart.legend.legendItems.length).toBe(8);
+      });
     });
   });
 });

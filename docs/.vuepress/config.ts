@@ -34,18 +34,18 @@ export default defineConfig({
     }],
     ['vuepress-plugin-code-copy', true],
     ['vuepress-plugin-typedoc', {
-        entryPoints: ['../../src/types/index.d.ts'],
-        hideInPageTOC: true,
-        tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
-      },
+      entryPoints: ['../../src/types/index.d.ts'],
+      hideInPageTOC: true,
+      tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
+    },
     ],
     ['@simonbrunel/vuepress-plugin-versions', {
       filters: {
         suffix: (tag) => tag ? ` (${tag})` : '',
         title: (v, vars) => {
           return window.location.href.includes('master') ? 'Development (master)' :
-                 vars.tag === 'latest' ? 'Latest (' + v + ')' :
-                 v + (vars.tag ? ` (${vars.tag})` : '') + ' (outdated)';
+            vars.tag === 'latest' ? 'Latest (' + v + ')' :
+              v + (vars.tag ? ` (${vars.tag})` : '') + ' (outdated)';
         },
       },
       menu: {
@@ -219,6 +219,7 @@ export default defineConfig({
             'legend/point-style',
             'legend/position',
             'legend/title',
+            'legend/navigation'
           ]
         },
         {
