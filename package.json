@@ -73,6 +73,7 @@
         "test-ci-integration": "pnpm --filter \"./test/integration/**\" test"
     },
     "dependencies": {
+        "@babel/traverse": "7.23.2",
         "@kurkle/color": "^0.3.0"
     },
     "devDependencies": {
