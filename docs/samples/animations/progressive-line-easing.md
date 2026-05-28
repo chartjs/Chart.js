@@ -21,7 +21,7 @@ let restart = false;
 const totalDuration = 5000;
 const duration = (ctx) => easing(ctx.index / data.length) * totalDuration / data.length;
 const delay = (ctx) => easing(ctx.index / data.length) * totalDuration;
-const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
+const previously = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
 const animation = {
   x: {
     type: 'number',
@@ -40,7 +40,7 @@ const animation = {
     type: 'number',
     easing: 'linear',
     duration: duration,
-    from: previousY,
+    from: previously,
     delay(ctx) {
       if (ctx.type !== 'data' || ctx.yStarted) {
         return 0;
