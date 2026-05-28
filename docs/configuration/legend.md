@@ -162,19 +162,16 @@ const chart = new Chart(ctx, {
 
 It can be common to want to trigger different behaviour when clicking an item in the legend. This can be easily achieved using a callback in the config object.
 
+:::tip Updated
+Starting from Chart.js v4, use `toggleDataVisibility()` and `update()` instead of the old `show()` / `hide()` methods.
+:::
+
 The default legend click handler is:
 
 ```javascript
 function(e, legendItem, legend) {
-    const index = legendItem.datasetIndex;
-    const ci = legend.chart;
-    if (ci.isDatasetVisible(index)) {
-        ci.hide(index);
-        legendItem.hidden = true;
-    } else {
-        ci.show(index);
-        legendItem.hidden = false;
-    }
+    legend.chart.toggleDataVisibility(legendItem.index);
+    legend.chart.update();
 }
 ```
 
