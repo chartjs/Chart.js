@@ -98,6 +98,7 @@ A number of changes were made to the configuration options passed to the `Chart`
 * `scales.[x/y]Axes.time.min` was renamed to `scales[id].min`
 * `scales.[x/y]Axes.zeroLine*` options of axes were removed. Use scriptable scale options instead.
 * The dataset option `steppedLine` was removed. Use `stepped`
+* The dataset option `lineTension` was renamed to `tension` and its default changed from `0.4` to `0`. Set `tension` to a value greater than `0` to keep interpolated (curved) lines.
 * The chart option `showLines` was renamed to `showLine` to match the dataset option.
 * The chart option `startAngle` was moved to `radial` scale options.
 * To override the platform class used in a chart instance, pass `platform: PlatformClass` in the config object. Note that the class should be passed, not an instance of the class.
