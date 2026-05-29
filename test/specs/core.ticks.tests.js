@@ -106,5 +106,22 @@ describe('Test tick generators', function() {
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}]])).toEqual('1');
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}, {value: 1.01}]])).toEqual('1.00');
     });
+
+    it('should apply `ticks.format` to the value 0 (#11905)', function() {
+      const ticks = [{value: 0}, {value: 100}];
+      const currencyScale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {style: 'currency', currency: 'USD'}}}};
+      expect(Chart.Ticks.formatters.numeric.apply(currencyScale, [0, 0, ticks])).toEqual('$0');
+      expect(Chart.Ticks.formatters.numeric.apply(currencyScale, [100, 1, ticks])).toEqual('$100');
+
+      const percentScale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {style: 'percent'}}}};
+      expect(Chart.Ticks.formatters.numeric.apply(percentScale, [0, 0, [{value: 0}, {value: 1}]])).toEqual('0%');
+    });
+
+    it('should render 0 without decimals or scientific notation when no format is set', function() {
+      const scale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {}}}};
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [0, 0, [{value: 0}, {value: 0.1}, {value: 0.2}]])).toEqual('0');
+      // a huge range would otherwise switch to scientific notation; 0 should stay '0'
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [0, 0, [{value: 0}, {value: 1e16}]])).toEqual('0');
+    });
   });
 });
