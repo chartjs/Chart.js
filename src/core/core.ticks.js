@@ -26,11 +26,16 @@ const formatters = {
    * @return {string} string representation of the tickValue parameter
    */
   numeric(tickValue, index, ticks) {
+    const locale = this.chart.options.locale;
+
     if (tickValue === 0) {
-      return '0'; // never show decimal places for 0
+      // Never show decimal places (or scientific notation) for 0, but still apply
+      // `ticks.format` (e.g. currency or percent) so 0 matches the other ticks.
+      const zeroOptions = {minimumFractionDigits: 0, maximumFractionDigits: 0};
+      Object.assign(zeroOptions, this.options.ticks.format);
+      return formatNumber(0, locale, zeroOptions);
     }
 
-    const locale = this.chart.options.locale;
     let notation;
     let delta = tickValue; // This is used when there are less than 2 ticks as the tick interval.
 
