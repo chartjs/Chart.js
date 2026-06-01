@@ -1065,7 +1065,7 @@ export default class DatasetController {
     if (count) {
       this._sync(['_removeElements', start, count]);
     }
-    const newCount = arguments.length - 2;
+    const newCount = Math.max(0, arguments.length - 2);
     if (newCount) {
       this._sync(['_insertElements', start, newCount]);
     }
