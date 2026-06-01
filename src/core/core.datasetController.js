@@ -1062,10 +1062,14 @@ export default class DatasetController {
   }
 
   _onDataSplice(start, count) {
+    if (arguments.length <= 1) {
+      // splice(start) with no deleteCount removes everything from start onwards
+      count = this._cachedMeta.data.length - start;
+    }
     if (count) {
       this._sync(['_removeElements', start, count]);
     }
-    const newCount = arguments.length - 2;
+    const newCount = Math.max(arguments.length - 2, 0);
     if (newCount) {
       this._sync(['_insertElements', start, newCount]);
     }
