@@ -144,6 +144,8 @@ export default defineConfig({
           children: [
             'bar/border-radius',
             'bar/floating',
+            'bar/waterfall',
+            'bar/waterfall-stacked',
             'bar/horizontal',
             'bar/stacked',
             'bar/stacked-groups',
