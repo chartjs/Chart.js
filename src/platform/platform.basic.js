@@ -17,7 +17,4 @@ export default class BasicPlatform extends BasePlatform {
     // https://github.com/chartjs/Chart.js/issues/2807
     return item && item.getContext && item.getContext('2d') || null;
   }
-  updateConfig(config) {
-    config.options.animation = false;
-  }
 }
