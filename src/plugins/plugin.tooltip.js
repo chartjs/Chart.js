@@ -131,7 +131,8 @@ function createTooltipItem(chart, item) {
 
   return {
     chart,
-    label,
+    // If label is an array (multiline), join with ', ' for tooltip display
+    label: isArray(label) ? label.join(', ') : label,
     parsed: controller.getParsed(index),
     raw: chart.data.datasets[datasetIndex].data[index],
     formattedValue: value,
