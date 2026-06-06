@@ -222,9 +222,22 @@ export function retinaScale(
   // If no style has been set on the canvas, the render size is used as display size,
   // making the chart visually bigger, so let's enforce it to the "correct" values.
   // See https://github.com/chartjs/Chart.js/issues/3575
+  // Also update styles when resizing to ensure the canvas grows with its container.
+  // See https://github.com/chartjs/Chart.js/issues/12177
   if (canvas.style && (forceStyle || (!canvas.style.height && !canvas.style.width))) {
     canvas.style.height = `${chart.height}px`;
     canvas.style.width = `${chart.width}px`;
+  } else if (canvas.style) {
+    // Update styles on resize if they were previously set by Chart.js
+    // This ensures the canvas can grow when its container grows
+    const currentStyleHeight = parseFloat(canvas.style.height);
+    const currentStyleWidth = parseFloat(canvas.style.width);
+    if (!isNaN(currentStyleHeight) && currentStyleHeight !== chart.height) {
+      canvas.style.height = `${chart.height}px`;
+    }
+    if (!isNaN(currentStyleWidth) && currentStyleWidth !== chart.width) {
+      canvas.style.width = `${chart.width}px`;
+    }
   }
 
   const canvasHeight = Math.floor(deviceHeight);
