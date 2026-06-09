@@ -287,11 +287,31 @@ function drawPointLabels(scale, labelCount) {
   }
 }
 
-function pathRadiusLine(scale, radius, circular, labelCount) {
+function pathRadiusLine(scale, radius, borderRadius, circular, labelCount) {
   const {ctx} = scale;
   if (circular) {
     // Draw circular arcs between the points
     ctx.arc(scale.xCenter, scale.yCenter, radius, 0, TAU);
+  } else if (borderRadius) {
+    // Draw curved lines connecting each index
+    let pointPosition1 = scale.getPointPosition(0, radius);
+    let pointPosition2 = scale.getPointPosition(1, radius);
+    ctx.lineTo(
+      (pointPosition1.x + pointPosition2.x) / 2,
+      (pointPosition1.y + pointPosition2.y) / 2
+    );
+
+    for (let i = 1; i <= labelCount; i++) {
+      pointPosition1 = pointPosition2;
+      pointPosition2 = scale.getPointPosition((i + 1) % labelCount, radius);
+      ctx.arcTo(
+        pointPosition1.x,
+        pointPosition1.y,
+        (pointPosition1.x + pointPosition2.x) / 2,
+        (pointPosition1.y + pointPosition2.y) / 2,
+        borderRadius
+      );
+    }
   } else {
     // Draw straight lines connecting each index
     let pointPosition = scale.getPointPosition(0, radius);
@@ -306,7 +326,7 @@ function pathRadiusLine(scale, radius, circular, labelCount) {
 
 function drawRadiusLine(scale, gridLineOpts, radius, labelCount, borderOpts) {
   const ctx = scale.ctx;
-  const circular = gridLineOpts.circular;
+  const {circular, borderRadius} = gridLineOpts;
 
   const {color, lineWidth} = gridLineOpts;
 
@@ -321,7 +341,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount, borderOpts) {
   ctx.lineDashOffset = borderOpts.dashOffset;
 
   ctx.beginPath();
-  pathRadiusLine(scale, radius, circular, labelCount);
+  pathRadiusLine(scale, radius, borderRadius, circular, labelCount);
   ctx.closePath();
   ctx.stroke();
   ctx.restore();
@@ -548,12 +568,12 @@ export default class RadialLinearScale extends LinearScaleBase {
 	 * @protected
 	 */
   drawBackground() {
-    const {backgroundColor, grid: {circular}} = this.options;
+    const {backgroundColor, grid: {circular, borderRadius}} = this.options;
     if (backgroundColor) {
       const ctx = this.ctx;
       ctx.save();
       ctx.beginPath();
-      pathRadiusLine(this, this.getDistanceFromCenterForValue(this._endValue), circular, this._pointLabels.length);
+      pathRadiusLine(this, this.getDistanceFromCenterForValue(this._endValue), borderRadius, circular, this._pointLabels.length);
       ctx.closePath();
       ctx.fillStyle = backgroundColor;
       ctx.fill();
