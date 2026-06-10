@@ -684,6 +684,48 @@ describe('Linear Scale', function() {
     expect(getLabels(chart.scales.y)).toEqual(['1', '3', '5', '7', '9', '11']);
   });
 
+  it('Should use stepSize increments and keep max as the final shorter interval', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 3333,
+            ticks: {
+              stepSize: 500
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([
+      0, 500, 1000, 1500, 2000, 2500, 3000, 3333
+    ]);
+  });
+
+  it('Should use stepSize for floating point ranges that are effectively divisible', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 0.3,
+            ticks: {
+              stepSize: 0.1
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(1))).toEqual([0, 0.1, 0.2, 0.3]);
+  });
+
   it('Should not generate any ticks > max if max is specified', function() {
     var chart = window.acquireChart({
       type: 'line',
