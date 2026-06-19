@@ -271,8 +271,8 @@ export default class DatasetController {
     this.supportsDecimation = false;
     this.$context = undefined;
     this._syncList = [];
-    this.datasetElementType = new.target.datasetElementType;
-    this.dataElementType = new.target.dataElementType;
+    this.datasetElementType = valueOrDefault(new.target.datasetElementType, null);
+    this.dataElementType = valueOrDefault(new.target.dataElementType, null);
 
     this.initialize();
   }
@@ -786,6 +786,9 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDatasetElementOptions(mode) {
+    if (!this.datasetElementType) {
+      return {};
+    }
     return this._resolveElementOptions(this.datasetElementType.id, mode);
   }
 
@@ -795,6 +798,9 @@ export default class DatasetController {
 	 * @protected
 	 */
   resolveDataElementOptions(index, mode) {
+    if (!this.dataElementType) {
+      return {};
+    }
     return this._resolveElementOptions(this.dataElementType.id, mode, index);
   }
 
@@ -982,7 +988,9 @@ export default class DatasetController {
     }
 
     if (numData > numMeta) {
-      this._insertElements(numMeta, numData - numMeta, resetNewElements);
+      if (this.dataElementType) {
+        this._insertElements(numMeta, numData - numMeta, resetNewElements);
+      }
     } else if (numData < numMeta) {
       this._removeElements(numData, numMeta - numData);
     }
