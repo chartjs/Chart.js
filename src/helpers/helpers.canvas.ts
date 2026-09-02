@@ -44,7 +44,7 @@ export function _measureText(
   string: string
 ) {
   let textWidth = data[string];
-  if (!textWidth) {
+  if (typeof textWidth === 'undefined') {
     textWidth = data[string] = ctx.measureText(string).width;
     gc.push(string);
   }
