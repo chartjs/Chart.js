@@ -327,7 +327,9 @@ export class Legend extends Element {
           radius: boxHeight * Math.SQRT2 / 2,
           pointStyle: legendItem.pointStyle,
           rotation: legendItem.rotation,
-          borderWidth: lineWidth
+          borderWidth: lineWidth,
+          lineDash: legendItem.lineDash,
+          lineDashOffset: legendItem.lineDashOffset
         };
         const centerX = rtlHelper.xPlus(x, boxWidth / 2);
         const centerY = y + halfFontSize;
@@ -589,6 +591,19 @@ function isListened(type, opts) {
   return false;
 }
 
+function getLegendItemStyle(meta, usePointStyle, pointStyle) {
+  const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+  const resolvedPointStyle = pointStyle || style.pointStyle;
+  const datasetStyle = usePointStyle && resolvedPointStyle === 'line' ? meta.controller.getStyle() : {};
+  return {
+    pointStyle: resolvedPointStyle,
+    lineCap: valueOrDefault(style.borderCapStyle, datasetStyle.borderCapStyle),
+    lineDash: valueOrDefault(style.borderDash, datasetStyle.borderDash),
+    lineDashOffset: valueOrDefault(style.borderDashOffset, datasetStyle.borderDashOffset),
+    lineJoin: valueOrDefault(style.borderJoinStyle, datasetStyle.borderJoinStyle),
+  };
+}
+
 export default {
   id: 'legend',
 
@@ -679,19 +694,20 @@ export default {
         return chart._getSortedDatasetMetas().map((meta) => {
           const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
           const borderWidth = toPadding(style.borderWidth);
+          const lineStyle = getLegendItemStyle(meta, usePointStyle, pointStyle);
 
           return {
             text: datasets[meta.index].label,
             fillStyle: style.backgroundColor,
             fontColor: color,
             hidden: !meta.visible,
-            lineCap: style.borderCapStyle,
-            lineDash: style.borderDash,
-            lineDashOffset: style.borderDashOffset,
-            lineJoin: style.borderJoinStyle,
+            lineCap: lineStyle.lineCap,
+            lineDash: lineStyle.lineDash,
+            lineDashOffset: lineStyle.lineDashOffset,
+            lineJoin: lineStyle.lineJoin,
             lineWidth: (borderWidth.width + borderWidth.height) / 4,
             strokeStyle: style.borderColor,
-            pointStyle: pointStyle || style.pointStyle,
+            pointStyle: lineStyle.pointStyle,
             rotation: style.rotation,
             textAlign: textAlign || style.textAlign,
             borderRadius: useBorderRadius && (borderRadius || style.borderRadius),

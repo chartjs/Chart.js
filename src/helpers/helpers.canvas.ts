@@ -151,6 +151,8 @@ export interface DrawPointOptions {
   rotation?: number;
   radius: number;
   borderWidth: number;
+  lineDash?: number[];
+  lineDashOffset?: number;
 }
 
 export function drawPoint(
@@ -287,6 +289,10 @@ export function drawPointLegend(
       ctx.lineTo(x - yOffsetW, y + xOffset);
       break;
     case 'line':
+      if (options.lineDash) {
+        ctx.setLineDash(options.lineDash);
+        ctx.lineDashOffset = options.lineDashOffset || 0;
+      }
       xOffset = w ? w / 2 : Math.cos(rad) * radius;
       yOffset = Math.sin(rad) * radius;
       ctx.moveTo(x - xOffset, y - yOffset);
