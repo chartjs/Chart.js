@@ -831,6 +831,112 @@ describe('Plugin.Tooltip', function() {
     }));
   });
 
+  it('should hide the tooltip and not run content callbacks when all items are filtered out', async function() {
+    var titleCallback = jasmine.createSpy('titleCallback');
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function() {
+              return false;
+            },
+            callbacks: {
+              title: titleCallback
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var point = meta.data[1];
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(titleCallback).not.toHaveBeenCalled();
+    expect(chart.tooltip.opacity).toBe(0);
+  });
+
+  it('should stay drawable while fading out after all items become filtered', async function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function(item) {
+              return item.dataIndex !== 2;
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+
+    // Show the tooltip on an accepted item, then move to a filtered one
+    await jasmine.triggerMouseEvent(chart, 'mousemove', meta.data[1]);
+    expect(chart.tooltip.body.length).toBe(1);
+    await jasmine.triggerMouseEvent(chart, 'mousemove', meta.data[2]);
+
+    expect(chart.tooltip.body.length).toBe(0);
+
+    // Drawing mid fade-out must not throw with the cleared label colors
+    chart.tooltip.opacity = 0.5;
+    expect(function() {
+      chart.tooltip.draw(chart.ctx);
+    }).not.toThrow();
+  });
+
+  it('should not report a position change for repeated events on filtered items', async function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function() {
+              return false;
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var point = meta.data[1];
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    var updateSpy = spyOn(chart.tooltip, 'update').and.callThrough();
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
   it('should set the caretPadding based on a config setting', async function() {
     var chart = window.acquireChart({
       type: 'line',
