@@ -379,7 +379,7 @@ export default class Scale extends Element {
   // Any function can be extended by the scale type
 
   beforeUpdate() {
-    call(this.options.beforeUpdate, [this]);
+    this._callHooks('beforeUpdate');
   }
 
   /**
@@ -498,13 +498,11 @@ export default class Scale extends Element {
   }
 
   afterUpdate() {
-    call(this.options.afterUpdate, [this]);
+    this._callHooks('afterUpdate');
   }
 
-  //
-
   beforeSetDimensions() {
-    call(this.options.beforeSetDimensions, [this]);
+    this._callHooks('beforeSetDimensions');
   }
   setDimensions() {
     // Set the unconstrained dimension before label rotation
@@ -528,7 +526,7 @@ export default class Scale extends Element {
     this.paddingBottom = 0;
   }
   afterSetDimensions() {
-    call(this.options.afterSetDimensions, [this]);
+    this._callHooks('afterSetDimension');
   }
 
   _callHooks(name) {
@@ -545,10 +543,10 @@ export default class Scale extends Element {
     this._callHooks('afterDataLimits');
   }
 
-  //
   beforeBuildTicks() {
     this._callHooks('beforeBuildTicks');
   }
+
   /**
 	 * @return {object[]} the ticks
 	 */
@@ -560,8 +558,9 @@ export default class Scale extends Element {
   }
 
   beforeTickToLabelConversion() {
-    call(this.options.beforeTickToLabelConversion, [this]);
+    this._callHooks('beforeTickToLabelConversion');
   }
+
   /**
 	 * Convert ticks to label strings
 	 * @param {Tick[]} ticks
@@ -575,14 +574,13 @@ export default class Scale extends Element {
     }
   }
   afterTickToLabelConversion() {
-    call(this.options.afterTickToLabelConversion, [this]);
+    this._callHooks('afterTickToLabelConversion');
   }
-
-  //
 
   beforeCalculateLabelRotation() {
-    call(this.options.beforeCalculateLabelRotation, [this]);
+    this._callHooks('beforeCalculateLabelRotation');
   }
+
   calculateLabelRotation() {
     const options = this.options;
     const tickOpts = options.ticks;
@@ -621,16 +619,17 @@ export default class Scale extends Element {
 
     this.labelRotation = labelRotation;
   }
+
   afterCalculateLabelRotation() {
-    call(this.options.afterCalculateLabelRotation, [this]);
+    this._callHooks('afterCalculateLabelRotation');
   }
+
   afterAutoSkip() {}
 
-  //
-
   beforeFit() {
-    call(this.options.beforeFit, [this]);
+    this._callHooks('beforeFit');
   }
+
   fit() {
     // Reset
     const minSize = {
@@ -750,7 +749,7 @@ export default class Scale extends Element {
   }
 
   afterFit() {
-    call(this.options.afterFit, [this]);
+    this._callHooks('afterFit');
   }
 
   // Shared Methods
