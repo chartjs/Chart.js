@@ -2497,6 +2497,10 @@ export interface LegendOptions<TType extends ChartType> {
      */
     pointStyleWidth: number;
     /**
+     * If you are using a font that causes incorrect alignment, adjust this value to ensure proper alignment.
+     */
+    datasetRadiusBuffer: number;
+    /**
      * Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See Legend Item for details.
      */
     generateLabels(chart: Chart): LegendItem[];
