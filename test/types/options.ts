@@ -39,6 +39,7 @@ const doughnutOptions: DoughnutControllerChartOptions = {
   radius: 100,
   rotation: 0,
   spacing: 0,
+  datasetSpacing: 0,
   animation: false,
   spacingMode: 'angular',
 };
