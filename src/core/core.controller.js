@@ -1101,10 +1101,15 @@ class Chart {
         throw new Error('No dataset found at index ' + datasetIndex);
       }
 
+      const data = this.data.datasets[datasetIndex] && this.data.datasets[datasetIndex].data
+        ? this.data.datasets[datasetIndex].data[index]
+        : undefined;
+
       return {
         datasetIndex,
         element: meta.data[index],
         index,
+        data,
       };
     });
     const changed = !_elementsEqual(active, lastActive);
