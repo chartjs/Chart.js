@@ -538,6 +538,50 @@ describe('Chart.DatasetController', function() {
     expect(controller.getParsed(2)).toBe(data[2]);
   });
 
+  it('should correctly handle splice with a single argument (no deleteCount)', function() {
+    var data = [0, 1, 2, 3, 4, 5];
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: data
+        }]
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data.length).toBe(6);
+
+    // splice(0) with no deleteCount should remove all elements (per spec)
+    data.splice(0);
+    chart.update();
+
+    expect(data.length).toBe(0);
+    expect(meta.data.length).toBe(0);
+  });
+
+  it('should correctly handle splice with a single argument from a mid-index', function() {
+    var data = [0, 1, 2, 3, 4, 5];
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: data
+        }]
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    expect(meta.data.length).toBe(6);
+
+    // splice(2) should remove elements from index 2 onwards
+    data.splice(2);
+    chart.update();
+
+    expect(data.length).toBe(2);
+    expect(meta.data.length).toBe(2);
+  });
+
   it('should re-synchronize metadata when the data object reference changes', function() {
     var data0 = [0, 1, 2, 3, 4, 5];
     var data1 = [6, 7, 8];
