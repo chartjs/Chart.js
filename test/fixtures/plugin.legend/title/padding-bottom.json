@@ -1,0 +1,36 @@
+{
+  "config": {
+    "type": "doughnut",
+    "data": {
+      "labels": ["", "", "", ""],
+      "datasets": [
+        {
+          "data": [10, 20, 30, 40],
+          "backgroundColor": "#00ff00",
+          "borderWidth": 0
+        }
+      ]
+    },
+    "options": {
+      "plugins": {
+        "legend": {
+          "position": "top",
+          "align": "center",
+          "title": {
+            "display": true,
+            "text": "Title Text Example",
+            "padding": {
+              "bottom": 50
+            }
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "canvas": {
+      "height": 256,
+      "width": 512
+    }
+  }
+}
