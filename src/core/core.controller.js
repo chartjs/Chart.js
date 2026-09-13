@@ -294,9 +294,20 @@ class Chart {
     callCallback(options.onResize, [this, newSize], this);
 
     if (this.attached) {
-      if (this._doResize(mode)) {
-        // The resize update is delayed, only draw without updating.
-        this.render();
+      const delayed = this._doResize(mode);
+      if (delayed) {
+        // When resizeDelay is used the update is debounced and will occur later.
+        // However if the chart has never gone through a layout (chartArea undefined)
+        // we need to perform a synchronous update so that callers can access
+        // `chart.chartArea` immediately after initialization.  Otherwise the
+        // property would remain undefined until the delayed update fires.
+        if (this.chartArea === undefined) {
+          // force immediate layout/update
+          this.update(mode);
+        } else {
+          // The resize update is delayed, only draw without updating.
+          this.render();
+        }
       }
     }
   }
