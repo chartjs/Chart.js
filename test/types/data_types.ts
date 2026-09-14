@@ -8,6 +8,14 @@ const chart = new Chart('chart', {
   }
 });
 
+const lineTupleChart = new Chart('lineTupleChart', {
+  type: 'line',
+  data: {
+    labels: ['1', '2', '3'],
+    datasets: [{ data: [[1, 2], [3, 4], [5, 6]] }],
+  }
+});
+
 const chart2 = new Chart('chart2', {
   type: 'bar',
   data: {
