@@ -18,6 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - uses: pnpm/action-setup@v4.2.0
+    - run: pnpm install
     - uses: preactjs/compressed-size-action@v3
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
