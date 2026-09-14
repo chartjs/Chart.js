@@ -159,6 +159,36 @@ function getContainerSize(canvas: HTMLCanvasElement, width: number, height: numb
 
 const round1 = (v: number) => Math.round(v * 10) / 10;
 
+/**
+ * Determine whether the container's height is defined independently of the
+ * canvas, by measuring the container with the canvas removed from the layout.
+ * When the container's height is derived from the canvas itself (e.g. a plain
+ * block wrapper with no explicit height), the current canvas height must not
+ * be used as a constraint, because doing so prevents the chart from ever
+ * growing (see #11005).
+ */
+function _isContainerHeightIndependent(canvas: HTMLCanvasElement, containerHeight: number): boolean {
+  const container = _getParentNode(canvas);
+  if (!container) {
+    return false;
+  }
+  const style = canvas.style;
+  const prevValue = style.getPropertyValue('display');
+  const prevPriority = style.getPropertyPriority('display');
+  style.setProperty('display', 'none', 'important');
+  const rect = container.getBoundingClientRect();
+  const containerStyle = getComputedStyle(container);
+  const heightWithoutCanvas = rect.height
+    - getPositionedStyle(containerStyle, 'padding').height
+    - getPositionedStyle(containerStyle, 'border', 'width').height;
+  if (prevValue) {
+    style.setProperty('display', prevValue, prevPriority);
+  } else {
+    style.removeProperty('display');
+  }
+  return heightWithoutCanvas >= containerHeight - 0.5;
+}
+
 // eslint-disable-next-line complexity
 export function getMaximumSize(
   canvas: HTMLCanvasElement,
@@ -191,7 +221,8 @@ export function getMaximumSize(
 
   const maintainHeight = bbWidth !== undefined || bbHeight !== undefined;
 
-  if (maintainHeight && aspectRatio && containerSize.height && height > containerSize.height) {
+  if (maintainHeight && aspectRatio && containerSize.height && height > containerSize.height
+    && _isContainerHeightIndependent(canvas, containerSize.height)) {
     height = containerSize.height;
     width = round1(Math.floor(height * aspectRatio));
   }
