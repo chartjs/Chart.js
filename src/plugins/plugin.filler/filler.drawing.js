@@ -12,10 +12,29 @@ export function _drawfill(ctx, source, area) {
   const meta = chart.getDatasetMeta(index);
   const clip = getDatasetClipArea(chart, meta);
   if (target && line.points.length) {
-    clipArea(ctx, area);
+    clipArea(ctx, clipToIndexBounds(area, meta.iScale));
     doFill(ctx, {line, target, above, below, area, scale, axis, clip});
     unclipArea(ctx);
   }
+}
+
+// The line's stroke is limited to the index scale's min/max pixel bounds
+// (see LineController#update -> _getStartAndCountOfVisiblePoints). Clip the
+// fill to the same bounds so it doesn't extend past the stroke when
+// `offset: true` insets tick pixels from the chart area edges.
+function clipToIndexBounds(area, iScale) {
+  // Radial scales (e.g. radar charts) aren't cartesian: min/max pixels
+  // don't correspond to a left/right or top/bottom bound.
+  if (!iScale || iScale.getPointPositionForValue) {
+    return area;
+  }
+  const p1 = iScale.getPixelForValue(iScale.min);
+  const p2 = iScale.getPixelForValue(iScale.max);
+  const lo = Math.min(p1, p2);
+  const hi = Math.max(p1, p2);
+  return iScale.isHorizontal()
+    ? {...area, left: Math.max(area.left, lo), right: Math.min(area.right, hi)}
+    : {...area, top: Math.max(area.top, lo), bottom: Math.min(area.bottom, hi)};
 }
 
 function doFill(ctx, cfg) {
