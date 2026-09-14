@@ -108,6 +108,11 @@ export interface BarControllerDatasetOptions
   yAxisID: string;
 
   /**
+   * Should null or undefined values be omitted from drawing
+   */
+  skipNull?: boolean;
+
+  /**
    * Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other.
    * @default 0.9
    */
