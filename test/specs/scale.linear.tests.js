@@ -1395,4 +1395,64 @@ describe('Linear Scale', function() {
 
     expect(createChart).not.toThrow();
   });
+
+  it('should not carry floating point drift when bounds are non-round numbers (issue #12281)', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: []
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 49.894,
+            max: 51.5264,
+            ticks: {
+              stepSize: 0.2
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.y;
+    var values = scale.ticks.map(t => t.value);
+    expect(values).toEqual([
+      49.894, 50, 50.2, 50.4, 50.6, 50.8, 51, 51.2, 51.4, 51.5264
+    ]);
+    expect(values.filter(v => Number.isInteger(v))).toEqual([50, 51]);
+  });
+
+  it('should not carry floating point drift for negative non-round bounds (issue #12281)', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: []
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: -51.5264,
+            max: -49.894,
+            ticks: {
+              stepSize: 0.2
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.y;
+    var values = scale.ticks.map(t => t.value);
+    expect(values).toEqual([
+      -51.5264, -51.4, -51.2, -51, -50.8, -50.6, -50.4, -50.2, -50, -49.894
+    ]);
+    expect(values.filter(v => Number.isInteger(v))).toEqual([-51, -50]);
+  });
 });
