@@ -18,7 +18,13 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - uses: pnpm/action-setup@v4.2.0
+    - name: Use Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: pnpm
+    - run: pnpm install
     - uses: preactjs/compressed-size-action@v3
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        build-script: "build"
+        build-script: "pnpm run build"
