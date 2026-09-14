@@ -61,6 +61,9 @@ function generateTicks(generationOptions, dataRange) {
   if (bounds === 'ticks') {
     niceMin = Math.floor(rmin / spacing) * spacing;
     niceMax = Math.ceil(rmax / spacing) * spacing;
+    const spacingFactor = Math.pow(10, _decimalPlaces(spacing) || 0);
+    niceMin = Math.round(niceMin * spacingFactor) / spacingFactor;
+    niceMax = Math.round(niceMax * spacingFactor) / spacingFactor;
   } else {
     niceMin = rmin;
     niceMax = rmax;
