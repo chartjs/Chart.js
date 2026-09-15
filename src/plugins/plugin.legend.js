@@ -679,6 +679,12 @@ export default {
         return chart._getSortedDatasetMetas().map((meta) => {
           const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
           const borderWidth = toPadding(style.borderWidth);
+          const itemPointStyle = pointStyle || style.pointStyle;
+          // a line symbol stands for the dataset line but the point scope has no dash
+          // on it so read that off the dataset element instead, markers stay solid
+          const dashStyle = usePointStyle && itemPointStyle === 'line'
+            ? meta.controller.getStyle(undefined)
+            : style;
 
           return {
             text: datasets[meta.index].label,
@@ -686,12 +692,12 @@ export default {
             fontColor: color,
             hidden: !meta.visible,
             lineCap: style.borderCapStyle,
-            lineDash: style.borderDash,
-            lineDashOffset: style.borderDashOffset,
+            lineDash: dashStyle.borderDash,
+            lineDashOffset: dashStyle.borderDashOffset,
             lineJoin: style.borderJoinStyle,
             lineWidth: (borderWidth.width + borderWidth.height) / 4,
             strokeStyle: style.borderColor,
-            pointStyle: pointStyle || style.pointStyle,
+            pointStyle: itemPointStyle,
             rotation: style.rotation,
             textAlign: textAlign || style.textAlign,
             borderRadius: useBorderRadius && (borderRadius || style.borderRadius),
