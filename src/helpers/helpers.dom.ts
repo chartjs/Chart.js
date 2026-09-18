@@ -42,11 +42,16 @@ function parseMaxStyle(styleValue: string | number, node: HTMLElement, parentPro
   return valueInPixels;
 }
 
-const getComputedStyle = (element: HTMLElement): CSSStyleDeclaration =>
-  element.ownerDocument.defaultView.getComputedStyle(element, null);
+const getComputedStyle = (element?: HTMLElement | null): CSSStyleDeclaration | null => {
+  if (!element || !element.ownerDocument || !element.ownerDocument.defaultView) {
+    return null;
+  }
+  return element.ownerDocument.defaultView.getComputedStyle(element, null);
+};
 
-export function getStyle(el: HTMLElement, property: string): string {
-  return getComputedStyle(el).getPropertyValue(property);
+export function getStyle(el: HTMLElement | null | undefined, property: string): string {
+  const style = getComputedStyle(el);
+  return style ? style.getPropertyValue(property) : '';
 }
 
 const positions = ['top', 'right', 'bottom', 'left'];
@@ -111,7 +116,14 @@ export function getRelativePosition(
   }
 
   const {canvas, currentDevicePixelRatio} = chart;
+  if (!canvas) {
+    return {x: 0, y: 0};
+  }
+
   const style = getComputedStyle(canvas);
+  if (!style) {
+    return {x: 0, y: 0};
+  }
   const borderBox = style.boxSizing === 'border-box';
   const paddings = getPositionedStyle(style, 'padding');
   const borders = getPositionedStyle(style, 'border', 'width');
@@ -130,17 +142,18 @@ export function getRelativePosition(
   };
 }
 
-function getContainerSize(canvas: HTMLCanvasElement, width: number, height: number): Partial<Scale> {
+// eslint-disable-next-line complexity
+function getContainerSize(canvas?: HTMLCanvasElement, width?: number, height?: number): Partial<Scale> {
   let maxWidth: number, maxHeight: number;
 
   if (width === undefined || height === undefined) {
     const container = canvas && _getParentNode(canvas);
-    if (!container) {
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
+    const containerStyle = container && getComputedStyle(container);
+    if (!container || !containerStyle) {
+      width = canvas ? canvas.clientWidth : 0;
+      height = canvas ? canvas.clientHeight : 0;
     } else {
       const rect = container.getBoundingClientRect(); // this is the border box of the container
-      const containerStyle = getComputedStyle(container);
       const containerBorder = getPositionedStyle(containerStyle, 'border', 'width');
       const containerPadding = getPositionedStyle(containerStyle, 'padding');
       width = rect.width - containerPadding.width - containerBorder.width;
@@ -161,12 +174,19 @@ const round1 = (v: number) => Math.round(v * 10) / 10;
 
 // eslint-disable-next-line complexity
 export function getMaximumSize(
-  canvas: HTMLCanvasElement,
+  canvas?: HTMLCanvasElement,
   bbWidth?: number,
   bbHeight?: number,
   aspectRatio?: number
 ): { width: number; height: number } {
+  if (!canvas) {
+    return {width: 0, height: 0};
+  }
+
   const style = getComputedStyle(canvas);
+  if (!style) {
+    return {width: 0, height: 0};
+  }
   const margins = getPositionedStyle(style, 'margin');
   const maxWidth = parseMaxStyle(style.maxWidth, canvas, 'clientWidth') || INFINITY;
   const maxHeight = parseMaxStyle(style.maxHeight, canvas, 'clientHeight') || INFINITY;
