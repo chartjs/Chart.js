@@ -34,7 +34,6 @@ jobs:
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 24
-          cache: pnpm
       - name: Setup and build
         run: |
           pnpm install
@@ -81,7 +80,6 @@ jobs:
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 24
-          cache: pnpm
       - name: Setup and build
         run: |
           pnpm install
