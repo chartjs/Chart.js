@@ -36,6 +36,9 @@ describe('Chart.helpers.math', function() {
     expect(decimalPlaces(undefined)).toBe(undefined);
     expect(decimalPlaces(12345678.1234)).toBe(4);
     expect(decimalPlaces(1234567890.1234567)).toBe(7);
+    // Numbers so small that the multiplier overflows to Infinity — must not loop forever
+    expect(decimalPlaces(1e-305)).toBe(undefined);
+    expect(decimalPlaces(Number.MIN_VALUE)).toBe(undefined);
   });
 
   it('should get an angle from a point', function() {
