@@ -22,7 +22,7 @@ jobs:
 
   release:
     permissions:
-      contents: write  # for actions/upload-release-asset to upload release asset
+      contents: write  # for softprops/action-gh-release to upload release asset
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -58,15 +58,10 @@ jobs:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Upload NPM package file
         id: upload-npm-package-file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ needs.setup.outputs.version }}
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
-          asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
-          asset_content_type: application/gzip
+          files: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
+          fail_on_unmatched_files: true
   release-tag:
     needs: [setup, release]
     runs-on: ubuntu-latest
