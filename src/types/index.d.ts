@@ -454,7 +454,7 @@ export interface RadarControllerDatasetOptions
 
 export type RadarControllerChartOptions = LineControllerChartOptions;
 
-export type RadarController = DatasetController
+export type RadarController = DatasetController<'radar'>
 export declare const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
