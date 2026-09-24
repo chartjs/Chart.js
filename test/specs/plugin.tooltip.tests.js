@@ -831,6 +831,43 @@ describe('Plugin.Tooltip', function() {
     }));
   });
 
+  it('should not run the callbacks or show the tooltip when the filter removes every item', async function() {
+    var titleCallbackArgs = null;
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function() {
+              return false;
+            },
+            callbacks: {
+              title: function(tooltipItems) {
+                titleCallbackArgs = tooltipItems;
+                return 'title';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', meta.data[1]);
+
+    expect(titleCallbackArgs).toBe(null);
+    expect(chart.tooltip.opacity).toBe(0);
+  });
+
   it('should set the caretPadding based on a config setting', async function() {
     var chart = window.acquireChart({
       type: 'line',

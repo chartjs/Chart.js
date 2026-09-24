@@ -16,6 +16,7 @@ build/
 docs/api
 docs/.vuepress/dist
 
+temp_auto_push.bat
 # Development
 .DS_Store
 .env.local
@@ -25,7 +26,6 @@ docs/.vuepress/dist
 .idea
 .project
 .settings
-.vscode
 .zed
 *.log
 *.swp
@@ -36,3 +36,5 @@ docs/.vuepress/dist
 
 # Eslint
 .eslintcache
+.gitignore
+branch_structure.json
