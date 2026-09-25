@@ -1,0 +1,70 @@
+{
+  "config": {
+  "type": "doughnut",
+    "data": {
+    "datasets": [
+      {
+        "label": "Dataset 1",
+        "data": [
+          10,
+          20,
+          40
+        ],
+        "backgroundColor": [
+          "rgba(255, 99, 132, 0.8)",
+          "rgba(54, 162, 235, 0.8)",
+          "rgba(255, 206, 86, 0.8)"
+        ],
+        "borderWidth": 0,
+        "weight": 1
+      },
+      {
+        "label": "Dataset 2",
+        "data": [
+          15,
+          25,
+          35
+        ],
+        "backgroundColor": [
+          "rgba(75, 192, 192, 0.8)",
+          "rgba(153, 102, 255, 0.8)",
+          "rgba(255, 159, 64, 0.8)"
+        ],
+        "borderWidth": 0,
+        "weight": 1
+      },
+      {
+        "label": "Dataset 3",
+        "data": [
+          20,
+          30,
+          30
+        ],
+        "backgroundColor": [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)"
+        ],
+        "borderWidth": 0,
+        "weight": 1
+      }
+    ],
+      "labels": [
+      "Category A",
+      "Category B",
+      "Category C"
+    ]
+  },
+  "options": {
+    "datasetSpacing": 8,
+      "responsive": false,
+      "maintainAspectRatio": true,
+      "plugins": {
+      "legend": {
+        "display": true,
+          "position": "top"
+      }
+    }
+  }
+}
+}
