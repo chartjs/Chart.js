@@ -244,7 +244,7 @@ export default class DatasetController {
   static datasetElementType = null;
 
   /**
-   * Element type used to generate a meta data (e.g. Chart.element.PointElement).
+   * Element type used to generate a metadata (e.g. Chart.element.PointElement).
    */
   static dataElementType = null;
 
@@ -420,7 +420,7 @@ export default class DatasetController {
       meta.stack = dataset.stack;
     }
 
-    // Re-sync meta data in case the user replaced the data array or if we missed
+    // Re-sync metadata in case the user replaced the data array or if we missed
     // any updates and so make sure that we handle number of datapoints changing.
     this._resyncElements(resetNewElements);
 
@@ -642,12 +642,12 @@ export default class DatasetController {
       }
       this.updateRangeFromParsed(range, scale, parsed, stack);
       if (sorted) {
-        // if the data is sorted, we don't need to check further from this end of array
+        // if the data is sorted, we don't need to check further from this end of the array
         break;
       }
     }
     if (sorted) {
-      // in the sorted case, find first non-skipped value from other end of array
+      // in the sorted case, find the first non-skipped value from the other end of the array
       for (i = ilen - 1; i >= 0; --i) {
         if (_skip()) {
           continue;
@@ -822,7 +822,7 @@ export default class DatasetController {
 
     if (values.$shared) {
       // `$shared` indicates this set of options can be shared between multiple elements.
-      // Sharing is used to reduce number of properties to change during animation.
+      // Sharing is used to reduce the number of properties to change during animation.
       values.$shared = sharing;
 
       // We cache options by `mode`, which can be 'active' for example. This enables us
