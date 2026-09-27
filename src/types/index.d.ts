@@ -3101,7 +3101,7 @@ export interface GridLineOptions {
   /**
    * @default 1
    */
-  tickWidth: number;
+  tickWidth: Scriptable<number, ScriptableScaleContext>;
   /**
    * @default false
    */
