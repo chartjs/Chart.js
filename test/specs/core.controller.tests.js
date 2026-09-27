@@ -694,6 +694,32 @@ describe('Chart', function() {
       wrapper.style.width = '455px';
     });
 
+    it('should call update with the resize mode when resizeDelay is set', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 10
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; height: 350px; position: relative'
+        }
+      });
+
+      spyOn(chart, 'update').and.callThrough();
+      waitForResize(chart, function() {
+        setTimeout(function() {
+          expect(chart.update).toHaveBeenCalledWith('resize');
+          done();
+        }, 50);
+      });
+      chart.canvas.parentNode.style.width = '455px';
+    });
+
     it('should restore the original size when parent became invisible', function(done) {
       var chart = acquireChart({
         options: {
