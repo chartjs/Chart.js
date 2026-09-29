@@ -1,4 +1,4 @@
-import { TimeScaleTimeOptions } from '../../../src/types.js';
+import type { TimeScaleTimeOptions } from '../../../src/types.js';
 
 // `time.parser` and `time.tooltipFormat` have no default value, so they must stay
 // optional when the resolved time scale options are referenced directly.
