@@ -19,6 +19,11 @@ module.exports = {
     }
   },
   options: {
-    spriteText: true
+    spriteText: true,
+    run(chart) {
+      // Avoid browser-specific interpolation of the overlapping text sprites.
+      chart.ctx.imageSmoothingEnabled = false;
+      chart.draw();
+    }
   }
 };
