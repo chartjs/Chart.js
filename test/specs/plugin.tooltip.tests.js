@@ -1657,7 +1657,7 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.getActiveElements().length).toBe(0);
     });
 
-    it('should not change the active elements on events outside chartArea, except for mouseout', async function() {
+    it('should change the active elements on events outside chartArea and for mouseout', async function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -1683,7 +1683,7 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
-      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
 
       await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([]);
@@ -1759,19 +1759,23 @@ describe('Plugin.Tooltip', function() {
 
     const meta = chart.getDatasetMeta(0);
     const point = meta.data[1];
-    const expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
 
     await jasmine.triggerMouseEvent(chart, 'mousemove', point);
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
 
-    expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
+    // With the change to clear active elements when events are outside the chartArea,
+    // it expect no active elements after moving the mouse outside,
+    // and also when clicking ouside the chartArea on mobile devices
+    expect(chart.tooltip.getActiveElements()).toEqual([]);
 
     chart.data.datasets = [dataset1];
     chart.update();
 
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
 
-    expect(chart.tooltip.getActiveElements()).toEqual([expectedPoints[0]]);
+    // After datasets were removed and an event outside the chartArea is fired,
+    // active elements remain cleared according to the new behavior
+    expect(chart.tooltip.getActiveElements()).toEqual([]);
   });
 
   it('should tolerate elements removed on events outside chartArea', async function() {
@@ -1801,12 +1805,14 @@ describe('Plugin.Tooltip', function() {
 
     const meta = chart.getDatasetMeta(0);
     const point = meta.data[1];
-    const expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
 
     await jasmine.triggerMouseEvent(chart, 'mousemove', point);
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
 
-    expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
+    // With the change to clear active elements when events are outside the chartArea,
+    // it expect no active elements after moving the mouse outside,
+    // and also when clicking ouside the chartArea on mobile devices
+    expect(chart.tooltip.getActiveElements()).toEqual([]);
 
     dataset1.data = dataset1.data.slice(0, 1);
     chart.data.datasets = [dataset1];

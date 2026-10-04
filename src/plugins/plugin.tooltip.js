@@ -1183,7 +1183,7 @@ export class Tooltip extends Element {
   _getActiveElements(e, lastActive, replay, inChartArea) {
     const options = this.options;
 
-    if (e.type === 'mouseout') {
+    if (e.type === 'mouseout' || !inChartArea) {
       return [];
     }
 
