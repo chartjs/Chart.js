@@ -453,8 +453,8 @@ export default class Scale extends Element {
     this.calculateLabelRotation(); // Preconditions: number of ticks and sizes of largest labels must be calculated beforehand
     this.afterCalculateLabelRotation();
 
-    // Auto-skip
-    if (tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
+    // Auto-skip — disabled when stepSize is explicitly set
+    if (tickOpts.display && !tickOpts.stepSize && (tickOpts.autoSkip || tickOpts.source === 'auto')) {
       this.ticks = autoSkip(this, this.ticks);
       this._labelSizes = null;
       this.afterAutoSkip();
