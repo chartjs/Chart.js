@@ -100,6 +100,33 @@ describe('Test tick generators', function() {
   });
 
   describe('formatters.numeric', function() {
+    it('should apply number format options to zero ticks', function() {
+      for (const test of [
+        {format: {style: 'percent'}, expected: '0%'},
+        {format: {style: 'currency', currency: 'USD'}, expected: '$0'},
+        {format: {style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2}, expected: '$0.00'}
+      ]) {
+        const chart = window.acquireChart({
+          type: 'line',
+          data: {datasets: [{data: [0, 1]}]},
+          options: {
+            locale: 'en-US',
+            scales: {
+              y: {min: 0, max: 1, ticks: {format: test.format}}
+            }
+          }
+        });
+        expect(chart.scales.y.ticks[0].label).toBe(test.expected);
+      }
+    });
+
+    it('should keep zero ticks free of automatic precision and notation', function() {
+      const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {}}};
+      for (const ticks of [[], [{value: 0}], [{value: 0}, {value: 0.01}], [{value: 0}, {value: 1e16}]]) {
+        expect(Chart.Ticks.formatters.numeric.call(scale, 0, 0, ticks)).toBe('0');
+      }
+    });
+
     it('should not fail on empty or 1 item array', function() {
       const scale = {chart: {options: {locale: 'en'}}, options: {ticks: {format: {}}}};
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, []])).toEqual('1');
