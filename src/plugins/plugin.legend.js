@@ -474,8 +474,8 @@ export class Legend extends Element {
     }
 
     // Now that we know the left edge of the inner legend box, compute the correct
-    // X coordinate from the title alignment
-    const x = _alignStartEnd(position, left, left + maxWidth);
+    // X coordinate from the title alignment, accounting for horizontal padding
+    const x = _alignStartEnd(position, left + titlePadding.left, left + maxWidth - titlePadding.right);
 
     // Canvas setup
     ctx.textAlign = rtlHelper.textAlign(_toLeftRightCenter(position));
