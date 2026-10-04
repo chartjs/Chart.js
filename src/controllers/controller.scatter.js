@@ -110,7 +110,7 @@ export default class ScatterController extends DatasetController {
 
   updateElements(points, start, count, mode) {
     const reset = mode === 'reset';
-    const {iScale, vScale, _stacked, _dataset} = this._cachedMeta;
+    const {iScale, vScale, _stacked} = this._cachedMeta;
     const firstOpts = this.resolveDataElementOptions(start, mode);
     const sharedOptions = this.getSharedOptions(firstOpts);
     const includeOptions = this.includeOptions(mode, sharedOptions);
@@ -133,7 +133,7 @@ export default class ScatterController extends DatasetController {
       properties.stop = i > 0 && (Math.abs(parsed[iAxis] - prevParsed[iAxis])) > maxGapLength;
       if (segment) {
         properties.parsed = parsed;
-        properties.raw = _dataset.data[i];
+        properties.raw = this._data[i];
       }
 
       if (includeOptions) {

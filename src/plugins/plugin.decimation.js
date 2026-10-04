@@ -248,15 +248,15 @@ export default {
 
       if (isNullOrUndef(_data)) {
         // First time we are seeing this dataset
-        // We override the 'data' property with a setter that stores the
-        // raw data in _data, but reads the decimated data from _decimated
+        // We override the 'data' property with an accessor that stores and
+        // reads the raw data in _data. Dataset controllers use _decimated.
         dataset._data = data;
         delete dataset.data;
         Object.defineProperty(dataset, 'data', {
           configurable: true,
           enumerable: true,
           get: function() {
-            return this._decimated;
+            return this._data;
           },
           set: function(d) {
             this._data = d;
