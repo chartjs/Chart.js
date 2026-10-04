@@ -7,6 +7,12 @@ import {applyScaleDefaults} from './core.scale.defaults.js';
 export const overrides = Object.create(null);
 export const descriptors = Object.create(null);
 
+
+function isValidScopePath(key) {
+  return !key.split('.').some((part) => (
+    part === '__proto__' || part === 'prototype' || part === 'constructor'
+  ));
+}
 /**
  * @param {object} node
  * @param {string} key
@@ -15,6 +21,9 @@ export const descriptors = Object.create(null);
 function getScope(node, key) {
   if (!key) {
     return node;
+  }
+  if (!isValidScopePath(key)) {
+    throw new Error(`Invalid defaults scope: ${key}`);
   }
   const keys = key.split('.');
   for (let i = 0, n = keys.length; i < n; ++i) {
