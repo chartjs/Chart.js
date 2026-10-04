@@ -459,8 +459,26 @@ export default class DatasetController {
 
     if (this._parsing === false) {
       meta._parsed = data;
-      meta._sorted = true;
       parsed = data;
+
+      if (sorted && iScale) {
+        const axis = iAxis;
+
+        for (i = start; i < start + count; ++i) {
+          cur = parsed[i];
+          const curValue = cur && cur[axis];
+          const prevValue = prev && prev[axis];
+
+          if (curValue === null || curValue === undefined || (prevValue !== undefined && curValue < prevValue)) {
+            sorted = false;
+            break;
+          }
+
+          prev = cur;
+        }
+      }
+
+      meta._sorted = sorted;
     } else {
       if (isArray(data[start])) {
         parsed = this.parseArrayData(meta, data, start, count);
