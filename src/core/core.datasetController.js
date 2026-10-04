@@ -223,6 +223,10 @@ function clearStacks(meta, items) {
     if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
       delete stacks[axis]._visualValues[datasetIndex];
     }
+    // Clean up empty stack objects to prevent memory leaks
+    if (Object.keys(stacks[axis]).length === 1) {
+      delete stacks[axis];
+    }
   }
 }
 
