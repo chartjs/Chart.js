@@ -29,10 +29,17 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
+  // Use a safe maximum value to prevent overflow when computing "nice" values
+  // This is slightly less than MAX_VALUE to allow room for rounding up
+  const SAFE_MAX = Number.MAX_VALUE / 2;
+  const SAFE_MIN = -SAFE_MAX;
   const {bounds, step, min, max, precision, count, maxTicks, maxDigits, includeBounds} = generationOptions;
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
-  const {min: rmin, max: rmax} = dataRange;
+  // Clamp data range to safe values to prevent overflow in calculations
+  const {min: rawMin, max: rawMax} = dataRange;
+  const rmin = Math.max(rawMin, SAFE_MIN);
+  const rmax = Math.min(rawMax, SAFE_MAX);
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
   const countDefined = !isNullOrUndef(count);
@@ -61,6 +68,9 @@ function generateTicks(generationOptions, dataRange) {
   if (bounds === 'ticks') {
     niceMin = Math.floor(rmin / spacing) * spacing;
     niceMax = Math.ceil(rmax / spacing) * spacing;
+    // Ensure niceMin/niceMax stay within safe bounds after rounding
+    niceMin = Math.max(niceMin, SAFE_MIN);
+    niceMax = Math.min(niceMax, SAFE_MAX);
   } else {
     niceMin = rmin;
     niceMax = rmax;
