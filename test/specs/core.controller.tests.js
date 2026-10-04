@@ -977,6 +977,33 @@ describe('Chart', function() {
       chart.resize();
     });
 
+    // When resizeDelay != 0 the initial layout was deferred which left
+    // `chart.chartArea` undefined even though the chart was already attached.
+    // See https://github.com/chartjs/Chart.js/issues/12166
+    it('should initialize chartArea immediately when resizeDelay is non-zero and the canvas is already attached', function() {
+      var wrapper = document.createElement('div');
+      wrapper.style.cssText = 'width: 300px; height: 200px; position: relative';
+      var canvas = document.createElement('canvas');
+      wrapper.appendChild(canvas);
+      document.body.appendChild(wrapper);
+
+      var chart = new Chart(canvas, {
+        type: 'line',
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 50
+        }
+      });
+
+      // even though the update may be debounced we expect the chartArea to
+      // be populated synchronously during initialization
+      expect(chart.chartArea).not.toBeUndefined();
+
+      chart.destroy();
+      document.body.removeChild(wrapper);
+    });
+
     // https://github.com/chartjs/Chart.js/issues/3790
     it('should resize the canvas if attached to the DOM after construction', function(done) {
       var canvas = document.createElement('canvas');
@@ -986,7 +1013,10 @@ describe('Chart', function() {
         type: 'line',
         options: {
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          // ensure that a delay is in effect; the bug manifested only when
+          // resizeDelay was non-zero
+          resizeDelay: 50
         }
       });
 
