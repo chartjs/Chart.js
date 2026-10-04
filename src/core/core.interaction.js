@@ -7,7 +7,7 @@ import {_isPointInArea, isNullOrUndef} from '../helpers/index.js';
  * @typedef { import('./core.controller.js').default } Chart
  * @typedef { import('../types/index.js').ChartEvent } ChartEvent
  * @typedef {{axis?: string, intersect?: boolean, includeInvisible?: boolean}} InteractionOptions
- * @typedef {{datasetIndex: number, index: number, element: import('./core.element.js').default}} InteractionItem
+ * @typedef {{datasetIndex: number, index: number, element: import('./core.element.js').default, data: any}} InteractionItem
  * @typedef { import('../types/index.js').Point } Point
  */
 
@@ -103,6 +103,23 @@ function getDistanceMetricForAxis(axis) {
 }
 
 /**
+ * Internal helper to build a consistent InteractionItem. We always include
+ * the original data value (using chart.data.datasets) since many consumers
+ * such as onClick handlers expect to easily access the model value without
+ * having to look it up manually.
+ * @param {Chart} chart - the chart instance
+ * @param {import('./core.element.js').default} element - the element being interacted with
+ * @param {number} datasetIndex - index of the dataset for the element
+ * @param {number} index - index of the element in the dataset
+ * @returns {InteractionItem} interaction item including the raw data
+ */
+function createInteractionItem(chart, element, datasetIndex, index) {
+  const dataset = chart.data.datasets[datasetIndex];
+  const data = dataset && dataset.data ? dataset.data[index] : undefined;
+  return {element, datasetIndex, index, data};
+}
+
+/**
  * Helper function to get the items that intersect the event position
  * @param {Chart} chart - the chart
  * @param {Point} position - the point to be nearest to, in relative coordinates
@@ -123,7 +140,7 @@ function getIntersectItems(chart, position, axis, useFinalPosition, includeInvis
       return;
     }
     if (element.inRange(position.x, position.y, useFinalPosition)) {
-      items.push({element, datasetIndex, index});
+      items.push(createInteractionItem(chart, element, datasetIndex, index));
     }
   };
 
@@ -147,7 +164,7 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
     const {angle} = getAngleFromPoint(element, {x: position.x, y: position.y});
 
     if (_angleBetween(angle, startAngle, endAngle)) {
-      items.push({element, datasetIndex, index});
+      items.push(createInteractionItem(chart, element, datasetIndex, index));
     }
   }
 
@@ -184,11 +201,11 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
 
     const distance = distanceMetric(position, center);
     if (distance < minDistance) {
-      items = [{element, datasetIndex, index}];
+      items = [createInteractionItem(chart, element, datasetIndex, index)];
       minDistance = distance;
     } else if (distance === minDistance) {
       // Can have multiple items at the same distance in which case we sort by size
-      items.push({element, datasetIndex, index});
+      items.push(createInteractionItem(chart, element, datasetIndex, index));
     }
   }
 
@@ -232,7 +249,7 @@ function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
 
   evaluateInteractionItems(chart, axis, position, (element, datasetIndex, index) => {
     if (element[rangeMethod] && element[rangeMethod](position[axis], useFinalPosition)) {
-      items.push({element, datasetIndex, index});
+      items.push(createInteractionItem(chart, element, datasetIndex, index));
       intersectsItem = intersectsItem || element.inRange(position.x, position.y, useFinalPosition);
     }
   });
@@ -286,7 +303,7 @@ export default {
 
         // don't count items that are skipped (null data)
         if (element && !element.skip) {
-          elements.push({element, datasetIndex: meta.index, index});
+          elements.push(createInteractionItem(chart, element, meta.index, index));
         }
       });
 
@@ -316,7 +333,7 @@ export default {
         const data = chart.getDatasetMeta(datasetIndex).data;
         items = [];
         for (let i = 0; i < data.length; ++i) {
-          items.push({element: data[i], datasetIndex, index: i});
+          items.push(createInteractionItem(chart, data[i], datasetIndex, i));
         }
       }
 

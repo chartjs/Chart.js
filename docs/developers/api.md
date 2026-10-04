@@ -215,6 +215,12 @@ chart.setActiveElements([
 ]);
 ```
 
+> **Note:** Active elements returned by `chart.getActiveElements()` (and the
+> `elements` passed to interaction callbacks such as `onClick`) now include an
+> optional `data` field containing the original value from `chart.data`
+> corresponding to that point. This makes it easy to access the underlying
+> object or primitive without manually looking it up.
+
 ## isPluginEnabled(pluginId)
 
 Returns a boolean if a plugin with the given ID has been registered to the chart instance.
