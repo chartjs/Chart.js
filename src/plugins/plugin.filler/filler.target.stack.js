@@ -5,7 +5,7 @@
  */
 
 import {LineElement} from '../../elements/index.js';
-import {_isBetween} from '../../helpers/index.js';
+import {_isBetween, isArray} from '../../helpers/index.js';
 import {_createBoundaryLine} from './filler.helper.js';
 
 /**
@@ -85,11 +85,14 @@ function addPointsBelow(points, sourcePoint, linesBelow) {
  * @returns {{point?: PointElement, first?: boolean, last?: boolean}}
  */
 function findPoint(line, sourcePoint, property) {
-  const point = line.interpolate(sourcePoint, property);
-  if (!point) {
+  const interpolated = line.interpolate(sourcePoint, property);
+  if (!interpolated) {
     return {};
   }
-
+  // interpolate() returns one point per matching segment. The points of the
+  // segments matching a shared boundary are equal within rounding error of
+  // the source point, so the first one is enough here.
+  const point = isArray(interpolated) ? interpolated[0] : interpolated;
   const pointValue = point[property];
   const segments = line.segments;
   const linePoints = line.points;
