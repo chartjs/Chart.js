@@ -499,7 +499,12 @@ export default class BarController extends DatasetController {
   _getAxis() {
     const axis = {};
     const firstScaleAxisId = this.getFirstScaleIdForIndexAxis();
-    for (const dataset of this.chart.data.datasets) {
+    for (let i = 0; i < this.chart.data.datasets.length; i++) {
+      const meta = this.chart.getDatasetMeta(i);
+      if (meta.type !== this._type) {
+        continue;
+      }
+      const dataset = this.chart.data.datasets[i];
       axis[valueOrDefault(
         this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID, firstScaleAxisId
       )] = true;
