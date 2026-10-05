@@ -18,7 +18,7 @@ for (let i = 0; i < 1000; i++) {
 // <block:animation:1>
 const totalDuration = 10000;
 const delayBetweenPoints = totalDuration / data.length;
-const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
+const previously = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
 const animation = {
   x: {
     type: 'number',
@@ -37,7 +37,7 @@ const animation = {
     type: 'number',
     easing: 'linear',
     duration: delayBetweenPoints,
-    from: previousY,
+    from: previously,
     delay(ctx) {
       if (ctx.type !== 'data' || ctx.yStarted) {
         return 0;
