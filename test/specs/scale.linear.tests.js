@@ -967,6 +967,31 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.max).toEqual(99);
   });
 
+  it('Should not produce a duplicate final tick when bounding to a fractional data max', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{
+          data: [0, 5.4]
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            bounds: 'data',
+            ticks: {
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(getLabels(chart.scales.y)).toEqual(['0', '1', '2', '3', '4', '5']);
+  });
+
   it('Should build labels using the user supplied callback', function() {
     var chart = window.acquireChart({
       type: 'bar',

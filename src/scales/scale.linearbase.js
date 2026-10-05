@@ -138,7 +138,11 @@ function generateTicks(generationOptions, dataRange) {
       ticks.push({value: max});
     }
   } else if (!maxDefined || niceMax === max) {
-    ticks.push({value: niceMax});
+    // Avoid duplicating the last emitted tick when the rounded niceMax
+    // coincides with it (e.g. bounds: 'data' with a fractional data max).
+    if (!ticks.length || ticks[ticks.length - 1].value !== niceMax) {
+      ticks.push({value: niceMax});
+    }
   }
 
   return ticks;
