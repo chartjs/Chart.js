@@ -471,6 +471,12 @@ describe('Chart.helpers.core', function() {
       }, 'a.bb\\.ccc')).toEqual('works');
     });
 
+    it('should resolve keys that collide with Object.prototype members', function() {
+      expect(helpers.resolveObjectKey({toString: 5}, 'toString')).toEqual(5);
+      expect(helpers.resolveObjectKey({hasOwnProperty: 42}, 'hasOwnProperty')).toEqual(42);
+      expect(helpers.resolveObjectKey({valueOf: 7}, 'valueOf')).toEqual(7);
+    });
+
   });
 
   describe('_splitKey', function() {
