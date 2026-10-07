@@ -189,6 +189,67 @@ describe('Legend block tests', function() {
     }]);
   });
 
+  it('should take the dataset dash for a line point style', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'solid',
+          data: []
+        }, {
+          label: 'dashed',
+          borderDash: [6, 3],
+          borderDashOffset: 4,
+          data: []
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'line'
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.legend.legendItems.map(function(item) {
+      return item.lineDash;
+    })).toEqual([[], [6, 3]]);
+    expect(chart.legend.legendItems.map(function(item) {
+      return item.lineDashOffset;
+    })).toEqual([0, 4]);
+  });
+
+  it('should leave other point styles solid', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'dashed',
+          borderDash: [6, 3],
+          data: []
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.legend.legendItems[0].lineDash).toBeUndefined();
+  });
+
   it('should reverse correctly', function() {
     var chart = window.acquireChart({
       type: 'line',
