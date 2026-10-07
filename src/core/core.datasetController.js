@@ -226,6 +226,22 @@ function clearStacks(meta, items) {
   }
 }
 
+/**
+ * @param {{ $animations?: Record<string, import('./core.animation.js').default>, options?: object }} target
+ */
+function cancelAnimations(target) {
+  if (!target) {
+    return;
+  }
+  const animations = target.$animations || {};
+  for (const animation of Object.values(animations)) {
+    animation.cancel();
+  }
+  if (target.options) {
+    cancelAnimations(target.options);
+  }
+}
+
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
 const cloneIfNotShared = (cached, shared) => shared ? cached : Object.assign({}, cached);
 const createStack = (canStack, meta, chart) => canStack && !meta.hidden && meta._stacked
@@ -700,6 +716,13 @@ export default class DatasetController {
 	 */
   _update(mode) {
     const meta = this._cachedMeta;
+    if (mode === 'none') {
+      for (const element of meta.data) {
+        cancelAnimations(element);
+      }
+      cancelAnimations(meta.dataset);
+      cancelAnimations(this._sharedOptions);
+    }
     this.update(mode || 'default');
     meta._clip = toClip(valueOrDefault(this.options.clip, defaultClip(meta.xScale, meta.yScale, this.getMaxOverflow())));
   }
@@ -908,8 +931,12 @@ export default class DatasetController {
 	 * @protected
 	 */
   updateSharedOptions(sharedOptions, mode, newOptions) {
-    if (sharedOptions && !isDirectUpdateMode(mode)) {
-      this._resolveAnimations(undefined, mode).update(sharedOptions, newOptions);
+    if (sharedOptions) {
+      if (mode === 'none') {
+        Object.assign(sharedOptions, newOptions);
+      } else if (!isDirectUpdateMode(mode)) {
+        this._resolveAnimations(undefined, mode).update(sharedOptions, newOptions);
+      }
     }
   }
 
