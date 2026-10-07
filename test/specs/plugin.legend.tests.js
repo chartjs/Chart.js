@@ -877,6 +877,78 @@ describe('Legend block tests', function() {
     }]);
   });
 
+  it('should respect dataset borderDash when usePointStyle is true and pointStyle is line', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'dataset1',
+          borderColor: '#1a5276',
+          borderWidth: 2,
+          data: []
+        }, {
+          label: 'dataset2',
+          borderColor: '#e74c3c',
+          borderWidth: 2,
+          borderDash: [6, 3],
+          borderDashOffset: 2,
+          borderCapStyle: 'round',
+          borderJoinStyle: 'bevel',
+          data: []
+        }],
+        labels: []
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'line'
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.legend.legendItems).toEqual([{
+      text: 'dataset1',
+      borderRadius: undefined,
+      fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
+      hidden: false,
+      lineCap: 'butt',
+      lineDash: [],
+      lineDashOffset: 0,
+      lineJoin: 'miter',
+      lineWidth: 1,
+      strokeStyle: '#1a5276',
+      pointStyle: 'line',
+      rotation: 0,
+      textAlign: undefined,
+      datasetIndex: 0
+    }, {
+      text: 'dataset2',
+      borderRadius: undefined,
+      fillStyle: 'rgba(0,0,0,0.1)',
+      fontColor: '#666',
+      hidden: false,
+      lineCap: 'round',
+      lineDash: [6, 3],
+      lineDashOffset: 2,
+      lineJoin: 'bevel',
+      lineWidth: 1,
+      strokeStyle: '#e74c3c',
+      pointStyle: 'line',
+      rotation: 0,
+      textAlign: undefined,
+      datasetIndex: 1
+    }]);
+
+    spyOn(chart.ctx, 'setLineDash');
+    chart.legend.draw();
+    expect(chart.ctx.setLineDash).toHaveBeenCalledWith([6, 3]);
+  });
+
   it('should not crash when the legend defaults are false', function() {
     const oldDefaults = Chart.defaults.plugins.legend;
 

@@ -352,4 +352,39 @@ describe('Chart.helpers.canvas', function() {
       }]);
     });
   });
+
+  describe('drawPointLegend', function() {
+    it('should apply lineDash and lineDashOffset for pointStyle line', function() {
+      var context = window.createMockContext();
+      helpers.drawPointLegend(context, {
+        pointStyle: 'line',
+        radius: 10,
+        borderWidth: 2,
+        lineDash: [6, 3],
+        lineDashOffset: 2
+      }, 50, 50, 40);
+
+      expect(context.getCalls()).toEqual([{
+        name: 'beginPath',
+        args: []
+      }, {
+        name: 'setLineDash',
+        args: [[6, 3]]
+      }, {
+        name: 'moveTo',
+        args: [30, 50]
+      }, {
+        name: 'lineTo',
+        args: [70, 50]
+      }, {
+        name: 'fill',
+        args: []
+      }, {
+        name: 'stroke',
+        args: []
+      }]);
+      expect(context.lineDashOffset).toBe(2);
+    });
+  });
 });
+
