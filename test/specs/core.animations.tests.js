@@ -1,4 +1,91 @@
 describe('Chart.animations', function() {
+  it('should preserve a non-animated update across rendered animation frames', function(done) {
+    const chart = acquireChart({
+      type: 'line',
+      data: {datasets: [{data: [2]}]},
+      options: {animation: {duration: 100}, scales: {y: {min: 0, max: 10}}}
+    });
+    chart.stop();
+    chart.data.datasets[0].data[0] = 8;
+    chart.update();
+    chart.data.datasets[0].data[0] = 4;
+    chart.update('none');
+    setTimeout(function() {
+      expect(chart.getDatasetMeta(0).data[0].y).toBeCloseTo(chart.scales.y.getPixelForValue(4), 6);
+      done();
+    }, 200);
+  });
+
+  ['line', 'scatter', 'bar'].forEach(function(type) {
+    it('should preserve a non-animated ' + type + ' update during an animation', function() {
+      const chart = acquireChart({
+        type,
+        data: {datasets: [{data: [{x: 1, y: 2}]}]},
+        options: {
+          animation: {duration: 1000},
+          scales: {x: {type: 'linear', min: 0, max: 2}, y: {min: 0, max: 10}}
+        }
+      });
+      chart.stop();
+      chart.data.datasets[0].data[0].y = 8;
+      chart.update();
+      const point = chart.getDatasetMeta(0).data[0];
+      const animation = point.$animations.y;
+      expect(animation.active()).toBeTrue();
+
+      chart.data.datasets[0].data[0].y = 4;
+      chart.update('none');
+      const expected = chart.scales.y.getPixelForValue(4);
+      expect(point.y).toBeCloseTo(expected, 6);
+      if (animation.active()) {
+        animation.tick(Date.now() + 2000);
+      }
+      expect(point.y).toBeCloseTo(expected, 6);
+      expect(animation.active()).toBeFalse();
+    });
+  });
+
+  it('should only cancel animations for datasets updated with none', function() {
+    const chart = acquireChart({
+      type: 'line',
+      data: {datasets: [{data: [2]}, {data: [3]}]},
+      options: {animation: {duration: 1000}, scales: {y: {min: 0, max: 10}}}
+    });
+    chart.stop();
+    chart.data.datasets[0].data[0] = 8;
+    chart.data.datasets[1].data[0] = 9;
+    chart.update();
+    const first = chart.getDatasetMeta(0).data[0];
+    const second = chart.getDatasetMeta(1).data[0];
+    chart.data.datasets[0].data[0] = 4;
+    chart.update(function(context) {
+      return context.datasetIndex === 0 ? 'none' : 'default';
+    });
+    expect(first.$animations.y.active()).toBeFalse();
+    expect(first.y).toBeCloseTo(chart.scales.y.getPixelForValue(4), 6);
+    expect(second.$animations.y.active()).toBeTrue();
+  });
+
+  it('should cancel shared option animations before a non-animated update', function() {
+    const chart = acquireChart({
+      type: 'line',
+      data: {datasets: [{data: [2, 3], pointRadius: 3}]},
+      options: {animation: {duration: 1000}}
+    });
+    chart.stop();
+    chart.data.datasets[0].pointRadius = 10;
+    chart.update();
+    const controller = chart.getDatasetMeta(0).controller;
+    const animation = controller._sharedOptions.$animations.radius;
+    expect(animation.active()).toBeTrue();
+    chart.data.datasets[0].pointRadius = 5;
+    chart.update('none');
+    expect(animation.active()).toBeFalse();
+    for (const point of chart.getDatasetMeta(0).data) {
+      expect(point.options.radius).toBe(5);
+    }
+  });
+
   it('should override property collection with property', function() {
     const chart = {};
     const anims = new Chart.Animations(chart, {
