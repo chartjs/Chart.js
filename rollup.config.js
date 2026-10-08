@@ -62,7 +62,7 @@ export default [
   // dist/chart.umd.js (old filename)
   {
     input: 'src/index.umd.ts',
-    plugins: plugins(true),
+    plugins: plugins(),
     output: {
       name: 'Chart',
       file: 'dist/chart.umd.js',
