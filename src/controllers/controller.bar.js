@@ -199,7 +199,12 @@ function borderProps(properties) {
   return {start, end, reverse, top, bottom};
 }
 
-function setBorderSkipped(properties, options, stack, index) {
+function isSingleBarInStack(stack, index, isAtStackBase) {
+  return isAtStackBase && ((stack._top === index && stack._bottom === null)
+    || (stack._bottom === index && stack._top === null));
+}
+
+function setBorderSkipped(properties, options, stack, index, isAtStackBase) {
   let edge = options.borderSkipped;
   const res = {};
 
@@ -217,6 +222,10 @@ function setBorderSkipped(properties, options, stack, index) {
 
   if (edge === 'middle' && stack) {
     properties.enableBorderRadius = true;
+    if (isSingleBarInStack(stack, index, isAtStackBase)) {
+      properties.borderSkipped = res;
+      return;
+    }
     if ((stack._top || 0) === index) {
       edge = top;
     } else if ((stack._bottom || 0) === index) {
@@ -418,7 +427,7 @@ export default class BarController extends DatasetController {
         properties.options = sharedOptions || this.resolveDataElementOptions(i, bars[i].active ? 'active' : mode);
       }
       const options = properties.options || bars[i].options;
-      setBorderSkipped(properties, options, stack, index);
+      setBorderSkipped(properties, options, stack, index, vpixels.isAtStackBase);
       setInflateAmount(properties, options, ruler.ratio);
       this.updateElement(bars[i], i, properties, mode);
     }
@@ -626,6 +635,7 @@ export default class BarController extends DatasetController {
       size,
       base,
       head,
+      isAtStackBase: start === 0,
       center: head + size / 2
     };
   }
