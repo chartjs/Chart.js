@@ -641,7 +641,14 @@ export class Tooltip extends Element {
     let properties;
     let tooltipItems = [];
 
-    if (!active.length) {
+    if (active.length) {
+      tooltipItems = this._createItems(options);
+    }
+
+    // A filter that removes every item leaves nothing to show, so treat it the
+    // same as having no active elements instead of running the callbacks with
+    // an empty item array.
+    if (!tooltipItems.length) {
       if (this.opacity !== 0) {
         properties = {
           opacity: 0
@@ -649,7 +656,6 @@ export class Tooltip extends Element {
       }
     } else {
       const position = positioners[options.position].call(this, active, this._eventPosition);
-      tooltipItems = this._createItems(options);
 
       this.title = this.getTitle(tooltipItems, options);
       this.beforeBody = this.getBeforeBody(tooltipItems, options);
