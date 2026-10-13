@@ -571,6 +571,40 @@ describe('Legend block tests', function() {
     });
   });
 
+  ['left', 'right'].forEach(function(position) {
+    it('should fit the widest line of a multiline ' + position + ' legend label', function() {
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {
+          labels: [['WWW', 'iiiiiiii']],
+          datasets: [{data: [1]}]
+        },
+        options: {
+          plugins: {
+            legend: {
+              position,
+              labels: {
+                font: {family: 'Arial'}
+              }
+            }
+          }
+        }
+      });
+
+      const ctx = chart.ctx;
+      ctx.font = Chart.helpers.toFont(chart.legend.options.labels.font).string;
+      expect(ctx.measureText('WWW').width).toBeGreaterThan(ctx.measureText('iiiiiiii').width);
+
+      const multilineWidth = chart.legend.width;
+      const multilineHitboxWidth = chart.legend.legendHitBoxes[0].width;
+      chart.data.labels[0] = 'WWW';
+      chart.update();
+
+      expect(multilineWidth).toBeCloseTo(chart.legend.width, 5);
+      expect(multilineHitboxWidth).toBeCloseTo(chart.legend.legendHitBoxes[0].width, 5);
+    });
+  });
+
   it('should draw items with a custom boxHeight', function() {
     var chart = window.acquireChart(
       {
