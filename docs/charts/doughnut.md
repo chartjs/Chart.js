@@ -149,7 +149,8 @@ The style of each arc can be controlled with the following properties:
 | `borderJoinStyle` | arc border join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin).
 | `borderWidth` | arc border width (in pixels).
 | `offset` | arc offset (in pixels).
-| `spacing` | Fixed arc offset (in pixels). Similar to `offset` but applies to all arcs.
+| `spacing` | Fixed arc (slice) offset (in pixels). Similar to `offset` but applies to all slices.
+| `datasetSpacing` | Fixed spacing between datasets (in pixels). This property only applies to multi-dataset doughnut/pie charts. It adjusts the spacing between concentric rings of data, allowing better visual separation between datasets.
 | `weight` | The relative thickness of the dataset. Providing a value for weight will cause the pie or doughnut dataset to be drawn with a thickness relative to the sum of all the dataset weight values.
 
 All these values, if `undefined`, fallback to the associated [`elements.arc.*`](../configuration/elements.md#arc-configuration) options.
