@@ -719,6 +719,20 @@ describe('Chart.helpers.config', function() {
       expect(opts.fn).toEqual(1);
     });
 
+    it('should support changing prefixes', function() {
+      const res = _createResolver([{test: 1, hoverTest: 2}]);
+      const opts = _attachContext(res, {ctx: 1});
+      expect(opts.test).toEqual(1);
+      expect(opts.setContext({ctx: 2}, ['hover', '']).test).toEqual(2);
+      expect(opts.test).toEqual(1);
+      expect(opts.override('', ['hover', '']).test).toEqual(2);
+    });
+
+    it('should support prefixes to subnodes', function() {
+      const res = _createResolver([{node: {test: 1, hoverTest: 2}}], ['hover', '']);
+      expect(res.node.test).toEqual(2);
+    });
+
     it('should support common object methods', function() {
       const defaults = {
         option1: 'defaults'
