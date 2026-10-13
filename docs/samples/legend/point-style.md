@@ -58,12 +58,15 @@ module.exports = {
 };
 ```
 
-## Docs 
+For asymmetric point styles such as `line` or `dash`, you can nudge the symbol vertically using the `pointStyleYOffset` option set to a small positive number (e.g., `4` pixels).
+
+## Docs
 * [Data structures (`labels`)](../../general/data-structures.md)
 * [Line](../../charts/line.md)
 * [Legend](../../configuration/legend.md)
-  * [Legend Label Configuration](../../configuration/legend.md#legend-label-configuration)
-    * `usePointStyle`
+   * [Legend Label Configuration](../../configuration/legend.md#legend-label-configuration)
+     * `usePointStyle`
+     * `pointStyleYOffset`
 * [Elements](../../configuration/elements.md)
-  * [Point Configuration](../../configuration/elements.md#point-configuration)
-  * [Point Styles](../../configuration/elements.md#point-styles)
+   * [Point Configuration](../../configuration/elements.md#point-configuration)
+   * [Point Styles](../../configuration/elements.md#point-styles)
