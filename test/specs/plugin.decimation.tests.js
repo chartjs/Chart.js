@@ -2,6 +2,42 @@ describe('Plugin.decimation', function() {
 
   describe('auto', jasmine.fixture.specs('plugin.decimation'));
 
+  describe('min-max', function() {
+    function values(data) {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {datasets: [{data}]},
+        options: {
+          parsing: false,
+          scales: {x: {type: 'linear'}},
+          plugins: {
+            decimation: {enabled: true, algorithm: 'min-max', threshold: 2}
+          }
+        }
+      }, {
+        canvas: {height: 100, width: 20},
+        wrapper: {height: 100, width: 20}
+      });
+      return chart.data.datasets[0].data.map(point => point.y);
+    }
+
+    it('preserves final bucket extrema and endpoint', function() {
+      const data = [
+        {x: 0, y: 0}, {x: 10, y: 2}, {x: 10, y: 100},
+        {x: 10, y: -20}, {x: 10, y: 3}
+      ];
+      expect(values(data)).toEqual([0, 2, 100, -20, 3]);
+    });
+
+    it('preserves extrema when x values are identical', function() {
+      const data = [
+        {x: 10, y: 0}, {x: 10, y: 3}, {x: 10, y: 40},
+        {x: 10, y: -10}, {x: 10, y: 4}
+      ];
+      expect(values(data)).toEqual([0, 40, -10, 4]);
+    });
+  });
+
   describe('lttb', function() {
     const originalData = [
       {x: 0, y: 0},
