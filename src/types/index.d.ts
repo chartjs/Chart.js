@@ -3866,14 +3866,18 @@ export interface ChartDatasetPropertiesCustomTypesPerDataset<TType extends Chart
   data: TData;
 }
 
+// Distributes over `TType`, so that a dataset of several chart types is a union of complete datasets,
+// one per chart type, instead of a dataset whose options and properties are unions of their own.
 export type ChartDataset<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>
-> = DeepPartial<
-{ [key in ChartType]: { type: key } & ChartTypeRegistry[key]['datasetOptions'] }[TType]
-> & DeepPartial<
-PluginDatasetOptionsByType<TType>
-> & ChartDatasetProperties<TType, TData>;
+> = TType extends ChartType
+  ? DeepPartial<
+  { type: TType } & ChartTypeRegistry[TType]['datasetOptions']
+  > & DeepPartial<
+  PluginDatasetOptionsByType<TType>
+  > & ChartDatasetProperties<TType, TData>
+  : never;
 
 export type ChartDatasetCustomTypesPerDataset<
   TType extends ChartType = ChartType,
