@@ -1181,5 +1181,64 @@ describe('Legend block tests', function() {
       await jasmine.triggerMouseEvent(chart, 'click', el);
       expect(clickItem).toBe(chart.legend.legendItems[0]);
     });
+
+    it('should draw the last item when horizontal legend has align end and label widths cause floating point rounding', function() {
+      var origMeasureText = CanvasRenderingContext2D.prototype.measureText;
+      var origFillText = CanvasRenderingContext2D.prototype.fillText;
+      var drawn = [];
+      var widths = {Alpha: 40.2, Beta: 30.2};
+
+      CanvasRenderingContext2D.prototype.measureText = function(text) {
+        return text in widths ? {width: widths[text]} : origMeasureText.call(this, text);
+      };
+      CanvasRenderingContext2D.prototype.fillText = function(text, x, y) {
+        if (text in widths) {
+          drawn.push({text: text, x: x, y: y});
+        }
+        return origFillText.apply(this, arguments);
+      };
+
+      try {
+        acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['a', 'b'],
+            datasets: [
+              {label: 'Alpha', data: [1, 2]},
+              {label: 'Beta', data: [2, 1]},
+            ]
+          },
+          options: {
+            responsive: false,
+            animation: false,
+            plugins: {
+              legend: {
+                align: 'end',
+                labels: {
+                  boxWidth: 12,
+                  padding: 10,
+                  font: {size: 12}
+                }
+              }
+            }
+          }
+        }, {
+          canvas: {
+            width: 600,
+            height: 200
+          }
+        });
+
+        expect(drawn.length).toBe(2);
+        expect(drawn[0].text).toBe('Alpha');
+        expect(isNaN(drawn[0].x)).toBeFalse();
+        expect(drawn[1].text).toBe('Beta');
+        expect(isNaN(drawn[1].x)).toBeFalse();
+      } finally {
+        CanvasRenderingContext2D.prototype.measureText = origMeasureText;
+        CanvasRenderingContext2D.prototype.fillText = origFillText;
+      }
+    });
   });
 });
+
