@@ -202,4 +202,33 @@ describe('Chart.controllers.scatter', function() {
       after: []
     }]);
   });
+
+  it('should not trim points beyond scale limits when clip is false', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{x: 0, y: 1}, {x: 10, y: 2}, {x: 20, y: 3}, {x: 30, y: 1}, {x: 40, y: 2}, {x: 50, y: 3}]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            min: 11,
+            max: 40
+          }
+        }
+      }
+    });
+
+    var controller = chart.getDatasetMeta(0).controller;
+    expect(controller._drawStart).toBe(1);
+    expect(controller._drawCount).toBe(4);
+
+    chart.data.datasets[0].clip = false;
+    chart.update();
+
+    expect(controller._drawStart).toBe(0);
+    expect(controller._drawCount).toBe(6);
+  });
 });
