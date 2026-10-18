@@ -1158,6 +1158,66 @@ describe('Chart.controllers.line', function() {
     expect(controller._drawCount).toBe(4);
   }, 500);
 
+  it('should not trim points beyond scale limits when clip is false', async() => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [3, 1, 2, 3, 1, 1.5],
+          clip: false
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
+          }
+        }
+      }
+    });
+
+    var controller = chart.getDatasetMeta(0).controller;
+
+    expect(controller._drawStart).toBe(0);
+    expect(controller._drawCount).toBe(6);
+  }, 500);
+
+  it('should only keep points beyond the unclipped side of the scale', async() => {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [0, 10, 20, 30, 40, 50],
+        datasets: [{
+          data: [3, 1, 2, 3, 1, 1.5],
+          clip: {left: false, top: 0, right: 0, bottom: 0}
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 11,
+            max: 40,
+          }
+        }
+      }
+    });
+
+    var controller = chart.getDatasetMeta(0).controller;
+
+    expect(controller._drawStart).toBe(0);
+    expect(controller._drawCount).toBe(5);
+
+    chart.options.scales.x.reverse = true;
+    chart.update();
+
+    expect(controller._drawStart).toBe(1);
+    expect(controller._drawCount).toBe(5);
+  }, 500);
+
   it('should not override tooltip title and label callbacks', async() => {
     const chart = window.acquireChart({
       type: 'line',
