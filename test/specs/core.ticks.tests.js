@@ -106,5 +106,13 @@ describe('Test tick generators', function() {
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}]])).toEqual('1');
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}, {value: 1.01}]])).toEqual('1.00');
     });
+
+    it('should not fail when the format sets only one fraction digits bound', function() {
+      const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {format: {style: 'percent', maximumFractionDigits: 0}}}};
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [0.15, 1, [{value: 0.1}, {value: 0.15}, {value: 0.2}]])).toEqual('15%');
+
+      scale.options.ticks.format = {style: 'currency', currency: 'EUR', minimumFractionDigits: 2};
+      expect(Chart.Ticks.formatters.numeric.apply(scale, [1500, 1, [{value: 1000}, {value: 1500}, {value: 2000}]])).toEqual('€1,500.00');
+    });
   });
 });

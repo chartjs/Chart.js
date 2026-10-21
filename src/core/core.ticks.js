@@ -53,8 +53,17 @@ const formatters = {
     // toFixed has a max of 20 decimal places
     const numDecimal = isNaN(logDelta) ? 1 : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
 
+    const format = this.options.ticks.format;
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
-    Object.assign(options, this.options.ticks.format);
+    Object.assign(options, format);
+
+    if (options.minimumFractionDigits > options.maximumFractionDigits) {
+      if (format.minimumFractionDigits === undefined) {
+        options.minimumFractionDigits = options.maximumFractionDigits;
+      } else if (format.maximumFractionDigits === undefined) {
+        options.maximumFractionDigits = options.minimumFractionDigits;
+      }
+    }
 
     return formatNumber(tickValue, locale, options);
   },
