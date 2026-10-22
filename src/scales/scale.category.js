@@ -25,7 +25,7 @@ const validIndex = (index, max) => index === null ? null : _limitValue(Math.roun
 function _getLabelForValue(value) {
   const labels = this.getLabels();
 
-  if (value >= 0 && value < labels.length) {
+  if (typeof value === 'number' && value >= 0 && value < labels.length) {
     return labels[value];
   }
   return value;
