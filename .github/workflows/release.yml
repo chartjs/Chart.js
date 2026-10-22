@@ -23,6 +23,7 @@ jobs:
   release:
     permissions:
       contents: write  # for actions/upload-release-asset to upload release asset
+      id-token: write  # for npm trusted publishing (OIDC)
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +48,6 @@ jobs:
       - name: Publish to NPM
         run: ./scripts/publish.sh
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Deploy Docs
         run: ./scripts/deploy-docs.sh "$VERSION" release
