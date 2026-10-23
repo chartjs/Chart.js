@@ -512,6 +512,45 @@ describe('DOM helpers tests', function() {
     document.body.removeChild(container);
   });
 
+  it('should not limit growth by a container height that is derived from the canvas itself', () => {
+    // https://github.com/chartjs/Chart.js/issues/11005
+    // The container has no explicit height, so its height comes from the
+    // target (canvas) itself. That height must not act as a constraint,
+    // otherwise the chart can shrink but never grow back.
+    const container = document.createElement('div');
+    container.style.width = '900px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '300px';
+    container.appendChild(target);
+
+    expect(helpers.getMaximumSize(target, 900, 300, 2)).toEqual(jasmine.objectContaining({width: 900, height: 450}));
+
+    document.body.removeChild(container);
+  });
+
+  it('should still restore the display style of the canvas after measuring', () => {
+    const container = document.createElement('div');
+    container.style.width = '900px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '300px';
+    target.style.setProperty('display', 'block', 'important');
+    container.appendChild(target);
+
+    helpers.getMaximumSize(target, 900, 300, 2);
+    expect(target.style.getPropertyValue('display')).toBe('block');
+    expect(target.style.getPropertyPriority('display')).toBe('important');
+
+    document.body.removeChild(container);
+  });
+
   it('should respect aspect ratio and skip container height', () => {
     const container = document.createElement('div');
     container.style.width = '500px';
