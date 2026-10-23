@@ -194,6 +194,31 @@ describe('Plugin.filler', function() {
     });
   });
 
+  describe('stack', function() {
+    it('should keep the fill of a dataset whose point x differs from the dataset below by a tiny amount', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c', 'd', 'e'],
+          datasets: [
+            {data: [1, 2, 1, 2, 1], fill: 'stack', backgroundColor: 'rgb(0, 0, 255)', pointRadius: 0},
+            {data: [1, 1, 1, 1, 1], fill: 'stack', backgroundColor: 'rgb(255, 128, 0)', pointRadius: 0},
+          ],
+        },
+        options: {animation: false, scales: {y: {stacked: true}}}
+      });
+
+      chart.draw();
+      const before = chart.canvas.toDataURL();
+
+      chart.getDatasetMeta(1).data[2].x += 1e-9;
+      chart.draw();
+      const after = chart.canvas.toDataURL();
+
+      expect(after).toBe(before);
+    });
+  });
+
   describe('options.plugins.filler.propagate', function() {
     it('should compute propagated fill targets if true', function() {
       var chart = window.acquireChart({
