@@ -561,7 +561,11 @@ export default class BarController extends DatasetController {
 	 * @private
 	 */
   _calculateBarValuePixels(index) {
-    const {_cachedMeta: {vScale, _stacked, index: datasetIndex}, options: {base: baseValue, minBarLength}} = this;
+    const {_cachedMeta: {vScale, _stacked, index: datasetIndex}, options: {minBarLength}} = this;
+    // Only scriptable or indexable bases need a per-bar context.
+    const {base: rawBase} = this.options._proxy;
+    const {base: baseValue} = typeof rawBase === 'function' || isArray(rawBase)
+      ? this.options.setContext(this.getContext(index)) : this.options;
     const actualBase = baseValue || 0;
     const parsed = this.getParsed(index);
     const custom = parsed._custom;
