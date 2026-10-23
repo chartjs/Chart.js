@@ -2,6 +2,61 @@
 describe('Legend block tests', function() {
   describe('auto', jasmine.fixture.specs('plugin.legend'));
 
+  describe('vertical legend titles', function() {
+    for (const position of ['left', 'right']) {
+      for (const fontSize of [12, 24]) {
+        it(`should fit a long title on the ${position} with font size ${fontSize}`, function() {
+          const title = 'A title wider than the legend labels';
+          const chart = window.acquireChart({
+            type: 'doughnut',
+            data: {
+              labels: ['A', 'B'],
+              datasets: [{data: [1, 2]}]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  position,
+                  title: {display: true, text: title, font: {size: fontSize}}
+                }
+              }
+            }
+          }, {canvas: {width: 1200, height: 400}});
+
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.font = Chart.helpers.toFont(chart.legend.options.title.font).string;
+          const titleWidth = ctx.measureText(title).width;
+          ctx.restore();
+
+          expect(chart.legend.width).toBeGreaterThanOrEqual(titleWidth);
+          const widthWithTitle = chart.legend.width;
+          chart.options.plugins.legend.title.display = false;
+          chart.update();
+          expect(chart.legend.width).toBeLessThan(widthWithTitle);
+        });
+      }
+    }
+
+    it('should respect maxWidth when the title is wider', function() {
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {labels: ['A'], datasets: [{data: [1]}]},
+        options: {
+          plugins: {
+            legend: {
+              position: 'left',
+              maxWidth: 100,
+              title: {display: true, text: 'A title wider than the legend labels'}
+            }
+          }
+        }
+      }, {canvas: {width: 1200, height: 400}});
+
+      expect(chart.legend.width).toBe(100);
+    });
+  });
+
   it('should have the correct default config', function() {
     expect(Chart.defaults.plugins.legend).toEqual({
       display: true,
