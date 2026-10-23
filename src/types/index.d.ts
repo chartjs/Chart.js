@@ -1321,9 +1321,16 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
   ticks: Tick[];
   getMatchingVisibleMetas(type?: string): ChartMeta[];
 
-  drawTitle(chartArea: ChartArea): void;
-  drawLabels(chartArea: ChartArea): void;
+  /**
+   * The stages `draw` dispatches to, in call order. A derived scale may
+   * override any of them to customize one part of the axis; see
+   * docs/developers/axes.md.
+   */
+  drawBackground(): void;
   drawGrid(chartArea: ChartArea): void;
+  drawBorder(): void;
+  drawTitle(): void;
+  drawLabels(chartArea: ChartArea): void;
 
   /**
    * @param {number} pixel

@@ -122,6 +122,31 @@ Optionally, the following methods may also be overwritten, but an implementation
 }
 ```
 
+`draw` draws the axis in stages, one method per part, in this order. Overriding a single stage customizes that part and leaves the rest of the axis alone, so it is usually preferable to overriding `draw`. `drawTitle`, for example, is the place to render a custom axis title.
+
+```javascript
+{
+    // Fills the scale bounding box with options.backgroundColor, when set.
+    drawBackground: function() {},
+
+    // Draws the grid lines.
+    // @param chartArea : the rectangle that lines, bars, etc will be drawn in
+    drawGrid: function(chartArea) {},
+
+    // Draws the axis border.
+    drawBorder: function() {},
+
+    // Draws options.title, positioned from options.position and options.title.align.
+    drawTitle: function() {},
+
+    // Draws the tick labels.
+    // @param chartArea : the rectangle that lines, bars, etc will be drawn in
+    drawLabels: function(chartArea) {}
+}
+```
+
+Overriding `draw` itself opts out of that split: the scale is then drawn as a single layer at the `ticks.z` index, instead of one layer each for grid and title (`grid.z`), border (`border.z`) and tick labels (`ticks.z`).
+
 The Core.Scale base class also has some utility functions that you may find useful.
 
 ```javascript
