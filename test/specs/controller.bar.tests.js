@@ -1851,3 +1851,63 @@ describe('Chart.controllers.bar', function() {
     }]);
   });
 });
+
+
+describe('Bar controller borderSkipped middle', function() {
+  function makeChart(data, indexAxis = 'x', reverse = false) {
+    return window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['Only value', 'Multiple values'],
+        datasets: data.map(dataset => Array.isArray(dataset) ? {data: dataset} : dataset)
+      },
+      options: {
+        indexAxis,
+        borderRadius: 12,
+        borderSkipped: 'middle',
+        animation: false,
+        scales: {
+          x: {stacked: true, reverse: indexAxis === 'y' && reverse},
+          y: {stacked: true, reverse: indexAxis === 'x' && reverse}
+        }
+      }
+    });
+  }
+
+  for (const indexAxis of ['x', 'y']) {
+    for (const reverse of [false, true]) {
+      for (const value of [10, -10]) {
+        for (const empty of [null, 0, undefined]) {
+          it(`keeps both ends when only one segment has a value (${indexAxis}, reverse=${reverse}, ${value}, ${empty})`, function() {
+            const chart = makeChart([[value, value], [empty, value]], indexAxis, reverse);
+            const only = chart.getDatasetMeta(0).data[0];
+            expect(only.borderSkipped).toEqual({});
+            expect(only.enableBorderRadius).toBe(true);
+            const first = chart.getDatasetMeta(0).data[1];
+            const last = chart.getDatasetMeta(1).data[1];
+            expect(Object.keys(first.borderSkipped).length).toBe(1);
+            expect(Object.keys(last.borderSkipped).length).toBe(1);
+            expect(first.borderSkipped).not.toEqual(last.borderSkipped);
+          });
+        }
+        it(`handles an empty first dataset (${indexAxis}, reverse=${reverse}, ${value})`, function() {
+          const chart = makeChart([[null], [value]], indexAxis, reverse);
+          expect(chart.getDatasetMeta(1).data[0].borderSkipped).toEqual({});
+        });
+        it(`updates the remaining segment when another dataset is hidden (${indexAxis}, reverse=${reverse}, ${value})`, function() {
+          const chart = makeChart([[value], [value]], indexAxis, reverse);
+          chart.hide(0);
+          expect(chart.getDatasetMeta(1).data[0].borderSkipped).toEqual({});
+          chart.show(0);
+          expect(Object.keys(chart.getDatasetMeta(1).data[0].borderSkipped).length).toBe(1);
+        });
+      }
+    }
+  }
+
+  it('keeps the joining borders skipped for positive and negative segments', function() {
+    const chart = makeChart([[10], [-10]]);
+    expect(chart.getDatasetMeta(0).data[0].borderSkipped).toEqual({bottom: true});
+    expect(chart.getDatasetMeta(1).data[0].borderSkipped).toEqual({top: true});
+  });
+});
