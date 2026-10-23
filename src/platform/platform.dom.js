@@ -119,10 +119,15 @@ function fromNativeEvent(event, chart) {
 }
 
 function nodeListContains(nodeList, canvas) {
-  for (const node of nodeList) {
-    if (node === canvas || node.contains(canvas)) {
-      return true;
+  let target = canvas;
+  while (target) {
+    for (const node of nodeList) {
+      if (node === target || node.contains(target)) {
+        return true;
+      }
     }
+    // contains() does not cross shadow boundaries, including closed roots.
+    target = target.getRootNode().host;
   }
 }
 
