@@ -278,6 +278,25 @@ describe('DOM helpers tests', function() {
     expect(canvas.style.height).toBe(`${chartHeight}px`);
   });
 
+  it ('should stop reporting a change once a fractional size is applied', function() {
+    var chart = window.acquireChart({}, {
+      canvas: {
+        width: 300,
+        height: 150,
+      }
+    });
+
+    chart.width = 300.4;
+    chart.height = 150.2;
+
+    // the canvas keeps whole pixels only so a fractional size still has to settle
+    expect(helpers.retinaScale(chart, 2, true)).toBe(true);
+    expect(helpers.retinaScale(chart, 2, true)).toBe(false);
+
+    expect(chart.canvas.width).toBe(600);
+    expect(chart.canvas.height).toBe(300);
+  });
+
   describe('getRelativePosition', function() {
     it('should use offsetX/Y when available', function() {
       const event = {offsetX: 50, offsetY: 100};
