@@ -59,8 +59,13 @@ function generateTicks(generationOptions, dataRange) {
   }
 
   if (bounds === 'ticks') {
-    niceMin = Math.floor(rmin / spacing) * spacing;
-    niceMax = Math.ceil(rmax / spacing) * spacing;
+    // Both are whole multiples of spacing, so they never need more decimals than
+    // spacing itself. Round the floating point error off here, otherwise
+    // _decimalPlaces below reports it as significant and the factor grows large
+    // enough that rounding the tick values becomes a no-op.
+    const spacingFactor = Math.pow(10, _decimalPlaces(spacing));
+    niceMin = Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor;
+    niceMax = Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor;
   } else {
     niceMin = rmin;
     niceMax = rmax;

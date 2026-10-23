@@ -706,6 +706,33 @@ describe('Linear Scale', function() {
     expect(chart.scales.x.ticks[chart.scales.x.ticks.length - 1].value).toBeLessThanOrEqual(2.4143e-8);
   });
 
+  it('Should generate ticks free of floating point drift when min and max are not round', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 49.894,
+            max: 51.5264,
+          },
+        },
+      },
+    });
+
+    var values = chart.scales.y.ticks.map(function(tick) {
+      return tick.value;
+    });
+
+    // the ticks between the bounds are multiples of the 0.2 spacing,
+    // so none of them needs more than four decimals to be written exactly
+    values.forEach(function(value) {
+      expect(value).toBe(Math.round(value * 1e4) / 1e4);
+    });
+    expect(values).toContain(50);
+    expect(values).toContain(51);
+  });
+
   it('Should not generate insane amounts of ticks with small stepSize and large range', function() {
     var chart = window.acquireChart({
       type: 'bar',
