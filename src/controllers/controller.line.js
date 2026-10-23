@@ -43,7 +43,7 @@ export default class LineController extends DatasetController {
     const {dataset: line, data: points = [], _dataset} = meta;
     // @ts-ignore
     const animationsDisabled = this.chart._animationsDisabled;
-    let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
+    let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled, this.options.clip);
 
     this._drawStart = start;
     this._drawCount = count;

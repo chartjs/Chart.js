@@ -1,8 +1,8 @@
-import type {ChartMeta, PointElement} from '../types/index.js';
+import type {ChartMeta, PointElement, Scale} from '../types/index.js';
 
 import {_limitValue} from './helpers.math.js';
 import {_lookupByKey} from './helpers.collection.js';
-import {isNullOrUndef} from './helpers.core.js';
+import {isNullOrUndef, isObject} from './helpers.core.js';
 
 export function fontString(pixelSize: number, fontStyle: string, fontFamily: string) {
   return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
@@ -81,11 +81,44 @@ export const _textX = (align: 'left' | 'right' | 'center', left: number, right: 
   return align === check ? right : align === 'center' ? (left + right) / 2 : left;
 };
 
+type DatasetClip = number | false | {[side: string]: number | boolean};
+
+/**
+ * Whether clipping is disabled on the side of the chart area where the index scale's min (or max) is.
+ */
+function isClipDisabled(clip: DatasetClip | undefined, iScale: Scale, isMax: boolean) {
+  if (clip === false) {
+    return true;
+  }
+  if (!isObject(clip)) {
+    return false;
+  }
+  const atEnd = isMax !== !!iScale.options.reverse;
+  const side = iScale.isHorizontal() ? (atEnd ? 'right' : 'left') : (atEnd ? 'top' : 'bottom');
+  return clip[side] === false;
+}
+
+/**
+ * User bounds of the index scale, ignoring a bound when clipping is disabled on its side,
+ * since points beyond it are still drawn.
+ */
+function getIndexBounds(iScale: Scale, clip: DatasetClip | undefined) {
+  const bounds = iScale.getUserBounds();
+  bounds.minDefined = bounds.minDefined && !isClipDisabled(clip, iScale, false);
+  bounds.maxDefined = bounds.maxDefined && !isClipDisabled(clip, iScale, true);
+  return bounds;
+}
+
 /**
  * Return start and count of visible points.
  * @private
  */
-export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatter'>, points: PointElement[], animationsDisabled: boolean) {
+export function _getStartAndCountOfVisiblePoints(
+  meta: ChartMeta<'line' | 'scatter'>,
+  points: PointElement[],
+  animationsDisabled: boolean,
+  clip?: DatasetClip
+) {
   const pointCount = points.length;
 
   let start = 0;
@@ -95,7 +128,7 @@ export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatt
     const {iScale, vScale, _parsed} = meta;
     const spanGaps = meta.dataset ? meta.dataset.options ? meta.dataset.options.spanGaps : null : null;
     const axis = iScale.axis;
-    const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
+    const {min, max, minDefined, maxDefined} = getIndexBounds(iScale, clip);
 
     if (minDefined) {
       start = Math.min(
