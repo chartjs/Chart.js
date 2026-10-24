@@ -13,8 +13,8 @@ import type {
   RoundedRect,
   TRBLCorners
 } from '../types/geometric.js';
-import {isArray, isNullOrUndef} from './helpers.core.js';
-import {PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG} from './helpers.math.js';
+import { isArray, isNullOrUndef } from './helpers.core.js';
+import { PI, TAU, HALF_PI, QUARTER_PI, TWO_THIRDS_PI, RAD_PER_DEG } from './helpers.math.js';
 
 /**
  * Converts the given font object into a CSS font string.
@@ -28,9 +28,9 @@ export function toFontString(font: FontSpec) {
   }
 
   return (font.style ? font.style + ' ' : '')
-		+ (font.weight ? font.weight + ' ' : '')
-		+ font.size + 'px '
-		+ font.family;
+    + (font.weight ? font.weight + ' ' : '')
+    + font.size + 'px '
+    + font.family;
 }
 
 /**
@@ -44,7 +44,7 @@ export function _measureText(
   string: string
 ) {
   let textWidth = data[string];
-  if (!textWidth) {
+  if (typeof textWidth === 'undefined') {
     textWidth = data[string] = ctx.measureText(string).width;
     gc.push(string);
   }
@@ -65,7 +65,7 @@ export function _longestText(
   ctx: CanvasRenderingContext2D,
   font: string,
   arrayOfThings: Things,
-  cache?: {data?: Record<string, number>, garbageCollect?: string[], font?: string}
+  cache?: { data?: Record<string, number>, garbageCollect?: string[], font?: string }
 ) {
   cache = cache || {};
   let data = cache.data = cache.data || {};
@@ -196,7 +196,7 @@ export function drawPointLegend(
   ctx.beginPath();
 
   switch (style) {
-  // Default includes circle
+    // Default includes circle
     default:
       if (w) {
         ctx.ellipse(x, y, w / 2, radius, 0, 0, TAU);
@@ -215,13 +215,13 @@ export function drawPointLegend(
       ctx.closePath();
       break;
     case 'rectRounded':
-    // NOTE: the rounded rect implementation changed to use `arc` instead of
-    // `quadraticCurveTo` since it generates better results when rect is
-    // almost a circle. 0.516 (instead of 0.5) produces results with visually
-    // closer proportion to the previous impl and it is inscribed in the
-    // circle with `radius`. For more details, see the following PRs:
-    // https://github.com/chartjs/Chart.js/issues/5597
-    // https://github.com/chartjs/Chart.js/issues/5858
+      // NOTE: the rounded rect implementation changed to use `arc` instead of
+      // `quadraticCurveTo` since it generates better results when rect is
+      // almost a circle. 0.516 (instead of 0.5) produces results with visually
+      // closer proportion to the previous impl and it is inscribed in the
+      // circle with `radius`. For more details, see the following PRs:
+      // https://github.com/chartjs/Chart.js/issues/5597
+      // https://github.com/chartjs/Chart.js/issues/5858
       cornerRadius = radius * 0.516;
       size = radius - cornerRadius;
       xOffset = Math.cos(rad + QUARTER_PI) * size;
@@ -322,7 +322,7 @@ export function _isPointInArea(
   margin = margin || 0.5; // margin - default is to match rounded decimals
 
   return !area || (point && point.x > area.left - margin && point.x < area.right + margin &&
-		point.y > area.top - margin && point.y < area.bottom + margin);
+    point.y > area.top - margin && point.y < area.bottom + margin);
 }
 
 export function clipArea(ctx: CanvasRenderingContext2D, area: TRBL) {
@@ -499,7 +499,7 @@ export function addRoundedRectPath(
   ctx: CanvasRenderingContext2D,
   rect: RoundedRect & { radius: TRBLCorners }
 ) {
-  const {x, y, w, h, radius} = rect;
+  const { x, y, w, h, radius } = rect;
 
   // top left arc
   ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, 1.5 * PI, PI, true);

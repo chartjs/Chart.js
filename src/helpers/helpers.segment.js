@@ -1,6 +1,6 @@
-import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math.js';
-import {createContext} from './helpers.options.js';
-import {isPatternOrGradient} from './helpers.color.js';
+import { _angleBetween, _angleDiff, _isBetween, _normalizeAngle } from './helpers.math.js';
+import { createContext } from './helpers.options.js';
+import { isPatternOrGradient } from './helpers.color.js';
 
 /**
  * @typedef { import('../elements/element.line.js').default } LineElement
@@ -23,7 +23,7 @@ function propertyFn(property) {
   };
 }
 
-function normalizeSegment({start, end, count, loop, style}) {
+function normalizeSegment({ start, end, count, loop, style }) {
   return {
     start: start % count,
     end: end % count,
@@ -33,11 +33,11 @@ function normalizeSegment({start, end, count, loop, style}) {
 }
 
 function getSegment(segment, points, bounds) {
-  const {property, start: startBound, end: endBound} = bounds;
-  const {between, normalize} = propertyFn(property);
+  const { property, start: startBound, end: endBound } = bounds;
+  const { between, normalize } = propertyFn(property);
   const count = points.length;
   // eslint-disable-next-line prefer-const
-  let {start, end, loop} = segment;
+  let { start, end, loop } = segment;
   let i, ilen;
 
   if (loop) {
@@ -57,7 +57,7 @@ function getSegment(segment, points, bounds) {
   if (end < start) {
     end += count;
   }
-  return {start, end, loop, style: segment.style};
+  return { start, end, loop, style: segment.style };
 }
 
 /**
@@ -79,10 +79,10 @@ export function _boundSegment(segment, points, bounds) {
     return [segment];
   }
 
-  const {property, start: startBound, end: endBound} = bounds;
+  const { property, start: startBound, end: endBound } = bounds;
   const count = points.length;
-  const {compare, between, normalize} = propertyFn(property);
-  const {start, end, loop, style} = getSegment(segment, points, bounds);
+  const { compare, between, normalize } = propertyFn(property);
+  const { start, end, loop, style } = getSegment(segment, points, bounds);
 
   const result = [];
   let inside = false;
@@ -114,7 +114,7 @@ export function _boundSegment(segment, points, bounds) {
     }
 
     if (subStart !== null && shouldStop()) {
-      result.push(normalizeSegment({start: subStart, end: i, loop, count, style}));
+      result.push(normalizeSegment({ start: subStart, end: i, loop, count, style }));
       subStart = null;
     }
     prev = i;
@@ -122,7 +122,7 @@ export function _boundSegment(segment, points, bounds) {
   }
 
   if (subStart !== null) {
-    result.push(normalizeSegment({start: subStart, end, loop, count, style}));
+    result.push(normalizeSegment({ start: subStart, end, loop, count, style }));
   }
 
   return result;
@@ -185,7 +185,7 @@ function findStartAndEnd(points, count, loop, spanGaps) {
   // end could be more than count, normalize
   end %= count;
 
-  return {start, end};
+  return { start, end };
 }
 
 /**
@@ -207,7 +207,7 @@ function solidSegments(points, start, max, loop) {
     if (cur.skip || cur.stop) {
       if (!prev.skip) {
         loop = false;
-        result.push({start: start % count, end: (end - 1) % count, loop});
+        result.push({ start: start % count, end: (end - 1) % count, loop });
         // @ts-ignore
         start = last = cur.stop ? end : null;
       }
@@ -221,7 +221,7 @@ function solidSegments(points, start, max, loop) {
   }
 
   if (last !== null) {
-    result.push({start: start % count, end: last % count, loop});
+    result.push({ start: start % count, end: last % count, loop });
   }
 
   return result;
@@ -245,10 +245,10 @@ export function _computeSegments(line, segmentOptions) {
   }
 
   const loop = !!line._loop;
-  const {start, end} = findStartAndEnd(points, count, loop, spanGaps);
+  const { start, end } = findStartAndEnd(points, count, loop, spanGaps);
 
   if (spanGaps === true) {
-    return splitByStyles(line, [{start, end, loop}], points, segmentOptions);
+    return splitByStyles(line, [{ start, end, loop }], points, segmentOptions);
   }
 
   const max = end < start ? end + count : end;
@@ -279,7 +279,7 @@ function splitByStyles(line, segments, points, segmentOptions) {
 function doSplitByStyles(line, segments, points, segmentOptions) {
   const chartContext = line._chart.getContext();
   const baseStyle = readStyle(line.options);
-  const {_datasetIndex: datasetIndex, options: {spanGaps}} = line;
+  const { _datasetIndex: datasetIndex, options: { spanGaps } } = line;
   const count = points.length;
   const result = [];
   let prevStyle = baseStyle;
@@ -300,7 +300,7 @@ function doSplitByStyles(line, segments, points, segmentOptions) {
       e += dir;
     }
     if (s % count !== e % count) {
-      result.push({start: s % count, end: e % count, loop: l, style: st});
+      result.push({ start: s % count, end: e % count, loop: l, style: st });
       prevStyle = st;
       start = e % count;
     }
@@ -350,15 +350,17 @@ function styleChanged(style, prevStyle) {
   if (!prevStyle) {
     return false;
   }
-  const cache = [];
-  const replacer = function(key, value) {
+  const cache = new Map();
+  const replacer = function (key, value) {
     if (!isPatternOrGradient(value)) {
       return value;
     }
-    if (!cache.includes(value)) {
-      cache.push(value);
+    let index = cache.get(value);
+    if (index === undefined) {
+      index = cache.size;
+      cache.set(value, index);
     }
-    return cache.indexOf(value);
+    return index;
   };
   return JSON.stringify(style, replacer) !== JSON.stringify(prevStyle, replacer);
 }
