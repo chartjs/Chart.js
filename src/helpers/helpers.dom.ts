@@ -81,13 +81,30 @@ function getCanvasPosition(
   const touches = (e as TouchEvent).touches;
   const source = (touches && touches.length ? touches[0] : e) as MouseEvent;
   const {offsetX, offsetY} = source as MouseEvent;
+  const rect = canvas.getBoundingClientRect();
+  // When CSS `zoom` (or another visual scale) is applied to the canvas or one of
+  // its ancestors, the rendered size differs from the layout size (#11900).
+  // Pointer positions (both the reported offsetX/offsetY and clientX relative to
+  // getBoundingClientRect()) are then in rendered pixels, while paddings, borders
+  // and the chart dimensions are layout pixels. Convert the delta to layout
+  // pixels with the measured scale. Without a scale difference this is a no-op
+  // and the original offset based fast path is used.
+  const scaleX = canvas.offsetWidth ? rect.width / canvas.offsetWidth : 1;
+  const scaleY = canvas.offsetHeight ? rect.height / canvas.offsetHeight : 1;
+  const scaled = Math.abs(scaleX - 1) > 0.005 || Math.abs(scaleY - 1) > 0.005;
   let box = false;
   let x, y;
-  if (useOffsetPos(offsetX, offsetY, e.target)) {
+  if (!scaled && useOffsetPos(offsetX, offsetY, e.target)) {
     x = offsetX;
     y = offsetY;
+  } else if (scaled) {
+    // offsetX/offsetY are not used when scaled: their meaning under CSS zoom
+    // differs between browsers, while clientX and the rect are consistently
+    // viewport based in all of them.
+    x = (source.clientX - rect.left) / scaleX;
+    y = (source.clientY - rect.top) / scaleY;
+    box = true;
   } else {
-    const rect = canvas.getBoundingClientRect();
     x = source.clientX - rect.left;
     y = source.clientY - rect.top;
     box = true;
