@@ -150,6 +150,20 @@ function minMaxDecimation(data, start, count, availableWidth) {
     }
   }
 
+  if (!isNullOrUndef(minIndex) && !isNullOrUndef(maxIndex)) {
+    const intermediateIndex1 = Math.min(minIndex, maxIndex);
+    const intermediateIndex2 = Math.max(minIndex, maxIndex);
+    if (intermediateIndex1 !== startIndex && intermediateIndex1 !== endIndex) {
+      decimated.push({...data[intermediateIndex1], x: avgX});
+    }
+    if (intermediateIndex2 !== startIndex && intermediateIndex2 !== endIndex) {
+      decimated.push({...data[intermediateIndex2], x: avgX});
+    }
+  }
+  if (endIndex !== startIndex) {
+    decimated.push(data[endIndex]);
+  }
+
   return decimated;
 }
 
