@@ -545,4 +545,49 @@ describe('DOM helpers tests', function() {
 
     document.body.removeChild(container);
   });
+
+  it('should not throw when getMaximumSize is called with a null canvas', function() {
+    var size;
+    expect(function() {
+      size = helpers.getMaximumSize(null);
+    }).not.toThrow();
+    expect(size).toEqual({width: 0, height: 0});
+
+    expect(function() {
+      size = helpers.getMaximumSize(undefined);
+    }).not.toThrow();
+    expect(size).toEqual({width: 0, height: 0});
+  });
+
+  it('should not throw when getMaximumSize is called with a detached canvas', function() {
+    const canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+    document.body.removeChild(canvas);
+
+    expect(function() {
+      helpers.getMaximumSize(canvas);
+    }).not.toThrow();
+  });
+
+  it('should not throw when getStyle is called with a null element', function() {
+    var value;
+    expect(function() {
+      value = helpers.getStyle(null, 'width');
+    }).not.toThrow();
+    expect(value).toEqual('');
+  });
+
+  it('should not throw when getRelativePosition is called with a null canvas', function() {
+    const chart = {
+      canvas: null,
+      currentDevicePixelRatio: 1,
+      width: 100,
+      height: 100
+    };
+    var position;
+    expect(function() {
+      position = helpers.getRelativePosition({offsetX: 10, offsetY: 20}, chart);
+    }).not.toThrow();
+    expect(position).toEqual({x: 0, y: 0});
+  });
 });

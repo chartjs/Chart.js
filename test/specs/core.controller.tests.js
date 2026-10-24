@@ -2069,6 +2069,51 @@ describe('Chart', function() {
     });
   });
 
+  describe('destroyed canvas', function() {
+    it('should not throw when update runs after destroy', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A'],
+          datasets: [{data: [1]}]
+        },
+        options: {
+          responsive: true,
+          animation: false
+        }
+      });
+
+      chart.destroy();
+
+      expect(function() {
+        chart.update();
+      }).not.toThrow();
+    });
+
+    it('should not throw when a delayed resize fires after destroy', function(done) {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A'],
+          datasets: [{data: [1]}]
+        },
+        options: {
+          responsive: true,
+          resizeDelay: 20,
+          animation: false
+        }
+      });
+
+      chart.resize();
+      chart.destroy();
+
+      setTimeout(function() {
+        expect(chart.canvas).toBeNull();
+        done();
+      }, 50);
+    });
+  });
+
   describe('data visibility', function() {
     it('should hide a dataset', function() {
       var chart = acquireChart({
