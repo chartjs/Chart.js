@@ -818,6 +818,93 @@ describe('Core.scale', function() {
     });
   });
   describe('Scale Title stroke', ()=>{
+    function getScaleTitleCalls(axis, position, align, reverse) {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {
+          datasets: [{
+            data: [{x: 0, y: 0}, {x: 10, y: 10}]
+          }]
+        },
+        options: {
+          events: [],
+          animation: false,
+          plugins: {
+            legend: false
+          },
+          scales: {
+            x: {
+              display: axis === 'x',
+              position: axis === 'x' ? position : 'bottom',
+              min: 0,
+              max: 10,
+              reverse: axis === 'x' ? reverse : false,
+              ticks: {
+                display: false
+              },
+              grid: {
+                display: false
+              },
+              border: {
+                display: false
+              },
+              title: {
+                display: axis === 'x',
+                text: 'title',
+                align
+              }
+            },
+            y: {
+              display: axis === 'y',
+              axis: 'y',
+              position: axis === 'y' ? position : 'left',
+              min: 0,
+              max: 10,
+              reverse: axis === 'y' ? reverse : false,
+              ticks: {
+                display: false
+              },
+              grid: {
+                display: false
+              },
+              border: {
+                display: false
+              },
+              title: {
+                display: axis === 'y',
+                text: 'title',
+                align
+              }
+            }
+          }
+        }
+      });
+      const scale = chart.scales[axis];
+
+      scale.ctx = window.createMockContext();
+      chart.draw();
+
+      return scale.ctx.getCalls().filter(({name}) => ['translate', 'setTextAlign', 'fillText'].includes(name));
+    }
+
+    ['top', 'bottom', 'left', 'right'].forEach(function(position) {
+      ['start', 'end'].forEach(function(align) {
+        it('should not reposition the ' + position + ' scale title when reverse=true and align=' + align, function() {
+          const axis = position === 'left' || position === 'right' ? 'y' : 'x';
+          expect(getScaleTitleCalls(axis, position, align, true)).toEqual(getScaleTitleCalls(axis, position, align, false));
+        });
+      });
+    });
+
+    ['center', {x: 5}].forEach(function(position) {
+      ['start', 'end'].forEach(function(align) {
+        const positionLabel = typeof position === 'string' ? position : '{x: 5}';
+        it('should not reposition the vertical ' + positionLabel + ' scale title when reverse=true and align=' + align, function() {
+          expect(getScaleTitleCalls('y', position, align, true)).toEqual(getScaleTitleCalls('y', position, align, false));
+        });
+      });
+    });
+
     function getChartWithScaleTitleStroke() {
       return window.acquireChart({
         type: 'line',
