@@ -1511,6 +1511,47 @@ describe('Chart', function() {
     });
   });
 
+  // https://github.com/chartjs/Chart.js/issues/12256
+  describe('initial animation with a fractional container width', function() {
+    it('should play the enter animation when the container CSS pixel width is fractional', function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [3, 5, 2]}]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {duration: 1000}
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          // Sub-integer CSS pixel width, as produced by CSS grid `fr` units,
+          // percentage widths or `calc()` expressions.
+          style: 'width: 200.4px; height: 200px; position: relative'
+        }
+      });
+
+      // Make sure the container width really is fractional, otherwise the test
+      // would not cover the reported scenario.
+      expect(chart.width % 1).not.toBe(0);
+
+      // The enter animation starts each point at the scale base and animates it
+      // up to its value. With the bug, a premature internal resize finalises the
+      // elements before the constructor's update(), so the points are rendered
+      // straight at their final position and the animation never plays.
+      var point = chart.getDatasetMeta(0).data[1];
+      var baseY = chart.scales.y.getBasePixel();
+      var finalY = chart.scales.y.getPixelForValue(5);
+      expect(point.y).toBeCloseTo(baseY, 0);
+      expect(point.y).not.toBeCloseTo(finalY, 0);
+    });
+  });
+
   describe('controller.reset', function() {
     it('should reset the chart elements', function() {
       var chart = acquireChart({
