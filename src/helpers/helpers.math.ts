@@ -116,6 +116,9 @@ export function _decimalPlaces(x: number) {
   while (Math.round(x * e) / e !== x) {
     e *= 10;
     p++;
+    if (!isFinite(e)) {
+      return;
+    }
   }
   return p;
 }
