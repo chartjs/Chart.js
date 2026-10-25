@@ -100,6 +100,11 @@ export default class LogarithmicScale extends Scale {
     this._valueRange = 0;
   }
 
+  init(options) {
+    this._zero = false;
+    super.init(options);
+  }
+
   parse(raw, index) {
     const value = LinearScaleBase.prototype.parse.apply(this, [raw, index]);
     if (value === 0) {

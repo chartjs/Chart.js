@@ -1206,3 +1206,62 @@ describe('Logarithmic Scale tests', function() {
     expect(chart.scales.y.max).toEqual(99);
   });
 });
+
+describe('Logarithmic zero state after updates', function() {
+  ['line', 'bar'].forEach(function(type) {
+    ['replace', 'splice', 'removeDataset'].forEach(function(change) {
+      it('recomputes the zero allowance after ' + change + ' for ' + type, function() {
+        var chart = window.acquireChart({
+          type,
+          data: {labels: ['a', 'b'], datasets: [{data: [0, 100]}, {data: [10, 100]}]},
+          options: {scales: {y: {type: 'logarithmic', beginAtZero: false}}}
+        });
+        expect(chart.scales.y.min).toBe(1);
+        if (change === 'replace') {
+          chart.data.datasets[0].data = [10, 100];
+        } else if (change === 'splice') {
+          chart.data.datasets[0].data.splice(0, 1, 10);
+        } else {
+          chart.data.datasets.splice(0, 1);
+        }
+        chart.update();
+        expect(chart.scales.y.min).toBe(10);
+        chart.update();
+        expect(chart.scales.y.min).toBe(10);
+        chart.data.datasets[0].data = [0, 10];
+        chart.update();
+        expect(chart.scales.y.min).toBe(1);
+        chart.update();
+        expect(chart.scales.y.min).toBe(1);
+      });
+    });
+  });
+
+  it('continues honoring beginAtZero after replacing zero-valued data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {labels: ['a', 'b'], datasets: [{data: [0, 100]}]},
+      options: {scales: {y: {type: 'logarithmic', beginAtZero: true}}}
+    });
+    chart.data.datasets[0].data = [10, 100];
+    chart.update();
+    expect(chart.scales.y.min).toBe(1);
+    chart.options.scales.y.beginAtZero = false;
+    chart.update();
+    expect(chart.scales.y.min).toBe(10);
+  });
+
+  it('continues honoring an explicit zero minimum after replacing zero-valued data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {labels: ['a', 'b'], datasets: [{data: [0, 100]}]},
+      options: {scales: {y: {type: 'logarithmic', min: 0}}}
+    });
+    chart.data.datasets[0].data = [10, 100];
+    chart.update();
+    expect(chart.scales.y.min).toBe(1);
+    delete chart.options.scales.y.min;
+    chart.update();
+    expect(chart.scales.y.min).toBe(10);
+  });
+});
