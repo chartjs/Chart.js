@@ -217,3 +217,44 @@ describe('Plugin.decimation', function() {
     });
   });
 });
+
+describe('Plugin.decimation eligibility changes', function() {
+  const changes = [
+    ['parsing enabled', chart => {
+      chart.options.parsing = true;
+    }],
+    ['unsupported axis scale', chart => {
+      chart.options.scales.x.type = 'logarithmic';
+    }],
+    ['unsupported controller', chart => {
+      chart.data.datasets[0].type = 'scatter';
+    }],
+    ['vertical index axis', chart => {
+      chart.data.datasets[0].indexAxis = 'y';
+    }]
+  ];
+  changes.forEach(([name, change]) => {
+    it('restores original data when ' + name, function() {
+      const data = Array.from({length: 50}, (_, i) => ({x: i + 1, y: i + 1}));
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {datasets: [{data}]},
+        options: {
+          animation: false,
+          parsing: false,
+          scales: {x: {type: 'linear'}},
+          plugins: {decimation: {enabled: true, algorithm: 'lttb', samples: 5, threshold: 10}}
+        }
+      });
+      const dataset = chart.data.datasets[0];
+      expect(dataset.data.length).toBe(5);
+      change(chart);
+      chart.update();
+      expect(dataset.data).toBe(data);
+      expect(chart.getDatasetMeta(0).data.length).toBe(50);
+      expect(dataset._decimated).toBeUndefined();
+      expect(dataset._data).toBeUndefined();
+      expect(Object.getOwnPropertyDescriptor(dataset, 'data').writable).toBe(true);
+    });
+  });
+});

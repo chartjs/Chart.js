@@ -219,22 +219,26 @@ export default {
 
       if (resolve([indexAxis, chart.options.indexAxis]) === 'y') {
         // Decimation is only supported for lines that have an X indexAxis
+        cleanDecimatedDataset(dataset);
         return;
       }
 
       if (!meta.controller.supportsDecimation) {
         // Only line datasets are supported
+        cleanDecimatedDataset(dataset);
         return;
       }
 
       const xAxis = chart.scales[meta.xAxisID];
       if (xAxis.type !== 'linear' && xAxis.type !== 'time') {
         // Only linear interpolation is supported
+        cleanDecimatedDataset(dataset);
         return;
       }
 
       if (chart.options.parsing) {
         // Plugin only supports data that does not need parsing
+        cleanDecimatedDataset(dataset);
         return;
       }
 
