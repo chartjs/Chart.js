@@ -364,7 +364,7 @@ export default class DatasetController {
 	 */
   _dataCheck() {
     const dataset = this.getDataset();
-    const data = dataset.data || (dataset.data = []);
+    const data = dataset._decimated || dataset.data || (dataset.data = []);
     const _data = this._data;
 
     // In order to correctly handle data addition/deletion animation (and thus simulate
@@ -767,7 +767,7 @@ export default class DatasetController {
       context = element.$context ||
         (element.$context = createDataContext(this.getContext(), index, element));
       context.parsed = this.getParsed(index);
-      context.raw = dataset.data[index];
+      context.raw = this._data[index];
       context.index = context.dataIndex = index;
     } else {
       context = this.$context ||
