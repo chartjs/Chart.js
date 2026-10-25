@@ -55,6 +55,44 @@ describe('Core.Interaction', function() {
     });
   });
 
+  describe('intersecting points on reversed scales', function() {
+    ['x', 'y'].forEach(function(axis) {
+      [false, true].forEach(function(reverse) {
+        it('finds every intersecting point for ' + axis + ' reverse=' + reverse, function() {
+          const chart = window.acquireChart({
+            type: 'line',
+            data: {
+              datasets: [{
+                data: Array.from({length: 11}, (_, i) => ({x: i, y: i})),
+                pointRadius: 80
+              }]
+            },
+            options: {
+              animation: false,
+              indexAxis: axis,
+              scales: {
+                x: {type: 'linear'},
+                y: {type: 'linear'},
+                [axis]: {type: 'linear', reverse}
+              }
+            }
+          });
+          expect(chart.getDatasetMeta(0)._sorted).toBeTrue();
+          expect(chart.getDatasetMeta(0).controller._sharedOptions).toBeTruthy();
+          const points = chart.getDatasetMeta(0).data;
+          [1, 5, 9].forEach(function(index) {
+            const point = points[index];
+            const evt = {type: 'click', chart, native: true, x: point.x, y: point.y};
+            const expected = points.filter(p => p.inRange(evt.x, evt.y));
+            expect(expected.length).toBeGreaterThan(2);
+            const actual = Chart.Interaction.modes.point(chart, evt, {axis}).map(item => item.element);
+            expect(actual).toEqual(expected);
+          });
+        });
+      });
+    });
+  });
+
   describe('index mode', function() {
     describe('intersect: true', function() {
       beforeEach(function() {

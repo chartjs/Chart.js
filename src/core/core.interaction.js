@@ -53,8 +53,9 @@ function binarySearch(metaset, axis, value, intersect) {
       const el = data[0];
       const range = typeof el.getRange === 'function' && el.getRange(axis);
       if (range) {
-        const start = lookupMethod(data, axis, value - range);
-        const end = lookupMethod(data, axis, value + range);
+        const direction = iScale._reversePixels ? -1 : 1;
+        const start = lookupMethod(data, axis, value - range * direction);
+        const end = lookupMethod(data, axis, value + range * direction);
         return {lo: start.lo, hi: end.hi};
       }
     }
