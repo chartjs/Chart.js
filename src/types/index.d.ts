@@ -336,10 +336,16 @@ export interface DoughnutControllerChartOptions {
   rotation: number;
 
   /**
-    * Spacing between the arcs
+    * Spacing between the arcs (slices)
     * @default 0
     */
   spacing: number;
+
+  /**
+    * Spacing between the dataSets
+    * @default 0
+    */
+  datasetSpacing: number;
 
   /**
     * Geometry used to apply arc spacing.
