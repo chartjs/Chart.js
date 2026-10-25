@@ -10,6 +10,8 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | ---- | ---- | :-------------------------------: | :-----------------------------: | ------- | -----------
 | `circular` | `boolean` | | | `false` | If true, gridlines are circular (on radar and polar area charts only).
 | `color` | [`Color`](../general/colors.md)  | Yes | Yes | `Chart.defaults.borderColor` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line, and so on.
+| `dash` | `number[]` | Yes | | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
+| `dashOffset` | `number` | Yes | | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `display` | `boolean` | | | `true` | If false, do not display grid lines for this axis.
 | `drawOnChartArea` | `boolean` | | | `true` | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn.
 | `drawTicks` | `boolean` | | | `true` | If true, draw lines beside the ticks in the axis area beside the chart.
