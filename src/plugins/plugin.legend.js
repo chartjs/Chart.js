@@ -38,6 +38,15 @@ const getBoxSize = (labelOpts, fontSize) => {
 
 const itemsEqual = (a, b) => a !== null && b !== null && a.datasetIndex === b.datasetIndex && a.index === b.index;
 
+function getAlignedHitBox(x, width, boxWidth, fontSize, textAlign, right) {
+  const textWidth = width - boxWidth - fontSize / 2;
+  const textX = _textX(textAlign, x + boxWidth + fontSize / 2, right, false);
+  const textLeft = textX - (textAlign === 'center' ? textWidth / 2 : textAlign === 'right' ? textWidth : 0);
+  const left = Math.min(x, textLeft);
+  // Cover both the symbol and the aligned text in LTR coordinates.
+  return {left, width: Math.max(x + boxWidth, textLeft + textWidth) - left};
+}
+
 export class Legend extends Element {
 
   /**
@@ -232,7 +241,8 @@ export class Legend extends Element {
       return;
     }
     const titleHeight = this._computeTitleHeight();
-    const {legendHitBoxes: hitboxes, options: {align, labels: {padding}, rtl}} = this;
+    const {legendHitBoxes: hitboxes, options: {align, labels, rtl}} = this;
+    const {padding} = labels;
     const rtlHelper = getRtlAdapter(rtl, this.left, this.width);
     if (this.isHorizontal()) {
       let row = 0;
@@ -247,16 +257,22 @@ export class Legend extends Element {
         left += hitbox.width + padding;
       }
     } else {
+      const fontSize = toFont(labels.font).size;
+      const {boxWidth} = getBoxSize(labels, fontSize);
       let col = 0;
       let top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
-      for (const hitbox of hitboxes) {
+      for (let i = 0; i < hitboxes.length; i++) {
+        const hitbox = hitboxes[i];
         if (hitbox.col !== col) {
           col = hitbox.col;
           top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
         }
         hitbox.top = top;
-        hitbox.left += this.left + padding;
-        hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(hitbox.left), hitbox.width);
+        const x = hitbox.left + this.left + padding;
+        const textAlign = this.legendItems[i].textAlign || labels.textAlign;
+        const aligned = getAlignedHitBox(x, hitbox.width, boxWidth, fontSize, textAlign, this.right);
+        hitbox.width = aligned.width;
+        hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
         top += hitbox.height + padding;
       }
     }
