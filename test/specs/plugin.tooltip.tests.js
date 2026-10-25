@@ -1618,7 +1618,9 @@ describe('Plugin.Tooltip', function() {
 
       const meta = chart.getDatasetMeta(0);
       chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], {x: 0, y: 0});
-      expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
+      const active = chart.tooltip.getActiveElements()[0];
+      expect(active.element).toBe(meta.data[0]);
+      expect(active.data).toBe(chart.data.datasets[0].data[0]);
     });
 
     it('should not replace the user set active elements by event replay', async function() {
@@ -1644,12 +1646,12 @@ describe('Plugin.Tooltip', function() {
 
       await jasmine.triggerMouseEvent(chart, 'pointerdown', {x: point0.x, y: point0.y});
       expect(chart.tooltip.opacity).toBe(1);
-      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0}]);
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0, data: chart.data.datasets[0].data[0]}]);
 
       chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}]);
       chart.update();
       expect(chart.tooltip.opacity).toBe(1);
-      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1, data: chart.data.datasets[0].data[1]}]);
 
       chart.tooltip.setActiveElements([]);
       chart.update();
@@ -1680,10 +1682,10 @@ describe('Plugin.Tooltip', function() {
       var point = chart.getDatasetMeta(0).data[0];
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
-      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point, data: chart.data.datasets[0].data[0]}]);
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
-      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point, data: chart.data.datasets[0].data[0]}]);
 
       await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([]);

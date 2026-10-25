@@ -288,7 +288,7 @@ describe('Chart', function() {
       var point = chart.getDatasetMeta(0).data[1];
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', point);
-      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point, data: chart.data.datasets[0].data[1]}]);
     });
 
     it('should handle changing the events at runtime', async function() {
@@ -309,13 +309,13 @@ describe('Chart', function() {
       var point2 = chart.getDatasetMeta(0).data[2];
 
       await jasmine.triggerMouseEvent(chart, 'click', point1);
-      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1, data: chart.data.datasets[0].data[1]}]);
 
       chart.options.events = ['mousemove'];
       chart.update();
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', point2);
-      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 2, element: point2}]);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 2, element: point2, data: chart.data.datasets[0].data[2]}]);
     });
 
     it('should activate element on hover when minPadding pixels outside chart area', async function() {
@@ -339,7 +339,7 @@ describe('Chart', function() {
       var point = chart.getDatasetMeta(0).data[0];
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: point.y});
-      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point, data: chart.data.datasets[0].data[0]}]);
     });
 
     it('should not activate elements when hover is disabled', async function() {
@@ -386,10 +386,10 @@ describe('Chart', function() {
       var point = chart.getDatasetMeta(0).data[0];
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
-      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point, data: chart.data.datasets[0].data[0]}]);
 
       await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
-      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point, data: chart.data.datasets[0].data[0]}]);
 
       await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([]);
@@ -2288,6 +2288,7 @@ describe('Chart', function() {
       const active = chart.getActiveElements();
       expect(active.length).toEqual(1);
       expect(active[0].element).toBe(meta.data[0]);
+      expect(active[0].data).toBe(chart.data.datasets[0].data[0]);
     });
   });
 
@@ -2312,19 +2313,50 @@ describe('Chart', function() {
     expect(props.options.borderColor).toEqual('red');
 
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point0.x, y: point0.y});
-    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0}]);
+    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0, data: chart.data.datasets[0].data[0]}]);
     expect(point0.options.borderColor).toEqual('blue');
     expect(point1.options.borderColor).toEqual('red');
 
     chart.setActiveElements([{datasetIndex: 0, index: 1}]);
-    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1, data: chart.data.datasets[0].data[1]}]);
     expect(point0.options.borderColor).toEqual('red');
     expect(point1.options.borderColor).toEqual('blue');
 
     chart.update();
-    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
+    expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1, data: chart.data.datasets[0].data[1]}]);
     expect(point0.options.borderColor).toEqual('red');
     expect(point1.options.borderColor).toEqual('blue');
+  });
+
+  describe('onClick interaction', function() {
+    it('should pass data property in active elements to onClick handler', async function() {
+      var data = [{
+        x: 0,
+        y: 1
+      },
+      {
+        x: 1,
+        y: 2
+      }];
+      var clickItems;
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B'],
+          datasets: [{data}]
+        },
+        options: {
+          onClick: function(e, active) {
+            clickItems = active;
+          }
+        }
+      });
+
+      var point = chart.getDatasetMeta(0).data[1];
+      await jasmine.triggerMouseEvent(chart, 'click', {x: point.x, y: point.y});
+      expect(clickItems).toBeDefined();
+      expect(clickItems[0].data).toBe(data[1]);
+    });
   });
 
   describe('platform', function() {

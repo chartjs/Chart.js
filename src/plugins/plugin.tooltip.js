@@ -1112,10 +1112,15 @@ export class Tooltip extends Element {
         throw new Error('Cannot find a dataset at index ' + datasetIndex);
       }
 
+      const data = this.chart.data.datasets[datasetIndex] && this.chart.data.datasets[datasetIndex].data
+        ? this.chart.data.datasets[datasetIndex].data[index]
+        : undefined;
+
       return {
         datasetIndex,
         element: meta.data[index],
         index,
+        data,
       };
     });
     const changed = !_elementsEqual(lastActive, active);
@@ -1189,11 +1194,17 @@ export class Tooltip extends Element {
 
     if (!inChartArea) {
       // Let user control the active elements outside chartArea. Eg. using Legend.
-      // But make sure that active elements are still valid.
+      // But make sure that active elements are still valid, and attach the
+      // corresponding data value if missing.
       return lastActive.filter(i =>
         this.chart.data.datasets[i.datasetIndex] &&
         this.chart.getDatasetMeta(i.datasetIndex).controller.getParsed(i.index) !== undefined
-      );
+      ).map(i => {
+        if (i.data === undefined) {
+          i.data = this.chart.data.datasets[i.datasetIndex].data[i.index];
+        }
+        return i;
+      });
     }
 
     // Find Active Elements for tooltips

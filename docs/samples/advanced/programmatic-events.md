@@ -3,7 +3,10 @@
 ```js chart-editor
 // <block:hover:0>
 function triggerHover(chart) {
-  if (chart.getActiveElements().length > 0) {
+  const actives = chart.getActiveElements();
+  if (actives.length > 0) {
+    // we can inspect the selected objects directly now
+    console.log(actives.map(a => a.data));
     chart.setActiveElements([]);
   } else {
     chart.setActiveElements([
