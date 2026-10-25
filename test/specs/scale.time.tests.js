@@ -329,8 +329,45 @@ describe('Time scale tests', function() {
     var xScale = chart.scales.x;
     var controller = chart.getDatasetMeta(0).controller;
     expect(xScale.getLabelForValue(controller.getParsed(0)[xScale.id])).toBeTruthy();
-    expect(xScale.getLabelForValue(controller.getParsed(0)[xScale.id])).toBe('Jan 1, 2015, 8:00:00 pm');
-    expect(xScale.getLabelForValue(xScale.getValueForPixel(xScale.getPixelForTick(6)))).toBe('Jan 10, 2015, 12:00:00 pm');
+    // getLabelForValue uses the displayFormat of the current unit ('day' here), see #12128
+    expect(xScale.getLabelForValue(controller.getParsed(0)[xScale.id])).toBe('Jan 1');
+    expect(xScale.getLabelForValue(xScale.getValueForPixel(xScale.getPixelForTick(6)))).toBe('Jan 10');
+  });
+
+  it('should format getLabelForValue with the displayFormat of the current unit (#12128)', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          data: [{x: '2015-01-01T20:00:00', y: 10}, {x: '2015-01-02T21:00:00', y: 3}]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              displayFormats: {
+                day: 'YYYY-MM-DD'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    var xScale = chart.scales.x;
+    var value = chart.getDatasetMeta(0).controller.getParsed(0)[xScale.id];
+
+    // Previously getLabelForValue always used the `datetime` displayFormat, ignoring
+    // the configured format of the current unit ('day'). See #12128.
+    expect(xScale.getLabelForValue(value)).toBe('2015-01-01');
+
+    // tooltipFormat still takes precedence over the unit displayFormat.
+    xScale.options.time.tooltipFormat = 'YYYY/MM/DD HH:mm';
+    expect(xScale.getLabelForValue(value)).toBe('2015/01/01 20:00');
   });
 
   describe('when ticks.callback is specified', function() {
@@ -410,7 +447,8 @@ describe('Time scale tests', function() {
     var controller = chart.getDatasetMeta(0).controller;
     var value = controller.getParsed(0)[xScale.id];
     expect(xScale.getLabelForValue(value)).toBeTruthy();
-    expect(xScale.getLabelForValue(value)).toBe('Jan 1, 2015, 8:00:00 pm');
+    // getLabelForValue uses the displayFormat of the current unit ('hour' here), see #12128
+    expect(xScale.getLabelForValue(value)).toBe('8PM');
   });
 
   it('should get the correct label for a data value by format', function() {
@@ -516,7 +554,8 @@ describe('Time scale tests', function() {
     var xScale = chart.scales.x;
     var controller = chart.getDatasetMeta(0).controller;
     var label = xScale.getLabelForValue(controller.getParsed(0)[xScale.id]);
-    expect(label).toEqual('Jan 8, 2018, 5:14:23 am');
+    // getLabelForValue uses the displayFormat of the current unit ('hour' here), see #12128
+    expect(label).toEqual('5AM');
   });
 
   it('should get the correct pixel for only one data in the dataset', function() {
