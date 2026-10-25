@@ -1,5 +1,5 @@
 import DatasetController from '../core/core.datasetController.js';
-import {toRadians, PI, formatNumber, _parseObjectDataRadialScale} from '../helpers/index.js';
+import {toRadians, PI, formatNumber, _parseObjectDataRadialScale, isNullOrUndef} from '../helpers/index.js';
 
 export default class PolarAreaController extends DatasetController {
 
@@ -230,8 +230,10 @@ export default class PolarAreaController extends DatasetController {
 	 * @private
 	 */
   _computeAngle(index, mode, defaultAngle) {
-    return this.chart.getDataVisibility(index)
-      ? toRadians(this.resolveDataElementOptions(index, mode).angle || defaultAngle)
-      : 0;
+    if (!this.chart.getDataVisibility(index)) {
+      return 0;
+    }
+    const angle = this.resolveDataElementOptions(index, mode).angle;
+    return toRadians(isNullOrUndef(angle) ? defaultAngle : angle);
   }
 }

@@ -432,3 +432,28 @@ describe('Chart.controllers.polarArea', function() {
     }]);
   });
 });
+
+
+describe('Polar area custom angles', function() {
+  [
+    {name: 'literal zero', angle: 0, expected: [0, 0]},
+    {name: 'scriptable zero', angle: () => 0, expected: [0, 0]},
+    {name: 'mixed indexed angles', angle: [0, 90], expected: [0, Math.PI / 2]},
+    {name: 'mixed scriptable angles', angle: ctx => ctx.dataIndex === 0 ? 0 : 90, expected: [0, Math.PI / 2]},
+    {name: 'undefined fallback', angle: undefined, expected: [Math.PI, Math.PI]},
+    {name: 'null fallback', angle: null, expected: [Math.PI, Math.PI]},
+    {name: 'positive angle', angle: 90, expected: [Math.PI / 2, Math.PI / 2]},
+  ].forEach(function({name, angle, expected}) {
+    it('should respect ' + name, function() {
+      const chart = window.acquireChart({
+        type: 'polarArea',
+        data: {labels: ['A', 'B'], datasets: [{data: [10, 20]}]},
+        options: {animation: false, elements: {arc: {angle}}}
+      });
+      const arcs = chart.getDatasetMeta(0).data;
+      expect(arcs[0].endAngle - arcs[0].startAngle).toBeCloseTo(expected[0], 8);
+      expect(arcs[1].endAngle - arcs[1].startAngle).toBeCloseTo(expected[1], 8);
+      expect(arcs[1].startAngle).toBeCloseTo(arcs[0].endAngle, 8);
+    });
+  });
+});
