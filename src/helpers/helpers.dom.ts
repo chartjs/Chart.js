@@ -191,9 +191,19 @@ export function getMaximumSize(
 
   const maintainHeight = bbWidth !== undefined || bbHeight !== undefined;
 
-  if (maintainHeight && aspectRatio && containerSize.height && height > containerSize.height) {
-    height = containerSize.height;
-    width = round1(Math.floor(height * aspectRatio));
+  if (maintainHeight && aspectRatio) {
+    // An auto-height container is just the canvas's own height read back, so it must not clamp the chart
+    // See https://github.com/chartjs/Chart.js/issues/12251
+    const liveHeight = getContainerSize(canvas, undefined, undefined).height;
+    const parent = canvas.parentElement;
+    const containerFollowsCanvas = liveHeight !== undefined
+      && Math.abs(liveHeight - canvas.clientHeight) < 1
+      && !(parent && parent.style.height);
+
+    if (!containerFollowsCanvas && liveHeight && height > liveHeight) {
+      height = liveHeight;
+      width = round1(height * aspectRatio);
+    }
   }
 
   return {width, height};
