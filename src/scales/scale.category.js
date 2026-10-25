@@ -51,20 +51,24 @@ export default class CategoryScale extends Scale {
     this._startValue = undefined;
     this._valueRange = 0;
     this._addedLabels = [];
+    /** @type {any[]} */
+    this._labels = undefined;
   }
 
   init(scaleOptions) {
-    const added = this._addedLabels;
-    if (added.length) {
-      const labels = this.getLabels();
-      for (const {index, label} of added) {
-        if (labels[index] === label) {
-          labels.splice(index, 1);
-        }
-      }
-      this._addedLabels = [];
-    }
+    // Labels added while parsing only live until the next init, so the
+    // cached copy of the labels can simply be discarded here. Working on
+    // a copy prevents the array provided by the user from being modified.
+    this._labels = undefined;
+    this._addedLabels = [];
     super.init(scaleOptions);
+  }
+
+  getLabels() {
+    if (!this._labels) {
+      this._labels = super.getLabels().slice();
+    }
+    return this._labels;
   }
 
   parse(raw, index) {
