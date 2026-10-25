@@ -1,4 +1,4 @@
-import {_lookupByKey, _rlookupByKey} from '../helpers/helpers.collection.js';
+import {_lookup, _lookupByKey, _rlookupByKey} from '../helpers/helpers.collection.js';
 import {getRelativePosition} from '../helpers/helpers.dom.js';
 import {_angleBetween, getAngleFromPoint} from '../helpers/helpers.math.js';
 import {_isPointInArea, isNullOrUndef} from '../helpers/index.js';
@@ -12,20 +12,38 @@ import {_isPointInArea, isNullOrUndef} from '../helpers/index.js';
  */
 
 /**
+ * Search sorted element animation targets without allocating a target array.
+ * @param {object[]} data - the elements
+ * @param {string} axis - the index axis
+ * @param {number} value - the coordinate to find
+ * @param {boolean} reverse - whether pixels are descending
+ * @returns {{lo: number, hi: number}} candidate indices
+ */
+function lookupFinalPosition(data, axis, value, reverse) {
+  return _lookup(data, value, index => {
+    const pixel = data[index].getProps([axis], true)[axis];
+    return reverse ? pixel >= value : pixel < value;
+  });
+}
+
+/**
  * Helper function to do binary search when possible
  * @param {object} metaset - the dataset meta
  * @param {string} axis - the axis mode. x|y|xy|r
  * @param {number} value - the value to find
  * @param {boolean} [intersect] - should the element intersect
+ * @param {boolean} [useFinalPosition] - search animation targets
  * @returns {{lo:number, hi:number}} indices to search data array between
  */
-function binarySearch(metaset, axis, value, intersect) {
+function binarySearch(metaset, axis, value, intersect, useFinalPosition) {
   const {controller, data, _sorted} = metaset;
   const iScale = controller._cachedMeta.iScale;
   const spanGaps = metaset.dataset ? metaset.dataset.options ? metaset.dataset.options.spanGaps : null : null;
 
   if (iScale && axis === iScale.axis && axis !== 'r' && _sorted && data.length) {
-    const lookupMethod = iScale._reversePixels ? _rlookupByKey : _lookupByKey;
+    const lookupMethod = useFinalPosition
+      ? (table, key, search) => lookupFinalPosition(table, key, search, iScale._reversePixels)
+      : iScale._reversePixels ? _rlookupByKey : _lookupByKey;
     if (!intersect) {
       const result = lookupMethod(data, axis, value);
       if (spanGaps) {
@@ -70,13 +88,14 @@ function binarySearch(metaset, axis, value, intersect) {
  * @param {Point} position - the point to be nearest to, in relative coordinates
  * @param {function} handler - the callback to execute for each visible item
  * @param {boolean} [intersect] - consider intersecting items
+ * @param {boolean} [useFinalPosition] - consider animation targets instead of current positions
  */
-function evaluateInteractionItems(chart, axis, position, handler, intersect) {
+function evaluateInteractionItems(chart, axis, position, handler, intersect, useFinalPosition) {
   const metasets = chart.getSortedVisibleDatasetMetas();
   const value = position[axis];
   for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
     const {index, data} = metasets[i];
-    const {lo, hi} = binarySearch(metasets[i], axis, value, intersect);
+    const {lo, hi} = binarySearch(metasets[i], axis, value, intersect, useFinalPosition);
     for (let j = lo; j <= hi; ++j) {
       const element = data[j];
       if (!element.skip) {
@@ -127,7 +146,7 @@ function getIntersectItems(chart, position, axis, useFinalPosition, includeInvis
     }
   };
 
-  evaluateInteractionItems(chart, axis, position, evaluationFunc, true);
+  evaluateInteractionItems(chart, axis, position, evaluationFunc, true, useFinalPosition);
   return items;
 }
 
@@ -151,7 +170,7 @@ function getNearestRadialItems(chart, position, axis, useFinalPosition) {
     }
   }
 
-  evaluateInteractionItems(chart, axis, position, evaluationFunc);
+  evaluateInteractionItems(chart, axis, position, evaluationFunc, false, useFinalPosition);
   return items;
 }
 
@@ -192,7 +211,7 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
     }
   }
 
-  evaluateInteractionItems(chart, axis, position, evaluationFunc);
+  evaluateInteractionItems(chart, axis, position, evaluationFunc, false, useFinalPosition);
   return items;
 }
 
@@ -235,7 +254,7 @@ function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
       items.push({element, datasetIndex, index});
       intersectsItem = intersectsItem || element.inRange(position.x, position.y, useFinalPosition);
     }
-  });
+  }, false, useFinalPosition);
 
   // If we want to trigger on an intersect and we don't have any items
   // that intersect the position, return nothing

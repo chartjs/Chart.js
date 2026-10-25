@@ -1023,3 +1023,33 @@ describe('Core.Interaction', function() {
     });
   });
 });
+
+describe('interaction at animation targets', function() {
+  ['x', 'y'].forEach(function(axis) {
+    [false, true].forEach(function(reverse) {
+      ['point', 'nearest', 'index', 'dataset', axis].forEach(function(mode) {
+        it('finds final ' + axis + ' positions in ' + mode + ' mode with reverse=' + reverse, function() {
+          const chart = window.acquireChart({
+            type: 'scatter',
+            data: {datasets: [{data: [{x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}], pointRadius: 5}]},
+            options: {animation: false, indexAxis: axis, scales: {x: {min: 0, max: 12, reverse}, y: {min: 0, max: 12, reverse}}}
+          });
+          const meta = chart.getDatasetMeta(0);
+          meta.data.forEach(function(point, index) {
+            point.$animations = {[axis]: new Chart.Animation({duration: 1000}, point, axis, chart.scales[axis].getPixelForValue(index + 8))};
+          });
+          const point = meta.data[0];
+          const target = point.getProps(['x', 'y'], true);
+          const evt = {native: true, type: 'click', x: target.x, y: target.y};
+          expect(meta._sorted).toBe(true);
+          const expected = mode === 'dataset' ? [0, 1, 2] : [0];
+          expect(chart.getElementsAtEventForMode(evt, mode, {axis, intersect: true}, true).map(item => item.index)).toEqual(expected);
+          if (mode === 'nearest') {
+            expect(chart.getElementsAtEventForMode(evt, mode, {axis, intersect: false}, true).map(item => item.index)).toEqual([0]);
+          }
+          expect(chart.getElementsAtEventForMode(evt, mode, {axis, intersect: true}, false)).toEqual([]);
+        });
+      });
+    });
+  });
+});
