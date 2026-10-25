@@ -28,6 +28,24 @@ describe('Time scale tests', function() {
     return scale.ticks.map(t => t.label);
   }
 
+  ['time', 'timeseries'].forEach(function(type) {
+    ['min', 'max'].forEach(function(bound) {
+      ['labels', 'auto'].forEach(function(source) {
+        it('should preserve an explicit epoch-zero ' + bound + ' for ' + type + ' with ' + source + ' ticks', function() {
+          var labels = bound === 'min' ? [1000, 2000] : [-2000, -1000];
+          var options = {type: type, bounds: 'ticks', ticks: {source: source}, time: {unit: 'second'}};
+          options[bound] = 0;
+          var chart = window.acquireChart({
+            type: 'line',
+            data: {labels: labels, datasets: [{data: [1, 2]}]},
+            options: {animation: false, scales: {x: options}}
+          });
+          expect(chart.scales.x[bound]).toBe(0);
+        });
+      });
+    });
+  });
+
   beforeEach(function() {
     // Need a time matcher for getValueFromPixel
     jasmine.addMatchers({

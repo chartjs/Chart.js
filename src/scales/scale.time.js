@@ -372,8 +372,8 @@ export default class TimeScale extends Scale {
     const timestamps = tickOpts.source === 'labels' ? this.getLabelTimestamps() : this._generate();
 
     if (options.bounds === 'ticks' && timestamps.length) {
-      this.min = this._userMin || timestamps[0];
-      this.max = this._userMax || timestamps[timestamps.length - 1];
+      this.min = isNullOrUndef(this._userMin) ? timestamps[0] : this._userMin;
+      this.max = isNullOrUndef(this._userMax) ? timestamps[timestamps.length - 1] : this._userMax;
     }
 
     const min = this.min;
