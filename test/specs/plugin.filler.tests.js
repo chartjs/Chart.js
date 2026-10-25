@@ -297,3 +297,43 @@ describe('Plugin.filler', function() {
     });
   });
 });
+
+describe('Plugin.filler stack index axis', function() {
+  for (const lowerVisible of [true, false]) {
+    for (const indexAxis of ['x', 'y']) {
+      for (const reverse of [false, true]) {
+        for (const reverseIndex of [false, true]) {
+          it('fills between stacked lines with indexAxis ' + indexAxis + ' reverse ' + reverse + ' reverseIndex ' + reverseIndex + ' lowerVisible ' + lowerVisible, function() {
+            const chart = window.acquireChart({
+              type: 'line',
+              data: {labels: ['a', 'b', 'c'], datasets: [
+                {data: [1, 1, 1], hidden: !lowerVisible, fill: false, borderWidth: 0, pointRadius: 0},
+                {data: [1, 1, 1], fill: 'stack', backgroundColor: 'red', borderWidth: 0, pointRadius: 0}
+              ]},
+              options: {
+                indexAxis,
+                animation: false,
+                plugins: {legend: false},
+                scales: {
+                  [indexAxis === 'x' ? 'y' : 'x']: {stacked: true, min: 0, max: 3, reverse, grid: {display: false}},
+                  [indexAxis]: {display: false, reverse: reverseIndex, grid: {display: false}}
+                }
+              }
+            });
+            const meta = chart.getDatasetMeta(1);
+            const indexPixel = meta.iScale.getPixelForValue(1);
+            const valuePixel = meta.vScale.getPixelForValue(lowerVisible ? 1.5 : 0.5);
+            const x = indexAxis === 'x' ? indexPixel : valuePixel;
+            const y = indexAxis === 'x' ? valuePixel : indexPixel;
+            const pixel = chart.ctx.getImageData(x, y, 1, 1).data;
+            expect(Array.from(pixel)).toEqual([255, 0, 0, 255]);
+            const outsideValue = meta.vScale.getPixelForValue(lowerVisible ? 0.5 : 1.5);
+            const outsideX = indexAxis === 'x' ? indexPixel : outsideValue;
+            const outsideY = indexAxis === 'x' ? outsideValue : indexPixel;
+            expect(chart.ctx.getImageData(outsideX, outsideY, 1, 1).data[3]).toBe(0);
+          });
+        }
+      }
+    }
+  }
+});

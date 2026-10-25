@@ -9,21 +9,25 @@ import {_isBetween} from '../../helpers/index.js';
 import {_createBoundaryLine} from './filler.helper.js';
 
 /**
- * @param {{ chart: Chart; scale: Scale; index: number; line: LineElement; }} source
+ * @param {{ chart: Chart; scale: Scale; index: number; line: LineElement; axis: string; }} source
  * @return {LineElement}
  */
 export function _buildStackLine(source) {
-  const {scale, index, line} = source;
+  const {scale, index, line, axis} = source;
   const points = [];
   const segments = line.segments;
   const sourcePoints = line.points;
   const linesBelow = getLinesBelow(scale, index);
-  linesBelow.push(_createBoundaryLine({x: null, y: scale.bottom}, line));
+  const start = scale.getPixelForValue(scale.min);
+  const boundary = scale.isHorizontal()
+    ? {x: start, y: null}
+    : {x: null, y: start};
+  linesBelow.push(_createBoundaryLine(boundary, line));
 
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i];
     for (let j = segment.start; j <= segment.end; j++) {
-      addPointsBelow(points, sourcePoints[j], linesBelow);
+      addPointsBelow(points, sourcePoints[j], linesBelow, axis);
     }
   }
   return new LineElement({points, options: {}});
@@ -54,12 +58,13 @@ function getLinesBelow(scale, index) {
  * @param {PointElement[]} points
  * @param {PointElement} sourcePoint
  * @param {LineElement[]} linesBelow
+ * @param {string} axis
  */
-function addPointsBelow(points, sourcePoint, linesBelow) {
+function addPointsBelow(points, sourcePoint, linesBelow, axis) {
   const postponed = [];
   for (let j = 0; j < linesBelow.length; j++) {
     const line = linesBelow[j];
-    const {first, last, point} = findPoint(line, sourcePoint, 'x');
+    const {first, last, point} = findPoint(line, sourcePoint, axis);
 
     if (!point || (first && last)) {
       continue;
