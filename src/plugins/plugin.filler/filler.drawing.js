@@ -44,7 +44,7 @@ function doFill(ctx, cfg) {
   ctx.save();
 
   let fillColor = below;
-  if (below !== above) {
+  if (below !== above && target !== true) {
     if (property === 'x') {
       clipVertical(ctx, target, area.top);
       fill(ctx, {line, target, color: above, scale, property, clip});
@@ -203,4 +203,3 @@ function interpolatedLineTo(ctx, target, point, property) {
     ctx.lineTo(interpolatedPoint.x, interpolatedPoint.y);
   }
 }
-

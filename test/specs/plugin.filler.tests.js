@@ -297,3 +297,35 @@ describe('Plugin.filler', function() {
     });
   });
 });
+
+describe('shape fill with color options', function() {
+  ['line', 'scatter', 'radar'].forEach(function(type) {
+    (type === 'radar' ? ['r'] : ['x', 'y']).forEach(function(indexAxis) {
+      ['beforeDraw', 'beforeDatasetsDraw', 'beforeDatasetDraw'].forEach(function(drawTime) {
+        it('fills the enclosed shape without a boundary for ' + [type, indexAxis, drawTime].join('/'), function() {
+          const isRadar = type === 'radar';
+          const options = {animation: false, responsive: false, plugins: {legend: false, filler: {drawTime}}};
+          if (!isRadar) {
+            options.indexAxis = indexAxis;
+            options.scales = {x: {type: 'linear', display: false, min: 0, max: 4}, y: {type: 'linear', display: false, min: 0, max: 4}};
+          } else {
+            options.scales = {r: {display: false, min: 0, max: 4}};
+          }
+          const dataset = {data: isRadar ? [3, 3, 3, 3] : [{x: 1, y: 1}, {x: 1, y: 3}, {x: 3, y: 3}, {x: 3, y: 1}, {x: 1, y: 1}], showLine: true, borderWidth: 0, pointRadius: 0, fill: {target: 'shape', above: 'red', below: 'blue'}};
+          const chart = window.acquireChart({type, data: {labels: ['a', 'b', 'c', 'd'], datasets: [dataset]}, options});
+          const center = isRadar ? {x: chart.scales.r.xCenter, y: chart.scales.r.yCenter} : {x: chart.scales.x.getPixelForValue(2), y: chart.scales.y.getPixelForValue(2)};
+          expect(Array.from(chart.ctx.getImageData(Math.round(center.x), Math.round(center.y), 1, 1).data)).toEqual([0, 0, 255, 255]);
+          chart.update();
+          expect(Array.from(chart.ctx.getImageData(Math.round(center.x), Math.round(center.y), 1, 1).data)).toEqual([0, 0, 255, 255]);
+        });
+      });
+    });
+  });
+
+  ['origin', 'start', 'end'].forEach(function(target) {
+    it('keeps two-color boundary filling for ' + target, function() {
+      const chart = window.acquireChart({type: 'line', data: {labels: ['a', 'b', 'c'], datasets: [{data: [10, -5, 20], fill: {target, above: 'red', below: 'blue'}}]}, options: {animation: false, responsive: false}});
+      expect(chart.getDatasetMeta(0).data.length).toBe(3);
+    });
+  });
+});
