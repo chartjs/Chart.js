@@ -1,6 +1,90 @@
 describe('Chart.controllers.line', function() {
   describe('auto', jasmine.fixture.specs('controller.line'));
 
+  describe('connected numeric gap controls', function() {
+    ['monotone', 'default'].forEach(function(mode) {
+      [Infinity, 100].forEach(function(spanGaps) {
+        it('matches boolean spans without a numeric break for ' + mode + '/' + spanGaps, function() {
+          const chart = window.acquireChart({
+            type: 'line',
+            data: {datasets: [{data: [{x: 0, y: 10}, {x: 5, y: null}, {x: 8, y: 30}, {x: 9, y: 20}], spanGaps, cubicInterpolationMode: mode, tension: 0.4}]},
+            options: {animation: false, responsive: false, scales: {x: {type: 'linear'}}}
+          });
+          const meta = chart.getDatasetMeta(0);
+          const keys = ['cp1x', 'cp1y', 'cp2x', 'cp2y'];
+          const original = meta.data.map(function(point) {
+            return keys.map(function(key) {
+              return point[key];
+            });
+          });
+          chart.data.datasets[0].spanGaps = !!spanGaps;
+          chart.update();
+          meta.data.forEach(function(point, index) {
+            keys.forEach(function(key, keyIndex) {
+              expect(point[key]).toEqual(original[index][keyIndex]);
+            });
+          });
+        });
+      });
+    });
+  });
+
+  describe('numeric gap curve controls', function() {
+    [0, 10, 100, true, false].forEach(function(spanGaps) {
+      [[], [{x: 0, y: null}], [{x: 0, y: 10}], [{x: 0, y: 10}, {x: 5, y: null}, {x: 30, y: 90}], [{x: 0, y: null}, {x: 20, y: 10}, {x: 50, y: null}]].forEach(function(data, index) {
+        it('updates sparse curves for ' + spanGaps + '/' + index, function() {
+          const chart = window.acquireChart({
+            type: 'line',
+            data: {datasets: [{data, spanGaps, cubicInterpolationMode: 'monotone'}]},
+            options: {animation: false, responsive: false, scales: {x: {type: 'linear'}}}
+          });
+          chart.update();
+          chart.update();
+          expect(chart.getDatasetMeta(0).data.length).toBe(data.length);
+          chart.getDatasetMeta(0).data.forEach(function(point) {
+            if (!point.skip) {
+              expect(Number.isFinite(point.x)).toBe(true);
+              expect(Number.isFinite(point.y)).toBe(true);
+            }
+          });
+        });
+      });
+    });
+  });
+
+  describe('numeric gap curve isolation', function() {
+    ['x', 'y'].forEach(function(axis) {
+      [false, true].forEach(function(reverse) {
+        ['monotone', 'default'].forEach(function(mode) {
+          it('keeps disconnected control points independent for ' + [axis, reverse, mode].join('/'), function() {
+            const valueAxis = axis === 'x' ? 'y' : 'x';
+            const data = [[0, 10], [5, 20], [30, 90], [35, 50]].map(function(pair) {
+              return {[axis]: pair[0], [valueAxis]: pair[1]};
+            });
+            const chart = window.acquireChart({
+              type: 'line',
+              data: {datasets: [{data, spanGaps: 10, cubicInterpolationMode: mode, tension: 0.4}]},
+              options: {animation: false, responsive: false, indexAxis: axis, scales: {
+                [axis]: {type: 'linear', min: 0, max: 40, reverse},
+                [valueAxis]: {type: 'linear', min: 0, max: 100}
+              }}
+            });
+            const meta = chart.getDatasetMeta(0);
+            const points = meta.data;
+            expect(points[2].stop).toBe(true);
+            expect(meta.dataset.segments.length).toBe(2);
+            const original = {x: points[1].x, y: points[1].y, cp1x: points[1].cp1x, cp1y: points[1].cp1y};
+            data[2][valueAxis] = 0;
+            chart.update();
+            ['x', 'y', 'cp1x', 'cp1y'].forEach(function(key) {
+              expect(points[1][key]).toBeCloseTo(original[key], 8);
+            });
+          });
+        });
+      });
+    });
+  });
+
   it('should be registered as dataset controller', function() {
     expect(typeof Chart.controllers.line).toBe('function');
   });

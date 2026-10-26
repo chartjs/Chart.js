@@ -42,6 +42,7 @@ export interface SplinePoint {
   x: number;
   y: number;
   skip?: boolean;
+  stop?: boolean;
 
   // Both Bezier and monotone interpolations have these fields
   // but they are added in different spots

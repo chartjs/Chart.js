@@ -183,7 +183,7 @@ function capBezierPoints(points: SplinePoint[], area: ChartArea) {
 /**
  * @private
  */
-export function _updateBezierControlPoints(
+function updateBezierControlPoints(
   points: SplinePoint[],
   options,
   area: ChartArea,
@@ -220,4 +220,25 @@ export function _updateBezierControlPoints(
   if (options.capBezierPoints) {
     capBezierPoints(points, area);
   }
+}
+
+/**
+ * @private
+ */
+export function _updateBezierControlPoints(points: SplinePoint[], options, area: ChartArea, loop: boolean, indexAxis: 'x' | 'y') {
+  if (typeof options.spanGaps !== 'number') {
+    updateBezierControlPoints(points, options, area, loop, indexAxis);
+    return;
+  }
+
+  // Numeric gaps split the line into independent curves.
+  const segmentOptions = {...options, spanGaps: !!options.spanGaps};
+  let start = 0;
+  for (let i = 1; i < points.length; ++i) {
+    if (points[i].stop) {
+      updateBezierControlPoints(points.slice(start, i), segmentOptions, area, false, indexAxis);
+      start = i;
+    }
+  }
+  updateBezierControlPoints(start ? points.slice(start) : points, segmentOptions, area, loop && start === 0, indexAxis);
 }
