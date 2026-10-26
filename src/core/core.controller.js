@@ -440,10 +440,19 @@ class Chart {
         meta.controller.linkScales();
       } else {
         const ControllerClass = registry.getController(type);
-        const {datasetElementType, dataElementType} = defaults.datasets[type];
+        let defaultDataElementType = defaults.datasets[type].dataElementType;
+        let defaultDatasetElementType = defaults.datasets[type].datasetElementType;
+
+        if (defaultDataElementType === undefined) {
+          defaultDataElementType = ControllerClass.dataElementType;
+        }
+        if (defaultDatasetElementType === undefined) {
+          defaultDatasetElementType = ControllerClass.datasetElementType;
+        }
+
         Object.assign(ControllerClass, {
-          dataElementType: registry.getElement(dataElementType),
-          datasetElementType: datasetElementType && registry.getElement(datasetElementType)
+          dataElementType: defaultDataElementType ? registry.getElement(defaultDataElementType) : defaultDataElementType,
+          datasetElementType: defaultDatasetElementType ? registry.getElement(defaultDatasetElementType) : defaultDatasetElementType
         });
         meta.controller = new ControllerClass(this, i);
         newControllers.push(meta.controller);
