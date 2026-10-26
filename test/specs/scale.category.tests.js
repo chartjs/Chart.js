@@ -597,4 +597,35 @@ describe('Category scale tests', function() {
     expect(scale.getLabelForValue(2)).toBe('1');
     expect(scale.getLabelForValue(3)).toBe('0');
   });
+
+  it('should get the correct label for parsing: false with index values', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          xAxisID: 'x',
+          yAxisID: 'y',
+          data: [{x: 0, y: 10}, {x: 1, y: 5}, {x: 2, y: 0}, {x: 3, y: 25}]
+        }],
+        labels: ['ON', 'OFF', '1', '0']
+      },
+      options: {
+        parsing: false,
+        scales: {
+          x: {
+            type: 'category',
+            position: 'bottom'
+          },
+          y: {
+            type: 'linear'
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+
+    expect(scale.getLabelForValue(2)).toBe('1');
+    expect(scale.getLabelForValue(3)).toBe('0');
+  });
 });
