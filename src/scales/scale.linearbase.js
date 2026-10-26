@@ -66,7 +66,10 @@ function generateTicks(generationOptions, dataRange) {
     niceMax = rmax;
   }
 
-  if (minDefined && maxDefined && step && almostWhole((max - min) / step, spacing / 1000)) {
+  const stepCount = step ? (max - min) / step : 0;
+  const stepCountEpsilon = Math.max(Math.abs(stepCount) * Number.EPSILON, 1e-14);
+
+  if (minDefined && maxDefined && step && almostWhole(stepCount, stepCountEpsilon)) {
     // Case 1: If min, max and stepSize are set and they make an evenly spaced scale use it.
     // spacing = step;
     // numSpaces = (max - min) / spacing;
