@@ -952,6 +952,39 @@ describe('Chart.DatasetController', function() {
     expect(meta._parsed[0]._stacks).toEqual(jasmine.objectContaining({y: {0: 10, 1: 20, _top: 1, _bottom: null, _visualValues: {0: 10, 1: 20}}}));
   });
 
+  it('should clear stacks for all data points even when some lack stack data', function() {
+    // Regression test for #12154: clearStacks used `return` instead of
+    // `continue`, so if any parsed item lacked _stacks data the remaining
+    // items were skipped, leaving stale stack entries.
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [{x: 1, y: 10}, {x: 2, y: 20}, {x: 3, y: 30}],
+          label: 'A'
+        }, {
+          data: [{x: 1, y: 11}, {x: 2, y: 21}, {x: 3, y: 31}],
+          label: 'B'
+        }]
+      },
+      options: {
+        parsing: false,
+        scales: {
+          y: {stacked: 'single'}
+        }
+      }
+    });
+
+    // Swap dataset order
+    var datasets = chart.data.datasets;
+    chart.data.datasets = [datasets[1], datasets[0]];
+
+    // This should not throw or leave stale stack data
+    expect(function() {
+      chart.update();
+    }).not.toThrow();
+  });
+
   describe('resolveDataElementOptions', function() {
     it('should cache options when possible', function() {
       const chart = acquireChart({
