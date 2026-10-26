@@ -66,7 +66,10 @@ export function overrideTextDirection(ctx: CanvasRenderingContext2D, direction: 
   }
 }
 
-export function restoreTextDirection(ctx: CanvasRenderingContext2D, original?: [string, string]) {
+export function restoreTextDirection(
+  ctx: CanvasRenderingContext2D,
+  original = (ctx as { prevTextDirection?: [string, string] }).prevTextDirection
+) {
   if (original !== undefined) {
     delete (ctx as { prevTextDirection?: [string, string] }).prevTextDirection;
     ctx.canvas.style.setProperty('direction', original[0], original[1]);
