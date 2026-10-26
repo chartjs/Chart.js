@@ -508,3 +508,171 @@ describe('Chart.plugins', function() {
     });
   });
 });
+
+describe('Plugin object lifecycle', function() {
+  ['same', 'anonymous', 'distinct'].forEach(function(identity) {
+    [false, true].forEach(function(disableReplacement) {
+      it('should stop the old object and start the replacement (' + identity + ', ' + disableReplacement + ')', function() {
+        const calls = [];
+        const makePlugin = function(name) {
+          return {
+            ...(identity === 'anonymous' ? {} : {id: identity === 'same' ? 'resource' : name}),
+            start: function() {
+              calls.push(name + ':start');
+            },
+            stop: function() {
+              calls.push(name + ':stop');
+            },
+            beforeUpdate: function() {
+              calls.push(name + ':update');
+            }
+          };
+        };
+        const oldPlugin = makePlugin('old');
+        const replacement = makePlugin('new');
+        const config = {
+          type: 'line',
+          data: {labels: ['a', 'b'], datasets: [{data: [1, 2]}]},
+          plugins: [oldPlugin]
+        };
+        const chart = window.acquireChart(config);
+        expect(calls).toEqual(['old:start', 'old:update']);
+        calls.length = 0;
+        config.plugins = [replacement];
+        if (disableReplacement) {
+          chart.options.plugins = false;
+        }
+        chart.update();
+        expect(calls).toEqual(disableReplacement ? ['old:stop'] : ['old:stop', 'new:start', 'new:update']);
+        calls.length = 0;
+        chart.options.plugins = {};
+        chart.update();
+        expect(calls).toEqual(disableReplacement ? ['new:start', 'new:update'] : ['new:update']);
+        calls.length = 0;
+        chart.update();
+        expect(calls).toEqual(['new:update']);
+        calls.length = 0;
+        window.releaseChart(chart);
+        expect(calls).toEqual(['new:stop']);
+      });
+    });
+  });
+});
+
+describe('Plugin object lifecycle registry transitions', function() {
+  it('should stop an unregistered object before starting a new object with the same ID', function() {
+    const calls = [];
+    const oldPlugin = {
+      id: 'resource',
+      start: function() {
+        calls.push('old:start');
+      },
+      stop: function() {
+        calls.push('old:stop');
+      }
+    };
+    const replacement = {
+      id: 'resource',
+      start: function() {
+        calls.push('new:start');
+      },
+      stop: function() {
+        calls.push('new:stop');
+      }
+    };
+    Chart.register(oldPlugin);
+    const chart = window.acquireChart({});
+    expect(calls).toEqual(['old:start']);
+    calls.length = 0;
+    Chart.unregister(oldPlugin);
+    Chart.register(replacement);
+    chart.update();
+    expect(calls).toEqual(['old:stop', 'new:start']);
+    calls.length = 0;
+    Chart.register(replacement);
+    chart.update();
+    expect(calls).toEqual([]);
+    Chart.unregister(replacement);
+    chart.update();
+    expect(calls).toEqual(['new:stop']);
+    window.releaseChart(chart);
+  });
+
+  it('should start and stop distinct anonymous local plugins independently', function() {
+    const calls = [];
+    const first = {
+      start: function() {
+        calls.push('first:start');
+      },
+      stop: function() {
+        calls.push('first:stop');
+      }
+    };
+    const second = {
+      start: function() {
+        calls.push('second:start');
+      },
+      stop: function() {
+        calls.push('second:stop');
+      }
+    };
+    const config = {plugins: [first]};
+    const chart = window.acquireChart(config);
+    calls.length = 0;
+    config.plugins.push(second);
+    chart.update();
+    expect(calls).toEqual(['second:start']);
+    calls.length = 0;
+    config.plugins.splice(0, 1);
+    chart.update();
+    expect(calls).toEqual(['first:stop']);
+    calls.length = 0;
+    window.releaseChart(chart);
+    expect(calls).toEqual(['second:stop']);
+  });
+});
+
+describe('Plugin-owned event listeners', function() {
+  [true, false].forEach(function(withId) {
+    it('should transfer event handling to the replacement object (' + withId + ')', function() {
+      const events = [];
+      const listeners = new WeakMap();
+      const makePlugin = function(name) {
+        return {
+          ...(withId ? {id: 'listener'} : {}),
+          start: function(chart) {
+            const listener = function() {
+              events.push(name);
+            };
+            listeners.set(this, {canvas: chart.canvas, listener});
+            chart.canvas.addEventListener('test-resource', listener);
+          },
+          stop: function() {
+            const resource = listeners.get(this);
+            if (resource) {
+              resource.canvas.removeEventListener('test-resource', resource.listener);
+            }
+            listeners.delete(this);
+          },
+          beforeUpdate: function() {
+            expect(listeners.has(this)).toBeTrue();
+          }
+        };
+      };
+      const oldPlugin = makePlugin('old');
+      const replacement = makePlugin('new');
+      const config = {plugins: [oldPlugin]};
+      const chart = window.acquireChart(config);
+      config.plugins = [replacement];
+      chart.update();
+      chart.canvas.dispatchEvent(new Event('test-resource'));
+      expect(events).toEqual(['new']);
+      expect(listeners.has(oldPlugin)).toBeFalse();
+      const canvas = chart.canvas;
+      window.releaseChart(chart);
+      canvas.dispatchEvent(new Event('test-resource'));
+      expect(events).toEqual(['new']);
+      expect(listeners.has(replacement)).toBeFalse();
+    });
+  });
+});

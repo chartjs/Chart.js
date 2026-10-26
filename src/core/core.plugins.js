@@ -113,7 +113,7 @@ export default class PluginService {
   _notifyStateChanges(chart) {
     const previousDescriptors = this._oldCache || [];
     const descriptors = this._cache;
-    const diff = (a, b) => a.filter(x => !b.some(y => x.plugin.id === y.plugin.id));
+    const diff = (a, b) => a.filter(x => !b.some(y => x.plugin === y.plugin));
     this._notify(diff(previousDescriptors, descriptors), chart, 'stop');
     this._notify(diff(descriptors, previousDescriptors), chart, 'start');
   }
