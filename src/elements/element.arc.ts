@@ -428,7 +428,6 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
 
   inRange(chartX: number, chartY: number, useFinalPosition: boolean) {
     const point = this.getProps(['x', 'y'], useFinalPosition);
-    const {angle, distance} = getAngleFromPoint(point, {x: chartX, y: chartY});
     const {startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
       'startAngle',
       'endAngle',
@@ -436,11 +435,20 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
       'outerRadius',
       'circumference'
     ], useFinalPosition);
-    const rAdjust = (this.options.spacing + this.options.borderWidth) / 2;
+    const offset = (this.options.offset || 0) / 4;
+    const halfAngle = (startAngle + endAngle) / 2;
+    const center = {
+      x: point.x + Math.cos(halfAngle) * offset,
+      y: point.y + Math.sin(halfAngle) * offset
+    };
+    const {angle, distance} = getAngleFromPoint(center, {x: chartX, y: chartY});
     const _circumference = valueOrDefault(circumference, endAngle - startAngle);
+    const radiusOffset = offset * (1 - Math.sin(Math.min(PI, circumference || 0)));
+    const rAdjust = (this.options.spacing + this.options.borderWidth) / 2;
+    const innerAdjust = innerRadius > 0 ? radiusOffset : 0;
     const nonZeroBetween = _angleBetween(angle, startAngle, endAngle) && startAngle !== endAngle;
     const betweenAngles = _circumference >= TAU || nonZeroBetween;
-    const withinRadius = _isBetween(distance, innerRadius + rAdjust, outerRadius + rAdjust);
+    const withinRadius = _isBetween(distance, innerRadius + innerAdjust + rAdjust, outerRadius + radiusOffset + rAdjust);
 
     return (betweenAngles && withinRadius);
   }

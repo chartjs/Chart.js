@@ -1,6 +1,73 @@
 // Test the rectangle element
 
 describe('Arc element tests', function() {
+  describe('offset hit testing', function() {
+    [Math.PI / 4, Math.PI / 2, Math.PI, Math.PI * 1.5].forEach(function(circumference) {
+      [0, Math.PI / 2, Math.PI, -Math.PI / 2].forEach(function(startAngle) {
+        it('matches painted arc interiors for ' + circumference + '/' + startAngle, function() {
+          const ctx = document.createElement('canvas').getContext('2d');
+          ctx.canvas.width = ctx.canvas.height = 400;
+          const arc = new Chart.elements.ArcElement({
+            x: 200, y: 200, startAngle, endAngle: startAngle + circumference,
+            circumference, innerRadius: 60, outerRadius: 100,
+            options: {offset: 40, spacing: 0, circular: true, borderWidth: 0, borderRadius: 0, backgroundColor: 'red'}
+          });
+          arc.draw(ctx);
+          const angle = startAngle + circumference / 2;
+          const painted = {x: Math.round(200 + Math.cos(angle) * 105), y: Math.round(200 + Math.sin(angle) * 105)};
+          const empty = {x: Math.round(200 + Math.cos(angle) * 65), y: Math.round(200 + Math.sin(angle) * 65)};
+          expect(ctx.getImageData(painted.x, painted.y, 1, 1).data[3]).toBe(255);
+          expect(ctx.getImageData(empty.x, empty.y, 1, 1).data[3]).toBe(0);
+          expect(arc.inRange(painted.x, painted.y)).toBe(true);
+          expect(arc.inRange(empty.x, empty.y)).toBe(false);
+        });
+      });
+    });
+
+    [0, 60].forEach(function(innerRadius) {
+      [0, 40].forEach(function(offset) {
+        [0, 8].forEach(function(spacing) {
+          [0, 4].forEach(function(borderWidth) {
+            it('keeps radial bounds for ' + [innerRadius, offset, spacing, borderWidth].join('/'), function() {
+              const arc = new Chart.elements.ArcElement({
+                x: 100, y: 100, startAngle: 0, endAngle: Math.PI,
+                circumference: Math.PI, innerRadius, outerRadius: 100,
+                options: {offset, spacing, borderWidth}
+              });
+              const translation = offset / 4;
+              const radiusOffset = offset / 4;
+              const outer = 100 + radiusOffset + (spacing + borderWidth) / 2;
+              const inner = innerRadius + (innerRadius > 0 ? radiusOffset : 0) + (spacing + borderWidth) / 2;
+              expect(arc.inRange(100, 100 + translation + outer - 1)).toBe(true);
+              expect(arc.inRange(100, 100 + translation + outer + 1)).toBe(false);
+              expect(arc.inRange(100, 100 + translation + inner + 1)).toBe(true);
+              if (inner > 0) {
+                expect(arc.inRange(100, 100 + translation + inner - 1)).toBe(false);
+              }
+            });
+          });
+        });
+      });
+    });
+
+    it('uses animated final positions and angles', function() {
+      const arc = new Chart.elements.ArcElement({
+        x: 100, y: 100, startAngle: 0, endAngle: Math.PI,
+        circumference: Math.PI, innerRadius: 60, outerRadius: 100,
+        options: {offset: 40, spacing: 0, borderWidth: 0}
+      });
+      arc.$animations = {
+        x: {active: () => true, _to: 200},
+        y: {active: () => true, _to: 200},
+        startAngle: {active: () => true, _to: Math.PI},
+        endAngle: {active: () => true, _to: Math.PI * 2}
+      };
+      expect(arc.inRange(200, 95, true)).toBe(true);
+      expect(arc.inRange(200, 95, false)).toBe(false);
+      expect(arc.inRange(200, 135, true)).toBe(false);
+    });
+  });
+
   it ('should determine if in range', function() {
     // Mock out the arc as if the controller put it there
     var arc = new Chart.elements.ArcElement({
