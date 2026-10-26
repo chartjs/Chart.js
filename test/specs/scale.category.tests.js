@@ -568,6 +568,7 @@ describe('Category scale tests', function() {
     expect(chart.scales.x.min).toEqual(0);
     expect(chart.scales.x.max).toEqual(3);
   });
+
   it('should get the correct label for numeric-like labels with default parsing', function() {
     var chart = window.acquireChart({
       type: 'line',
