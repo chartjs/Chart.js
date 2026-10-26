@@ -64,4 +64,72 @@ describe('Bar element tests', function() {
 
     expect(bar.getCenterPoint()).toEqual({x: 10, y: 7.5});
   });
+
+  describe('unwanted white gap fix', () => {
+    it('should not produce white gap when borderWidth > 0', () => {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [{
+            data: [50],
+            backgroundColor: 'pink',
+            borderColor: 'pink',
+            borderWidth: 15,
+            borderSkipped: false,
+          }],
+          labels: []
+        },
+        options: {
+          elements: {
+            bar: {
+              inflateAmount: 0,
+              snap: false,
+            }
+          },
+        }
+      });
+
+      const meta = chart.getDatasetMeta(0);
+      const bar = meta.data[0];
+      const props = bar.getProps(['width', 'height'], true);
+
+      expect(bar.options.borderWidth).toBe(15);
+      expect(props.width).toBeGreaterThan(bar.options.borderWidth * 2);
+      expect(props.height).toBeGreaterThan(bar.options.borderWidth * 2);
+    });
+
+    it('should handle borderRadius without creating a gap', () => {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [{
+            data: [30],
+            backgroundColor: 'black',
+            borderColor: 'black',
+            borderWidth: 10,
+            borderRadius: 8,
+            borderSkipped: false,
+          }],
+          labels: []
+        },
+        options: {
+          elements: {
+            bar: {
+              inflateAmount: 0,
+              snap: false,
+            }
+          },
+        }
+      });
+
+      const meta = chart.getDatasetMeta(0);
+      const bar = meta.data[0];
+      const props = bar.getProps(['width', 'height'], true);
+
+      expect(bar.options.borderWidth).toBe(10);
+      expect(bar.options.borderRadius).toBe(8);
+      expect(props.width).toBeGreaterThan(bar.options.borderRadius + bar.options.borderWidth);
+      expect(props.height).toBeGreaterThan(bar.options.borderRadius + bar.options.borderWidth);
+    });
+  });
 });
