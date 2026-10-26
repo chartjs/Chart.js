@@ -297,3 +297,37 @@ describe('Plugin.filler', function() {
     });
   });
 });
+
+
+describe('stepped stack sampled at interior endpoints', function() {
+  ['before', 'after', 'middle', true].forEach(function(stepped) {
+    [false, true].forEach(function(reverseX) {
+      [false, true].forEach(function(reverseY) {
+        it('samples the drawn ' + stepped + ' plateau with reversed scales ' + reverseX + '/' + reverseY, function() {
+          const chart = window.acquireChart({
+            type: 'line',
+            data: {datasets: [
+              {data: [{x: 0, y: 20}, {x: 10, y: 80}], stepped, fill: false, borderWidth: 0, pointRadius: 0, backgroundColor: 'transparent'},
+              {data: [{x: 2, y: 90}, {x: 4, y: 90}], fill: 'stack', borderWidth: 0, pointRadius: 0, backgroundColor: 'blue'}
+            ]},
+            options: {
+              responsive: false,
+              animation: false,
+              plugins: {legend: false, tooltip: false},
+              scales: {
+                x: {type: 'linear', min: 0, max: 10, display: false, reverse: reverseX},
+                y: {min: 0, max: 100, display: false, reverse: reverseY}
+              }
+            }
+          });
+          const x = Math.round(chart.scales.x.getPixelForValue(3));
+          const y = Math.round(chart.scales.y.getPixelForValue(50));
+          const pixel = Array.from(chart.ctx.getImageData(x, y, 1, 1).data);
+          expect(pixel).toEqual(stepped === 'after' ? [0, 0, 0, 0] : [0, 0, 255, 255]);
+          chart.update();
+          expect(Array.from(chart.ctx.getImageData(x, y, 1, 1).data)).toEqual(pixel);
+        });
+      });
+    });
+  });
+});

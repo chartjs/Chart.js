@@ -33,3 +33,26 @@ describe('Chart.elements.LineElement', function() {
     });
   });
 });
+
+describe('stepped line interpolation path agreement', function() {
+  ['before', 'after', 'middle', true].forEach(function(stepped) {
+    [false, true].forEach(function(reverse) {
+      it('matches the drawn horizontal step for ' + stepped + ' reverse=' + reverse, function() {
+        const points = reverse ? [{x: 100, y: 20}, {x: 0, y: 80}] : [{x: 0, y: 20}, {x: 100, y: 80}];
+        const line = new Chart.elements.LineElement({points, options: {stepped, tension: 0}});
+        [0, 0.25, 0.75, 1].forEach(function(t) {
+          const x = points[0].x + t * (points[1].x - points[0].x);
+          const expected = t === 0 ? 20 : t === 1 ? 80 : stepped === 'middle' ? (t < 0.5 ? 20 : 80) : stepped === 'after' ? 80 : 20;
+          const path = new Path2D();
+          line.pathSegment(path, line.segments[0]);
+          const ctx = document.createElement('canvas').getContext('2d');
+          ctx.lineWidth = 2;
+          expect(ctx.isPointInStroke(path, x, expected)).toBeTrue();
+          const sampled = line.interpolate({x}, 'x');
+          expect(ctx.isPointInStroke(path, sampled.x, sampled.y)).toBeTrue();
+          expect(sampled.y).toBe(expected);
+        });
+      });
+    });
+  });
+});

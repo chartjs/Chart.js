@@ -21,8 +21,8 @@ export function _steppedInterpolation(
   return {
     x: p1.x + t * (p2.x - p1.x),
     y: mode === 'middle' ? t < 0.5 ? p1.y : p2.y
-      : mode === 'after' ? t < 1 ? p1.y : p2.y
-        : t > 0 ? p2.y : p1.y
+      : mode === 'after' ? t > 0 ? p2.y : p1.y
+        : t < 1 ? p1.y : p2.y
   };
 }
 
