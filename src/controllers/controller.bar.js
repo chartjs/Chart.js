@@ -270,6 +270,8 @@ export default class BarController extends DatasetController {
     barPercentage: 0.9,
     grouped: true,
 
+    floatingBarMode: 'relative',  // 'absolute' | 'relative'
+    
     animations: {
       numbers: {
         type: 'number',
@@ -583,7 +585,12 @@ export default class BarController extends DatasetController {
       if (value !== 0 && sign(value) !== sign(custom.barEnd)) {
         start = 0;
       }
-      start += value;
+      const relative = this.options.floatingBarMode === 'relative';
+      if (relative) {
+        start += value;
+      } else {
+        start = value;
+      }
     }
 
     const startValue = !isNullOrUndef(baseValue) && !floating ? baseValue : start;
