@@ -53,6 +53,7 @@ function initCanvas(canvas, aspectRatio) {
       width: renderWidth,
       style: {
         display: style.display,
+        boxSizing: style.boxSizing,
         height: style.height,
         width: style.width
       }

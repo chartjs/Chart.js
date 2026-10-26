@@ -430,3 +430,47 @@ describe('Platform.dom', function() {
     });
   });
 });
+
+describe('Canvas box sizing restoration', function() {
+  ['', 'content-box', 'border-box'].forEach(function(boxSizing) {
+    [false, true].forEach(function(useStylesheet) {
+      it('should restore box sizing and dimensions after destroy (' + boxSizing + ', ' + useStylesheet + ')', function() {
+        const wrapper = document.createElement('div');
+        const canvas = document.createElement('canvas');
+        const style = document.createElement('style');
+        style.textContent = '.restoration-canvas { box-sizing: content-box; padding: 20px; border: 5px solid black; }';
+        if (useStylesheet) {
+          document.head.appendChild(style);
+          canvas.className = 'restoration-canvas';
+        }
+        canvas.style.width = '300px';
+        canvas.style.height = '150px';
+        canvas.style.boxSizing = boxSizing;
+        wrapper.appendChild(canvas);
+        document.body.appendChild(wrapper);
+        const before = canvas.getBoundingClientRect();
+        const initialSizing = getComputedStyle(canvas).boxSizing;
+        let chart;
+        try {
+          chart = new Chart(canvas, {options: {responsive: false, animation: false}});
+          expect(canvas.style.boxSizing).toBe(boxSizing || 'border-box');
+          chart.destroy();
+          expect(canvas.style.boxSizing).toBe(boxSizing);
+          expect(getComputedStyle(canvas).boxSizing).toBe(initialSizing);
+          expect(canvas.getBoundingClientRect().width).toBe(before.width);
+          expect(canvas.getBoundingClientRect().height).toBe(before.height);
+          const second = new Chart(canvas, {options: {responsive: false, animation: false}});
+          second.destroy();
+          expect(canvas.style.boxSizing).toBe(boxSizing);
+          expect(canvas.getBoundingClientRect().width).toBe(before.width);
+        } finally {
+          if (chart && chart.ctx) {
+            chart.destroy();
+          }
+          wrapper.remove();
+          style.remove();
+        }
+      });
+    });
+  });
+});
