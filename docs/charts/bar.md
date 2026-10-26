@@ -89,6 +89,7 @@ Only the `data` option needs to be specified in the dataset namespace.
 | [`inflateAmount`](#inflateamount) | `number`\|`'auto'` | Yes | Yes | `'auto'`
 | [`maxBarThickness`](#maxbarthickness) | `number` | - | - | |
 | [`minBarLength`](#styling) | `number` | - | - | |
+| [`minBarThickness`](#minBarThickness) | `number` | - | - | |
 | [`label`](#general) | `string` | - | - | `''`
 | [`order`](#general) | `number` | - | - | `0`
 | [`pointStyle`](../configuration/elements.md#point-styles) | [`pointStyle`](../configuration/elements.md#types) | Yes | - | `'circle'`
@@ -107,6 +108,7 @@ data: {
         barPercentage: 0.5,
         barThickness: 6,
         maxBarThickness: 8,
+        minBarThickness: 1,
         minBarLength: 2,
         data: [10, 20, 30, 40, 50, 60, 70]
     }]
@@ -214,6 +216,10 @@ If not set (default), the base sample widths are calculated using the smallest i
 ### maxBarThickness
 
 Set this to ensure that bars are not sized thicker than this.
+
+### minBarThickness
+
+Set this to ensure that bars have at least the specified thickness. When `maxBarThickness` and `minBarThickness` have conflicting values, `maxBarThickness` is used.
 
 ## Scale Configuration
 
