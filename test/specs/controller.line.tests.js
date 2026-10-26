@@ -1204,3 +1204,66 @@ describe('Chart.controllers.line', function() {
     }]);
   });
 });
+
+describe('numeric gaps with segment styles', function() {
+  ['x', 'y'].forEach(function(axis) {
+    [false, true].forEach(function(reverse) {
+      [false, true].forEach(function(vary) {
+        it('preserves numeric breaks for ' + [axis, reverse, vary].join('/'), function() {
+          const valueAxis = axis === 'x' ? 'y' : 'x';
+          const data = [[0, 10], [5, 20], [30, 60], [35, 50]].map(function(pair) {
+            return {[axis]: pair[0], [valueAxis]: pair[1]};
+          });
+          const chart = window.acquireChart({
+            type: 'line',
+            data: {datasets: [{data, spanGaps: 10, borderWidth: 4, pointRadius: 0, segment: {
+              borderColor: function(ctx) {
+                return vary && ctx.p1DataIndex > 1 ? 'red' : 'blue';
+              }
+            }}]},
+            options: {animation: false, responsive: false, indexAxis: axis, plugins: {legend: false}, scales: {
+              [axis]: {type: 'linear', reverse, display: false, min: 0, max: 40},
+              [valueAxis]: {type: 'linear', display: false, min: 0, max: 100}
+            }}
+          });
+          const meta = chart.getDatasetMeta(0);
+          expect(meta.data[2].stop).toBe(true);
+          expect(meta.dataset.segments.map(function(segment) {
+            return [segment.start, segment.end];
+          })).toEqual([[0, 1], [2, 3]]);
+          const x = Math.round((meta.data[1].x + meta.data[2].x) / 2);
+          const y = Math.round((meta.data[1].y + meta.data[2].y) / 2);
+          expect(chart.ctx.getImageData(x, y, 1, 1).data[3]).toBe(0);
+          chart.update();
+          expect(meta.dataset.segments.map(function(segment) {
+            return [segment.start, segment.end];
+          })).toEqual([[0, 1], [2, 3]]);
+        });
+      });
+    });
+  });
+
+  [true, false, 10, 100, Infinity].forEach(function(spanGaps) {
+    [[10, 20, 30, 40], [10, null, 30, 40], [null, 20, 30, null], [10, null, null, 40]].forEach(function(values, index) {
+      it('preserves ordinary spans and skipped points for ' + spanGaps + '/' + index, function() {
+        const data = values.map(function(y, x) {
+          return {x: x * 5, y};
+        });
+        const chart = window.acquireChart({type: 'line', data: {datasets: [{data, spanGaps}]}, options: {animation: false, responsive: false, scales: {x: {type: 'linear'}}}});
+        const line = chart.getDatasetMeta(0).dataset;
+        const expected = line.segments.filter(function(segment) {
+          return segment.start !== segment.end;
+        }).map(function(segment) {
+          return [segment.start, segment.end];
+        });
+        chart.data.datasets[0].segment = {borderColor: function() {
+          return 'blue';
+        }};
+        chart.update();
+        expect(line.segments.map(function(segment) {
+          return [segment.start, segment.end];
+        })).toEqual(expected);
+      });
+    });
+  });
+});

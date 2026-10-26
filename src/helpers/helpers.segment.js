@@ -307,7 +307,7 @@ function doSplitByStyles(line, segments, points, segmentOptions) {
   }
 
   for (const segment of segments) {
-    start = spanGaps ? start : segment.start;
+    start = spanGaps === true ? start : segment.start;
     let prev = points[start % count];
     let style;
     for (i = start + 1; i <= segment.end; i++) {
