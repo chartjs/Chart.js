@@ -80,9 +80,9 @@ function decodeTargetIndex(firstCh, index, target, count) {
 export function _getTargetPixel(fill, scale) {
   let pixel = null;
   if (fill === 'start') {
-    pixel = scale.bottom;
+    pixel = scale.isHorizontal() ? scale.left : scale.bottom;
   } else if (fill === 'end') {
-    pixel = scale.top;
+    pixel = scale.isHorizontal() ? scale.right : scale.top;
   } else if (isObject(fill)) {
     // @ts-ignore
     pixel = scale.getPixelForValue(fill.value);
