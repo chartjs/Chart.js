@@ -1851,3 +1851,102 @@ describe('Chart.controllers.bar', function() {
     }]);
   });
 });
+
+
+describe('Bar data visibility with minimum lengths', function() {
+  ['x', 'y'].forEach(function(indexAxis) {
+    [false, true].forEach(function(reverse) {
+      [false, true].forEach(function(stacked) {
+        [0, 0.01, -0.01, [2, 3]].forEach(function(value) {
+          it('collapses hidden bars for ' + [indexAxis, reverse, stacked, value].join(', '), function() {
+            var valueAxis = indexAxis === 'x' ? 'y' : 'x';
+            var chart = window.acquireChart({
+              type: 'bar',
+              data: {
+                labels: ['A', 'B'],
+                datasets: [{data: [value, 8], minBarLength: 30, backgroundColor: 'red'}]
+              },
+              options: {
+                indexAxis,
+                animation: false,
+                plugins: {legend: false},
+                scales: {
+                  x: {display: false, stacked},
+                  y: {display: false, stacked},
+                  [valueAxis]: {display: false, stacked, reverse, min: -10, max: 10}
+                }
+              }
+            });
+            var bar = chart.getDatasetMeta(0).data[0];
+            var original = bar[valueAxis];
+            expect(Math.abs(bar[valueAxis] - bar.base)).toBeGreaterThan(29);
+            chart.toggleDataVisibility(0);
+            chart.update();
+            expect(chart.getDataVisibility(0)).toBe(false);
+            var pixelX = indexAxis === 'x' ? bar.x : bar.base + 15;
+            var pixelY = indexAxis === 'x' ? bar.base - 15 : bar.y;
+            expect(chart.ctx.getImageData(pixelX, pixelY, 1, 1).data[3]).toEqual(0);
+            expect(bar[valueAxis]).toEqual(bar.base);
+            expect(valueAxis === 'y' ? bar.height : bar.width).toEqual(0);
+            chart.update();
+            expect(bar[valueAxis]).toEqual(bar.base);
+            chart.toggleDataVisibility(0);
+            chart.update();
+            expect(bar[valueAxis]).toEqual(original);
+          });
+        });
+      });
+    });
+  });
+});
+
+
+describe('Bar visibility minimum-length controls', function() {
+  ['x', 'y'].forEach(function(indexAxis) {
+    [0, 30].forEach(function(minBarLength) {
+      [false, true].forEach(function(stacked) {
+        it('preserves other bars and restores multiple datasets for ' + [indexAxis, minBarLength, stacked].join(', '), function() {
+          var valueAxis = indexAxis === 'x' ? 'y' : 'x';
+          var chart = window.acquireChart({
+            type: 'bar',
+            data: {
+              labels: ['A', 'B'],
+              datasets: [
+                {data: [0.01, 2], minBarLength},
+                {data: [0.02, 3], minBarLength}
+              ]
+            },
+            options: {
+              indexAxis,
+              animation: false,
+              scales: {
+                x: {display: false, stacked},
+                y: {display: false, stacked},
+                [valueAxis]: {display: false, stacked, min: 0, max: 10}
+              }
+            }
+          });
+          var initial = chart.data.datasets.map(function(dataset, i) {
+            var bars = chart.getDatasetMeta(i).data;
+            return bars.map(function(bar) {
+              return [bar.base, bar[valueAxis]];
+            });
+          });
+          chart.toggleDataVisibility(0);
+          chart.update();
+          chart.data.datasets.forEach(function(dataset, i) {
+            var bars = chart.getDatasetMeta(i).data;
+            expect(bars[0][valueAxis]).toEqual(bars[0].base);
+            expect([bars[1].base, bars[1][valueAxis]]).toEqual(initial[i][1]);
+          });
+          chart.toggleDataVisibility(0);
+          chart.update();
+          chart.data.datasets.forEach(function(dataset, i) {
+            var bars = chart.getDatasetMeta(i).data;
+            expect([bars[0].base, bars[0][valueAxis]]).toEqual(initial[i][0]);
+          });
+        });
+      });
+    });
+  });
+});

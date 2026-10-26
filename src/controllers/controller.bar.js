@@ -589,7 +589,8 @@ export default class BarController extends DatasetController {
     const startValue = !isNullOrUndef(baseValue) && !floating ? baseValue : start;
     let base = vScale.getPixelForValue(startValue);
 
-    if (this.chart.getDataVisibility(index)) {
+    const visible = this.chart.getDataVisibility(index);
+    if (visible) {
       head = vScale.getPixelForValue(start + length);
     } else {
       // When not visible, no height
@@ -598,7 +599,7 @@ export default class BarController extends DatasetController {
 
     size = head - base;
 
-    if (Math.abs(size) < minBarLength) {
+    if (visible && Math.abs(size) < minBarLength) {
       size = barSign(size, vScale, actualBase) * minBarLength;
       if (value === actualBase) {
         base -= size / 2;
