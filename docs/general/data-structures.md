@@ -75,6 +75,10 @@ This is also the internal format used for parsed data. In this mode, parsing can
 
 The values provided must be parsable by the associated scales or in the internal format of the associated scales. For example, the `category` scale uses integers as an internal format, where each integer represents an index in the labels array; but, if parsing is enabled, it can also parse string labels.
 
+:::warning
+When `parsing: false` is configured, a category axis expects label indexes, not label strings.
+:::
+
 `null` can be used for skipped values.
 
 ## Object[] using custom properties

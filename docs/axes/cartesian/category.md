@@ -82,4 +82,63 @@ let chart = new Chart(ctx, {
 
 ## Internal data format
 
-Internally category scale uses label indices
+Internally category scale uses label indices.
+
+:::warning
+When `parsing: false` is configured, a category axis expects label indexes, not label strings.
+:::
+
+### Examples with `parsing: false`
+
+When `parsing: false` is used, data points must reference labels by their numeric index in the `labels` array instead of using label strings.
+
+#### Incorrect (strings with `parsing: false`)
+
+```javascript
+let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['ON', 'OFF', '1', '0'],
+        datasets: [{
+            // WRONG: string labels will not be mapped to category indices when parsing is disabled
+            data: [{x: '1', y: 10}, {x: '0', y: 20}]
+        }]
+    },
+    options: {
+        parsing: false
+    }
+});
+```
+
+#### Correct (using default parsing)
+
+```javascript
+let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['ON', 'OFF', '1', '0'],
+        datasets: [{
+            // CORRECT: strings are parsed into corresponding label indices automatically
+            data: [10, 20, 30, 40]
+        }]
+    }
+});
+```
+
+#### Correct (using index values with `parsing: false`)
+
+```javascript
+let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['ON', 'OFF', '1', '0'],
+        datasets: [{
+            // CORRECT: index values point directly to the labels ('1' is index 2, '0' is index 3)
+            data: [{x: 2, y: 10}, {x: 3, y: 20}]
+        }]
+    },
+    options: {
+        parsing: false
+    }
+});
+```
