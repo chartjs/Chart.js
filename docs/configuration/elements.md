@@ -25,6 +25,8 @@ Namespace: `options.elements.point`, global point options: `Chart.defaults.eleme
 | `borderWidth` | `number` | `1` | Point stroke width.
 | `borderColor` | [`Color`](../general/colors.md) | `'Chart.defaults.borderColor` | Point stroke color.
 | `hitRadius` | `number` | `1` | Extra radius added to point radius for hit detection.
+| `hoverBackgroundColor` | [`Color`](../general/colors.md) | `Chart.defaults.hoverBackgroundColor` | Point fill color when hovered.
+| `hoverBorderColor` | [`Color`](../general/colors.md) | `Chart.defaults.hoverBorderColor` | Point stroke color when hovered.
 | `hoverRadius` | `number` | `4` | Point radius when hovered.
 | `hoverBorderWidth` | `number` | `1` | Stroke width when hovered.
 
@@ -87,6 +89,10 @@ Namespace: `options.elements.bar`, global bar options: `Chart.defaults.elements.
 | `borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
 | `inflateAmount` | `number`\|`'auto'` | `'auto'` | The amount of pixels to inflate the bar rectangle(s) when drawing.
 | [`pointStyle`](#point-styles) | `string`\|`Image`\|`HTMLCanvasElement` | `'circle'` | Style of the point for legend.
+| `hoverBackgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.hoverBackgroundColor` | Bar fill color when hovered.
+| `hoverBorderColor` | [`Color`](/general/colors.md) | `Chart.defaults.hoverBorderColor` | Bar stroke color when hovered.
+| `hoverBorderWidth` | `number` | `borderWidth` | Bar stroke width when hovered.
+| `hoverBorderRadius` | `number`\|`object` | `borderRadius` | Bar border radius when hovered.
 
 ## Arc Configuration
 
