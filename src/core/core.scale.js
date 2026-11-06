@@ -1202,6 +1202,10 @@ export default class Scale extends Element {
     }
 
     const labelSizes = this._getLabelSizes();
+    // Linear, logarithmic and time scales reverse their ticks array when `reverse` is set,
+    // while the category scale does not, so use the tick pixels to find which end is first.
+    const lastTick = ticks.length - 1;
+    const firstTickOnRight = lastTick > 0 && this.getPixelForTick(0) > this.getPixelForTick(lastTick);
     for (i = 0, ilen = ticks.length; i < ilen; ++i) {
       tick = ticks[i];
       label = tick.label;
@@ -1222,9 +1226,9 @@ export default class Scale extends Element {
 
         if (textAlign === 'inner') {
           if (i === ilen - 1) {
-            tickTextAlign = !this.options.reverse ? 'right' : 'left';
+            tickTextAlign = !firstTickOnRight ? 'right' : 'left';
           } else if (i === 0) {
-            tickTextAlign = !this.options.reverse ? 'left' : 'right';
+            tickTextAlign = !firstTickOnRight ? 'left' : 'right';
           } else {
             tickTextAlign = 'center';
           }
@@ -1280,19 +1284,12 @@ export default class Scale extends Element {
           break;
         }
 
-        switch (textAlign) {
+        switch (tickTextAlign) {
         case 'center':
           left -= width / 2;
           break;
         case 'right':
           left -= width;
-          break;
-        case 'inner':
-          if (i === ilen - 1) {
-            left -= width;
-          } else if (i > 0) {
-            left -= width / 2;
-          }
           break;
         default:
           break;

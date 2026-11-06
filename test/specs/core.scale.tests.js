@@ -817,6 +817,55 @@ describe('Core.scale', function() {
       }
     });
   });
+  describe('ticks.align inner', () => {
+    const linearData = [{x: 200, y: 12}, {x: 451, y: 14}, {x: 999, y: 14}];
+
+    function getInnerLabels(scaleOptions, data, labels) {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{data}]
+        },
+        options: {
+          scales: {
+            x: Object.assign({
+              ticks: {
+                align: 'inner',
+                showLabelBackdrop: true,
+                backdropPadding: 0
+              }
+            }, scaleOptions)
+          }
+        }
+      });
+      return chart.scales.x.getLabelItems()
+        .slice()
+        .sort((a, b) => a.options.translation[0] - b.options.translation[0]);
+    }
+
+    function expectInnerAlignment(items) {
+      const first = items[0];
+      const last = items[items.length - 1];
+      expect(first.options.textAlign).toBe('left');
+      expect(first.options.backdrop.left).toBe(0);
+      expect(last.options.textAlign).toBe('right');
+      expect(last.options.backdrop.left).toBe(-last.options.backdrop.width);
+      items.slice(1, -1).forEach(item => expect(item.options.textAlign).toBe('center'));
+    }
+
+    it('should align the outermost labels inwards on a linear axis', () => {
+      expectInnerAlignment(getInnerLabels({type: 'linear', min: 200, max: 1000}, linearData));
+    });
+
+    it('should align the outermost labels inwards on a reversed linear axis', () => {
+      expectInnerAlignment(getInnerLabels({type: 'linear', min: 200, max: 1000, reverse: true}, linearData));
+    });
+
+    it('should align the outermost labels inwards on a reversed category axis', () => {
+      expectInnerAlignment(getInnerLabels({reverse: true}, [1, 2, 3], ['Label1', 'Label2', 'Label3']));
+    });
+  });
   describe('Scale Title stroke', ()=>{
     function getChartWithScaleTitleStroke() {
       return window.acquireChart({
