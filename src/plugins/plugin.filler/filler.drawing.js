@@ -150,7 +150,8 @@ function fill(ctx, cfg) {
         interpolatedLineTo(ctx, target, end, property);
       }
 
-      const targetLoop = !!target.pathSegment(ctx, tgt, {move: lineLoop, reverse: true});
+      // The interpolated points on either side already trace a straight target
+      const targetLoop = !target._straight && !!target.pathSegment(ctx, tgt, {move: lineLoop, reverse: true});
       loop = lineLoop && targetLoop;
       if (!loop) {
         interpolatedLineTo(ctx, target, start, property);

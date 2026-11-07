@@ -28,7 +28,7 @@ export function _segments(line, target, property) {
     const targetSegments = _boundSegments(target, bounds);
 
     for (const tgt of targetSegments) {
-      const subBounds = _getBounds(property, tpoints[tgt.start], tpoints[tgt.end], tgt.loop);
+      const subBounds = target._straight ? bounds : _getBounds(property, tpoints[tgt.start], tpoints[tgt.end], tgt.loop);
       const fillSources = _boundSegment(segment, points, subBounds);
 
       for (const fillSource of fillSources) {
@@ -78,7 +78,27 @@ export function _pointsFromSegments(boundary, line) {
       points.push({x, y: last.y});
     }
   });
+  // The boundary is a straight line, so a line that only moves forward along it
+  // needs just the two ends. Every fill segment searches these points, so keeping
+  // one pair per segment makes drawing quadratic in the number of segments.
+  if (points.length > 2 && _isAscending(linePoints, y !== null ? 'x' : 'y')) {
+    points.splice(1, points.length - 2);
+  }
   return points;
+}
+
+function _isAscending(points, property) {
+  let prev = -Infinity;
+  for (const point of points) {
+    if (!point.skip) {
+      const value = point[property];
+      if (!(value >= prev)) {
+        return false;
+      }
+      prev = value;
+    }
+  }
+  return true;
 }
 
 export function _findSegmentEnd(start, end, points) {

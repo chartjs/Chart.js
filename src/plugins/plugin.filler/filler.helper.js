@@ -29,7 +29,8 @@ export function _createBoundaryLine(boundary, line) {
     points,
     options: {tension: 0},
     _loop,
-    _fullLoop: _loop
+    _fullLoop: _loop,
+    _straight: !_loop && points.length === 2
   }) : null;
 }
 

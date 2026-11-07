@@ -296,4 +296,40 @@ describe('Plugin.filler', function() {
       ]);
     });
   });
+
+  describe('boundary line', function() {
+    function boundaryPointCount(xValues, xOptions) {
+      const interpolate = spyOn(Chart.elements.LineElement.prototype, 'interpolate').and.callThrough();
+      window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: xValues.map((x, i) => ({x, y: i + 1})),
+            fill: true,
+            segment: {
+              borderColor: (ctx) => (ctx.p0DataIndex % 2 ? 'red' : 'blue')
+            }
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'linear', ...xOptions}
+          }
+        }
+      });
+      return interpolate.calls.mostRecent().object.points.length;
+    }
+
+    it('should only keep the ends when the line moves forward', function() {
+      expect(boundaryPointCount([0, 1, 2, 3])).toBe(2);
+    });
+
+    it('should keep a pair of points for each segment when the line turns back', function() {
+      expect(boundaryPointCount([0, 2, 1, 3])).toBe(6);
+    });
+
+    it('should keep a pair of points for each segment on a reversed scale', function() {
+      expect(boundaryPointCount([0, 1, 2, 3], {reverse: true})).toBe(6);
+    });
+  });
 });
