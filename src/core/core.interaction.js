@@ -177,7 +177,8 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
     }
 
     const center = element.getCenterPoint(useFinalPosition);
-    const pointInArea = !!includeInvisible || chart.isPointInArea(center);
+    const pointInArea = !!includeInvisible || chart.isPointInArea(center)
+      || (element._isInArea && element._isInArea(chart.chartArea, useFinalPosition));
     if (!pointInArea && !inRange) {
       return;
     }

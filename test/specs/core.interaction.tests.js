@@ -835,6 +835,101 @@ describe('Core.Interaction', function() {
     });
   });
 
+  describe('nearest interactions with clipped bars', function() {
+    function createChart(axis, data) {
+      return window.acquireChart({
+        type: 'bar',
+        data: {labels: ['A', 'B'], datasets: [{data}]},
+        options: {
+          animation: false,
+          indexAxis: axis,
+          interaction: {mode: 'nearest', axis, intersect: false},
+          scales: {[axis === 'x' ? 'y' : 'x']: {min: 1, max: 2}}
+        }
+      });
+    }
+
+    function eventAboveBar(chart, axis) {
+      const bar = chart.getDatasetMeta(0).data[0];
+      const valueAxis = axis === 'x' ? 'y' : 'x';
+      return {type: 'mousemove', native: true, [axis]: bar[axis], [valueAxis]: chart.scales[valueAxis].getPixelForValue(1.9)};
+    }
+
+    ['x', 'y'].forEach(function(axis) {
+      it('activates a visible clipped bar along ' + axis + ' without intersection', async function() {
+        const chart = createChart(axis, [1.2, 1.4]);
+        const bar = chart.getDatasetMeta(0).data[0];
+        const event = eventAboveBar(chart, axis);
+        const options = {axis, intersect: false};
+        expect(chart.isPointInArea(bar.getCenterPoint())).toBe(false);
+        expect(bar.inRange(event.x, event.y)).toBe(false);
+        expect(chart.getElementsAtEventForMode(event, 'nearest', options, false).map(item => item.element)).toEqual([bar]);
+        expect(chart.getElementsAtEventForMode(event, 'nearest', {axis, intersect: true}, false)).toEqual([]);
+
+        await jasmine.triggerMouseEvent(chart, 'mousemove', event);
+        expect(chart.getActiveElements().map(item => item.element)).toEqual([bar]);
+        expect(chart.tooltip.opacity).toBe(1);
+        expect((chart.tooltip.dataPoints || []).map(item => item.dataIndex)).toEqual([0]);
+
+        const valueAxis = axis === 'x' ? 'y' : 'x';
+        event[valueAxis] = chart.scales[valueAxis].getPixelForValue(1.1);
+        expect(chart.getElementsAtEventForMode(event, 'nearest', {axis, intersect: true}, false).map(item => item.element)).toEqual([bar]);
+      });
+
+      it('excludes fully off-plot bars along ' + axis + ' unless included', function() {
+        const chart = createChart(axis, [0.4, 0.6]);
+        const event = eventAboveBar(chart, axis);
+        expect(chart.getElementsAtEventForMode(event, 'nearest', {axis, intersect: false}, false)).toEqual([]);
+        expect(chart.getElementsAtEventForMode(event, 'nearest', {axis, intersect: false, includeInvisible: true}, false)
+          .map(item => item.index)).toEqual([0]);
+      });
+
+      it('measures distance to the unclipped centers along ' + axis, function() {
+        const chart = createChart(axis, [[-3, 1.8]]);
+        chart.data.datasets.push({data: [[0, 1.2]]});
+        chart.update();
+        const event = eventAboveBar(chart, axis);
+        const valueAxis = axis === 'x' ? 'y' : 'x';
+        // The first bar has the nearer clipped center, but the second has the nearer actual center.
+        expect(chart.getElementsAtEventForMode(event, 'nearest', {axis: valueAxis, intersect: false}, false)
+          .map(item => item.datasetIndex)).toEqual([1]);
+      });
+
+      [false, true].forEach(function(visibleNow) {
+        it('uses ' + axis + ' animation geometry with current visibility ' + visibleNow, function() {
+          const chart = createChart(axis, [visibleNow ? 1.2 : 0.4]);
+          const bar = chart.getDatasetMeta(0).data[0];
+          const valueAxis = axis === 'x' ? 'y' : 'x';
+          bar.$animations = {
+            [valueAxis]: new Chart.Animation({duration: 1000}, bar, valueAxis,
+              chart.scales[valueAxis].getPixelForValue(visibleNow ? 0.4 : 1.2))
+          };
+          const event = eventAboveBar(chart, axis);
+          const options = {axis, intersect: false};
+          expect(chart.getElementsAtEventForMode(event, 'nearest', options, false).map(item => item.element))
+            .toEqual(visibleNow ? [bar] : []);
+          expect(chart.getElementsAtEventForMode(event, 'nearest', options, true).map(item => item.element))
+            .toEqual(visibleNow ? [] : [bar]);
+        });
+      });
+    });
+
+    it('keeps fully off-plot points excluded from nearest interactions', function() {
+      const chart = window.acquireChart({
+        type: 'scatter',
+        data: {datasets: [{data: [{x: 1, y: 0.9}], pointRadius: 3, pointHitRadius: 100}]},
+        options: {animation: false, scales: {x: {min: 0, max: 2}, y: {min: 1, max: 2}}}
+      });
+      const point = chart.getDatasetMeta(0).data[0];
+      expect(point.y - point.options.radius).toBeGreaterThan(chart.chartArea.bottom);
+      expect(point.inRange(point.x, chart.chartArea.bottom)).toBe(true);
+      const event = {native: true, type: 'mousemove', x: chart.scales.x.getPixelForValue(1), y: chart.scales.y.getPixelForValue(1.9)};
+      expect(chart.getElementsAtEventForMode(event, 'nearest', {axis: 'x', intersect: false}, false)).toEqual([]);
+      expect(chart.getElementsAtEventForMode(event, 'nearest', {axis: 'x', intersect: false, includeInvisible: true}, false)
+        .map(item => item.index)).toEqual([0]);
+    });
+  });
+
   describe('tooltip element of scatter chart', function() {
     it ('out-of-range datapoints are not shown in tooltip', function() {
       let data = [];
