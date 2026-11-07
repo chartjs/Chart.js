@@ -1202,6 +1202,7 @@ export default class Scale extends Element {
     }
 
     const labelSizes = this._getLabelSizes();
+    const isFirstAtLeft = ticks.length > 1 ? this.getPixelForTick(0) <= this.getPixelForTick(ticks.length - 1) : true;
     for (i = 0, ilen = ticks.length; i < ilen; ++i) {
       tick = ticks[i];
       label = tick.label;
@@ -1222,9 +1223,9 @@ export default class Scale extends Element {
 
         if (textAlign === 'inner') {
           if (i === ilen - 1) {
-            tickTextAlign = !this.options.reverse ? 'right' : 'left';
+            tickTextAlign = isFirstAtLeft ? 'right' : 'left';
           } else if (i === 0) {
-            tickTextAlign = !this.options.reverse ? 'left' : 'right';
+            tickTextAlign = isFirstAtLeft ? 'left' : 'right';
           } else {
             tickTextAlign = 'center';
           }
@@ -1280,19 +1281,12 @@ export default class Scale extends Element {
           break;
         }
 
-        switch (textAlign) {
+        switch (tickTextAlign) {
         case 'center':
           left -= width / 2;
           break;
         case 'right':
           left -= width;
-          break;
-        case 'inner':
-          if (i === ilen - 1) {
-            left -= width;
-          } else if (i > 0) {
-            left -= width / 2;
-          }
           break;
         default:
           break;
