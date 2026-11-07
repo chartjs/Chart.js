@@ -212,6 +212,15 @@ export default class BarElement extends Element {
     return inRange(this, null, mouseY, useFinalPosition);
   }
 
+  /**
+   * A clipped bar can be visible even when its center is outside the chart area.
+   * @private
+   */
+  _isInArea(area, useFinalPosition) {
+    const {left, top, right, bottom} = getBarBounds(this, useFinalPosition);
+    return right > area.left && left < area.right && bottom > area.top && top < area.bottom;
+  }
+
   getCenterPoint(useFinalPosition) {
     const {x, y, base, horizontal} = /** @type {BarProps} */ (this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition));
     return {
