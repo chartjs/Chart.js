@@ -315,6 +315,10 @@ function addScopes(
 ) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
+    if (isArray(scope)) {
+      // The array holding the item being resolved has no options for that item
+      continue;
+    }
     if (scope) {
       set.add(scope);
       const fallback = resolveFallback(scope._fallback, key, value);
