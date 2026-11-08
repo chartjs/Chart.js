@@ -22,16 +22,16 @@ The `titleFont`, `bodyFont` and `footerFont` options default to the `Chart.defau
 | `titleColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of title text.
 | `titleFont` | `Font` | `{weight: 'bold'}` | See [Fonts](../general/fonts.md).
 | `titleAlign` | `string` | `'left'` | Horizontal alignment of the title text lines. [more...](#text-alignment)
-| `titleSpacing` | `number` | `2` | Spacing to add to top and bottom of each title line.
+| `titleSpacing` | `number` | `2` | Spacing to add between title lines.
 | `titleMarginBottom` | `number` | `6` | Margin to add on bottom of title section.
 | `bodyColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of body text.
 | `bodyFont` | `Font` | `{}` | See [Fonts](../general/fonts.md).
 | `bodyAlign` | `string` | `'left'` | Horizontal alignment of the body text lines. [more...](#text-alignment)
-| `bodySpacing` | `number` | `2` | Spacing to add to top and bottom of each tooltip item.
+| `bodySpacing` | `number` | `2` | Spacing to add between body lines.
 | `footerColor` | [`Color`](../general/colors.md) | `'#fff'` | Color of footer text.
 | `footerFont` | `Font` | `{weight: 'bold'}` | See [Fonts](../general/fonts.md).
 | `footerAlign` | `string` | `'left'` | Horizontal alignment of the footer text lines. [more...](#text-alignment)
-| `footerSpacing` | `number` | `2` | Spacing to add to top and bottom of each footer line.
+| `footerSpacing` | `number` | `2` | Spacing to add between footer lines.
 | `footerMarginTop` | `number` | `6` | Margin to add before drawing the footer.
 | `padding` | [`Padding`](../general/padding.md) | `6` | Padding inside the tooltip.
 | `caretPadding` | `number` | `2` | Extra distance to move the end of the tooltip arrow away from the tooltip point.
