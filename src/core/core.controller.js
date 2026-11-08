@@ -293,7 +293,7 @@ class Chart {
 
     callCallback(options.onResize, [this, newSize], this);
 
-    if (this.attached) {
+    if (this.attached && this.canvas) {
       if (this._doResize(mode)) {
         // The resize update is delayed, only draw without updating.
         this.render();
@@ -939,6 +939,7 @@ class Chart {
     const {canvas, ctx} = this;
 
     this._stop();
+    this._doResize.cancel();
     this.config.clearCache();
 
     if (canvas) {
