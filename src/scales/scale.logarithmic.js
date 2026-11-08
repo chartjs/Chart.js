@@ -47,9 +47,10 @@ function generateTicks(generationOptions, {min, max}) {
   let precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
   const stepSize = Math.pow(10, exp);
   const base = minExp > exp ? Math.pow(10, minExp) : 0;
-  const start = Math.round((min - base) * precision) / precision;
+  const start = Math.round((min - base) * precision);
   const offset = Math.floor((min - base) / stepSize / 10) * stepSize * 10;
-  let significand = Math.floor((start - offset) / Math.pow(10, exp));
+  // Use scaled integers to avoid flooring a value just below its true integer.
+  let significand = Math.floor((start - Math.round(offset * precision)) / Math.round(stepSize * precision));
   let value = finiteOrDefault(generationOptions.min, Math.round((base + offset + significand * Math.pow(10, exp)) * precision) / precision);
   while (value < max) {
     ticks.push({value, major: isMajor(value), significand});
