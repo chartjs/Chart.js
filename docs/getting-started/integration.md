@@ -81,6 +81,7 @@ Available scales:
   * [`CategoryScale`](../axes/cartesian/category.md)
   * [`LinearScale`](../axes/cartesian/linear.md)
   * [`LogarithmicScale`](../axes/cartesian/logarithmic.md)
+  * [`SymLogScale`](../axes/cartesian/symlog.md)
   * [`TimeScale`](../axes/cartesian/time.md)
   * [`TimeSeriesScale`](../axes/cartesian/timeseries.md)
 

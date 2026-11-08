@@ -42,6 +42,7 @@ export {
   CategoryScale,
   LinearScale,
   LogarithmicScale,
+  SymLogScale,
   RadialLinearScale,
   TimeScale,
   TimeSeriesScale,
