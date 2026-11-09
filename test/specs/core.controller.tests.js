@@ -694,6 +694,60 @@ describe('Chart', function() {
       wrapper.style.width = '455px';
     });
 
+    it('should cancel a pending resize update when destroyed', function() {
+      jasmine.clock().withMock(function() {
+        const chart = acquireChart({
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            resizeDelay: 20
+          }
+        });
+        const update = spyOn(chart, 'update').and.callThrough();
+
+        chart.resize(200, 200);
+        expect(update).not.toHaveBeenCalled();
+        jasmine.clock().tick(20);
+        expect(update).toHaveBeenCalledTimes(1);
+        update.calls.reset();
+
+        chart.resize(220, 200);
+        expect(chart.width).toBe(220);
+        expect(update).not.toHaveBeenCalled();
+        chart.destroy();
+
+        expect(() => jasmine.clock().tick(20)).not.toThrow();
+        expect(update).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should not queue a resize update when onResize destroys the chart', function() {
+      jasmine.clock().withMock(function() {
+        let destroyOnResize = false;
+        const chart = acquireChart({
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            resizeDelay: 20,
+            onResize(resizedChart) {
+              if (destroyOnResize) {
+                resizedChart.destroy();
+              }
+            }
+          }
+        });
+        const update = spyOn(chart, 'update').and.callThrough();
+        destroyOnResize = true;
+        chart.resize(220, 200);
+
+        expect(chart.canvas).toBeNull();
+        expect(() => jasmine.clock().tick(20)).not.toThrow();
+        expect(update).not.toHaveBeenCalled();
+      });
+    });
+
     it('should restore the original size when parent became invisible', function(done) {
       var chart = acquireChart({
         options: {
