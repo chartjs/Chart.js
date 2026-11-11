@@ -57,8 +57,8 @@ export default class BasePlatform {
 	 * @param {number} [aspectRatio] - aspect ratio to maintain
 	 */
   getMaximumSize(element, width, height, aspectRatio) {
-    width = Math.max(0, width || element.width);
-    height = height || element.height;
+    width = Math.max(0, width || (element ? element.width : 0));
+    height = height || (element ? element.height : 0);
     return {
       width,
       height: Math.max(0, aspectRatio ? Math.floor(width / aspectRatio) : height)
