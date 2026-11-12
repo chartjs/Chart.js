@@ -545,4 +545,18 @@ describe('DOM helpers tests', function() {
 
     document.body.removeChild(container);
   });
+
+  it('should not throw when element.ownerDocument.defaultView is null', () => {
+    const detachedDoc = document.implementation.createHTMLDocument('');
+    const container = detachedDoc.createElement('div');
+    const canvas = detachedDoc.createElement('canvas');
+    container.appendChild(canvas);
+    detachedDoc.body.appendChild(container);
+
+    expect(canvas.ownerDocument.defaultView).toBeNull();
+    expect(() => helpers.getStyle(canvas, 'padding-top')).not.toThrow();
+    expect(helpers.getStyle(canvas, 'padding-top')).toBe('');
+    expect(() => helpers.getMaximumSize(canvas, 200, 100)).not.toThrow();
+    expect(helpers.getMaximumSize(canvas, 200, 100)).toEqual({width: 200, height: 100});
+  });
 });
