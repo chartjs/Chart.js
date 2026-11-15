@@ -783,14 +783,17 @@ export default class Scale extends Element {
     this.generateTickLabels(ticks);
 
     // Ticks should be skipped when callback returns null or undef, so lets remove those.
-    let i, ilen;
+    // The kept ticks move down in a single pass: a splice for each removed tick is
+    // quadratic when the callback skips most of a large number of ticks.
+    let i, ilen, tick;
+    let count = 0;
     for (i = 0, ilen = ticks.length; i < ilen; i++) {
-      if (isNullOrUndef(ticks[i].label)) {
-        ticks.splice(i, 1);
-        ilen--;
-        i--;
+      tick = ticks[i];
+      if (!isNullOrUndef(tick.label)) {
+        ticks[count++] = tick;
       }
     }
+    ticks.length = count;
 
     this.afterTickToLabelConversion();
   }

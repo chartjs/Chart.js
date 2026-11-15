@@ -462,6 +462,76 @@ describe('Core.scale', function() {
     });
   });
 
+  describe('ticks.callback', function() {
+    function acquireChartWithCallback(labels, callback, state) {
+      return window.acquireChart({
+        type: 'line',
+        options: {
+          scales: {
+            x: {
+              type: 'category',
+              labels: labels,
+              afterBuildTicks: function(scale) {
+                state.built = scale.ticks;
+              },
+              afterTickToLabelConversion: function(scale) {
+                state.sameArray = scale.ticks === state.built;
+                state.values = scale.ticks.map(function(tick) {
+                  return tick.value;
+                });
+              },
+              ticks: {
+                callback: callback
+              }
+            }
+          }
+        }
+      });
+    }
+
+    it('should remove the ticks with a null or undefined label and keep the order of the others', function() {
+      var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6', 'tick7'];
+      var state = {};
+      var chart = acquireChartWithCallback(labels, function(value, index) {
+        if (index === 0 || index === 2) {
+          return null;
+        }
+        if (index === 3 || index === 6) {
+          return undefined;
+        }
+        return labels[index];
+      }, state);
+
+      expect(state.sameArray).toBe(true);
+      expect(state.values).toEqual([1, 4, 5]);
+      expect(getLabels(chart.scales.x)).toEqual(['tick2', 'tick5', 'tick6']);
+    });
+
+    it('should keep all ticks when each one has a label', function() {
+      var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+      var state = {};
+      var chart = acquireChartWithCallback(labels, function(value, index) {
+        return labels[index];
+      }, state);
+
+      expect(state.sameArray).toBe(true);
+      expect(state.values).toEqual([0, 1, 2, 3, 4]);
+      expect(getLabels(chart.scales.x)).toEqual(labels);
+    });
+
+    it('should remove all ticks when no tick has a label', function() {
+      var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'];
+      var state = {};
+      var chart = acquireChartWithCallback(labels, function() {
+        return null;
+      }, state);
+
+      expect(state.sameArray).toBe(true);
+      expect(state.values).toEqual([]);
+      expect(chart.scales.x.ticks.length).toBe(0);
+    });
+  });
+
   describe('_layers', function() {
     it('should default to three layers', function() {
       var chart = window.acquireChart({
