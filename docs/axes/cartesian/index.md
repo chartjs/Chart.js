@@ -329,7 +329,7 @@ const myChart = new Chart(ctx, {
 
 ## Creating Multiple Axes
 
-With cartesian axes, it is possible to create multiple X and Y axes. To do so, you can add multiple configuration objects to the `xAxes` and `yAxes` properties. When adding new axes, it is important to ensure that you specify the type of the new axes as default types are **not** used in this case.
+With cartesian axes, it is possible to create multiple X and Y axes. To do so, you can add multiple configuration objects to the `scales` option, each under its own scale ID. When adding new axes, it is important to ensure that you specify the type of the new axes as default types are **not** used in this case.
 
 In the example below, we are creating two Y axes. We then use the `yAxisID` property to map the datasets to their correct axes.
 
