@@ -1,5 +1,60 @@
 describe('Plugin.decimation', function() {
 
+  describe('min-max', function() {
+    function points(data) {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {datasets: [{data}]},
+        options: {
+          parsing: false,
+          scales: {x: {type: 'linear'}},
+          plugins: {
+            decimation: {enabled: true, algorithm: 'min-max', threshold: 2}
+          }
+        }
+      }, {
+        canvas: {height: 100, width: 20},
+        wrapper: {height: 100, width: 20}
+      });
+      return chart.data.datasets[0].data;
+    }
+
+    function values(data) {
+      return points(data).map(point => point.y);
+    }
+
+    it('preserves final bucket extrema and endpoint', function() {
+      const data = [
+        {x: 0, y: 0}, {x: 10, y: 2}, {x: 10, y: 100},
+        {x: 10, y: -20}, {x: 10, y: 3}
+      ];
+      expect(values(data)).toEqual([0, 2, 100, -20, 3]);
+    });
+
+    it('preserves extrema when x values are identical', function() {
+      const data = [
+        {x: 10, y: 0}, {x: 10, y: 3}, {x: 10, y: 40},
+        {x: 10, y: -10}, {x: 10, y: 4}
+      ];
+      expect(values(data)).toEqual([0, 40, -10, 4]);
+    });
+
+    it('keeps the first tied extrema in source order', function() {
+      const data = [
+        {x: 10, y: 0, id: 'start'},
+        {x: 10, y: -30, id: 'first-min'},
+        {x: 10, y: -30, id: 'second-min'},
+        {x: 10, y: 50, id: 'first-max'},
+        {x: 10, y: 50, id: 'second-max'},
+        {x: 10, y: 5, id: 'end'}
+      ];
+      const decimated = points(data);
+
+      expect(decimated.map(point => point.id)).toEqual(['start', 'first-min', 'first-max', 'end']);
+      expect(decimated[3]).toBe(data[5]);
+    });
+  });
+
   describe('lttb', function() {
     const originalData = [
       {x: 0, y: 0},
