@@ -544,6 +544,45 @@ describe('Logarithmic Scale tests', function() {
     expect(scale.end).toEqual(80);
   });
 
+  [
+    {description: 'an explicit minimum of 0.3', scale: {min: 0.3}, data: [0.3, 10], firstTicks: [0.3, 0.4, 0.5]},
+    {description: 'an explicit minimum of 7', scale: {min: 7}, data: [7, 10], firstTicks: [7, 7.1, 7.2]},
+    {description: 'a data minimum of 7', data: [7, 10], firstTicks: [7, 7.1, 7.2]},
+    {description: 'a data minimum of 8', data: [8, 9], firstTicks: [8, 8.1, 8.2]}
+  ].forEach(function(setup) {
+    it('should generate unique tick marks with ' + setup.description, function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{
+            data: setup.data
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              type: 'logarithmic',
+              ...setup.scale,
+              ticks: {
+                autoSkip: false,
+                callback: function(value) {
+                  return value;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      var scale = chart.scales.y;
+      var values = scale.ticks.map(tick => tick.value);
+      expect(new Set(values).size).toBe(values.length);
+      expect(values.slice(0, setup.firstTicks.length)).toEqual(setup.firstTicks);
+      expect(scale.min).toBe(setup.firstTicks[0]);
+    });
+  });
+
   it('should generate tick marks when 0 values are present', function() {
     var chart = window.acquireChart({
       type: 'bar',
