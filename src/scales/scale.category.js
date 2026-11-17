@@ -22,6 +22,11 @@ function findOrAddLabel(labels, raw, index, addedLabels) {
 
 const validIndex = (index, max) => index === null ? null : _limitValue(Math.round(index), 0, max);
 
+function hasAnotherCategoryScale(scale) {
+  const scales = scale.chart.scales;
+  return Object.keys(scales).some((id) => scales[id] !== scale && scales[id].type === 'category');
+}
+
 function _getLabelForValue(value) {
   const labels = this.getLabels();
 
@@ -92,6 +97,29 @@ export default class CategoryScale extends Scale {
 
     this.min = min;
     this.max = max;
+  }
+
+  getLabels() {
+    const data = this.chart.data;
+    if (this.options.labels) {
+      return this.options.labels;
+    }
+    const axisLabels = this.isHorizontal() ? data.xLabels : data.yLabels;
+    if (axisLabels) {
+      return axisLabels;
+    }
+    if (data.labels && data.labels.length) {
+      this._isolatedLabels = undefined;
+      return data.labels;
+    }
+    if (this._isolatedLabels) {
+      return this._isolatedLabels;
+    }
+    if (!hasAnotherCategoryScale(this)) {
+      return data.labels;
+    }
+    this._isolatedLabels = [];
+    return this._isolatedLabels;
   }
 
   buildTicks() {
