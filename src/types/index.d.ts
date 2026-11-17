@@ -2841,7 +2841,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   titleFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
-   * Spacing to add to top and bottom of each title line.
+   * Spacing to add between title lines.
    * @default 2
    */
   titleSpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
@@ -2856,7 +2856,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   titleAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
-   * Spacing to add to top and bottom of each tooltip item.
+   * Spacing to add between body lines.
    * @default 2
    */
   bodySpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
@@ -2876,7 +2876,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   bodyAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
-   * Spacing to add to top and bottom of each footer line.
+   * Spacing to add between footer lines.
    * @default 2
    */
   footerSpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
