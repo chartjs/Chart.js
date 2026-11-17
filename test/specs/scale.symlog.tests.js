@@ -205,6 +205,48 @@ describe('Symlog Scale tests', function() {
         expect(scale.getPixelForValue(1e15 + 5)).toBeCloseToPixel((ends.start + ends.end) / 2);
       });
 
+      [1e16, Number.MAX_VALUE].forEach(function(limit) {
+        it('should keep zero in the middle and the values in order on a range of -' + limit + ' to ' + limit, function() {
+          var values = [-limit, -1e8, -1, 0, 1, 1e8, limit];
+          var chart = createChart(axis, values, {min: -limit, max: limit});
+          var scale = chart.scales[axis];
+          var ends = axisEnds(chart, axis);
+          var middle = (ends.start + ends.end) / 2;
+          var direction = axis === 'y' ? -1 : 1;
+          var pixels = values.map(value => scale.getPixelForValue(value));
+
+          expect(pixels[0]).toBeCloseToPixel(ends.start);
+          expect(pixels[3]).toBeCloseToPixel(middle);
+          expect(pixels[6]).toBeCloseToPixel(ends.end);
+          for (var i = 1; i < pixels.length; i++) {
+            expect((pixels[i] - pixels[i - 1]) * direction).toBeGreaterThan(0);
+          }
+          expect(Math.abs(pixels[2] + pixels[4] - 2 * middle)).toBeLessThan(0.5);
+          chart.getDatasetMeta(0).data.forEach(function(point, index) {
+            expect(point[axis]).toBeCloseToPixel(pixels[index]);
+          });
+          expect(Math.abs(scale.getValueForPixel(middle))).toBeLessThan(1e-6);
+          expectCloseTo(scale.getValueForPixel(pixels[2]), -1);
+          expectCloseTo(scale.getValueForPixel(pixels[4]), 1);
+        });
+      });
+
+      it('should keep precision near zero on a wide range of negative values', function() {
+        var chart = createChart(axis, [-1e16, -1, 0], {min: -1e16, max: 0});
+        var scale = chart.scales[axis];
+        var ends = axisEnds(chart, axis);
+        var length = Math.abs(ends.end - ends.start);
+        var one = scale.getPixelForValue(-1);
+
+        expect(scale.getPixelForValue(-1e16)).toBeCloseToPixel(ends.start);
+        expect(scale.getPixelForValue(0)).toBeCloseToPixel(ends.end);
+        // -1 is ln(2) of the ln(1 + 1e16) long axis away from zero
+        expect(Math.abs(ends.end - one)).toBeCloseTo(length * Math.LN2 / Math.log1p(1e16), 3);
+        expect(Math.abs(scale.getValueForPixel(ends.end))).toBeLessThan(1e-6);
+        expectCloseTo(scale.getValueForPixel(one), -1);
+        expectCloseTo(scale.getValueForPixel(scale.getPixelForValue(-1e8)), -1e8);
+      });
+
       it('should reverse the axis', function() {
         var chart = createChart(axis, changeFromBaseline, {reverse: true});
         var scale = chart.scales[axis];

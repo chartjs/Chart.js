@@ -25,27 +25,31 @@ function inverse(value, c) {
 /**
  * transform(a) - transform(b), computed without cancellation when a and b are close
  * (e.g. 1e15 and 1e15 + 10, whose transforms are a single floating point step apart).
+ * The value closer to zero goes in the divisor, so the argument of log1p is never negative:
+ * with the other one there, it rounds to -1 when the values are far apart (0 and 1e16).
  */
 function delta(a, b, c) {
   if (a >= 0 && b >= 0) {
-    return Math.log1p((a - b) / (c + b));
+    return a >= b ? Math.log1p((a - b) / (c + b)) : -Math.log1p((b - a) / (c + a));
   }
   if (a <= 0 && b <= 0) {
-    return -Math.log1p((b - a) / (c - b));
+    return delta(-b, -a, c);
   }
   return transform(a, c) - transform(b, c);
 }
 
 /**
  * The value `a` for which delta(a, b) === units, i.e. `b` moved by `units` in
- * transformed space, without the precision loss of inverse(transform(b) + units).
+ * transformed space, without the precision loss of inverse(transform(b) + units)
+ * when the result is close to `b`. A result much closer to zero than `b` would be
+ * the small difference of two large numbers here, so that case is left to inverse().
  */
 function shift(b, units, c) {
   const target = transform(b, c) + units;
-  if (b >= 0 && target >= 0) {
+  if (b >= 0 && target >= 0 && units > -Math.LN2) {
     return b + (c + b) * Math.expm1(units);
   }
-  if (b <= 0 && target <= 0) {
+  if (b <= 0 && target <= 0 && units < Math.LN2) {
     return b - (c - b) * Math.expm1(-units);
   }
   return inverse(target, c);
