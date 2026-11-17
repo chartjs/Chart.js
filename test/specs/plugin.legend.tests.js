@@ -1109,6 +1109,7 @@ describe('Legend block tests', function() {
     it('should call onLeave when the mouse leaves the canvas', async function() {
       var hoverItem = null;
       var leaveItem = null;
+      var leaveCount = 0;
 
       var chart = acquireChart({
         type: 'line',
@@ -1126,6 +1127,7 @@ describe('Legend block tests', function() {
               },
               onLeave: function(_, item) {
                 leaveItem = item;
+                leaveCount++;
               }
             }
           }
@@ -1143,6 +1145,20 @@ describe('Legend block tests', function() {
 
       await jasmine.triggerMouseEvent(chart, 'mouseout');
       expect(leaveItem).toBe(chart.legend.legendItems[0]);
+      expect(chart.legend._hoveredItem).toBeNull();
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', el);
+      expect(chart.legend._hoveredItem).toBe(chart.legend.legendItems[0]);
+      leaveItem = null;
+      leaveCount = 0;
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', el);
+      expect(leaveItem).toBe(chart.legend.legendItems[0]);
+      expect(leaveCount).toBe(1);
+      expect(chart.legend._hoveredItem).toBeNull();
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', el);
+      expect(leaveCount).toBe(1);
     });
 
 
