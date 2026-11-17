@@ -1558,6 +1558,14 @@ export declare const Ticks: {
      * @return string representation of the tickValue parameter
      */
     logarithmic(this: Scale, tickValue: number, index: number, ticks: { value: number }[]): string;
+    /**
+     * Formatter for symlog ticks
+     * @param tickValue the value to be formatted
+     * @param index the position of the tickValue parameter in the ticks array
+     * @param ticks the list of ticks being converted
+     * @return string representation of the tickValue parameter
+     */
+    symlog(this: Scale, tickValue: number, index: number, ticks: { value: number }[]): string;
   };
 };
 
@@ -3426,6 +3434,48 @@ export declare const LogarithmicScale: ChartComponent & {
   new <O extends LogarithmicScaleOptions = LogarithmicScaleOptions>(cfg: AnyObject): LogarithmicScale<O>;
 };
 
+export type SymLogScaleOptions = CartesianScaleOptions & {
+
+  /**
+   *  if true, scale will include 0 if it is not already included.
+   * @default false
+   */
+  beginAtZero: boolean;
+  /**
+   * Adjustment used when calculating the minimum data value.
+   */
+  suggestedMin?: number;
+  /**
+   * Adjustment used when calculating the maximum data value.
+   */
+  suggestedMax?: number;
+  /**
+   * Percentage (string ending with %) or amount (number) for added room in the scale range above and below data.
+   * A percentage is a share of the axis length; a number is an amount in data units.
+   */
+  grace?: string | number;
+  /**
+   * How far from zero the scale stays close to linear. There is no cutoff: values much
+   * smaller than this are spaced almost linearly, values much larger almost logarithmically.
+   * Must be a positive number.
+   * @default 1
+   */
+  linearThreshold: number;
+
+  ticks: {
+    /**
+     * The Intl.NumberFormat options used by the default label formatter
+     */
+    format: Intl.NumberFormatOptions;
+  };
+};
+
+export type SymLogScale<O extends SymLogScaleOptions = SymLogScaleOptions> = Scale<O>
+export declare const SymLogScale: ChartComponent & {
+  prototype: SymLogScale;
+  new <O extends SymLogScaleOptions = SymLogScaleOptions>(cfg: AnyObject): SymLogScale<O>;
+};
+
 export type TimeScaleTimeOptions = {
   /**
    * Custom parser for dates.
@@ -3697,6 +3747,9 @@ export interface CartesianScaleTypeRegistry {
   };
   logarithmic: {
     options: LogarithmicScaleOptions;
+  };
+  symlog: {
+    options: SymLogScaleOptions;
   };
   category: {
     options: CategoryScaleOptions;
