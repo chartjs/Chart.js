@@ -476,6 +476,136 @@ describe('DOM helpers tests', function() {
       expect(chartPosition).not.toBeNull();
       expect(nativePosition).toEqual({x: chartPosition.x, y: chartPosition.y});
     });
+
+    // Issue #11900: CSS `zoom` on the canvas or an ancestor renders the chart at
+    // a different size than its layout box. Pointer deltas reported by the browser
+    // are in rendered pixels, so hit testing must account for the zoom factor.
+    describe('CSS zoom', function() {
+      function zoomedChartConfig() {
+        return {
+          type: 'bar',
+          data: {
+            labels: ['a', 'b', 'c'],
+            datasets: [{data: [10, 20, 30]}]
+          },
+          options: {
+            responsive: false,
+            animation: false,
+            interaction: {mode: 'nearest', intersect: true},
+            hover: {mode: 'nearest', intersect: true},
+            plugins: {
+              legend: {display: false},
+              tooltip: {enabled: true}
+            }
+          }
+        };
+      }
+
+      // Dispatch an event at a visual (client) coordinate and wait until the
+      // chart has processed it. jasmine.triggerMouseEvent is not usable here:
+      // it computes clientX from rect.left + layout point, which under CSS zoom
+      // is itself wrong (the visible point is rect.left + point * scale).
+      function dispatchAt(chart, type, clientX, clientY) {
+        return new Promise((resolve) => {
+          const canvas = chart.canvas;
+          let event;
+          if (type === 'touchmove') {
+            try {
+              const touch = new Touch({
+                identifier: 1,
+                target: canvas,
+                clientX,
+                clientY,
+                pageX: clientX + window.scrollX,
+                pageY: clientY + window.scrollY,
+                screenX: clientX,
+                screenY: clientY,
+                force: 1
+              });
+              event = new TouchEvent('touchmove', {
+                touches: [touch],
+                targetTouches: [touch],
+                changedTouches: [touch],
+                bubbles: true,
+                cancelable: true,
+                view: window
+              });
+            } catch (err) {
+              // No Touch/TouchEvent constructors in this browser (e.g. Firefox).
+              resolve(false);
+              return;
+            }
+          } else {
+            event = new MouseEvent(type, {
+              clientX,
+              clientY,
+              bubbles: true,
+              cancelable: true,
+              view: window
+            });
+          }
+          window.afterEvent(chart, type, () => resolve(true));
+          canvas.dispatchEvent(event);
+        });
+      }
+
+      async function visualCenter(chart, index) {
+        const rect = chart.canvas.getBoundingClientRect();
+        const scale = rect.width / chart.canvas.offsetWidth;
+        if (Math.abs(scale - 1) < 0.1) {
+          // The browser ignored the zoom property: cannot exercise CSS zoom here.
+          pending('CSS zoom is not supported in this browser');
+        }
+        const point = chart.getDatasetMeta(0).data[index].getCenterPoint();
+        return {
+          x: rect.left + point.x * scale,
+          y: rect.top + point.y * scale
+        };
+      }
+
+      it('should activate the hovered element with zoom: 2 on the container (#11900)', async function() {
+        const chart = window.acquireChart(zoomedChartConfig(), {
+          canvas: {height: 300, width: 300},
+          wrapper: {class: 'chartjs-wrapper', style: 'zoom: 2'}
+        });
+
+        const pos = await visualCenter(chart, 1);
+        await dispatchAt(chart, 'mousemove', pos.x, pos.y);
+
+        expect(chart.getActiveElements().map(el => el.index)).toEqual([1]);
+        expect(chart.tooltip.title).toEqual(['b']);
+      });
+
+      it('should activate the hovered element with fractional zoom: 1.5 (#11900)', async function() {
+        const chart = window.acquireChart(zoomedChartConfig(), {
+          canvas: {height: 300, width: 300},
+          wrapper: {class: 'chartjs-wrapper', style: 'zoom: 1.5'}
+        });
+
+        const pos = await visualCenter(chart, 2);
+        await dispatchAt(chart, 'mousemove', pos.x, pos.y);
+
+        expect(chart.getActiveElements().map(el => el.index)).toEqual([2]);
+        expect(chart.tooltip.title).toEqual(['c']);
+      });
+
+      it('should activate the touched element with zoom: 2 on the container (#11900)', async function() {
+        if (typeof Touch !== 'function' || typeof TouchEvent !== 'function') {
+          pending('Touch events are not supported in this browser');
+        }
+        const chart = window.acquireChart(zoomedChartConfig(), {
+          canvas: {height: 300, width: 300},
+          wrapper: {class: 'chartjs-wrapper', style: 'zoom: 2'}
+        });
+
+        const pos = await visualCenter(chart, 1);
+        const dispatched = await dispatchAt(chart, 'touchmove', pos.x, pos.y);
+        expect(dispatched).toBeTrue();
+
+        expect(chart.getActiveElements().map(el => el.index)).toEqual([1]);
+        expect(chart.tooltip.title).toEqual(['b']);
+      });
+    });
   });
 
   it('should respect aspect ratio and container width', () => {
