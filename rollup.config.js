@@ -2,7 +2,7 @@ import cleanup from 'rollup-plugin-cleanup';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {swc} from 'rollup-plugin-swc3';
-import {terser} from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import {readFileSync} from 'fs';
 
 const {version, homepage} = JSON.parse(readFileSync('./package.json'));
@@ -34,7 +34,7 @@ const plugins = (minify) =>
     }),
     minify
       ? terser({
-        output: {
+        format: {
           preamble: banner
         }
       })
