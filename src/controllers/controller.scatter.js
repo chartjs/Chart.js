@@ -58,7 +58,7 @@ export default class ScatterController extends DatasetController {
     const {data: points = []} = meta;
     // @ts-ignore
     const animationsDisabled = this.chart._animationsDisabled;
-    let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled);
+    let {start, count} = _getStartAndCountOfVisiblePoints(meta, points, animationsDisabled, this.options.clip);
 
     this._drawStart = start;
     this._drawCount = count;
