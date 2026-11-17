@@ -123,9 +123,9 @@
         "yargs": "^17.5.1"
     },
     "engines": {
-        "pnpm": ">=9"
+        "pnpm": ">=10"
     },
-    "packageManager": "pnpm@9.15.9",
+    "packageManager": "pnpm@10.34.9",
     "pnpm": {
         "overrides": {
             "html-entities": "1.4.0"
@@ -134,6 +134,16 @@
             "ignoreMissing": [
                 "chart.js"
             ]
-        }
+        },
+        "onlyBuiltDependencies": [
+            "@swc/core",
+            "esbuild"
+        ],
+        "ignoredBuiltDependencies": [
+            "core-js",
+            "core-js-pure",
+            "highlight.js",
+            "vuepress"
+        ]
     }
 }
