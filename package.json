@@ -123,17 +123,7 @@
         "yargs": "^17.5.1"
     },
     "engines": {
-        "pnpm": ">=8"
+        "pnpm": ">=12"
     },
-    "packageManager": "pnpm@8.13.0",
-    "pnpm": {
-        "overrides": {
-            "html-entities": "1.4.0"
-        },
-        "peerDependencyRules": {
-            "ignoreMissing": [
-                "chart.js"
-            ]
-        }
-    }
+    "packageManager": "pnpm@12.21.0"
 }
