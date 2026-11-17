@@ -1,8 +1,6 @@
 'use strict';
 
 describe('Chart.helpers.canvas', function() {
-  describe('auto', jasmine.fixture.specs('helpers'));
-
   var helpers = Chart.helpers;
 
   describe('clearCanvas', function() {

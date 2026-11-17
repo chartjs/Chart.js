@@ -1,9 +1,7 @@
 describe('Plugin.decimation', function() {
 
-  describe('auto', jasmine.fixture.specs('plugin.decimation'));
-
   describe('min-max', function() {
-    function values(data) {
+    function points(data) {
       const chart = window.acquireChart({
         type: 'line',
         data: {datasets: [{data}]},
@@ -18,7 +16,11 @@ describe('Plugin.decimation', function() {
         canvas: {height: 100, width: 20},
         wrapper: {height: 100, width: 20}
       });
-      return chart.data.datasets[0].data.map(point => point.y);
+      return chart.data.datasets[0].data;
+    }
+
+    function values(data) {
+      return points(data).map(point => point.y);
     }
 
     it('preserves final bucket extrema and endpoint', function() {
@@ -35,6 +37,21 @@ describe('Plugin.decimation', function() {
         {x: 10, y: -10}, {x: 10, y: 4}
       ];
       expect(values(data)).toEqual([0, 40, -10, 4]);
+    });
+
+    it('keeps the first tied extrema in source order', function() {
+      const data = [
+        {x: 10, y: 0, id: 'start'},
+        {x: 10, y: -30, id: 'first-min'},
+        {x: 10, y: -30, id: 'second-min'},
+        {x: 10, y: 50, id: 'first-max'},
+        {x: 10, y: 50, id: 'second-max'},
+        {x: 10, y: 5, id: 'end'}
+      ];
+      const decimated = points(data);
+
+      expect(decimated.map(point => point.id)).toEqual(['start', 'first-min', 'first-max', 'end']);
+      expect(decimated[3]).toBe(data[5]);
     });
   });
 
