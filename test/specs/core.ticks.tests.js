@@ -107,8 +107,8 @@ describe('Test tick generators', function() {
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}, {value: 1.01}]])).toEqual('1.00');
     });
 
-    function formatTicks(values) {
-      const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {format: {}}}};
+    function formatTicks(values, locale, format) {
+      const scale = {chart: {options: {locale: locale || 'en-US'}}, options: {ticks: {format: format || {}}}};
       const ticks = values.map(value => ({value}));
       return values.map((value, index) => Chart.Ticks.formatters.numeric.call(scale, value, index, ticks));
     }
@@ -127,6 +127,25 @@ describe('Test tick generators', function() {
       // bounds: 'data' generates the ticks as min + k * spacing, then adds max
       expect(formatTicks([-0.0936, -0.0736, -0.0536, -0.0336, -0.0136, 0.0064, 0.0264, 0.0464, 0.0664, 0.0864, 0.0917])).toEqual(
         ['-0.094', '-0.074', '-0.054', '-0.034', '-0.014', '0.006', '0.026', '0.046', '0.066', '0.086', '0.092']);
+    });
+
+    it('should keep the digits of a symmetric fractional grid whose spacing is not a power of ten', function() {
+      const values = [-0.075, -0.05, -0.025, 0, 0.025, 0.05, 0.075];
+      expect(formatTicks(values)).toEqual(['-0.075', '-0.05', '-0.025', '0', '0.025', '0.05', '0.075']);
+      expect(formatTicks(values, 'de-DE')).toEqual(['-0,075', '-0,05', '-0,025', '0', '0,025', '0,05', '0,075']);
+    });
+
+    it('should give distinct labels to ticks that differ only in a far decimal place', function() {
+      const labels = formatTicks([9.8e-9, 9.9e-9, 1e-8, 1.01e-8, 1.02e-8]);
+      expect(new Set(labels).size).toEqual(labels.length);
+      expect(labels).toEqual(['9.8E-9', '9.9E-9', '1.00E-8', '1.01E-8', '1.02E-8']);
+    });
+
+    it('should let explicit fraction digit options override the computed precision', function() {
+      const values = [-0.075, -0.05, -0.025, 0, 0.025, 0.05, 0.075];
+      expect(formatTicks(values, 'en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1})).toEqual(
+        ['-0.1', '-0.1', '-0.0', '0', '0.0', '0.1', '0.1']);
+      expect(formatTicks([1, 2, 3], 'en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})).toEqual(['1.00', '2.00', '3.00']);
     });
   });
 
