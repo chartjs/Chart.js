@@ -2608,7 +2608,7 @@ export interface TitleOptions {
   /**
    *   Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
    */
-  padding: number | { top: number; bottom: number };
+  padding: Scriptable<number | { top: number; bottom: number }, ScriptableChartContext>;
   /**
    *   Title text to display. If specified as an array, text is rendered on multiple lines.
    */
