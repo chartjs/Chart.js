@@ -51,10 +51,18 @@ const formatters = {
     // will make the number formatter throw. So instead we check for isNaN and use a fallback value.
     //
     // toFixed has a max of 20 decimal places
-    const numDecimal = isNaN(logDelta) ? 1 : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
+    let numDecimal = isNaN(logDelta) ? 1 : -1 * Math.floor(logDelta);
+
+    const format = this.options.ticks.format;
+    if ((format && format.notation || notation) === 'scientific') {
+      // In scientific notation the fraction digits apply to the significand, so
+      // the digits needed for the spacing are counted from the tick's exponent
+      numDecimal += Math.floor(log10(Math.abs(tickValue)));
+    }
+    numDecimal = isNaN(numDecimal) ? 1 : Math.max(Math.min(numDecimal, 20), 0);
 
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
-    Object.assign(options, this.options.ticks.format);
+    Object.assign(options, format);
 
     return formatNumber(tickValue, locale, options);
   },
@@ -91,6 +99,14 @@ function calculateDelta(tickValue, ticks) {
   if (Math.abs(delta) >= 1 && tickValue !== Math.floor(tickValue)) {
     // not an integer
     delta = tickValue - Math.floor(tickValue);
+  } else if (Math.abs(delta) < 1) {
+    // The tick might not be a multiple of the spacing, e.g. with `bounds: 'data'` the ticks are
+    // `min + k * spacing`. Show enough decimal places for its offset from the nearest multiple.
+    const unit = Math.pow(10, Math.floor(log10(Math.abs(delta))));
+    const offset = Math.abs(tickValue - Math.round(tickValue / unit) * unit);
+    if (offset > Math.abs(tickValue) * 1e-12) {
+      delta = offset;
+    }
   }
   return delta;
 }
