@@ -147,7 +147,7 @@ export class Legend extends Element {
       height = this._fitRows(titleHeight, fontSize, boxWidth, itemHeight) + 10;
     } else {
       height = this.maxHeight; // fill all the height
-      width = this._fitCols(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+      width = Math.max(this._fitCols(titleHeight, labelFont, boxWidth, itemHeight), this._computeTitleWidth()) + 10;
     }
 
     this.width = Math.min(width, options.maxWidth || this.maxWidth);
@@ -495,6 +495,21 @@ export class Legend extends Element {
     const titleFont = toFont(titleOpts.font);
     const titlePadding = toPadding(titleOpts.padding);
     return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
+  }
+
+  /**
+   * @private
+   */
+  _computeTitleWidth() {
+    const {ctx, options: {title}} = this;
+    if (!title.display) {
+      return 0;
+    }
+    ctx.save();
+    ctx.font = toFont(title.font).string;
+    const width = ctx.measureText(title.text).width;
+    ctx.restore();
+    return width + toPadding(title.padding).width;
   }
 
   /**
