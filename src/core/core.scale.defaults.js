@@ -26,6 +26,8 @@ export function applyScaleDefaults(defaults) {
 
     // grid line settings
     grid: {
+      dash: [],
+      dashOffset: 0,
       display: true,
       lineWidth: 1,
       drawOnChartArea: true,
