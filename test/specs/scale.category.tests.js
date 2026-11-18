@@ -568,4 +568,104 @@ describe('Category scale tests', function() {
     expect(chart.scales.x.min).toEqual(0);
     expect(chart.scales.x.max).toEqual(3);
   });
+
+  it('should infer labels only from data plotted on that category scale', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: [{x: 'Medications', y: 1}],
+          xAxisID: 'xMed'
+        }, {
+          data: [{x: 'Encounters', y: 2}],
+          xAxisID: 'xEnc'
+        }]
+      },
+      options: {
+        scales: {
+          xMed: {
+            type: 'category'
+          },
+          xEnc: {
+            type: 'category'
+          },
+          y: {
+            type: 'linear'
+          }
+        }
+      }
+    });
+
+    expect(getLabels(chart.scales.xMed)).toEqual(['Medications']);
+    expect(getLabels(chart.scales.xEnc)).toEqual(['Encounters']);
+    expect(chart.scales.xMed.getPixelForValue('Medications')).toBeCloseToPixel(chart.scales.xMed.getPixelForTick(0));
+    expect(chart.scales.xEnc.getPixelForValue('Encounters')).toBeCloseToPixel(chart.scales.xEnc.getPixelForTick(0));
+  });
+
+  it('should not mix labels inferred for the x and y category scales', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [{x: 'Jan', y: 'Low'}, {x: 'Feb', y: 'High'}]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'category'
+          },
+          y: {
+            type: 'category'
+          }
+        }
+      }
+    });
+
+    expect(getLabels(chart.scales.x)).toEqual(['Jan', 'Feb']);
+    expect(getLabels(chart.scales.y)).toEqual(['Low', 'High']);
+  });
+
+  it('should keep inferring labels into data.labels for a single category scale', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {a: 1, b: 3}
+        }]
+      }
+    });
+
+    expect(getLabels(chart.scales.x)).toEqual(['a', 'b']);
+    expect(chart.data.labels).toEqual(['a', 'b']);
+  });
+
+  it('should still share user provided labels across category scales', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['A', 'B'],
+        datasets: [{
+          data: [1, 2],
+          xAxisID: 'x1'
+        }, {
+          data: [3, 4],
+          xAxisID: 'x2'
+        }]
+      },
+      options: {
+        scales: {
+          x1: {
+            type: 'category'
+          },
+          x2: {
+            type: 'category'
+          }
+        }
+      }
+    });
+
+    expect(getLabels(chart.scales.x1)).toEqual(['A', 'B']);
+    expect(getLabels(chart.scales.x2)).toEqual(['A', 'B']);
+  });
 });
