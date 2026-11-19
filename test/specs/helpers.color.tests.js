@@ -8,6 +8,12 @@ describe('Color helper', function() {
   it('should return a color when called with a color', function() {
     expect(isColorInstance(color('rgb(1, 2, 3)'))).toBe(true);
   });
+
+  it('should parse oklch() colors', function() {
+    expect(isColorInstance(color('oklch(62.8% 0.2577 29.23)'))).toBe(true);
+    expect(color('oklch(62.8% 0.2577 29.23)').rgbString()).toEqual('rgb(255, 0, 0)');
+    expect(color('oklch(0.628 0.2577 29.23 / 50%)').rgbString()).toEqual('rgba(255, 0, 0, 0.5)');
+  });
 });
 
 describe('Background hover color helper', function() {
@@ -15,6 +21,10 @@ describe('Background hover color helper', function() {
     var originalColorRGB = 'rgb(70, 191, 189)';
 
     expect(getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
+  });
+
+  it('should return a modified version of color when called with an oklch() color', function() {
+    expect(getHoverColor('oklch(62.8% 0.2577 29.23)')).toEqual(getHoverColor('#FF0000'));
   });
 });
 

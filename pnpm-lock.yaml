@@ -179,8 +179,8 @@ importers:
   .:
     dependencies:
       '@kurkle/color':
-        specifier: ^0.3.0
-        version: 0.3.2
+        specifier: ^0.6.6
+        version: 0.6.6
     devDependencies:
       '@rollup/plugin-commonjs':
         specifier: ^29.0.3
@@ -1470,6 +1470,9 @@ packages:
 
   '@kurkle/color@0.3.2':
     resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+
+  '@kurkle/color@0.6.6':
+    resolution: {integrity: sha512-Bd1NjGyoe27ExXRIBu13YymFP6k/wFxpUkX97Z3RlofLFV43nECB2G8vETZzcZzz2Ct2oRzwYElX65lxyi5UNg==}
 
   '@leichtgewicht/ip-codec@2.0.4':
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
@@ -11378,6 +11381,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.4.14
 
   '@kurkle/color@0.3.2': {}
+
+  '@kurkle/color@0.6.6': {}
 
   '@leichtgewicht/ip-codec@2.0.4': {}
 
