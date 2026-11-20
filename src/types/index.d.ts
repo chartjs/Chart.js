@@ -1881,6 +1881,12 @@ export type ArcSpacingMode = 'proportional' | 'angular' | 'parallel';
 
 export interface ArcOptions extends CommonElementOptions {
   /**
+   * Arc angle to cover. - for polar only
+   * @default circumference / (arc count)
+   */
+  angle?: number;
+
+  /**
    * If true, Arc can take up 100% of a circular graph without any visual split or cut. This option doesn't support borderRadius and borderJoinStyle miter
    * @default true
    */
