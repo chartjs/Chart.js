@@ -1,6 +1,156 @@
 describe('Chart.controllers.bar', function() {
   describe('auto', jasmine.fixture.specs('controller.bar'));
 
+  describe('per-bar base', function() {
+    it('should avoid creating per-bar resolvers for default and scalar bases', function() {
+      [undefined, -3].forEach(function(base) {
+        var chart = window.acquireChart({
+          type: 'bar',
+          data: {labels: ['a', 'b'], datasets: [{data: [10, -10], base}]},
+          options: {animation: false}
+        });
+        var controller = chart.getDatasetMeta(0).controller;
+        var context = spyOn(controller, 'getContext').and.callThrough();
+        controller._calculateBarValuePixels(0);
+        controller._calculateBarValuePixels(1);
+        expect(context).not.toHaveBeenCalled();
+      });
+    });
+
+    ['x', 'y'].forEach(function(indexAxis) {
+      it('should cycle short base arrays and retain minBarLength with indexAxis ' + indexAxis, function() {
+        var chart = window.acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['a', 'b', 'c', 'd'],
+            datasets: [{data: [0, -2, 0, -2], base: [0, -2], minBarLength: 10}]
+          },
+          options: {
+            animation: false,
+            indexAxis,
+            scales: {[indexAxis === 'x' ? 'y' : 'x']: {min: -20, max: 20, grid: {display: false}}}
+          }
+        });
+        var meta = chart.getDatasetMeta(0);
+        meta.data.forEach(function(bar, index) {
+          var head = bar[indexAxis === 'x' ? 'y' : 'x'];
+          expect(Math.abs(head - bar.base)).toBeCloseTo(10, 5);
+          expect((head + bar.base) / 2).toBeCloseToPixel(meta.vScale.getPixelForValue([0, -2][index % 2]));
+        });
+        chart.data.datasets[0].data = [10, -10, 10, -10];
+        chart.update();
+        meta.data.forEach(function(bar, index) {
+          expect(bar.base).toBeCloseToPixel(meta.vScale.getPixelForValue([0, -2][index % 2]));
+        });
+      });
+
+      it('should resolve callback context and sibling options for floating bars with indexAxis ' + indexAxis, function() {
+        var indices = [];
+        var chart = window.acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['a', 'b'],
+            datasets: [{
+              data: [[-5, 12], [-10, -2]],
+              borderWidth: (context) => context.dataIndex + 1,
+              base: (context, options) => {
+                if (context.type === 'data') {
+                  indices.push(context.dataIndex);
+                  expect(context.datasetIndex).toBe(0);
+                  expect(context.raw).toEqual(context.dataset.data[context.dataIndex]);
+                  expect(options.borderWidth).toBe(context.dataIndex + 1);
+                }
+                return 100;
+              }
+            }]
+          },
+          options: {animation: false, indexAxis}
+        });
+        var meta = chart.getDatasetMeta(0);
+        [-5, -2].forEach(function(base, index) {
+          expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+        });
+        expect(indices).toContain(0);
+        expect(indices).toContain(1);
+      });
+    });
+
+    it('should preserve scalar, default, floating and stacked bases', function() {
+      [undefined, 3].forEach(function(base) {
+        var chart = window.acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['a', 'b'],
+            datasets: [{data: [10, 15], base}]
+          },
+          options: {animation: false}
+        });
+        var meta = chart.getDatasetMeta(0);
+        meta.data.forEach(function(bar) {
+          expect(bar.base).toBeCloseToPixel(meta.vScale.getPixelForValue(base || 0));
+        });
+      });
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [[2, 12], [5, 19]], base: [8, 9]}]
+        },
+        options: {animation: false}
+      });
+      var meta = chart.getDatasetMeta(0);
+      [2, 5].forEach(function(base, index) {
+        expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+      });
+      var stacked = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [2, 5]}, {data: [10, 15]}]
+        },
+        options: {animation: false, scales: {x: {stacked: true}, y: {stacked: true}}}
+      });
+      var stackedMeta = stacked.getDatasetMeta(1);
+      [2, 5].forEach(function(base, index) {
+        expect(stackedMeta.data[index].base).toBeCloseToPixel(stackedMeta.vScale.getPixelForValue(base));
+      });
+    });
+
+    ['x', 'y'].forEach(function(indexAxis) {
+      [false, true].forEach(function(scriptable) {
+        it('should resolve ' + (scriptable ? 'scriptable' : 'indexed') + ' bases with indexAxis ' + indexAxis, function() {
+          var bases = [2, 5, -3];
+          var chart = window.acquireChart({
+            type: 'bar',
+            data: {
+              labels: ['a', 'b', 'c'],
+              datasets: [{
+                data: [12, 19, 7],
+                base: scriptable ? (context) => bases[context.dataIndex] : bases
+              }]
+            },
+            options: {
+              animation: false,
+              indexAxis,
+              scales: {
+                [indexAxis === 'x' ? 'y' : 'x']: {min: -5, max: 20}
+              }
+            }
+          });
+          var meta = chart.getDatasetMeta(0);
+          bases.forEach(function(base, index) {
+            expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+          });
+          chart.data.datasets[0].base = scriptable ? (context) => bases[context.dataIndex] + 1 : bases.map(base => base + 1);
+          chart.update();
+          bases.forEach(function(base, index) {
+            expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base + 1));
+          });
+        });
+      });
+    });
+  });
+
   it('should be registered as dataset controller', function() {
     expect(typeof Chart.controllers.bar).toBe('function');
   });
