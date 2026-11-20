@@ -1160,6 +1160,47 @@ describe('Time scale tests', function() {
     expect(scale.getPixelForDecimal(1.0)).toBeCloseToPixel(512);
   });
 
+  it('should divide evenly spaced major ticks starting at index 0 into even chunks when autoSkipping', function() {
+    // Hourly data starting on a day boundary: major ticks (day starts) fall at
+    // indices 0, 24, 48, ... i.e. evenly spaced but the first major is at index 0.
+    var data = [];
+    var date = moment('2020-01-01T00:00:00');
+    for (var i = 0; i < 144; i++) {
+      data.push({x: date.valueOf(), y: i});
+      date = date.clone().add(1, 'hour');
+    }
+
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {datasets: [{data: data}]},
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            time: {unit: 'hour'},
+            ticks: {
+              source: 'data',
+              autoSkip: true,
+              maxTicksLimit: 24,
+              major: {enabled: true},
+              maxRotation: 0
+            }
+          }
+        }
+      }
+    }, {canvas: {width: 4000, height: 150}});
+
+    var values = chart.scales.x.ticks.map(t => t.value);
+
+    // The kept minor ticks should be spaced by a factor of the 24h major interval
+    // (8 hours here). Before the fix the even-major spacing was not detected, so the
+    // spacing fell back to the raw ticks/limit ratio (6 hours), keeping 24 ticks.
+    expect(values.length).toEqual(18);
+    for (var j = 1; j < values.length; j++) {
+      expect(values[j] - values[j - 1]).toEqual(8 * 3600000);
+    }
+  });
+
   ['data', 'labels'].forEach(function(source) {
     ['timeseries', 'time'].forEach(function(type) {
       describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
