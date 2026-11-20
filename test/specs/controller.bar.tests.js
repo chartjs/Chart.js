@@ -326,6 +326,43 @@ describe('Chart.controllers.bar', function() {
     expect(meta.controller._getStackIndex(3)).toBe(1);
   });
 
+  it('should keep the stack order when the first dataset of a stack is hidden', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [
+          {data: [10, 20], stack: 'stack1'},
+          {data: [10, 20], stack: 'stack2'},
+          {data: [10, 20], stack: 'stack1'},
+          {data: [10, 20], stack: 'stack2'}
+        ],
+        labels: ['a', 'b']
+      },
+      options: {
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
+          }
+        }
+      }
+    });
+
+    var getX = (datasetIndex) => chart.getDatasetMeta(datasetIndex).data[0].getProps(['x'], true).x;
+    expect(getX(2)).toBeLessThan(getX(3));
+
+    chart.hide(0);
+
+    var meta = chart.getDatasetMeta(1);
+    expect(meta.controller._getStackCount()).toBe(2);
+    expect(meta.controller._getStackIndex(1, 'stack2')).toBe(1);
+    expect(meta.controller._getStackIndex(2, 'stack1')).toBe(0);
+    expect(meta.controller._getStackIndex(3, 'stack2')).toBe(1);
+    expect(getX(2)).toBeLessThan(getX(3));
+  });
+
   it('should correctly get the stack index when a group is not specified', function() {
     var chart = window.acquireChart({
       type: 'bar',
