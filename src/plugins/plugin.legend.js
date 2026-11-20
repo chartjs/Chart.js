@@ -281,7 +281,7 @@ export class Legend extends Element {
 	 * @private
 	 */
   _draw() {
-    const {options: opts, columnSizes, lineWidths, ctx} = this;
+    const {options: opts, columnSizes, lineWidths, ctx, legendHitBoxes: hitboxes} = this;
     const {align, labels: labelOpts} = opts;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
@@ -404,14 +404,14 @@ export class Legend extends Element {
       rtlHelper.setWidth(this.width);
 
       if (isHorizontal) {
-        if (i > 0 && x + width + padding > this.right) {
+        if (i > 0 && (hitboxes && hitboxes[i] ? hitboxes[i].row !== cursor.line : x + width + padding > this.right + 1e-6)) {
           y = cursor.y += lineHeight;
-          cursor.line++;
+          cursor.line = (hitboxes && hitboxes[i]) ? hitboxes[i].row : cursor.line + 1;
           x = cursor.x = _alignStartEnd(align, this.left + padding, this.right - lineWidths[cursor.line]);
         }
-      } else if (i > 0 && y + lineHeight > this.bottom) {
+      } else if (i > 0 && (hitboxes && hitboxes[i] ? hitboxes[i].col !== cursor.line : y + lineHeight > this.bottom + 1e-6)) {
         x = cursor.x = x + columnSizes[cursor.line].width + padding;
-        cursor.line++;
+        cursor.line = (hitboxes && hitboxes[i]) ? hitboxes[i].col : cursor.line + 1;
         y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[cursor.line].height);
       }
 
