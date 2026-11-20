@@ -2799,6 +2799,12 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   enabled: Scriptable<boolean, ScriptableTooltipContext<TType>>;
   /**
+   * Keep the tooltip visible when the cursor moves from the data point into
+   * the tooltip bounding box.
+   * @default false
+   */
+  persistOnHover: boolean;
+  /**
    *   See external tooltip section.
    */
   external(this: TooltipModel<TType>, args: { chart: Chart; tooltip: TooltipModel<TType> }): void;
