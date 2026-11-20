@@ -1395,4 +1395,80 @@ describe('Linear Scale', function() {
 
     expect(createChart).not.toThrow();
   });
+
+  describe('align: inner', function() {
+    it('should align ticks inward when align is inner on standard scale', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [
+              {x: 200, y: 12},
+              {x: 451, y: 14},
+              {x: 999, y: 14}
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              min: 200,
+              max: 1000,
+              reverse: false,
+              ticks: {
+                align: 'inner'
+              }
+            }
+          }
+        }
+      });
+
+      var scale = chart.scales.x;
+      var items = scale._labelItems;
+      var ilen = items.length;
+      expect(items[0].options.textAlign).toBe('left');
+      expect(items[ilen - 1].options.textAlign).toBe('right');
+      for (var i = 1; i < ilen - 1; ++i) {
+        expect(items[i].options.textAlign).toBe('center');
+      }
+    });
+
+    it('should align ticks inward when align is inner on reversed scale', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [
+              {x: 200, y: 12},
+              {x: 451, y: 14},
+              {x: 999, y: 14}
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              min: 200,
+              max: 1000,
+              reverse: true,
+              ticks: {
+                align: 'inner'
+              }
+            }
+          }
+        }
+      });
+
+      var scale = chart.scales.x;
+      var items = scale._labelItems;
+      var ilen = items.length;
+      expect(items[0].options.textAlign).toBe('left');
+      expect(items[ilen - 1].options.textAlign).toBe('right');
+      for (var i = 1; i < ilen - 1; ++i) {
+        expect(items[i].options.textAlign).toBe('center');
+      }
+    });
+  });
 });
