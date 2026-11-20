@@ -241,7 +241,8 @@ import { getRelativePosition } from 'chart.js/helpers';
  * @param {Event} e - the event we are find things at
  * @param {InteractionOptions} options - options to use
  * @param {boolean} [useFinalPosition] - use final element position (animation target)
- * @return {InteractionItem[]} - items that are found
+ * @return {InteractionItem[]} - items that are found (includes `data` field containing
+ * the original dataset value)
  */
 Interaction.modes.myCustomMode = function(chart, e, options, useFinalPosition) {
   const position = getRelativePosition(e, chart);
@@ -249,6 +250,7 @@ Interaction.modes.myCustomMode = function(chart, e, options, useFinalPosition) {
   const items = [];
   Interaction.evaluateInteractionItems(chart, 'x', position, (element, datasetIndex, index) => {
     if (element.inXRange(position.x, useFinalPosition) && myCustomLogic(element)) {
+      // the `data` field is included automatically when using built-in helpers
       items.push({element, datasetIndex, index});
     }
   });
