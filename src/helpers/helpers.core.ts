@@ -333,13 +333,14 @@ export function _deprecated(scope: string, value: unknown, previous: string, cur
 }
 
 // resolveObjectKey resolver cache
-const keyResolvers = {
-  // Chart.helpers.core resolveObjectKey should resolve empty key to root object
-  '': v => v,
-  // default resolvers
-  x: o => o.x,
-  y: o => o.y
-};
+// Use a null-prototype object so keys colliding with Object.prototype members
+// (e.g. 'toString', 'hasOwnProperty', '__proto__') don't resolve to inherited values.
+const keyResolvers = Object.create(null);
+// Chart.helpers.core resolveObjectKey should resolve empty key to root object
+keyResolvers[''] = v => v;
+// default resolvers
+keyResolvers.x = o => o.x;
+keyResolvers.y = o => o.y;
 
 /**
  * @private
