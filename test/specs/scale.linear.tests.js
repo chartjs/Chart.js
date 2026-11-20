@@ -1395,4 +1395,58 @@ describe('Linear Scale', function() {
 
     expect(createChart).not.toThrow();
   });
+
+  it('Should handle Number.MAX_VALUE in dataset without crashing (issue #12184)', function() {
+    function createChart() {
+      return window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [{
+            data: [12, 19, 3, 5, 2, Number.MAX_VALUE]
+          }],
+          labels: ['a', 'b', 'c', 'd', 'e', 'f']
+        },
+        options: {
+          scales: {
+            y: {
+              type: 'linear'
+            }
+          }
+        }
+      });
+    }
+
+    expect(createChart).not.toThrow();
+    var chart = createChart();
+    expect(chart.scales.y).toBeDefined();
+    expect(isFinite(chart.scales.y.max)).toBe(true);
+    expect(chart.scales.y.ticks.length).toBeGreaterThan(0);
+  });
+
+  it('Should handle Number.MIN_VALUE (negative extreme) in dataset without crashing (issue #12184)', function() {
+    function createChart() {
+      return window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [{
+            data: [12, 19, 3, 5, 2, -Number.MAX_VALUE]
+          }],
+          labels: ['a', 'b', 'c', 'd', 'e', 'f']
+        },
+        options: {
+          scales: {
+            y: {
+              type: 'linear'
+            }
+          }
+        }
+      });
+    }
+
+    expect(createChart).not.toThrow();
+    var chart = createChart();
+    expect(chart.scales.y).toBeDefined();
+    expect(isFinite(chart.scales.y.min)).toBe(true);
+    expect(chart.scales.y.ticks.length).toBeGreaterThan(0);
+  });
 });
