@@ -392,6 +392,7 @@ export class Legend extends Element {
 
     const lineHeight = itemHeight + padding;
     this.legendItems.forEach((legendItem, i) => {
+      const legendHitBox = this.legendHitBoxes[i];
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
@@ -409,10 +410,17 @@ export class Legend extends Element {
           cursor.line++;
           x = cursor.x = _alignStartEnd(align, this.left + padding, this.right - lineWidths[cursor.line]);
         }
-      } else if (i > 0 && y + lineHeight > this.bottom) {
-        x = cursor.x = x + columnSizes[cursor.line].width + padding;
-        cursor.line++;
-        y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[cursor.line].height);
+      } else if (i > 0 && legendHitBox && legendHitBox.col !== cursor.line) {
+        const previousColSize = columnSizes[cursor.line];
+        const columnSize = columnSizes[legendHitBox.col];
+
+        if (!previousColSize || !columnSize) {
+          return;
+        }
+
+        x = cursor.x = x + previousColSize.width + padding;
+        cursor.line = legendHitBox.col;
+        y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSize.height);
       }
 
       const realX = rtlHelper.x(x);
