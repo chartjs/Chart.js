@@ -654,6 +654,22 @@ describe('Chart.helpers.config', function() {
       });
     });
 
+    it('should not expose the array through objects in an array', function() {
+      const defaults = {
+        array: [{a: 'default'}]
+      };
+      const options = {
+        array: [{a: 1}, {a: 2}]
+      };
+      const resolver = _createResolver([options, defaults]);
+      const opts = _attachContext(resolver, {});
+
+      expect(Object.keys(opts.array[0])).toEqual(['a']);
+      expect(JSON.stringify(opts.array)).toEqual('[{"a":1},{"a":2}]');
+      expect(opts.array[0][1]).toBeUndefined();
+      expect(opts.array[0].length).toBeUndefined();
+    });
+
     it('should call _fallback with proper value from array when descriptor is object', function() {
       const spy = jasmine.createSpy('fallback');
       const descriptors = {
