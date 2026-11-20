@@ -3083,6 +3083,10 @@ export interface GridLineOptions {
    */
   drawTicks: boolean;
   /**
+   * @default 1
+   */
+  step: number;
+  /**
    * @default []
    */
   tickBorderDash: Scriptable<number[], ScriptableScaleContext>;
