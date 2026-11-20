@@ -538,6 +538,28 @@ describe('Chart.DatasetController', function() {
     expect(controller.getParsed(2)).toBe(data[2]);
   });
 
+  it('should handle splice with a single argument without throwing (issue #12191)', function() {
+    var data = [0, 1, 2, 3, 4, 5];
+    var chart = acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: data,
+        }],
+      },
+    });
+
+    var meta = chart.getDatasetMeta(0);
+
+    expect(function() {
+      data.splice(0);
+      chart.update();
+    }).not.toThrow();
+
+    expect(meta.data.length).toBe(0);
+    expect(data.length).toBe(0);
+  });
+
   it('should re-synchronize metadata when the data object reference changes', function() {
     var data0 = [0, 1, 2, 3, 4, 5];
     var data1 = [6, 7, 8];
