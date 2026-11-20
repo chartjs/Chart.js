@@ -604,6 +604,76 @@ describe('Legend block tests', function() {
     expect(hitBox.height).toBe(40);
   });
 
+  for (const position of ['left', 'right', 'top', 'bottom']) {
+    for (const textAlign of ['left', 'center', 'right']) {
+      for (const rtl of [false, true]) {
+        it(`should hit test the full ${position} legend label with ${textAlign} alignment and rtl=${rtl}`, function() {
+          const chart = window.acquireChart({
+            type: 'line',
+            data: {
+              datasets: ['Short', 'A much longer dataset label'].map(label => ({label, data: []}))
+            },
+            options: {
+              plugins: {legend: {position, rtl, labels: {textAlign}}}
+            }
+          }, {canvas: {width: 600, height: 300}});
+          const {ctx, legend} = chart;
+          const labels = [];
+          const symbols = [];
+          const rect = ctx.rect.bind(ctx);
+          spyOn(ctx, 'rect').and.callFake(function(x, y, width, height) {
+            if (width === legend.options.labels.boxWidth) {
+              symbols.push({x: x + width / 2, y: y + height / 2});
+            }
+            rect(x, y, width, height);
+          });
+          const fillText = ctx.fillText.bind(ctx);
+          spyOn(ctx, 'fillText').and.callFake(function(text, x, y, maxWidth) {
+            if (text === 'Short') {
+              const width = ctx.measureText(text).width;
+              const left = x - (ctx.textAlign === 'center' ? width / 2 : ctx.textAlign === 'right' ? width : 0);
+              labels.push({left, right: left + width, y});
+            }
+            fillText(text, x, y, maxWidth);
+          });
+
+          chart.draw();
+
+          expect(labels.length).toBe(1);
+          const {left, right, y} = labels[0];
+          expect(symbols.length).toBe(2);
+          expect(legend._getLegendItemAt(symbols[0].x, symbols[0].y)).toBe(legend.legendItems[0]);
+          expect(legend._getLegendItemAt(left + 1, y)).toBe(legend.legendItems[0]);
+          expect(legend._getLegendItemAt(right - 1, y)).toBe(legend.legendItems[0]);
+        });
+      }
+    }
+  }
+
+  it('should use a legend item text alignment before the global label alignment for hit testing', function() {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {datasets: []},
+      options: {
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              textAlign: 'left',
+              generateLabels: () => [
+                {text: 'Short', textAlign: 'right'},
+                {text: 'A much longer dataset label'}
+              ]
+            }
+          }
+        }
+      }
+    });
+    const {legend} = chart;
+    const hitbox = legend.legendHitBoxes[0];
+    expect(legend._getLegendItemAt(legend.right - 1, hitbox.top + hitbox.height / 2)).toBe(legend.legendItems[0]);
+  });
+
   it('should pick up the first item when the property is an array', function() {
     var chart = window.acquireChart({
       type: 'bar',
