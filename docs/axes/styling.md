@@ -9,6 +9,7 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | Name | Type | Scriptable | Indexable | Default | Description
 | ---- | ---- | :-------------------------------: | :-----------------------------: | ------- | -----------
 | `circular` | `boolean` | | | `false` | If true, gridlines are circular (on radar and polar area charts only).
+| `borderRadius` | `number` | | | `0` | If greater than 0, grid lines will be curved.
 | `color` | [`Color`](../general/colors.md)  | Yes | Yes | `Chart.defaults.borderColor` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line, and so on.
 | `display` | `boolean` | | | `true` | If false, do not display grid lines for this axis.
 | `drawOnChartArea` | `boolean` | | | `true` | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn.

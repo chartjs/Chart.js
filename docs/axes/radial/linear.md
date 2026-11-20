@@ -65,6 +65,7 @@ Namespace: `options.scales[scaleId].grid`, it defines options for the grid lines
 | `borderDash` | `number[]` | | | `[]` | Length and spacing of dashes on grid lines. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash).
 | `borderDashOffset` | `number` | Yes | | `0.0` | Offset for line dashes. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset).
 | `circular` | `boolean` | | | `false` | If true, gridlines are circular (on radar and polar area charts only).
+| `borderRadius` | `number` | | | `0` | If greater than 0, grid lines will be curved.
 | `color` | [`Color`](../general/colors.md)  | Yes | Yes | `Chart.defaults.borderColor` | The color of the grid lines. If specified as an array, the first color applies to the first grid line, the second to the second grid line, and so on.
 | `display` | `boolean` | | | `true` | If false, do not display grid lines for this axis.
 | `lineWidth` | `number` | Yes | Yes | `1` | Stroke width of grid lines.
