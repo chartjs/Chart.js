@@ -3,6 +3,21 @@ import {resolve} from '../helpers/helpers.options.js';
 import {color as helpersColor} from '../helpers/helpers.color.js';
 
 const transparent = 'transparent';
+
+/**
+ * Strip CSS comments from a color string.
+ * Handles /* ... */ style comments that some users put in rgba() for documentation.
+ * @param {string} value
+ * @returns {string}
+ */
+function stripCssComments(value) {
+  if (typeof value !== 'string') {
+    return value;
+  }
+  // Remove /* ... */ comments from the string
+  return value.replace(/\/\*[\s\S]*?\*\//g, '');
+}
+
 const interpolators = {
   boolean(from, to, factor) {
     return factor > 0.5 ? to : from;
@@ -13,8 +28,11 @@ const interpolators = {
    * @param {number} factor
    */
   color(from, to, factor) {
-    const c0 = helpersColor(from || transparent);
-    const c1 = c0.valid && helpersColor(to || transparent);
+    // Strip CSS comments from color strings to ensure proper parsing
+    const cleanFrom = stripCssComments(from);
+    const cleanTo = stripCssComments(to);
+    const c0 = helpersColor(cleanFrom || transparent);
+    const c1 = c0.valid && helpersColor(cleanTo || transparent);
     return c1 && c1.valid
       ? c1.mix(c0, factor).hexString()
       : to;
