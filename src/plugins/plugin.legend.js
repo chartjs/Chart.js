@@ -559,11 +559,11 @@ function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
 }
 
 function calculateItemWidth(legendItem, boxWidth, labelFont, ctx) {
-  let legendItemText = legendItem.text;
-  if (legendItemText && typeof legendItemText !== 'string') {
-    legendItemText = legendItemText.reduce((a, b) => a.length > b.length ? a : b);
-  }
-  return boxWidth + (labelFont.size / 2) + ctx.measureText(legendItemText).width;
+  const legendItemText = legendItem.text;
+  const textWidth = legendItemText && typeof legendItemText !== 'string'
+    ? legendItemText.reduce((width, line) => Math.max(width, ctx.measureText(line).width), 0)
+    : ctx.measureText(legendItemText).width;
+  return boxWidth + (labelFont.size / 2) + textWidth;
 }
 
 function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
