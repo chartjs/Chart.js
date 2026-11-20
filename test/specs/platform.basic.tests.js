@@ -16,6 +16,15 @@ describe('Platform.basic', function() {
     chart.destroy();
   });
 
+  it('should not throw when getMaximumSize is called without an element', function() {
+    const platform = new Chart.platforms.BasePlatform();
+    var size;
+    expect(function() {
+      size = platform.getMaximumSize(null);
+    }).not.toThrow();
+    expect(size).toEqual({width: 0, height: 0});
+  });
+
 
   it('supports choosing the BasicPlatform in a web worker', function(done) {
     const canvas = document.createElement('canvas');

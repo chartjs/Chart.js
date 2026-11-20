@@ -170,7 +170,12 @@ class Chart {
     this.attached = false;
     this._animationsDisabled = undefined;
     this.$context = undefined;
-    this._doResize = debounce(mode => this.update(mode), options.resizeDelay || 0);
+    this._doResize = debounce(mode => {
+      // A delayed resize can fire after destroy() has already nulled the canvas.
+      if (this.ctx !== null) {
+        this.update(mode);
+      }
+    }, options.resizeDelay || 0);
     this._dataChanges = [];
 
     // Add the chart instance to the global namespace
@@ -275,6 +280,10 @@ class Chart {
   }
 
   _resize(width, height) {
+    if (!this.canvas) {
+      return;
+    }
+
     const options = this.options;
     const canvas = this.canvas;
     const aspectRatio = options.maintainAspectRatio && this.aspectRatio;
@@ -472,7 +481,12 @@ class Chart {
     this.notifyPlugins('reset');
   }
 
+  // eslint-disable-next-line max-statements
   update(mode) {
+    if (this.ctx === null) {
+      return;
+    }
+
     const config = this.config;
 
     config.update();
@@ -941,6 +955,10 @@ class Chart {
     this._stop();
     this.config.clearCache();
 
+    if (this._doResize.cancel) {
+      this._doResize.cancel();
+    }
+
     if (canvas) {
       this.unbindEvents();
       clearCanvas(canvas, ctx);
@@ -995,6 +1013,9 @@ class Chart {
    * @private
    */
   bindResponsiveEvents() {
+    if (!this.canvas) {
+      return;
+    }
     if (!this._responsiveListeners) {
       this._responsiveListeners = {};
     }
