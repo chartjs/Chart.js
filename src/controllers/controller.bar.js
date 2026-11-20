@@ -497,14 +497,33 @@ export default class BarController extends DatasetController {
   }
 
   _getAxis() {
-    const axis = {};
+    const {chart} = this;
+    const scales = chart.scales;
     const firstScaleAxisId = this.getFirstScaleIdForIndexAxis();
-    for (const dataset of this.chart.data.datasets) {
-      axis[valueOrDefault(
-        this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID, firstScaleAxisId
-      )] = true;
+    const processedAxisIds = new Set();
+    const processedStacks = new Set();
+    const axis = [];
+
+    for (const dataset of chart.data.datasets) {
+      const axisId = valueOrDefault(
+        chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID,
+        firstScaleAxisId
+      );
+
+      if (!processedAxisIds.has(axisId)) {
+        processedAxisIds.add(axisId);
+        const scale = scales[axisId];
+        const stack = scale && scale.options.stack;
+
+        if (isNullOrUndef(stack)) {
+          axis.push(axisId);
+        } else if (!processedStacks.has(stack)) {
+          processedStacks.add(stack);
+          axis.push(axisId);
+        }
+      }
     }
-    return Object.keys(axis);
+    return axis;
   }
 
   /**
@@ -639,15 +658,35 @@ export default class BarController extends DatasetController {
     const skipNull = options.skipNull;
     const maxBarThickness = valueOrDefault(options.maxBarThickness, Infinity);
     let center, size;
-    const axisCount = this._getAxisCount();
+
     if (ruler.grouped) {
       const stackCount = skipNull ? this._getStackCount(index) : ruler.stackCount;
+      const axisGroups = this._getAxis();
+      const axisCount = axisGroups.length;
       const range = options.barThickness === 'flex'
         ? computeFlexCategoryTraits(index, ruler, options, stackCount * axisCount)
         : computeFitCategoryTraits(index, ruler, options, stackCount * axisCount);
-      const axisID = this.chart.options.indexAxis === 'x' ? this.getDataset().xAxisID : this.getDataset().yAxisID;
-      const axisNumber = this._getAxis().indexOf(valueOrDefault(axisID, this.getFirstScaleIdForIndexAxis()));
-      const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined) + axisNumber;
+
+      const dataset = this.getDataset();
+      const axisID = this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID;
+      const firstScaleId = this.getFirstScaleIdForIndexAxis();
+      const actualAxisID = valueOrDefault(axisID, firstScaleId);
+      const axisScale = this.chart.scales[actualAxisID];
+      const axisStack = axisScale && axisScale.options.stack;
+
+      let axisNumber = axisGroups.indexOf(actualAxisID);
+      if (axisNumber === -1 && defined(axisStack)) {
+        for (let i = 0; i < axisGroups.length; i++) {
+          const groupScale = this.chart.scales[axisGroups[i]];
+          if (groupScale && groupScale.options.stack === axisStack) {
+            axisNumber = i;
+            break;
+          }
+        }
+      }
+      axisNumber = Math.max(axisNumber, 0);
+
+      const stackIndex = this._getStackIndex(this.index, this._cachedMeta.stack, skipNull ? index : undefined) + axisNumber * stackCount;
       center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
       size = Math.min(maxBarThickness, range.chunk * range.ratio);
     } else {
