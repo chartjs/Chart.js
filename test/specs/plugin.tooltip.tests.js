@@ -1948,4 +1948,36 @@ describe('Plugin.Tooltip', function() {
       }]
     }));
   });
+
+  it('Should join multiline array labels with comma and space (issue #12049)', async function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30],
+        }],
+        labels: [['Yellow', 'subTitle'], 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        }
+      }
+    });
+
+    var point = {
+      x: chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 6,
+      y: chart.chartArea.top + 5
+    };
+
+    var tooltip = chart.tooltip;
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+
+    // The title should show the label joined with ', ' not just ','
+    expect(tooltip.title).toEqual(['Yellow, subTitle']);
+  });
 });
