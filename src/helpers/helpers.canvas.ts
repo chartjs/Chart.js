@@ -151,6 +151,8 @@ export interface DrawPointOptions {
   rotation?: number;
   radius: number;
   borderWidth: number;
+  lineDash?: number[];
+  lineDashOffset?: number;
 }
 
 export function drawPoint(
@@ -191,6 +193,20 @@ export function drawPointLegend(
 
   if (isNaN(radius) || radius <= 0) {
     return;
+  }
+
+  // Save current line dash state
+  const savedLineDash = ctx.getLineDash();
+  const savedLineDashOffset = ctx.lineDashOffset;
+
+  // Apply line dash pattern if specified
+  if (options.lineDash) {
+    ctx.setLineDash(options.lineDash);
+  } else {
+    ctx.setLineDash([]);
+  }
+  if (options.lineDashOffset !== undefined) {
+    ctx.lineDashOffset = options.lineDashOffset;
   }
 
   ctx.beginPath();
@@ -305,6 +321,10 @@ export function drawPointLegend(
   if (options.borderWidth > 0) {
     ctx.stroke();
   }
+
+  // Restore original line dash state
+  ctx.setLineDash(savedLineDash);
+  ctx.lineDashOffset = savedLineDashOffset;
 }
 
 /**

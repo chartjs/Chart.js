@@ -327,7 +327,9 @@ export class Legend extends Element {
           radius: boxHeight * Math.SQRT2 / 2,
           pointStyle: legendItem.pointStyle,
           rotation: legendItem.rotation,
-          borderWidth: lineWidth
+          borderWidth: lineWidth,
+          lineDash: legendItem.lineDash,
+          lineDashOffset: legendItem.lineDashOffset
         };
         const centerX = rtlHelper.xPlus(x, boxWidth / 2);
         const centerY = y + halfFontSize;
