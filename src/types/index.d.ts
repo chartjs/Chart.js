@@ -274,7 +274,7 @@ export interface DoughnutControllerDatasetOptions
   weight: number;
 
   /**
-    * Similar to the `offset` option, but applies to all arcs. This can be used to to add spaces
+    * Similar to the `offset` option, but applies to all arcs. This can be used to add spaces
     * between arcs
     * @default 0
     */
