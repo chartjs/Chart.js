@@ -3681,7 +3681,7 @@ export interface RadialLinearScale<O extends RadialLinearScaleOptions = RadialLi
   getIndexAngle(index: number): number;
   getDistanceFromCenterForValue(value: number): number;
   getValueForDistanceFromCenter(distance: number): number;
-  getPointPosition(index: number, distanceFromCenter: number): { x: number; y: number; angle: number };
+  getPointPosition(index: number, distanceFromCenter: number, additionalAngle?: number): { x: number; y: number; angle: number };
   getPointPositionForValue(index: number, value: number): { x: number; y: number; angle: number };
   getPointLabelPosition(index: number): ChartArea;
   getBasePosition(index: number): { x: number; y: number; angle: number };
