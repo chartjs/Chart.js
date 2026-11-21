@@ -58,6 +58,11 @@ class TimeSeriesScale extends TimeScale {
 	 * @protected
 	 */
   initOffsets() {
+    // Restore the 1ms span from TimeScale.determineDataLimits after bounds: 'ticks'.
+    if (!(this.max > this.min)) {
+      this.min -= 1;
+      this.max += 1;
+    }
     const timestamps = this._getTimestampsForTable();
     const table = this._table = this.buildLookupTable(timestamps);
     this._minPos = interpolate(table, this.min);
@@ -119,11 +124,13 @@ class TimeSeriesScale extends TimeScale {
   _generate() {
     const min = this.min;
     const max = this.max;
-    let timestamps = super.getDataTimestamps();
-    if (!timestamps.includes(min) || !timestamps.length) {
+    const timestamps = super.getDataTimestamps();
+    const {minDefined, maxDefined} = this.getUserBounds();
+    // Skip the 1ms separation from TimeScale.determineDataLimits.
+    if (!timestamps.length || (minDefined ? !timestamps.includes(min) : min < timestamps[0] - 1)) {
       timestamps.splice(0, 0, min);
     }
-    if (!timestamps.includes(max) || timestamps.length === 1) {
+    if (maxDefined ? !timestamps.includes(max) : max > timestamps[timestamps.length - 1] + 1) {
       timestamps.push(max);
     }
     return timestamps.sort((a, b) => a - b);
