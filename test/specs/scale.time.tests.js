@@ -1399,4 +1399,38 @@ describe('Time scale tests', function() {
       +moment('2025', 'YYYY')
     ]);
   });
+
+  it('should keep timeseries ticks at user bounds inside the data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [
+            {x: Date.UTC(2023, 0, 1), y: 1},
+            {x: Date.UTC(2023, 0, 10), y: 2}
+          ]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            min: Date.UTC(2023, 0, 4),
+            max: Date.UTC(2023, 0, 6),
+            ticks: {
+              source: 'data',
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.x.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([
+      Date.UTC(2023, 0, 4),
+      Date.UTC(2023, 0, 6)
+    ]);
+  });
 });

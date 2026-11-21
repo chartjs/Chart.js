@@ -125,11 +125,12 @@ class TimeSeriesScale extends TimeScale {
     const min = this.min;
     const max = this.max;
     const timestamps = super.getDataTimestamps();
+    const {minDefined, maxDefined} = this.getUserBounds();
     // Skip the 1ms separation from TimeScale.determineDataLimits.
-    if (!timestamps.length || min < timestamps[0] - 1) {
+    if (!timestamps.length || (minDefined ? !timestamps.includes(min) : min < timestamps[0] - 1)) {
       timestamps.splice(0, 0, min);
     }
-    if (max > timestamps[timestamps.length - 1] + 1) {
+    if (maxDefined ? !timestamps.includes(max) : max > timestamps[timestamps.length - 1] + 1) {
       timestamps.push(max);
     }
     return timestamps.sort((a, b) => a - b);
