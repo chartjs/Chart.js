@@ -2289,6 +2289,30 @@ describe('Chart', function() {
       expect(active.length).toEqual(1);
       expect(active[0].element).toBe(meta.data[0]);
     });
+
+    it('should ignore active elements that have not been built', function() {
+      const chart = acquireChart({
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: [1],
+            borderColor: 'red',
+            hoverBorderColor: 'blue',
+          }]
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[0];
+
+      chart.data.datasets.push({data: [2]});
+      chart.setActiveElements([
+        {datasetIndex: 1, index: 0},
+        {datasetIndex: 0, index: 0},
+      ]);
+      chart.update();
+
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
+      expect(element.options.borderColor).toBe('blue');
+    });
   });
 
   it('should not replace the user set active elements by event replay', async function() {

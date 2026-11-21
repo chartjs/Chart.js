@@ -1106,7 +1106,7 @@ class Chart {
         element: meta.data[index],
         index,
       };
-    });
+    }).filter(({element}) => element);
     const changed = !_elementsEqual(active, lastActive);
 
     if (changed) {
