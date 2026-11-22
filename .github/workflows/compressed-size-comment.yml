@@ -23,6 +23,9 @@ jobs:
       actions: read  # to download the report of the other run
       pull-requests: write  # to create or update the comment
     runs-on: ubuntu-latest
+    # One at a time per branch, so two runs cannot both create the comment.
+    concurrency:
+      group: size-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
     steps:
       - name: Post the report
         env:
@@ -56,13 +59,13 @@ jobs:
             exit 0
           fi
 
-          # The action's own footer marks the comment; a size cap keeps a
-          # modified workflow from posting something else at length.
-          if ! grep -q 'compressed-size-action</sub>' size-report/comment.md; then
-            echo "::error::the report does not look like a size report"
+          # The action's own footer marks the comment, and the next run finds
+          # the comment by it, so it has to survive the size cap.
+          head -c 20000 size-report/comment.md > body.md
+          if ! grep -q 'compressed-size-action</sub>' body.md; then
+            echo "::error::the report does not look like a size report, or is too long"
             exit 1
           fi
-          head -c 20000 size-report/comment.md > body.md
 
           comment_id=$(gh api "repos/$GH_REPO/issues/$pr/comments" --paginate \
             --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | test("compressed-size-action</sub>"))) | .id' | tail -n 1)
