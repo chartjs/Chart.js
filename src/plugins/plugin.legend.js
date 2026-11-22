@@ -532,7 +532,7 @@ export class Legend extends Element {
     }
 
     // Chart event already has relative position in it
-    const hoveredItem = this._getLegendItemAt(e.x, e.y);
+    const hoveredItem = e.type === 'mouseout' ? null : this._getLegendItemAt(e.x, e.y);
 
     if (e.type === 'mousemove' || e.type === 'mouseout') {
       const previous = this._hoveredItem;
