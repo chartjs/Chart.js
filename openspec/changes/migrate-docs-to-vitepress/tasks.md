@@ -12,9 +12,10 @@
 - [ ] 2.3 Add `docs/.vitepress/docs-version.json` and `config.ts`: title, description, base, favicon link, nav, repository link, `lastUpdated`, `markdown-it-include`, `anchor.uniqueSlugStartIndex: 2`, local search, `appearance: false`, the `chart.js` alias, the two Vue 3 aliases, `srcExclude` for partials, `ignoreDeadLinks` patterns for localhost and, until P4, `/api/`
 - [ ] 2.4 Add the theme entry and the brand palette; copy the three public files to `docs/public/`
 - [ ] 2.5 Make `scripts/docs-config.sh` write the tag to the version marker beside the existing `sed`; check master, a release, latest and next give bases `/docs/master/`, `/docs/x.y.z/`, `/docs/latest/`, `/docs/next/`
-- [ ] 2.6 Ignore `docs/.vitepress/{cache,.temp,dist}` in `.gitignore`
-- [ ] 2.7 Check the output: `getting-started/usage.html` exists, `axes/_common.html` does not, `configuration/animations.html` contains `id="animations-2"`, `charts/bar.html` has a tip callout and a copy button, `axes/cartesian/linear.html` contains the included common options, a page shows its last-updated date and the repository link
-- [ ] 2.8 Check `pnpm run docs` still writes the VuePress site to `dist/docs` and `pnpm pack` lists no docs file
+- [ ] 2.6 Add `docs/.vitepress/tsconfig.json` and a `typecheck` script (`vue-tsc --noEmit`) with a root `docs:typecheck`; see it fail on a deliberate type error in `config.ts`
+- [ ] 2.7 Ignore `docs/.vitepress/{cache,.temp,dist}` in `.gitignore`
+- [ ] 2.8 Check the output: `getting-started/usage.html` exists, `axes/_common.html` does not, `configuration/animations.html` contains `id="animations-2"`, `charts/bar.html` has a tip callout and a copy button, `axes/cartesian/linear.html` contains the included common options, a page shows its last-updated date and the repository link
+- [ ] 2.9 Check `pnpm run docs` still writes the VuePress site to `dist/docs` and `pnpm pack` lists no docs file
 
 ## 3. P3: Sidebar
 
@@ -45,14 +46,14 @@
 
 ## 7. P7: CI builds the new site
 
-- [ ] 7.1 Add a step to `ci.yml` that runs `pnpm run docs:vitepress` when `docs/**` changes
-- [ ] 7.2 Show it red on a branch with a dead link
+- [ ] 7.1 Add steps to `ci.yml` that run `pnpm run docs:vitepress` and `pnpm run docs:typecheck` when `docs/**` changes
+- [ ] 7.2 Show it red on a branch with a dead link, and on one with a type error in the docs code
 
 ## 8. P8: Live samples
 
 - [ ] 8.1 See a sample page render code and no chart
 - [ ] 8.2 Add `vitepress-theme-chartjs`, its fence plugin and stylesheet
-- [ ] 8.3 Add the runtime module exporting `globals` and register the editor with the lazy loader and the source link
+- [ ] 8.3 Add `chart-imports.ts` exporting `Utils`, `helpers` and `components`, register the editor with it as a lazy import, and set `themeConfig.source`
 - [ ] 8.4 Exclude the date adapter from pre-bundling; cap `.chart-view` at 800px
 - [ ] 8.5 Check in build and in dev: a bar sample with actions, a time-scale sample, the HTML legend sample, the progress-bar sample's output tab; the page text is in the HTML without scripts
 
@@ -60,7 +61,7 @@
 
 - [ ] 9.1 See `pnpm run docs` leave VuePress output in `dist/docs` and `pnpm why vuepress` list it
 - [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
-- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI step from P7
+- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7; `docs:typecheck` points at `docs/package.json`
 - [ ] 9.4 Add `vitepress-plugin-tabs` and convert the three tab pages; check tabs switch and a sample in a tab hidden at first draws at full size
 - [ ] 9.5 Update the command and port in `docs/samples/information.md`
 - [ ] 9.6 Compare one wide options table page and one sample page with the live site

@@ -37,7 +37,7 @@ The docs of chartjs-plugin-zoom run on VitePress 1.6.4 since [chartjs-plugin-zoo
 | P3 | the sidebar shape in `config.ts` | Zoom writes each title by hand for 25 pages; here 134 titles are read from the pages. |
 | P4 | `typedoc.json` (`plugin`, `docsRoot`, `githubPages: false`, `useCodeBlocks`, `sidebar` for VitePress) and the `typedoc-sidebar.json` import | `skipErrorChecking`, `membersWithOwnFile` and the entry point `src/types/index.d.ts`; zoom's `treatWarningsAsErrors` is tried and kept only if the conversion is clean. |
 | P6 | `docs/.vitepress/versions.ts`: fetching the jsDelivr list, parsing, ordering and collapsing versions, with a fallback when the fetch fails | Zoom returns a nav item built once at build time. Here the same functions feed a component that also refreshes in the browser (D4). |
-| P8 | `docs/.vitepress/markdown/chart-editor.ts` and `theme/{ChartEditor,ChartView,CodeEditor,CodeTextarea,CodeOutput,ChartActions,Tooltip}.vue`, `theme/styles/editor.css`, `theme-config.ts` | This is the code `vitepress-theme-chartjs` is extracted from. In zoom the editor imports `chart.js` and a local `chart-imports` module directly; a package cannot import its consumer's module, hence the `runtime` option in Contracts. |
+| P8 | `docs/.vitepress/markdown/chart-editor.ts` and `theme/{ChartEditor,ChartView,CodeEditor,CodeTextarea,CodeOutput,ChartActions,Tooltip}.vue`, `theme/styles/editor.css`, `theme-config.ts` | This is the code `vitepress-theme-chartjs` is extracted from. In zoom the editor imports `chart.js` and a local `chart-imports` module directly; a package cannot import its consumer's module, hence the `imports` option in Contracts; everything else keeps zoom's shape. |
 
 Zoom made the move in one pull request, with the dependencies in its single root package. That does not carry over: here the docs are a workspace package still on Vue 2 while VuePress deploys, and a single pull request would be far over the size limit.
 
@@ -80,7 +80,7 @@ Zoom made the move in one pull request, with the dependencies in its single root
 
 **D10. The docs version is a committed marker file.** `docs/.vitepress/docs-version.json` holds `{"version": "master"}`; `scripts/docs-config.sh` keeps its name and arguments and writes the tag there (from P2, beside the old `sed`, which goes with the VuePress configuration). The workflows therefore need no edit for this. *Alternative:* an environment variable; rejected because it edits three workflows that open pull requests hold.
 
-**D11. The sample environment is one runtime module** in the theme directory that imports `docs/scripts/{register,utils,helpers,components}.js` and exports `globals = {Chart, Utils, helpers, components}`, loaded only in the browser. A Vite alias maps `chart.js` to `dist/chart.js` (as the webpack alias does), so the samples, the scripts and the date adapter share one Chart.js; `chartjs-adapter-luxon` is excluded from dependency pre-bundling for the same reason (unproved until P8).
+**D11. The sample environment is one module** in the theme directory, `chart-imports.ts` as in chartjs-plugin-zoom, that imports `docs/scripts/{register,utils,helpers,components}.js` and exports `{Utils, helpers, components}`, loaded only in the browser. A Vite alias maps `chart.js` to `dist/chart.js` (as the webpack alias does), so the samples, the scripts and the date adapter share one Chart.js; `chartjs-adapter-luxon` is excluded from dependency pre-bundling for the same reason (unproved until P8).
 
 **D12. Search is VitePress's local search; code copy is built in.** No account or crawler is needed. *Alternative:* Algolia DocSearch.
 
@@ -94,7 +94,11 @@ Zoom made the move in one pull request, with the dependencies in its single root
 
 **D17. No analytics** (user decision). The VuePress site carries a Universal Analytics tag (`UA-28909194-3`), a product that no longer collects; nothing replaces it. A tag can be added later in the site's `head`. `scripts/sample-redirect-template.html` carries the same dead tag and is not touched here.
 
-**D18. What review changed.**
+**D18. The docs' own TypeScript and Vue code is type-checked** with `vue-tsc`, as chartjs-plugin-zoom does with its `typecheck:docs` script. The repository's ESLint covers only `docs/**/*.js`, so without this nothing checks the config, the sidebar, the redirects or the version menu. The script arrives in P2 and CI runs it from P7. Linting `.ts` and `.vue` files is left to the ESLint migration.
+
+**D19. The package contract follows chartjs-plugin-zoom** (user decision after comparing with its migration): the source link is theme configuration, `chart.js` is an imported peer, and the only injected part is the sample imports.
+
+**D20. What review changed.**
 - The switch was four pieces (repoint, delete configuration, remove dependencies, fold the temporary package) and is two (D13): the dependency sets are one file swap, and a separate refactor piece only repeated the same edits.
 - The tab shim and its optional removal piece were dropped (D6).
 - Writing the version marker moved from its own three-line piece into P2.
@@ -123,13 +127,13 @@ Lines are hand-written changed lines; the lockfile, generated `docs/api` and bin
 | Piece | Builds | Files | Fails without it | Lines | Waits on | [#10583](https://github.com/chartjs/Chart.js/issues/10583) |
 | --- | --- | --- | --- | --- | --- | --- |
 | P1 | Fix the links that resolve only by accident | `docs/axes/_common_ticks.md`, `docs/axes/radial/linear.md`, `docs/axes/index.md`, `docs/developers/index.md`, `docs/getting-started/index.md` | the radial axis "Color" link 404s on the live site; a VitePress build reports 8 dead in-site links | ~7 | nothing | advances |
-| P2 | A VitePress site beside VuePress: temporary package, config (title, base from the version marker, favicon, nav with repository link, last updated, includes, anchor index, local search, light only, `chart.js` and Vue 3 aliases, partials excluded), theme entry with brand palette, public files, root `docs:vitepress` scripts, version marker written by `docs-config.sh`. Links under `/api/` are ignored until P4 | `docs/.vitepress/{package.json,config.ts,docs-version.json}`, `docs/.vitepress/theme/{index.ts,styles/palette.css}`, `docs/public/*` (3 binary copies), `pnpm-workspace.yaml`, `.gitignore`, `package.json`, `scripts/docs-config.sh` | `pnpm run docs:vitepress` does not exist; with it `docs/.vitepress/dist/getting-started/usage.html` exists while `pnpm run docs` still builds the VuePress site | ~200 | P1 | advances |
+| P2 | A VitePress site beside VuePress: temporary package, config (title, base from the version marker, favicon, nav with repository link, last updated, includes, anchor index, local search, light only, `chart.js` and Vue 3 aliases, partials excluded), theme entry with brand palette, public files, root `docs:vitepress` scripts, a type-check script for the docs code, version marker written by `docs-config.sh`. Links under `/api/` are ignored until P4 | `docs/.vitepress/{package.json,config.ts,docs-version.json,tsconfig.json}`, `docs/.vitepress/theme/{index.ts,styles/palette.css}`, `docs/public/*` (3 binary copies), `pnpm-workspace.yaml`, `.gitignore`, `package.json`, `scripts/docs-config.sh` | `pnpm run docs:vitepress` does not exist; with it `docs/.vitepress/dist/getting-started/usage.html` exists while `pnpm run docs` still builds the VuePress site | ~200 | P1 | advances |
 | P3 | Sidebar: the three trees as path lists, labels read from each page's first heading; the build fails on a page that is in no sidebar | `docs/.vitepress/sidebar.ts`, `docs/.vitepress/config.ts` | pages have no sidebar | ~210 | P2 | advances |
 | P4 | API reference: TypeDoc pipeline and generated sidebar; the `/api/` link exemption removed | `docs/typedoc.json`, `docs/.vitepress/package.json`, `docs/.vitepress/config.ts` | `api/classes/Chart.html` is missing; the 20 guide links into `api/` are dead | ~60 | P3 (same file) | advances |
 | P5 | Redirect stubs for the four old directories and the two `api/enums` pages | `docs/.vitepress/redirects.ts`, `docs/.vitepress/config.ts` | `charts/index.html` and `api/enums/UpdateModeEnum.html` are absent from the output | ~50 | P4 (same file; enumeration targets) | advances |
 | P6 | Version menu with build-time list and browser refresh | `docs/.vitepress/theme/{VersionMenu.vue,versions.ts,versions.data.ts,index.ts}` | built for master the nav has no menu titled "Development (master)" | ~230 | P2 | advances |
-| P7 | CI builds the VitePress site when docs change | `.github/workflows/ci.yml` | a pull request that breaks only the new build passes CI | ~6 | P2, [#12422](https://github.com/chartjs/Chart.js/pull/12422) | advances |
-| P8 | Live samples: the package, its fence plugin, the runtime module, adapter excluded from pre-bundling | `docs/.vitepress/{package.json,config.ts}`, `docs/.vitepress/theme/{index.ts,chart-runtime.ts,styles/palette.css}` | sample pages show code but no chart; checked on a bar sample, a time-scale sample, the HTML legend sample and the progress-bar sample, in build and in dev | ~70 | P5, P6 (same files); **first release of `vitepress-theme-chartjs`** | advances |
+| P7 | CI builds and type-checks the VitePress site when docs change | `.github/workflows/ci.yml` | a pull request that breaks only the new build, or the types of the docs code, passes CI | ~8 | P2, [#12422](https://github.com/chartjs/Chart.js/pull/12422) | advances |
+| P8 | Live samples: the package, its fence plugin, the sample imports module, source link configuration, adapter excluded from pre-bundling | `docs/.vitepress/{package.json,config.ts}`, `docs/.vitepress/theme/{index.ts,chart-imports.ts,styles/palette.css}` | sample pages show code but no chart; checked on a bar sample, a time-scale sample, the HTML legend sample and the progress-bar sample, in build and in dev | ~70 | P5, P6 (same files); **first release of `vitepress-theme-chartjs`** | advances |
 | P9 | The switch: `docs/package.json` carries the VitePress dependencies and scripts in place of the VuePress ones; `pnpm run docs` and `docs:dev` build VitePress into `dist/docs`; the tab pages use the tabs plugin; temporary package, Vue aliases, root scripts and CI step removed; command and port on the samples page | `docs/package.json`, `docs/.vitepress/package.json` (deleted), `docs/.vitepress/{config.ts,theme/index.ts}`, `package.json`, `pnpm-workspace.yaml`, `.gitignore`, `.github/workflows/ci.yml`, `docs/charts/doughnut.md`, `docs/configuration/animations.md`, `docs/configuration/canvas-background.md`, `docs/samples/information.md` | after `./scripts/docs-config.sh master && pnpm run docs`, `dist/docs` is VuePress output and `pnpm why vuepress` lists it | ~140 | P3 to P8 | advances |
 | P10 | Remove what is dead: the VuePress directory, the `sed`, the workspace override and build allowances, the ignore entry, the contributor sentence | `docs/.vuepress/**` (deleted: 442 lines and 3 binaries), `scripts/docs-config.sh`, `pnpm-workspace.yaml`, `.gitignore`, `docs/developers/contributing.md` | a 395-line configuration nothing reads, which pull requests keep editing | ~455, of which 442 whole-file deletions | P9 and one clean master deploy of it; [#12386](https://github.com/chartjs/Chart.js/pull/12386) | **completes** |
 
@@ -143,7 +147,7 @@ Lines are hand-written changed lines; the lockfile, generated `docs/api` and bin
 
 - P2 to all: `pnpm run docs:vitepress` builds into `docs/.vitepress/dist`; the config reads `docs/.vitepress/docs-version.json`, which `scripts/docs-config.sh <version> [release]` writes; the theme entry extends the default theme; the temporary package owns the dependencies.
 - P4 to P5: enumeration pages are at `api/enumerations/<Name>.html`.
-- P7 to P9: the CI step that runs `pnpm run docs:vitepress` is removed in the piece that removes the script.
+- P7 to P9: the CI step that runs `pnpm run docs:vitepress` is removed in the piece that removes the script; the type-check step stays and follows the script to `docs/package.json`.
 - P9 to P10: nothing invokes VuePress and nothing in the lockfile comes from it.
 
 **What this repository needs from `vitepress-theme-chartjs`**
@@ -152,29 +156,29 @@ The names below are the agreed ones. A reference implementation is the editor un
 
 - Entry points (ESM, shipped compiled so they work when Vite leaves the package external in the server build):
   - `vitepress-theme-chartjs/markdown`: `chartEditor(md)`, a markdown-it plugin.
-  - `vitepress-theme-chartjs`: the `ChartEditor` component and an installer, `app.use(chartEditorPlugin, options)`, that registers it globally.
+  - `vitepress-theme-chartjs`: the `ChartEditor` component, an installer `app.use(chartEditorPlugin, options)` that registers it globally, and the type `ChartjsThemeConfig`.
   - `vitepress-theme-chartjs/style.css`, imported by the consumer; the JavaScript entries import no CSS.
-- Options:
+- Options and theme configuration, shaped as in chartjs-plugin-zoom so that its editor moves into the package with few changes:
   ```ts
   interface ChartEditorOptions {
+    // The names sample code can use besides Chart, here {Utils, helpers, components}.
     // Called once, in the browser only, before the first sample runs.
-    runtime: () => Promise<{
-      globals: Record<string, unknown>   // must contain Chart; here Chart, Utils, helpers, components
-      createChart?: (canvas: HTMLCanvasElement, config: object) => unknown  // default: new globals.Chart(canvas, config)
-    }>
-    // Source link: https://github.com/{repo}/blob/{branch}/{dir}/{page path}
-    source?: { repo: string; branch: string; dir: string }
+    imports?: () => Promise<Record<string, unknown>>
+  }
+  interface ChartjsThemeConfig extends DefaultTheme.Config {
+    // Source link of a sample: https://github.com/{repo}/blob/{branch}/{dir}/{page path}
+    source: { repo: string; branch: string; dir: string }
   }
   ```
-- The package never imports `chart.js` at runtime; `Chart` arrives through `globals`. This repository cannot depend on its own published package, and a second copy would break registration.
+- `chart.js` is a peer dependency that the package imports, as the zoom editor and the old theme do. This repository satisfies it with its Vite alias to `dist/chart.js` (and already lists `chart.js` under `peerDependencyRules.ignoreMissing`), so samples, scripts and editor share one Chart.js.
 - Fence syntax: a fence is taken over when its trimmed info string matches `/ chart-editor( |$)/`; every other fence goes to the previous rule untouched. The code reaches the component verbatim (backticks, `${}`, quotes, `{{ }}`, `</script>`, non-ASCII).
-- Sample format: the code runs as the body of a strict-mode function whose locals are every key of `globals`, a `console` whose `log` is captured (last 50 lines), and `module` with an empty `exports`. Afterwards the component reads `module.exports.config` (a Chart.js configuration, not made reactive or frozen), `module.exports.actions` (`[{name, handler(chart)}]`, read on the first evaluation only) and `module.exports.output` (when truthy, an output tab showing the captured log, the string as placeholder).
+- Sample format: the code runs as the body of a strict-mode function whose locals are `Chart`, every name `imports` resolved to, a `console` whose `log` is captured (last 50 lines), and `module` with an empty `exports`. Afterwards the component reads `module.exports.config` (a Chart.js configuration, not made reactive or frozen), `module.exports.actions` (`[{name, handler(chart)}]`, read on the first evaluation only) and `module.exports.output` (when truthy, an output tab showing the captured log, the string as placeholder).
 - Block markers: comments whose text matches `/^\s*<(\/?)block:([\w\s]+)(?::(\d+))?>\s*$/`, located with a parser so a marker inside a string is ignored. Named blocks become tabs sorted by the number; with no markers there is one tab; code outside named blocks is hidden but runs.
 - Edits are evaluated 500 ms after the last keystroke; a thrown error keeps the previous chart and shows the message. The first evaluation creates the chart; later ones replace `data` and `options` and call `update()`; the chart is destroyed when the page is left.
 - The chart and editor render in the page's own document, with no iframe or shadow root (19 sample lines look up elements written in the markdown), after the page is mounted. The elements carry the class names `chart-editor` and `chart-view`. A sample in a tab hidden at first draws correctly when shown (checked in P9, when tabs exist).
 - No network requests at runtime (no CDN fonts or icons).
-- Server rendering: importing either entry in Node touches no `window` or `document`; on the server the component renders a placeholder and neither calls `runtime` nor evaluates code.
-- Peers: `vitepress ^1.6.0`, `vue ^3.5.0`. Semver; this repository depends on a caret range of the first release.
+- Server rendering: importing either entry in Node touches no `window` or `document`; on the server the component renders a placeholder and neither calls `imports` nor evaluates code.
+- Peers: `vitepress ^1.6.0`, `vue ^3.5.0`, `chart.js ^4.0.0`. Semver; this repository depends on a caret range of the first release.
 
 ## Open Questions
 
