@@ -6,10 +6,6 @@ The chart legend displays data about the datasets that are appearing on the char
 
 Namespace: `options.plugins.legend`, the global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
 
-:::warning
-The doughnut, pie, and polar area charts override the legend defaults. To change the overrides for those chart types, the options are defined in `Chart.overrides[type].plugins.legend`.
-:::
-
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | Is the legend shown?
@@ -26,6 +22,10 @@ The doughnut, pie, and polar area charts override the legend defaults. To change
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
+
+:::warning
+The doughnut, pie, and polar area charts override the legend defaults. To change the defaults for one of these chart types, use `Chart.overrides[type].plugins.legend`, where `type` is `'doughnut'`, `'pie'`, or `'polarArea'` (for example, `Chart.overrides.pie.plugins.legend`).
+:::
 
 :::tip Note
 If you need more visual customizations, please use an [HTML legend](../samples/legend/html.md).
