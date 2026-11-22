@@ -34,19 +34,49 @@ jobs:
           registry-url: https://registry.npmjs.org/
           node-version: 26
           cache: pnpm
+      # This job holds the npm publishing identity, so it installs only the
+      # root package's dependencies. The docs toolchain runs in release-docs.
       - name: Setup and build
         run: |
-          pnpm install
-          pnpm install -g json
-          json -I -f package.json -e "this.version=\"$VERSION\""
+          pnpm install --filter chart.js
+          npm pkg set version="$VERSION"
           pnpm run build
-          ./scripts/docs-config.sh "$VERSION" release
-          pnpm run docs
           pnpm pack
         env:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Publish to NPM
         run: ./scripts/publish.sh
+        env:
+          VERSION: ${{ needs.setup.outputs.version }}
+      - name: Upload NPM package file
+        id: upload-npm-package-file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.setup.outputs.version }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
+          asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
+          asset_content_type: application/gzip
+
+  release-docs:
+    needs: [setup, release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: pnpm
+      - name: Setup and build
+        run: |
+          pnpm install
+          npm pkg set version="$VERSION"
+          pnpm run build
+          ./scripts/docs-config.sh "$VERSION" release
+          pnpm run docs
         env:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Generate docs deploy token
@@ -64,19 +94,10 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
           VERSION: ${{ needs.setup.outputs.version }}
-      - name: Upload NPM package file
-        id: upload-npm-package-file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ needs.setup.outputs.version }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
-          asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
-          asset_content_type: application/gzip
+
   release-tag:
-    needs: [setup, release]
+    # Runs after release-docs: both push to chartjs.github.io.
+    needs: [setup, release, release-docs]
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
@@ -90,8 +111,7 @@ jobs:
       - name: Setup and build
         run: |
           pnpm install
-          pnpm install -g json
-          json -I -f package.json -e "this.version=\"$VERSION\""
+          npm pkg set version="$VERSION"
           pnpm run build
           ./scripts/docs-config.sh "$VERSION"
           pnpm run docs
