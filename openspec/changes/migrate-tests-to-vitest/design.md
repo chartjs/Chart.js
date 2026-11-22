@@ -42,7 +42,7 @@ State of `master` when this was written (2026-11-22). Nothing here has been exec
 **Non-Goals:**
 
 - No change under `src/`, to `rollup.config.js`, or to the published package.
-- No WebKit run (see Open Questions).
+- No WebKit run (D14).
 - No rewrite of fixtures to ES modules, and no replacement of the helper globals with imports. Both can follow as separate mechanical changes.
 - No removal of unused dev dependencies that are unrelated to Karma (`@rollup/plugin-inject`, `esm`, `glob`).
 - No migration of the docs toolchain or of ESLint.
@@ -50,7 +50,7 @@ State of `master` when this was written (2026-11-22). Nothing here has been exec
 ## Decisions
 
 ### D1. Both runners side by side; free files first, in large pieces
-Decided by the maintainers. Spec files no open pull request touches are converted first, grouped by area into large pieces, because a conversion edits only 2-3% of a file's lines and is mechanical. Files held by open pull requests follow under the rule in Open Questions.
+Decided by the maintainers. Spec files no open pull request touches are converted first, grouped by area into large pieces, because a conversion edits only 2-3% of a file's lines and is mechanical. Files held by open pull requests follow under the rule in D13.
 *Alternatives:* a compatibility layer that runs the specs unedited (keeps Jasmine vocabulary indefinitely); one conversion of everything at once (conflicts with about 65 open pull requests).
 
 ### D2. Specs run against source; a smoke suite covers the built bundle
@@ -114,11 +114,18 @@ Chromium and Firefox through `@vitest/browser-playwright`, with the launch optio
 `vitest.config.js` and `vitest.umd.config.js`, not `.ts`: `tsconfig.json` includes only `src` and nothing typechecks root tooling. What both configs need is written once, in `test/vitest.shared.js`: the Playwright provider with its launch options, the viewport, and from P2 the fixture transform. The smoke config imports those and nothing else from the main config, so it never inherits the `src` alias or `test/setup.js`.
 
 ### D11. Reference images are not regenerated in bulk
-1.x compares with pixelmatch 8 blending against white, as pixelmatch 5 did. P2 runs all 667 images under Playwright's browsers for the first time. If more than a handful fail, P2 stops and brings the list to the maintainers instead of regenerating. What unblocks it is a decision per failing fixture: raise its tolerance, or regenerate its image from Chromium with the update command after looking at the difference. No fixture stays behind on Karma.
+1.x compares with pixelmatch 8 blending against white, as pixelmatch 5 did. P2 runs all 667 images under Playwright's browsers for the first time. If more than a handful fail, P2 stops and brings the list to the maintainers instead of regenerating. The maintainers chose this over the alternative below. What unblocks it is a decision per failing fixture: raise its tolerance, or regenerate its image from Chromium with the update command after looking at the difference. No fixture stays behind on Karma.
 *Alternative:* a per-directory ownership list, so that directories whose images pass move to Vitest while the rest stay on Karma. It would let the conversion pieces start before every image is settled, at the cost of a second mechanism that every later piece has to consult; the failing images have to pass under Vitest in the end either way.
 
 ### D12. Script names during the migration
 `dev` and `dev:ff` stay Karma and `dev:vitest` is added; the last piece makes `dev` and `dev:ff` the Vitest commands and removes `dev:vitest`.
+
+### D13. Held spec files are converted when free, or 30 days after P6
+Decided by the maintainers. A spec file that open pull requests touch is converted when no open pull request touches it any more, or 30 days after P6 merges, whichever comes first. Pull requests opened before 2026 (#11105, #11140, #11173, #11188, #11825, #11849, #11898) and pull requests opened after P1 merges never hold a file. When a held file is converted while a pull request still touches it, that pull request gets a comment with the rebase recipe (the table in D5). A new `*.tests.js` file that a pull request adds during the migration runs under Karma until P12, which converts whatever is left.
+*Alternatives:* convert everything right after P6 (fastest, but up to 65 pull requests rebase at once); wait for every pull request (no end date for removing Karma).
+
+### D14. Chromium and Firefox only
+Decided by the maintainers. The same browsers CI uses today. WebKit can be tried as a follow-up with image fixtures excluded, because its text rendering will not match the reference images.
 
 ## Risks / Trade-offs
 
@@ -147,11 +154,11 @@ Chromium and Firefox through `@vitest/browser-playwright`, with the launch optio
 | P4 | Convert free specs: helpers, elements, small files (17 files, 3,047 spec lines) | `helpers.{canvas,collection,core,curve,easing,interpolation,options,segment}`, `element.{arc,bar,line,point}`, `global.namespace`, `mixed`, `plugin.colors`, `scale.radialLinear`; `plugin.subtitle.tests.js` deleted (only a fixture line) | those specs keep Karma alive | ~40 | P1, P2 |
 | P5 | Convert free specs: controllers (3 files, 1,315 lines) | `controller.{bubble,polarArea,radar}` | as P4 | ~105 | P1, P2 |
 | P6 | Convert free specs: core (9 files, 3,833 lines) | `core.{animator,datasetController,defaults,element,helpers,interaction,layouts,plugin,registry}` | as P4 | ~150 | P1, P2 |
-| P7 | Convert held specs: controllers (3,727 lines) | `controller.{bar,doughnut,line,scatter}` | as P4 | ~90 | P1, P2, held-file rule |
-| P8 | Convert held specs: core (3,736 lines; 22 `done` tests) | `core.{animation,animations,controller,scale,ticks}` | as P4 | ~210 | P1, P2, held-file rule |
-| P9 | Convert held specs: helpers and platform (2,145 lines); the worker test moves to the smoke suite | `helpers.{color,config,dom,math}`, `platform.{basic,dom}`, `test/umd/umd.spec.js`, `test/umd/worker.js` | as P4 | ~120 | P1, P2, P3, held-file rule |
-| P10 | Convert held specs: plugins (4,044 lines) | `plugin.{decimation,filler,legend,title,tooltip}` | as P4 | ~85 | P1, P2, held-file rule |
-| P11 | Convert held specs: scales (4,513 lines) | `scale.{category,linear,logarithmic,time}` | as P4 | ~75 | P1, P2, held-file rule |
+| P7 | Convert held specs: controllers (3,727 lines) | `controller.{bar,doughnut,line,scatter}` | as P4 | ~90 | P1, P2, D13 |
+| P8 | Convert held specs: core (3,736 lines; 22 `done` tests) | `core.{animation,animations,controller,scale,ticks}` | as P4 | ~210 | P1, P2, D13 |
+| P9 | Convert held specs: helpers and platform (2,145 lines); the worker test moves to the smoke suite | `helpers.{color,config,dom,math}`, `platform.{basic,dom}`, `test/umd/umd.spec.js`, `test/umd/worker.js` | as P4 | ~120 | P1, P2, P3, D13 |
+| P10 | Convert held specs: plugins (4,044 lines) | `plugin.{decimation,filler,legend,title,tooltip}` | as P4 | ~85 | P1, P2, D13 |
+| P11 | Convert held specs: scales (4,513 lines) | `scale.{category,linear,logarithmic,time}` | as P4 | ~75 | P1, P2, D13 |
 | P12 | Remove Karma: convert any `*.tests.js` added since; delete `karma.conf.cjs`, `test/index.js`, `test/seed-reporter.cjs`, `test/BasicChartWebWorker.js`; remove 15 dev dependencies (`karma`, `karma-chrome-launcher`, `karma-coverage`, `karma-edge-launcher`, `karma-firefox-launcher`, `karma-jasmine`, `karma-jasmine-html-reporter`, `karma-rollup-preprocessor`, `karma-safari-private-launcher`, `karma-spec-reporter`, `jasmine-core`, `rollup-plugin-istanbul`, `@rollup/plugin-commonjs`, `yargs`, `pixelmatch`) and the alias; `dev` scripts become Vitest; old-suffix guard; CI without xvfb and with one Coveralls upload; docs | `package.json`, `pnpm-lock.yaml`, `vitest.config.js`, `.github/workflows/ci.yml`, `test/.eslintrc.yml`, `docs/developers/contributing.md`, the four deleted files | `pnpm why karma` still lists it | ~110 edited, ~210 deleted | P3-P11; no `*.tests.js` left |
 
 Check for every conversion piece (P4-P11): every test that leaves Karma arrives in Vitest. Counted without the fixture placeholders that the Karma stub registers (one per `jasmine.fixture.specs` line, removed with the line), Karma's test count falls by exactly the number Vitest's rises, per browser. `plugin.subtitle.tests.js` holds only a placeholder, so deleting it moves nothing. In P9 the worker test arrives in the smoke suite instead. Both totals, and the placeholders removed, go in the pull request description.
@@ -180,8 +187,7 @@ Held spec files as of 2026-11-22 (re-evaluated when each piece starts):
 
 ## Open Questions
 
-1. **Held files (P7-P11).** When is a spec file that open pull requests touch converted? Proposed: when no open pull request touches it, or 30 days after P6 merges, whichever comes first; pull requests opened before 2026 (#11105, #11140, #11173, #11188, #11825, #11849, #11898) and pull requests opened after P1 merges never hold a file. At the cut-off each affected pull request gets a comment with the rebase recipe (the table in D5). A new `*.tests.js` file that a pull request adds during the migration runs under Karma until P12, which converts whatever is left.
-2. **WebKit.** Chromium and Firefox only, as today, or WebKit as well? Proposed: not in this change; WebKit's text rendering will fail image fixtures, so it is a follow-up with fixtures excluded.
+None.
 
 ## Review
 
