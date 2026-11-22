@@ -30,7 +30,7 @@ The documentation build MUST NOT add files to the published npm package.
 
 ### Requirement: Version selection changes one file
 
-Selecting the docs version for a build SHALL change no tracked file other than the version marker.
+Once the VuePress configuration is removed, selecting the docs version for a build SHALL change no tracked file other than the version marker.
 
 #### Scenario: Selecting a release
 - **WHEN** the release tooling selects version `x.y.z` for the docs

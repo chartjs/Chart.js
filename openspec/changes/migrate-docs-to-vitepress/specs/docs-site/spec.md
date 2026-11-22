@@ -38,7 +38,7 @@ The site SHALL offer the same top navigation and the same sidebar sections, page
 
 #### Scenario: A guide page
 - **WHEN** a reader opens any guide page
-- **THEN** the top navigation offers Home, API, Samples, Ecosystem (Awesome, Discord, Stack Overflow) and a link to the GitHub repository, and the sidebar lists the guide sections with every guide page in it
+- **THEN** the page shows when it was last updated, the top navigation offers Home, API, Samples, Ecosystem (Awesome, Discord, Stack Overflow) and a link to the GitHub repository, and the sidebar lists the guide sections with every guide page in it
 
 #### Scenario: A samples page
 - **WHEN** a reader opens a samples page
