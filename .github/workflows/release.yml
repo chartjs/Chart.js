@@ -44,6 +44,8 @@ jobs:
           pnpm pack
         env:
           VERSION: ${{ needs.setup.outputs.version }}
+          # Without this, `pnpm run` reinstalls the whole workspace first.
+          pnpm_config_verify_deps_before_run: false
       - name: Publish to NPM
         run: ./scripts/publish.sh
         env:
