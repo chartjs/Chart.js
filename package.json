@@ -90,7 +90,6 @@
         "chartjs-adapter-moment": "^1.0.0",
         "chartjs-test-utils": "^0.4.0",
         "concurrently": "^7.3.0",
-        "coveralls": "^3.1.1",
         "cross-env": "^7.0.3",
         "eslint": "^8.21.0",
         "eslint-config-chartjs": "^0.3.0",
