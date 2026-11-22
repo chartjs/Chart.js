@@ -27,6 +27,20 @@ Checked without a build: TypeDoc 0.28.20 with TypeScript 6.0 converts `src/types
 
 [chartjs-plugin-zoom pull request 972](https://github.com/chartjs/chartjs-plugin-zoom/pull/972) moved that plugin's docs to VitePress 1.6.4 with a local Vue 3 port of the chart editor, a `docs-version.json` written by `docs-config.sh`, and a TypeDoc pipeline. This design follows its choices where they fit; `vitepress-theme-chartjs` is in effect the extraction of its editor.
 
+## Prior art
+
+The docs of chartjs-plugin-zoom run on VitePress 1.6.4 since [chartjs-plugin-zoom pull request 972](https://github.com/chartjs/chartjs-plugin-zoom/pull/972). Paths below are in that repository; each piece starts from them instead of from nothing.
+
+| Piece | Start from | What differs here |
+| --- | --- | --- |
+| P2 | `docs/.vitepress/config.ts` (base from `docs-version.json`, favicon link with the base, `lastUpdated`, `appearance: false`, local search, social link), `theme/index.ts`, `theme/styles/palette.css`, the `printf` line of `scripts/docs-config.sh` | Includes, the anchor index, the excluded partials, the Vue aliases and the temporary package exist only here. |
+| P3 | the sidebar shape in `config.ts` | Zoom writes each title by hand for 25 pages; here 134 titles are read from the pages. |
+| P4 | `typedoc.json` (`plugin`, `docsRoot`, `githubPages: false`, `useCodeBlocks`, `sidebar` for VitePress) and the `typedoc-sidebar.json` import | `skipErrorChecking`, `membersWithOwnFile` and the entry point `src/types/index.d.ts`; zoom's `treatWarningsAsErrors` is tried and kept only if the conversion is clean. |
+| P6 | `docs/.vitepress/versions.ts`: fetching the jsDelivr list, parsing, ordering and collapsing versions, with a fallback when the fetch fails | Zoom returns a nav item built once at build time. Here the same functions feed a component that also refreshes in the browser (D4). |
+| P8 | `docs/.vitepress/markdown/chart-editor.ts` and `theme/{ChartEditor,ChartView,CodeEditor,CodeTextarea,CodeOutput,ChartActions,Tooltip}.vue`, `theme/styles/editor.css`, `theme-config.ts` | This is the code `vitepress-theme-chartjs` is extracted from. In zoom the editor imports `chart.js` and a local `chart-imports` module directly; a package cannot import its consumer's module, hence the `runtime` option in Contracts. |
+
+Zoom made the move in one pull request, with the dependencies in its single root package. That does not carry over: here the docs are a workspace package still on Vue 2 while VuePress deploys, and a single pull request would be far over the size limit.
+
 ## Goals / Non-Goals
 
 **Goals**
