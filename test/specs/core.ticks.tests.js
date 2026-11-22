@@ -120,6 +120,18 @@ describe('Test tick generators', function() {
       }
     });
 
+    it('should not fail on zero ticks when the format sets only one fraction digits bound', function() {
+      const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {format: {minimumFractionDigits: 2}}}};
+      const ticks = [{value: 0}, {value: 0.25}, {value: 0.5}];
+      expect(Chart.Ticks.formatters.numeric.call(scale, 0, 0, ticks)).toBe('0.00');
+
+      scale.options.ticks.format = {maximumFractionDigits: 3};
+      expect(Chart.Ticks.formatters.numeric.call(scale, 0, 0, ticks)).toBe('0');
+
+      scale.options.ticks.format = {style: 'currency', currency: 'USD', minimumFractionDigits: 1};
+      expect(Chart.Ticks.formatters.numeric.call(scale, 0, 0, ticks)).toBe('$0.0');
+    });
+
     it('should keep zero ticks free of automatic precision and notation', function() {
       const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {}}};
       for (const ticks of [[], [{value: 0}], [{value: 0}, {value: 0.01}], [{value: 0}, {value: 1e16}]]) {

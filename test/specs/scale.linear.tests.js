@@ -722,6 +722,47 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.max).toBeGreaterThan(120);
   });
 
+  it('should generate the same ticks for explicit bounds with and without grace', function() {
+    function getTicks(grace) {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [10, 90]}]
+        },
+        options: {
+          scales: {
+            y: {min: 0, max: 100, grace}
+          }
+        }
+      });
+      return chart.scales.y.ticks.map(tick => tick.value);
+    }
+
+    expect(getTicks('10%')).toEqual(getTicks(undefined));
+    expect(getTicks(20)).toEqual(getTicks(undefined));
+  });
+
+  it('should not apply grace when min and max are the same', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [1, 9]}]
+      },
+      options: {
+        scales: {
+          y: {min: 5, max: 5, grace: 5}
+        }
+      }
+    });
+    var ticks = chart.scales.y.ticks.map(tick => tick.value);
+
+    expect(chart.scales.y.min).toBe(5);
+    expect(chart.scales.y.max).toBe(5);
+    expect(ticks).toEqual(ticks.slice().sort((a, b) => a - b));
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
@@ -799,6 +840,31 @@ describe('Linear Scale', function() {
     });
     expect(values).toContain(50);
     expect(values).toContain(51);
+  });
+
+  it('Should generate ticks free of floating point drift on a negative range', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: -51.5264,
+            max: -49.894,
+          },
+        },
+      },
+    });
+
+    var values = chart.scales.y.ticks.map(function(tick) {
+      return tick.value;
+    });
+
+    values.forEach(function(value) {
+      expect(value).toBe(Math.round(value * 1e4) / 1e4);
+    });
+    expect(values).toContain(-50);
+    expect(values).toContain(-51);
   });
 
   it('Should not generate insane amounts of ticks with small stepSize and large range', function() {

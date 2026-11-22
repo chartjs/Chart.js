@@ -2467,7 +2467,8 @@ export interface LegendOptions<TType extends ChartType> {
    */
   onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**
-   * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
+   * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item,
+   * or when the pointer leaves the canvas ('mouseout') while a label item is hovered.
    */
   onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
 
