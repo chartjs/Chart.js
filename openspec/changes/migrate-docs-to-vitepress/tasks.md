@@ -61,7 +61,7 @@
 
 - [ ] 9.1 See `pnpm run docs` leave VuePress output in `dist/docs` and `pnpm why vuepress` list it
 - [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
-- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7; `docs:typecheck` points at `docs/package.json`
+- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`; `docs:typecheck` points at `docs/package.json`
 - [ ] 9.4 Add `vitepress-plugin-tabs` and convert the three tab pages; check tabs switch and a sample in a tab hidden at first draws at full size
 - [ ] 9.5 Update the command and port in `docs/samples/information.md`
 - [ ] 9.6 Compare one wide options table page and one sample page with the live site
@@ -75,3 +75,17 @@
 - [ ] 10.3 Remove the `html-entities` override and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
 - [ ] 10.4 Name VitePress in `docs/developers/contributing.md`
 - [ ] 10.5 `git grep -i vuepress` finds only the history line in `docs/migration/v3-migration.md`
+
+## 11. P11: Docs preview on pull requests
+
+- [ ] 11.1 Confirm with the maintainers that a Netlify site is connected to the repository, with deploy previews on and production deploys off
+- [ ] 11.2 Add `netlify.toml`: the build runs `./scripts/docs-config.sh master && pnpm run docs` and publishes a directory holding the result as `docs/master/`; `/` redirects to `/docs/master/`; Node and pnpm versions as the repository requires; an `ignore` command skips the build when nothing under `docs/`, `src/`, `scripts/` or the package manifests changed
+- [ ] 11.3 Open the pull request from a fork and see the preview link appear on it; if none appears, record that in `design.md` and switch to the fallback of D20
+- [ ] 11.4 In the preview, a page, a sample and an in-site link work under `/docs/master/`
+
+## 12. P12: Preview of the undeployed VitePress site
+
+- [ ] 12.1 See that the preview has nothing under `/vitepress/`
+- [ ] 12.2 Let an environment variable override the base in `docs/.vitepress/config.ts`
+- [ ] 12.3 Extend the Netlify build to run the VitePress build with base `/vitepress/` and publish it beside `docs/master/`
+- [ ] 12.4 Check a page and an in-site link under `/vitepress/`, and that `/docs/master/` is unchanged

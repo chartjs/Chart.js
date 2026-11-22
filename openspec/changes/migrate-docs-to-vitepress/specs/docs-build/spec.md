@@ -35,3 +35,15 @@ Once the VuePress configuration is removed, selecting the docs version for a bui
 #### Scenario: Selecting a release
 - **WHEN** the release tooling selects version `x.y.z` for the docs
 - **THEN** `git status` shows the version marker as the only modified file
+
+### Requirement: Pull request preview
+
+A pull request that changes what the documentation is built from SHALL get a link to a preview of the built site, whether it comes from a branch of the repository or from a fork.
+
+#### Scenario: A docs pull request from a fork
+- **WHEN** a contributor opens a pull request from a fork that changes a documentation page
+- **THEN** a link to a preview of the built site appears on the pull request, and the changed page is shown there under the path it has in production
+
+#### Scenario: A pull request that does not touch the docs
+- **WHEN** a pull request changes only tests
+- **THEN** no preview is built

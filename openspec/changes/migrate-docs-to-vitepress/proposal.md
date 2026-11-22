@@ -11,6 +11,7 @@ The documentation site is built with VuePress 1, which no longer releases; it pi
 - Search is VitePress's built-in local search instead of flexsearch.
 - The docs version is selected by a small committed JSON file that `scripts/docs-config.sh` rewrites, instead of `sed` on the site configuration.
 - During the migration both sites build side by side from the same markdown. Only the VuePress site is deployed until one piece switches what `pnpm run docs` builds.
+- Pull requests get a preview of the built docs from Netlify, at the same path as in production.
 - At the end VuePress, its plugins, Vue 2, webpack 4 and the OpenSSL legacy flag are removed.
 - **BREAKING** (readers): the four accidental pages `axes/_common.html`, `axes/_common_ticks.html`, `axes/cartesian/_common.html` and `axes/cartesian/_common_ticks.html` (include partials published as pages) disappear. Nothing links to them.
 - The Universal Analytics tag, which no longer collects, is not carried over; the site has no analytics.
@@ -38,5 +39,6 @@ None.
 - Contributors: `pnpm run docs` and `pnpm run docs:dev` keep their names. The dev server port changes from 8080 to VitePress's default 5173. A link to a page that does not exist now fails the docs build. Editing an include partial needs a dev-server restart to show.
 - CI and release: the three workflows call the same two commands as today (`./scripts/docs-config.sh`, `pnpm run docs`); one step is added to `ci.yml` to build the new site while both exist and removed at the switch.
 - Dependencies (`docs/` only): adds `vitepress`, `vue` 3, `vitepress-theme-chartjs`, `vitepress-plugin-tabs`, `typedoc` 0.28, `typedoc-plugin-markdown` 4, `typedoc-vitepress-theme`, a docs-only `typescript` 6; removes `vuepress` and its eight plugins, `vuepress-theme-chartjs`, `vue` 2, `vue-tabs-component`, `webpack` 4 and `markdown-it`.
+- External: a Netlify site connected to `chartjs/Chart.js`, set up by the maintainers, for the previews.
 - External: a new repository and npm package `vitepress-theme-chartjs` must exist and release before live samples, and therefore the switch, can merge.
 - Open pull requests that edit `docs/.vuepress/config.ts` (today [#12386](https://github.com/chartjs/Chart.js/pull/12386)) must merge or move their sidebar entry to the new sidebar before the old configuration is deleted.
