@@ -654,6 +654,74 @@ describe('Linear Scale', function() {
     expect(labels[labels.length - 1]).toBe('1,010');
   });
 
+  [5, '20%'].forEach(function(grace) {
+    [{min: 24.4, max: 75.6}, {min: 24.4}, {max: 75.6}].forEach(function(bounds) {
+      it('should apply grace ' + grace + ' only to data bounds with ' + JSON.stringify(bounds), function() {
+        var chart = window.acquireChart({
+          type: 'line',
+          data: {
+            datasets: [{data: Array.from({length: 11}, (_, i) => ({x: i, y: 10 + i * 8}))}]
+          },
+          options: {
+            parsing: false,
+            scales: {
+              x: {type: 'linear'},
+              y: {...bounds, grace}
+            }
+          }
+        });
+        var scale = chart.scales.y;
+        var ticks = scale.ticks.map(tick => tick.value);
+
+        if (bounds.min !== undefined) {
+          expect(scale.min).toBe(bounds.min);
+          expect(ticks.every(value => value >= bounds.min)).toBe(true);
+        } else {
+          expect(scale.min).toBeLessThan(10);
+        }
+        if (bounds.max !== undefined) {
+          expect(scale.max).toBe(bounds.max);
+          expect(ticks.every(value => value <= bounds.max)).toBe(true);
+        } else {
+          expect(scale.max).toBeGreaterThan(90);
+        }
+        expect(ticks).toEqual(ticks.slice().sort((a, b) => a - b));
+
+        if (bounds.min !== undefined && bounds.max !== undefined) {
+          chart.options.scales.y.min = 29.4;
+          chart.options.scales.y.max = 70.6;
+          chart.update();
+          expect(scale.min).toBe(29.4);
+          expect(scale.max).toBe(70.6);
+
+          delete chart.options.scales.y.min;
+          delete chart.options.scales.y.max;
+          chart.update();
+          expect(scale.min).toBeLessThan(10);
+          expect(scale.max).toBeGreaterThan(90);
+        }
+      });
+    });
+  });
+
+  it('should continue to add grace to suggested bounds', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [10, 90]}]
+      },
+      options: {
+        scales: {
+          y: {suggestedMin: -20, suggestedMax: 120, grace: 10}
+        }
+      }
+    });
+
+    expect(chart.scales.y.min).toBeLessThan(-20);
+    expect(chart.scales.y.max).toBeGreaterThan(120);
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
