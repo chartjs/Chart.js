@@ -20,7 +20,7 @@ Namespace: `options`
 | `maintainAspectRatio` | `boolean` | `true` | Maintain the original canvas aspect ratio `(width / height)` when resizing.
 | `aspectRatio` | `number` | `1`\|`2` | Canvas aspect ratio (i.e. `width / height`, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style. The default value varies by chart type; Radial charts (doughnut, pie, polarArea, radar) default to `1` and others default to `2`.
 | `onResize` | `function` | `null` | Called when a resize occurs. Gets passed two arguments: the chart instance and the new size.
-| `resizeDelay` | `number` | `0` | Delay the resize update by the given amount of milliseconds. This can ease the resize process by debouncing the update of the elements.
+| `resizeDelay` | `number` | `0` | Delay the resize update by the given amount of milliseconds. This can ease the resize process by debouncing the update of the elements.  The initial layout (when the chart is first created or attached) is not delayed, so `chart.chartArea` will be available immediately. |
 
 ## Important Note
 
