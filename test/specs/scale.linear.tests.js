@@ -849,8 +849,8 @@ describe('Linear Scale', function() {
         scales: {
           y: {
             type: 'linear',
-            min: -51.5264,
-            max: -49.894,
+            min: -49.706,
+            max: -48.0736,
           },
         },
       },
@@ -860,11 +860,8 @@ describe('Linear Scale', function() {
       return tick.value;
     });
 
-    values.forEach(function(value) {
-      expect(value).toBe(Math.round(value * 1e4) / 1e4);
-    });
-    expect(values).toContain(-50);
-    expect(values).toContain(-51);
+    // without the rounding of the nice bounds some of these come out as -49.400000000000006, -49.00000000000001, ...
+    expect(values).toEqual([-49.706, -49.6, -49.4, -49.2, -49, -48.8, -48.6, -48.4, -48.2, -48.0736]);
   });
 
   it('Should not generate insane amounts of ticks with small stepSize and large range', function() {
