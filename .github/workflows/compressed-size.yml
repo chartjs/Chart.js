@@ -25,8 +25,7 @@ jobs:
         registry-url: https://registry.npmjs.org/
         node-version: 26
         cache: pnpm
-    - run: pnpm install
-    - uses: preactjs/compressed-size-action@261e5e2bb5332e35c78914ce69b4edcdf30da2ed # v3 branch
+    # The action installs and builds both the pull request and its base itself.
+    - uses: preactjs/compressed-size-action@f322c295dde06a1cb7ccaef105732dd8a726d1d9 # 2.10.0
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        build-script: "pnpm run build"

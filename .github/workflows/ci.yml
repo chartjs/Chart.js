@@ -85,20 +85,22 @@ jobs:
         if: |
           steps.changes.outputs.src == 'true' &&
           runner.os != 'Windows'
-        uses: coverallsapp/github-action@09b709cf6a16e30b0808ba050c7a6e8a5ef13f8d # v1.2.5
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: './coverage/chrome/lcov.info'
+          file: './coverage/chrome/lcov.info'
+          coverage-reporter-version: v0.6.22
           flag-name: ${{ matrix.os }}-chrome
           parallel: true
       - name: Coveralls Parallel - Firefox
         if: |
           steps.changes.outputs.src == 'true' &&
           runner.os != 'Windows'
-        uses: coverallsapp/github-action@09b709cf6a16e30b0808ba050c7a6e8a5ef13f8d # v1.2.5
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: './coverage/firefox/lcov.info'
+          file: './coverage/firefox/lcov.info'
+          coverage-reporter-version: v0.6.22
           flag-name: ${{ matrix.os }}-firefox
           parallel: true
 
@@ -110,7 +112,8 @@ jobs:
     steps:
       - name: Coveralls Finished
         if: needs.build.outputs.coveralls == 'true'
-        uses: coverallsapp/github-action@09b709cf6a16e30b0808ba050c7a6e8a5ef13f8d # v1.2.5
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.github_token }}
+          coverage-reporter-version: v0.6.22
           parallel-finished: true
