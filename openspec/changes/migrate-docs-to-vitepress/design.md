@@ -48,9 +48,9 @@ Checked without a build: TypeDoc 0.28.20 with TypeScript 6.0 converts `src/types
 
 **D1. VitePress 1.6.4, not 2.0 alpha** (user decision). The published docs do not build on a prerelease. A later move to 2.x is its own small change.
 
-**D2. Default theme with brand colours and logo; light scheme only** (user decision for the theme). Brand `#FF6384` for the site name and accent `#3080D0` mapped to the theme's brand variables. `appearance: false`: Chart.js default tick and grid colours and several samples assume a light page. *Alternative:* recreate today's look in CSS; rejected because it must track VitePress internals.
+**D2. Default theme with brand colours and logo; light scheme only** (user decisions). Brand `#FF6384` for the site name and accent `#3080D0` mapped to the theme's brand variables. `appearance: false`: Chart.js default tick and grid colours and several samples assume a light page. *Alternative:* recreate today's look in CSS; rejected because it must track VitePress internals.
 
-**D3. The chart editor comes from a new shared package `vitepress-theme-chartjs`** (user decision). It is consumed here and can later serve the plugin repositories. Neither the repository nor the npm package exists yet; `## Contracts` states what this repository needs. Everything except live charts is built before it exists. *Alternatives:* port the editor into this repository (no external wait, no reuse); reuse `@kurkle/astro-chartjs-editor` (Astro-bound today).
+**D3. The chart editor comes from a new shared package `vitepress-theme-chartjs`** (user decision), unscoped on npm and in the repository `chartjs/vitepress-theme-chartjs`, with the entry points named in Contracts. It is consumed here and can later serve the plugin repositories. Neither the repository nor the npm package exists yet; `## Contracts` states what this repository needs. Everything except live charts is built before it exists. *Alternatives:* port the editor into this repository (no external wait, no reuse); reuse `@kurkle/astro-chartjs-editor` (Astro-bound today).
 
 **D4. The version menu is a component in this repository** (user decision), in the nav after the site title and in the mobile nav screen, with a build-time list and a refresh in the browser. The current version is taken from the built version, not from `window.location`. Links to other versions carry `target="_self"`, which the VitePress router leaves to the browser, so they load the other site.
 
@@ -60,7 +60,7 @@ Checked without a build: TypeDoc 0.28.20 with TypeScript 6.0 converts `src/types
 
 **D7. The seven dead links are fixed first, as their own piece.** They are wrong today (two 404 on the live site) and valid fixes under VuePress.
 
-**D8. API addresses are kept.** `membersWithOwnFile: [Class, Interface, Enum]` keeps type aliases and variables on the index page, as today; the two `api/enums/*.html` addresses get redirect stubs to `api/enumerations/`. TypeDoc runs with `skipErrorChecking` on the root `tsconfig.json` and a docs-only `typescript` `~6.0`, pinned below 7 because TypeDoc 0.28 does not accept it; type checking stays where it is (`lint-types`). *Risk:* the plugin marks `membersWithOwnFile` as being deprecated. *Alternative:* the plugin's default layout, one page per alias; rejected because it breaks `api/#color`-style links.
+**D8. API addresses are kept** (user decision, with the deprecation risk known). `membersWithOwnFile: [Class, Interface, Enum]` keeps type aliases and variables on the index page, as today; the two `api/enums/*.html` addresses get redirect stubs to `api/enumerations/`. TypeDoc runs with `skipErrorChecking` on the root `tsconfig.json` and a docs-only `typescript` `~6.0`, pinned below 7 because TypeDoc 0.28 does not accept it; type checking stays where it is (`lint-types`). *Risk:* the plugin marks `membersWithOwnFile` as being deprecated. *Alternative:* the plugin's default layout, one page per alias; rejected because it breaks `api/#color`-style links.
 
 **D9. Redirects are static stub pages written after the build** (meta refresh, canonical link, and a script that keeps `location.hash`) for the four existing redirects and the two enumeration pages. The site is served from GitHub Pages, which has no server redirects.
 
@@ -78,7 +78,9 @@ Checked without a build: TypeDoc 0.28.20 with TypeScript 6.0 converts `src/types
 
 **D16. Sample sizing.** The site stylesheet caps `.chart-view` at 800px, as today. VitePress's default content column is narrower than VuePress's unlimited one; wide option tables scroll horizontally inside the column. P9 compares one wide table page and one sample page with the live site before the switch.
 
-**D17. What review changed.**
+**D17. No analytics** (user decision). The VuePress site carries a Universal Analytics tag (`UA-28909194-3`), a product that no longer collects; nothing replaces it. A tag can be added later in the site's `head`. `scripts/sample-redirect-template.html` carries the same dead tag and is not touched here.
+
+**D18. What review changed.**
 - The switch was four pieces (repoint, delete configuration, remove dependencies, fold the temporary package) and is two (D13): the dependency sets are one file swap, and a separate refactor piece only repeated the same edits.
 - The tab shim and its optional removal piece were dropped (D6).
 - Writing the version marker moved from its own three-line piece into P2.
@@ -98,7 +100,7 @@ Checked without a build: TypeDoc 0.28.20 with TypeScript 6.0 converts `src/types
 - **Sidebar drift.** A page added to the VuePress sidebar after P3 (today [#12386](https://github.com/chartjs/Chart.js/pull/12386)) must also be added to the new sidebar; the build fails on a page that is in neither sidebar.
 - **Both tools generate `docs/api`** until the switch. Each cleans it before writing; running both dev servers at once is not supported.
 - **Editing a partial** needs a dev-server restart under `markdown-it-include`.
-- **Readers see a new look** at the switch, on master first and on `latest` with the next release. Analytics, see Open Questions.
+- **Readers see a new look** at the switch, on master first and on `latest` with the next release. 
 
 ## Pieces
 
@@ -132,7 +134,7 @@ Lines are hand-written changed lines; the lockfile, generated `docs/api` and bin
 
 **What this repository needs from `vitepress-theme-chartjs`**
 
-The names are proposals (see Open Questions); the behaviour is required. A reference implementation is the editor under `docs/.vitepress/` of chartjs-plugin-zoom.
+The names below are the agreed ones. A reference implementation is the editor under `docs/.vitepress/` of chartjs-plugin-zoom.
 
 - Entry points (ESM, shipped compiled so they work when Vite leaves the package external in the server build):
   - `vitepress-theme-chartjs/markdown`: `chartEditor(md)`, a markdown-it plugin.
@@ -162,7 +164,4 @@ The names are proposals (see Open Questions); the behaviour is required. A refer
 
 ## Open Questions
 
-- **Analytics** (P9). The VuePress site carries a Universal Analytics tag (`UA-28909194-3`), a product that no longer collects. Options: no analytics; a GA4 id supplied by the maintainers; another service. Recommended: none until an id exists. `scripts/sample-redirect-template.html` carries the same tag and is not touched here.
-- **Dark scheme** (P2). Off (recommended, D2) or on.
-- **API addresses** (P4, P5). Keep today's layout through `membersWithOwnFile` (recommended, D8) or take the plugin's default with one page per alias and variable.
-- **Home and name of the editor package** (P8). `vitepress-theme-chartjs` in the chartjs organisation with the entry points and names in Contracts (recommended), or another scope or name.
+None.

@@ -13,7 +13,7 @@ The documentation site is built with VuePress 1, which no longer releases; it pi
 - During the migration both sites build side by side from the same markdown. Only the VuePress site is deployed until one piece switches what `pnpm run docs` builds.
 - At the end VuePress, its plugins, Vue 2, webpack 4 and the OpenSSL legacy flag are removed.
 - **BREAKING** (readers): the four accidental pages `axes/_common.html`, `axes/_common_ticks.html`, `axes/cartesian/_common.html` and `axes/cartesian/_common_ticks.html` (include partials published as pages) disappear. Nothing links to them.
-- The Universal Analytics tag, which no longer collects, is not carried over unless the maintainers supply a replacement id (see `design.md`, Open Questions).
+- The Universal Analytics tag, which no longer collects, is not carried over; the site has no analytics.
 - The three pages with tabs are rewritten in the syntax of `vitepress-plugin-tabs`.
 
 Nothing under `src/` changes and nothing in the published npm package changes.
