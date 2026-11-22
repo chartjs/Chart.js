@@ -49,38 +49,38 @@
 - [ ] 6.2 Rename and convert the nine `core.*` files
 - [ ] 6.3 Confirm the counts
 
-## 7. P7: Held specs, controllers
+## 7. P7: Specs open pull requests touch, controllers
 
-- [ ] 7.1 Re-evaluate which files are free under design D13; after converting a file that an open pull request still touches, comment on that pull request with the rebase recipe
+- [ ] 7.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
 - [ ] 7.2 Record both test counts
 - [ ] 7.3 Rename and convert `controller.{bar,doughnut,line,scatter}`
 - [ ] 7.4 Confirm the counts
 
-## 8. P8: Held specs, core
+## 8. P8: Specs open pull requests touch, core
 
-- [ ] 8.1 Re-evaluate which files are free under design D13; after converting a file that an open pull request still touches, comment on that pull request with the rebase recipe
+- [ ] 8.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
 - [ ] 8.2 Record both test counts
 - [ ] 8.3 Rename and convert `core.{animation,animations,controller,scale,ticks}`, including the `done` tests and `this` state
 - [ ] 8.4 Confirm the counts
 
-## 9. P9: Held specs, helpers and platform
+## 9. P9: Specs open pull requests touch, helpers and platform
 
-- [ ] 9.1 Re-evaluate which files are free under design D13; after converting a file that an open pull request still touches, comment on that pull request with the rebase recipe
+- [ ] 9.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
 - [ ] 9.2 Record both test counts
 - [ ] 9.3 Rename and convert `helpers.{color,config,dom,math}` and `platform.{basic,dom}`
 - [ ] 9.4 Move the web-worker test to the smoke suite with its own worker file
 - [ ] 9.5 Confirm the counts
 
-## 10. P10: Held specs, plugins
+## 10. P10: Specs open pull requests touch, plugins
 
-- [ ] 10.1 Re-evaluate which files are free under design D13; after converting a file that an open pull request still touches, comment on that pull request with the rebase recipe
+- [ ] 10.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
 - [ ] 10.2 Record both test counts
 - [ ] 10.3 Rename and convert `plugin.{decimation,filler,legend,title,tooltip}`
 - [ ] 10.4 Confirm the counts
 
-## 11. P11: Held specs, scales
+## 11. P11: Specs open pull requests touch, scales
 
-- [ ] 11.1 Re-evaluate which files are free under design D13; after converting a file that an open pull request still touches, comment on that pull request with the rebase recipe
+- [ ] 11.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
 - [ ] 11.2 Record both test counts
 - [ ] 11.3 Rename and convert `scale.{category,linear,logarithmic,time}`, including the `toBeCloseToTime` matcher
 - [ ] 11.4 Confirm the counts
