@@ -426,7 +426,7 @@ export default class Scale extends Element {
       this.beforeDataLimits();
       this.determineDataLimits();
       this.afterDataLimits();
-      this._range = _addGrace(this, grace, beginAtZero);
+      this._range = _addGrace(this, grace, beginAtZero, this.getUserBounds());
       this._dataLimitsCached = true;
     }
 

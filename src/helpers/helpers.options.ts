@@ -181,15 +181,27 @@ export function resolve(inputs: Array<unknown>, context?: object, index?: number
  * @param minmax
  * @param grace
  * @param beginAtZero
+ * @param userBounds - Bounds explicitly set by the user (`min`/`max`), which must not be extended.
  * @private
  */
-export function _addGrace(minmax: { min: number; max: number; }, grace: number | string, beginAtZero: boolean) {
-  const {min, max} = minmax;
+export function _addGrace(
+  minmax: { min: number; max: number },
+  grace: number | string,
+  beginAtZero: boolean,
+  userBounds: { minDefined: boolean; maxDefined: boolean } = {
+    minDefined: false,
+    maxDefined: false,
+  },
+) {
+  const { min, max } = minmax;
+  const { minDefined, maxDefined } = userBounds;
+
   const change = toDimension(grace, (max - min) / 2);
-  const keepZero = (value: number, add: number) => beginAtZero && value === 0 ? 0 : value + add;
+  const keepZero = (value: number, add: number) =>
+    beginAtZero && value === 0 ? 0 : value + add;
   return {
-    min: keepZero(min, -Math.abs(change)),
-    max: keepZero(max, change)
+    min: minDefined ? min : keepZero(min, -Math.abs(change)),
+    max: maxDefined ? max : keepZero(max, change),
   };
 }
 

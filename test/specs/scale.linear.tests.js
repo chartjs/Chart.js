@@ -654,6 +654,55 @@ describe('Linear Scale', function() {
     expect(labels[labels.length - 1]).toBe('1,010');
   });
 
+  it('Should not apply grace to the min and max options', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90].map((y, x) => ({x, y}))
+        }]
+      },
+      options: {
+        parsing: false,
+        scales: {
+          x: {type: 'linear'},
+          y: {min: 24.4, max: 75.6, grace: '20%'}
+        }
+      }
+    });
+
+    var y = chart.scales.y;
+    expect(y.min).toBe(24.4);
+    expect(y.max).toBe(75.6);
+    expect(y.ticks.map(t => t.value)).toEqual([24.4, 30, 40, 50, 60, 70, 75.6]);
+  });
+
+  it('Should only apply grace to the side without a min or max option', function() {
+    var config = function(scale) {
+      return {
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [10, 20, 30, 40]
+          }]
+        },
+        options: {
+          scales: {
+            y: Object.assign({grace: 5}, scale)
+          }
+        }
+      };
+    };
+
+    var onlyMin = window.acquireChart(config({min: 12})).scales.y;
+    expect(onlyMin.min).toBe(12);
+    expect(onlyMin.max).toBe(45);
+
+    var onlyMax = window.acquireChart(config({max: 38})).scales.y;
+    expect(onlyMax.min).toBe(5);
+    expect(onlyMax.max).toBe(38);
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
