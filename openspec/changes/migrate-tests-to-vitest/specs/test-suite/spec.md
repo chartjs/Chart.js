@@ -9,7 +9,7 @@ While both runners exist, the repository SHALL run each spec file under exactly 
 
 #### Scenario: Combined run
 - **WHEN** a contributor runs `pnpm test-ci` during the migration
-- **THEN** the Karma suite, the Vitest suite, the built-bundle smoke suite and the integration packages all run
+- **THEN** the Karma suite, the Vitest suite, the integration packages and, once it exists, the built-bundle smoke suite all run
 - **AND** the command fails if any of them fails
 
 #### Scenario: Unconverted spec
@@ -53,6 +53,14 @@ The suite SHALL run one test for every fixture config found under the fixtures d
 - **WHEN** a pull request adds a fixture written with `module.exports`
 - **THEN** it runs unchanged
 
+#### Scenario: Every fixture runs
+- **WHEN** the suite runs
+- **THEN** the number of fixture tests equals the number of fixture configs under the fixtures directory
+
+#### Scenario: Filtering fixtures by area
+- **WHEN** a contributor filters the fixture tests by a fixture directory name
+- **THEN** only the fixtures in that directory run
+
 #### Scenario: Missing reference image
 - **WHEN** a fixture config has no PNG in a normal run
 - **THEN** that test fails with a message naming the fixture
@@ -74,7 +82,7 @@ Reference images SHALL be written only by an explicit update command, never by a
 - **THEN** no PNG is written
 
 ### Requirement: The built bundle is tested
-The test command SHALL fail when the minified UMD bundle is broken, even though the specs run against source.
+The test command SHALL fail when the minified UMD bundle does not load, lacks part of its namespace, or renders the smoke charts wrongly, even though the specs run against source.
 
 #### Scenario: Broken bundle
 - **WHEN** the minified UMD bundle fails to load, lacks part of the `Chart` namespace, or renders one of the smoke charts differently from its reference image
@@ -94,13 +102,6 @@ CI SHALL upload coverage from every runner that executed specs.
 #### Scenario: After Karma is removed
 - **WHEN** CI runs after Karma has been removed
 - **THEN** it uploads one coverage report
-
-### Requirement: Results do not depend on the machine's time zone
-The suite MUST produce the same results for time-scale specs and fixtures on a machine in any time zone.
-
-#### Scenario: Non-UTC machine
-- **WHEN** the suite runs on a machine whose time zone is not UTC
-- **THEN** time-scale specs and fixtures pass as they do in UTC
 
 ### Requirement: Karma and Jasmine are gone at the end
 After the migration the repository SHALL install and use no Karma or Jasmine package.

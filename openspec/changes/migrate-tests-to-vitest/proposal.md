@@ -5,11 +5,11 @@ The test suite runs on Karma, which was deprecated in 2023, with Jasmine and `ch
 ## What Changes
 
 - The unit and image tests move from Karma + Jasmine to Vitest browser mode (Chromium and Firefox through Playwright) with `chartjs-test-utils` 1.x.
-- Specs run against `src/` through Vite instead of against the minified UMD build. A separate, small smoke suite loads `dist/chart.umd.min.js` so that a bundle broken by minification still fails the tests.
+- Specs run against `src/` through Vite instead of against the minified UMD build. A separate, small smoke suite loads `dist/chart.umd.min.js` and checks the namespace, a handful of rendered charts and the web worker. This is a narrower guarantee than today, when every spec runs against the minified bundle: a minification fault confined to code the smoke suite does not reach is no longer caught.
 - During the migration both runners run side by side. A spec file runs under exactly one of them, decided by its file name suffix.
 - Image fixtures are discovered from the fixtures directory and run from one place; a new fixture needs no line in a spec. Reference images are written by an explicit update command only.
 - Coverage is produced by Vitest and uploaded to Coveralls as one report once Karma is gone.
-- In the last piece Karma, its plugins, `jasmine-core`, `rollup-plugin-istanbul` and the other Karma-only dev dependencies leave `package.json` and the lockfile.
+- In the last piece Karma, its nine plugins, `jasmine-core`, `rollup-plugin-istanbul`, `@rollup/plugin-commonjs`, `yargs` and `pixelmatch` (all used only by the Karma setup) leave `package.json` and the lockfile.
 - Contributor documentation describes the new commands and the image-test workflow.
 
 Nothing under `src/` changes and nothing in the published package changes.
@@ -26,7 +26,7 @@ None.
 
 ## Impact
 
-- Contributors: new commands for running and watching tests, a one-time Playwright browser install, Node 22.12 or later. Pull requests open during the migration that touch a spec file may need a small rebase when that file is converted; the conversion table in `design.md` is the recipe.
+- Contributors: new commands for running and watching tests, a one-time Playwright browser install, Node 22.12 or later. `pnpm test-ci` needs a built bundle for the smoke suite (`pnpm test` builds first, as today). Lost with Karma: the local Safari and Edge launchers, and stopping at the first failing spec in watch mode. In an image fixture, `"debug": true` now fails the test and logs the rendered image instead of showing it on a passing test. Pull requests open during the migration that touch a spec file may need a small rebase when that file is converted; the conversion table in `design.md` is the recipe.
 - CI: a Playwright install step, a Vitest coverage upload, and at the end no xvfb and no Karma.
-- Dev dependencies: adds `vitest`, `@vitest/browser`, `@vitest/browser-playwright`, `@vitest/coverage-istanbul`, `playwright`; removes 16 Karma-only packages at the end.
+- Dev dependencies: adds `vitest`, `@vitest/browser`, `@vitest/browser-playwright`, `@vitest/coverage-istanbul`, `playwright`; removes 15 Karma-only packages and the alias at the end.
 - Security alerts fall only when the last piece merges, because the lockfile carries both stacks until then.
