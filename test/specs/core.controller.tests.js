@@ -1014,6 +1014,91 @@ describe('Chart', function() {
       body.appendChild(wrapper);
     });
 
+    // https://github.com/chartjs/Chart.js/issues/12166
+    // https://github.com/chartjs/Chart.js/issues/12269
+    it('should update before drawing if attached to the DOM after construction with resizeDelay', function(done) {
+      var canvas = document.createElement('canvas');
+      var wrapper = document.createElement('div');
+      var body = window.document.body;
+      var hooks = [];
+      var chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [1, 2]}]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 50
+        },
+        plugins: [{
+          id: 'recorder',
+          beforeUpdate: () => hooks.push('beforeUpdate'),
+          beforeDraw: () => hooks.push('beforeDraw')
+        }]
+      });
+
+      expect(hooks).toEqual([]);
+      expect(chart.chartArea).toBeUndefined();
+
+      waitForResize(chart, function() {
+        expect(hooks[0]).toBe('beforeUpdate');
+        expect(chart.chartArea).not.toBeUndefined();
+
+        body.removeChild(wrapper);
+        chart.destroy();
+        done();
+      });
+
+      wrapper.style.cssText = 'width: 455px; height: 355px';
+      wrapper.appendChild(canvas);
+      body.appendChild(wrapper);
+    });
+
+    it('should not draw on resize before the first update with resizeDelay', function() {
+      var cancelUpdate = true;
+      var hooks = [];
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [1, 2]}]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 50
+        },
+        plugins: [{
+          id: 'recorder',
+          beforeUpdate() {
+            hooks.push('beforeUpdate');
+            return !cancelUpdate;
+          },
+          beforeDraw: () => hooks.push('beforeDraw')
+        }]
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; height: 350px; position: relative'
+        }
+      });
+
+      // The first update was cancelled, so there is nothing to draw yet.
+      expect(chart.chartArea).toBeUndefined();
+      expect(hooks).not.toContain('beforeDraw');
+
+      cancelUpdate = false;
+      hooks = [];
+      chart.resize(200, 250);
+
+      expect(hooks[0]).toBe('beforeUpdate');
+      expect(chart.chartArea).not.toBeUndefined();
+    });
+
     it('should resize the canvas when attached to a different parent', function(done) {
       var canvas = document.createElement('canvas');
       var wrapper = document.createElement('div');
