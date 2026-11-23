@@ -1,16 +1,16 @@
 ## 1. P1: Vitest beside Karma
 
-- [ ] 1.1 Rename `test/specs/global.defaults.tests.js` to `global.defaults.spec.js`, convert it with the table in design D5, and see it run under neither runner
-- [ ] 1.2 Add `vitest`, `@vitest/browser`, `@vitest/browser-playwright`, `@vitest/coverage-istanbul`, `playwright`; set `chartjs-test-utils` to `^1.1.1`; add the alias `chartjs-test-utils-karma` for `^0.4.0` and import it in `test/index.js`
-- [ ] 1.3 Write `test/vitest.shared.js` (Playwright provider with the launch options from `karma.conf.cjs`, viewport) and `vitest.config.js` on top of it: Chromium and Firefox, `globals`, `restoreMocks`, no file parallelism, explicit viewport, shuffled order, istanbul coverage into `coverage/vitest`, alias `chart.js` to `src/index.ts`, transform target matching the rollup build
-- [ ] 1.4 Write `test/setup.js` as design D7 describes
-- [ ] 1.5 Narrow Karma's spec glob to `*.tests.js`, including the `--grep` form
-- [ ] 1.6 Add scripts `test-ci-vitest` and `dev:vitest`
-- [ ] 1.7 CI: Playwright install step (not on Windows), third Coveralls upload, `test` paths filter with `karma.conf.cjs` and `vitest*.config.js`
-- [ ] 1.8 Lint override for `*.spec.js` and `test/setup.js`; ignore Vitest artefacts
-- [ ] 1.9 Contributing docs: both runners, the suffix rule, the Playwright install, minimum Node
-- [ ] 1.10 Confirm Karma is still green with the aliased 0.4 and report both runners' test counts
-- [ ] 1.11 Confirm Vitest prints the shuffle seed and that a run can be replayed with it
+- [x] 1.1 Rename `test/specs/global.defaults.tests.js` to `global.defaults.spec.js`, convert it with the table in design D5, and see it run under neither runner
+- [x] 1.2 Add `vitest`, `@vitest/browser`, `@vitest/browser-playwright`, `@vitest/coverage-istanbul`, `playwright`; set `chartjs-test-utils` to `^1.1.1`; add the alias `chartjs-test-utils-karma` for `^0.4.0` and import it in `test/index.js`
+- [x] 1.3 Write `test/vitest.shared.js` (Playwright provider with the launch options from `karma.conf.cjs`, viewport) and `vitest.config.js` on top of it: Chromium and Firefox, `globals`, `restoreMocks`, no file parallelism, explicit viewport, shuffled order, istanbul coverage into `coverage/vitest`, alias `chart.js` to `src/index.ts`, transform target matching the rollup build
+- [x] 1.4 Write `test/setup.js` as design D7 describes
+- [x] 1.5 Narrow Karma's spec glob to `*.tests.js`, including the `--grep` form
+- [x] 1.6 Add scripts `test-ci-vitest` and `dev:vitest`
+- [x] 1.7 CI: Playwright install step (not on Windows), third Coveralls upload, `test` paths filter with `karma.conf.cjs` and `vitest*.config.js`
+- [x] 1.8 Lint override for `*.spec.js` and `test/setup.js`; ignore Vitest artefacts
+- [x] 1.9 Contributing docs: both runners, the suffix rule, the Playwright install, minimum Node
+- [x] 1.10 Confirm Karma is still green with the aliased 0.4 and report both runners' test counts
+- [x] 1.11 Confirm Vitest prints the shuffle seed and that a run can be replayed with it
 
 ## 2. P2: Fixtures under Vitest
 
