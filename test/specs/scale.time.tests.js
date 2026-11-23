@@ -1433,4 +1433,93 @@ describe('Time scale tests', function() {
       Date.UTC(2023, 0, 6)
     ]);
   });
+
+  it('should keep a finite inside pixel for a single timeseries point with bounds ticks', function() {
+    var timestamp = moment.utc('2023-01-15T00:00:00').valueOf();
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: [{x: timestamp, y: 4}]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            bounds: 'ticks',
+            ticks: {
+              source: 'data'
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return tick.value;
+    })).toEqual([timestamp]);
+
+    var pixel = scale.getPixelForValue(timestamp);
+    expect(isFinite(pixel)).toBe(true);
+    expect(pixel).toBeGreaterThan(scale.left);
+    expect(pixel).toBeLessThan(scale.right);
+  });
+
+  it('should keep a finite inside pixel for a single timeseries label with ticks source labels', function() {
+    var label = +moment('2023', 'YYYY');
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['2023'],
+        datasets: [{data: [4]}]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            bounds: 'ticks',
+            time: {
+              parser: 'YYYY'
+            },
+            ticks: {
+              source: 'labels'
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([label]);
+
+    var pixel = scale.getPixelForValue(label);
+    expect(isFinite(pixel)).toBe(true);
+    expect(pixel).toBeGreaterThan(scale.left);
+    expect(pixel).toBeLessThan(scale.right);
+  });
+
+  it('should generate min and max ticks for a timeseries scale with no data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{data: []}]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries'
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([scale.min, scale.max]);
+  });
 });
