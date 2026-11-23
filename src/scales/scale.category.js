@@ -3,6 +3,10 @@ import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
 
 const addIfString = (labels, raw, index, addedLabels) => {
   if (typeof raw === 'string') {
+    if (!addedLabels) {
+      // Lookup only, do not add the label
+      return null;
+    }
     index = labels.push(raw) - 1;
     addedLabels.unshift({index, label: raw});
   } else if (isNaN(raw)) {
@@ -51,6 +55,7 @@ export default class CategoryScale extends Scale {
     this._startValue = undefined;
     this._valueRange = 0;
     this._addedLabels = [];
+    this._lookupOnly = false;
   }
 
   init(scaleOptions) {
@@ -64,14 +69,21 @@ export default class CategoryScale extends Scale {
       }
       this._addedLabels = [];
     }
+    // When the labels are inferred from the data, they are not known yet. Adding a string
+    // bound now would put it before the data labels, so only look the bounds up here.
+    this._lookupOnly = true;
     super.init(scaleOptions);
+    this._lookupOnly = false;
   }
 
   beforeLayout() {
     super.beforeLayout();
     // Dataset parsing has now finished adding the inferred labels.
-    this._userMin = this.parse(this.options.min);
-    this._userMax = this.parse(this.options.max);
+    const options = this.options;
+    this._userMin = this.parse(options.min);
+    this._userMax = this.parse(options.max);
+    this._suggestedMin = this.parse(options.suggestedMin);
+    this._suggestedMax = this.parse(options.suggestedMax);
   }
 
   parse(raw, index) {
@@ -80,7 +92,7 @@ export default class CategoryScale extends Scale {
     }
     const labels = this.getLabels();
     index = isFinite(index) && labels[index] === raw ? index
-      : findOrAddLabel(labels, raw, valueOrDefault(index, raw), this._addedLabels);
+      : findOrAddLabel(labels, raw, valueOrDefault(index, raw), this._lookupOnly ? null : this._addedLabels);
     return validIndex(index, labels.length - 1);
   }
 

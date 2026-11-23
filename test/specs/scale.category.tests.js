@@ -648,4 +648,84 @@ describe('Category scale tests', function() {
     expect(chart.scales.x.min).toBe(1);
     expect(chart.scales.x.max).toBe(1);
   });
+
+  ['x', 'y'].forEach(function(indexAxis) {
+    it('should apply string bounds to inferred labels without reordering them on the ' + indexAxis + ' axis', function() {
+      var valueAxis = indexAxis === 'x' ? 'y' : 'x';
+      var labels = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5'];
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: labels.map((label, i) => ({
+              [indexAxis]: label,
+              [valueAxis]: i === 0 || i === 5 ? 1000 : i
+            }))
+          }]
+        },
+        options: {
+          indexAxis,
+          scales: {
+            [indexAxis]: {type: 'category', min: 'L1', max: 'L3'},
+            [valueAxis]: {type: 'linear', bounds: 'data'}
+          }
+        }
+      });
+
+      var scale = chart.scales[indexAxis];
+      expect(scale.getLabels()).toEqual(labels);
+      expect(scale.min).toBe(1);
+      expect(scale.max).toBe(3);
+      expect(chart.scales[valueAxis].min).toBe(1);
+      expect(chart.scales[valueAxis].max).toBe(3);
+
+      chart.update();
+      expect(scale.getLabels()).toEqual(labels);
+      expect(scale.min).toBe(1);
+      expect(scale.max).toBe(3);
+
+      chart.options.scales[indexAxis].min = 'L2';
+      chart.options.scales[indexAxis].max = 'L4';
+      chart.update();
+      expect(scale.getLabels()).toEqual(labels);
+      expect(scale.min).toBe(2);
+      expect(scale.max).toBe(4);
+    });
+  });
+
+  it('should not reorder inferred labels for string suggested bounds', function() {
+    var labels = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5'];
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{data: labels.map((label, i) => ({x: label, y: i}))}]
+      },
+      options: {
+        scales: {x: {suggestedMin: 'L1', suggestedMax: 'L3'}}
+      }
+    });
+
+    expect(chart.scales.x.getLabels()).toEqual(labels);
+    expect(chart.scales.x.min).toBe(0);
+    expect(chart.scales.x.max).toBe(5);
+  });
+
+  it('should add a string bound that is not in the data after the inferred labels', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{data: [{x: 'L0', y: 0}, {x: 'L1', y: 1}, {x: 'L2', y: 2}]}]
+      },
+      options: {
+        scales: {x: {max: 'ZZ'}}
+      }
+    });
+
+    expect(chart.scales.x.getLabels()).toEqual(['L0', 'L1', 'L2', 'ZZ']);
+    expect(chart.scales.x.min).toBe(0);
+    expect(chart.scales.x.max).toBe(3);
+
+    chart.update();
+    expect(chart.scales.x.getLabels()).toEqual(['L0', 'L1', 'L2', 'ZZ']);
+  });
 });
