@@ -694,6 +694,32 @@ describe('Chart', function() {
       wrapper.style.width = '455px';
     });
 
+    it('should call update with the resize mode when resizeDelay is set', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 10
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; height: 350px; position: relative'
+        }
+      });
+
+      spyOn(chart, 'update').and.callThrough();
+      waitForResize(chart, function() {
+        setTimeout(function() {
+          expect(chart.update).toHaveBeenCalledWith('resize');
+          done();
+        }, 50);
+      });
+      chart.canvas.parentNode.style.width = '455px';
+    });
+
     it('should restore the original size when parent became invisible', function(done) {
       var chart = acquireChart({
         options: {
@@ -1425,6 +1451,56 @@ describe('Chart', function() {
         wrapper.style.width = '150px';
       });
       wrapper.style.width = '450px';
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/11005
+    it('should grow back when the parent has no height of its own', function(done) {
+      var chart = acquireChart({
+        type: 'line', // AR == 2
+        options: {
+          animation: false,
+          responsive: true,
+          maintainAspectRatio: true
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; position: relative'
+        }
+      });
+
+      expect(chart).toBeChartOfSize({
+        dw: 300, dh: 150,
+        rw: 300, rh: 150,
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 150, dh: 75,
+          rw: 150, rh: 75,
+        });
+
+        // The canvas getting lower made the parent lower, which the resize observer
+        // reports once more. Widen the parent only after that has been handled, so that
+        // the new width arrives from the observer together with the height of the parent.
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            waitForResize(chart, function() {
+              expect(chart).toBeChartOfSize({
+                dw: 450, dh: 225,
+                rw: 450, rh: 225,
+              });
+
+              done();
+            });
+            wrapper.style.width = '450px';
+          });
+        });
+      });
+      wrapper.style.width = '150px';
     });
 
     it('should maintain aspect ratio when parent height changes', function(done) {

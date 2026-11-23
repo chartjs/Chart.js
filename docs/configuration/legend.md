@@ -16,7 +16,7 @@ Namespace: `options.plugins.legend`, the global options for the chart legend is 
 | `fullSize` | `boolean` | `true` | Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
 | `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.
-| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item. Arguments: `[event, legendItem, legend]`.
+| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item, or when the pointer leaves the canvas ('mouseout') while a label item is hovered. Arguments: `[event, legendItem, legend]`.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.

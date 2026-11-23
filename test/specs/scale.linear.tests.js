@@ -654,6 +654,115 @@ describe('Linear Scale', function() {
     expect(labels[labels.length - 1]).toBe('1,010');
   });
 
+  [5, '20%'].forEach(function(grace) {
+    [{min: 24.4, max: 75.6}, {min: 24.4}, {max: 75.6}].forEach(function(bounds) {
+      it('should apply grace ' + grace + ' only to data bounds with ' + JSON.stringify(bounds), function() {
+        var chart = window.acquireChart({
+          type: 'line',
+          data: {
+            datasets: [{data: Array.from({length: 11}, (_, i) => ({x: i, y: 10 + i * 8}))}]
+          },
+          options: {
+            parsing: false,
+            scales: {
+              x: {type: 'linear'},
+              y: {...bounds, grace}
+            }
+          }
+        });
+        var scale = chart.scales.y;
+        var ticks = scale.ticks.map(tick => tick.value);
+
+        if (bounds.min !== undefined) {
+          expect(scale.min).toBe(bounds.min);
+          expect(ticks.every(value => value >= bounds.min)).toBe(true);
+        } else {
+          expect(scale.min).toBeLessThan(10);
+        }
+        if (bounds.max !== undefined) {
+          expect(scale.max).toBe(bounds.max);
+          expect(ticks.every(value => value <= bounds.max)).toBe(true);
+        } else {
+          expect(scale.max).toBeGreaterThan(90);
+        }
+        expect(ticks).toEqual(ticks.slice().sort((a, b) => a - b));
+
+        if (bounds.min !== undefined && bounds.max !== undefined) {
+          chart.options.scales.y.min = 29.4;
+          chart.options.scales.y.max = 70.6;
+          chart.update();
+          expect(scale.min).toBe(29.4);
+          expect(scale.max).toBe(70.6);
+
+          delete chart.options.scales.y.min;
+          delete chart.options.scales.y.max;
+          chart.update();
+          expect(scale.min).toBeLessThan(10);
+          expect(scale.max).toBeGreaterThan(90);
+        }
+      });
+    });
+  });
+
+  it('should continue to add grace to suggested bounds', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [10, 90]}]
+      },
+      options: {
+        scales: {
+          y: {suggestedMin: -20, suggestedMax: 120, grace: 10}
+        }
+      }
+    });
+
+    expect(chart.scales.y.min).toBeLessThan(-20);
+    expect(chart.scales.y.max).toBeGreaterThan(120);
+  });
+
+  it('should generate the same ticks for explicit bounds with and without grace', function() {
+    function getTicks(grace) {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [10, 90]}]
+        },
+        options: {
+          scales: {
+            y: {min: 0, max: 100, grace}
+          }
+        }
+      });
+      return chart.scales.y.ticks.map(tick => tick.value);
+    }
+
+    expect(getTicks('10%')).toEqual(getTicks(undefined));
+    expect(getTicks(20)).toEqual(getTicks(undefined));
+  });
+
+  it('should not apply grace when min and max are the same', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [1, 9]}]
+      },
+      options: {
+        scales: {
+          y: {min: 5, max: 5, grace: 5}
+        }
+      }
+    });
+    var ticks = chart.scales.y.ticks.map(tick => tick.value);
+
+    expect(chart.scales.y.min).toBe(5);
+    expect(chart.scales.y.max).toBe(5);
+    expect(ticks).toEqual(ticks.slice().sort((a, b) => a - b));
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
@@ -704,6 +813,55 @@ describe('Linear Scale', function() {
     expect(chart.scales.x.min).toBe(2.404e-8);
     expect(chart.scales.x.max).toBe(2.4143e-8);
     expect(chart.scales.x.ticks[chart.scales.x.ticks.length - 1].value).toBeLessThanOrEqual(2.4143e-8);
+  });
+
+  it('Should generate ticks free of floating point drift when min and max are not round', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 49.894,
+            max: 51.5264,
+          },
+        },
+      },
+    });
+
+    var values = chart.scales.y.ticks.map(function(tick) {
+      return tick.value;
+    });
+
+    // the ticks between the bounds are multiples of the 0.2 spacing,
+    // so none of them needs more than four decimals to be written exactly
+    values.forEach(function(value) {
+      expect(value).toBe(Math.round(value * 1e4) / 1e4);
+    });
+    expect(values).toContain(50);
+    expect(values).toContain(51);
+  });
+
+  it('Should generate ticks free of floating point drift on a negative range', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: -49.706,
+            max: -48.0736,
+          },
+        },
+      },
+    });
+
+    var values = chart.scales.y.ticks.map(function(tick) {
+      return tick.value;
+    });
+
+    // without the rounding of the nice bounds some of these come out as -49.400000000000006, -49.00000000000001, ...
+    expect(values).toEqual([-49.706, -49.6, -49.4, -49.2, -49, -48.8, -48.6, -48.4, -48.2, -48.0736]);
   });
 
   it('Should not generate insane amounts of ticks with small stepSize and large range', function() {

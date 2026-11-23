@@ -52,7 +52,7 @@ export function debounce<TArgs extends Array<any>>(fn: (...args: TArgs) => void,
   return function(...args: TArgs) {
     if (delay) {
       clearTimeout(timeout);
-      timeout = setTimeout(fn, delay, args);
+      timeout = setTimeout(fn, delay, ...args);
     } else {
       fn.apply(this, args);
     }

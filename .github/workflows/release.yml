@@ -22,18 +22,20 @@ jobs:
 
   release:
     permissions:
-      contents: write  # for actions/upload-release-asset to upload release asset
+      contents: write  # for gh release upload to attach the tarball
       id-token: write  # for npm trusted publishing (OIDC)
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 26
-          cache: pnpm
+          # No pnpm cache here: other workflow runs write it, and this job publishes.
       # This job holds the npm publishing identity, so it installs only the
       # root package's dependencies. The docs toolchain runs in release-docs.
       - name: Setup and build
@@ -51,24 +53,22 @@ jobs:
         env:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Upload NPM package file
-        id: upload-npm-package-file
-        uses: actions/upload-release-asset@v1
+        run: gh release upload "$TAG" "chart.js-$VERSION.tgz"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
           VERSION: ${{ needs.setup.outputs.version }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
-          asset_name: ${{ format('chart.js-{0}.tgz', needs.setup.outputs.version) }}
-          asset_content_type: application/gzip
 
   release-docs:
     needs: [setup, release]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26
           cache: pnpm
@@ -83,7 +83,7 @@ jobs:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Generate docs deploy token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
         with:
           client-id: ${{ vars.DOCS_DEPLOY_CLIENT_ID }}
           private-key: ${{ secrets.DOCS_DEPLOY_PRIVATE_KEY }}
@@ -103,9 +103,11 @@ jobs:
     runs-on: ubuntu-latest
     if: "!github.event.release.prerelease"
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 26
@@ -121,7 +123,7 @@ jobs:
           VERSION: ${{ needs.setup.outputs.version }}
       - name: Generate docs deploy token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
         with:
           client-id: ${{ vars.DOCS_DEPLOY_CLIENT_ID }}
           private-key: ${{ secrets.DOCS_DEPLOY_PRIVATE_KEY }}
