@@ -9,9 +9,9 @@
 
 ## 2. P2: Point chart tooltip labels through the axis
 
-- [ ] 2.1 Add specs for a scatter chart and a bubble chart with a category x axis, no `data.labels` and object data at `'a'` and `'b'`. Each expects `getLabelAndValue(1).label` to be `'b'`. They pass on master. Verify that they fail with P3's label copy applied and this piece left out, and say so in the pull request.
+- [ ] 2.1 Add specs for scatter and bubble charts, with no `data.labels` and object data at `'a'` and `'b'`. Cover a category x axis, and a linear x axis with a category y axis. Each expects `getLabelAndValue(1).label` to be `'b'`. They pass on master. Verify that they fail with P3's label copy applied and this piece left out, and say so in the pull request.
 - [ ] 2.2 Add a spec where `data.labels` has an entry at the index; that entry is the label.
-- [ ] 2.3 In `getLabelAndValue()` of the scatter and bubble controllers, use `data.labels[index]`, else the index axis' `getLabels()[index]`, else `''`.
+- [ ] 2.3 In `getLabelAndValue()` of the scatter and bubble controllers, use `data.labels[index]`. Otherwise use the label from the index axis if it is a category axis, else from the value axis if it is a category axis (the axis' label for the point's own parsed value). Otherwise use `''`.
 - [ ] 2.4 The pull request says that this is part of #11495 and #11893.
 
 ## 3. P3: Each category axis owns its labels
@@ -21,14 +21,14 @@
   - `chart.data.labels` stays `[]` when every label comes from the data;
   - labels pushed to `data.labels` before an `update()` are shown;
   - a removed dataset drops its label;
-  - an unknown string bound does not reach `data.labels`.
+  - an unknown string bound does not reach `data.labels`;
+  - a label a `beforeUpdate` plugin pushes to `data.labels` is shown on an axis with `min` set.
 - [ ] 3.3 Take #12405's specs for two category x axes (each value at its axis' first tick) and for a category x and y that infer labels, plus "should still share user provided labels across category scales". Do not take "should keep inferring labels into data.labels".
 - [ ] 3.4 Add a spec for two stacked category axes that each show only their own category.
 - [ ] 3.5 Implement:
   - `getLabels()` returns a copy of `super.getLabels()`, made on first use;
-  - `init()` drops the copy, then runs `super.init()` with `_lookupOnly` set;
-  - `findOrAddLabel(labels, raw, index, canAdd)` takes a boolean;
-  - remove `_addedLabels`, its bookkeeping and the splice loop.
+  - `init()` drops the copy, runs `super.init()`, and drops the copy again;
+  - remove `_addedLabels`, its bookkeeping, the splice loop, P1's `_lookupOnly` flag and the `addedLabels = null` sentinel.
 - [ ] 3.6 In `docs/axes/cartesian/category.md`, say:
   - labels found in the data are kept per axis and never written to `data.labels`;
   - `data.labels` applies to every category axis;

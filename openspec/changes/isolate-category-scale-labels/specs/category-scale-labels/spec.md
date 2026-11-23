@@ -80,6 +80,11 @@ An axis SHALL show the labels given by the user first, then the labels found in 
 - **WHEN** the given labels are `['a']` and the data has the value `'z'`
 - **THEN** the axis shows `a`, `z`
 
+#### Scenario: Labels added by a plugin before the update
+
+- **WHEN** a plugin pushes `'late'` to `data.labels` in its `beforeUpdate` hook, and the axis has a `min`
+- **THEN** the axis shows `late`
+
 #### Scenario: Labels pushed before an update
 
 - **WHEN** the user pushes `'b'` to `data.labels`, adds a point at `'b'` and calls `update()`
@@ -92,11 +97,16 @@ An axis SHALL show the labels given by the user first, then the labels found in 
 
 ### Requirement: Point chart tooltips keep the category label
 
-In scatter and bubble charts, the label of a point SHALL be the `data.labels` entry at its index when there is one. Otherwise it SHALL be the label of the category axis at that index.
+In scatter and bubble charts, the label of a point SHALL be the `data.labels` entry at its index when there is one. Otherwise, when the index axis is a category axis, it SHALL be that axis' label for the point. Otherwise, when the value axis is a category axis, it SHALL be that axis' label for the point.
 
 #### Scenario: Labels from the data
 
 - **WHEN** a bubble or scatter chart has a category x axis whose labels come from the data, and the user hovers the point at `'b'`
+- **THEN** the tooltip title is `b`
+
+#### Scenario: Category value axis
+
+- **WHEN** a bubble or scatter chart has a linear x axis and a category y axis whose labels come from the data, and the user hovers the point at `'b'`
 - **THEN** the tooltip title is `b`
 
 #### Scenario: Labels given
