@@ -78,10 +78,10 @@
 
 ## 11. P11: Docs preview on pull requests
 
-- [ ] 11.1 Confirm with the maintainers that a Netlify site is connected to the repository, with deploy previews on and production deploys off
-- [ ] 11.2 Add `netlify.toml`: the build runs `./scripts/docs-config.sh master && pnpm run docs` and publishes a directory holding the result as `docs/master/`; `/` redirects to `/docs/master/`; Node and pnpm versions as the repository requires; an `ignore` command skips the build when nothing under `docs/`, `src/`, `scripts/` or the package manifests changed
-- [ ] 11.3 Open the pull request from a fork and see the preview link appear on it; if none appears, record that in `design.md` and switch to the fallback of D20
-- [ ] 11.4 In the preview, a page, a sample and an in-site link work under `/docs/master/`
+- [x] 11.1 Confirm with the maintainers that a Netlify site is connected to the repository, with deploy previews on and production deploys off
+- [x] 11.2 Add `netlify.toml`: the build runs `./scripts/docs-config.sh master && pnpm run docs` and publishes a directory holding the result as `docs/master/`; `/` redirects to `/docs/master/`; Node and pnpm versions as the repository requires; an `ignore` command skips the build when nothing under `docs/`, `src/`, `scripts/` or the package manifests changed
+- [x] 11.3 Open the pull request from a fork and see the preview link appear on it; if none appears, record that in `design.md` and switch to the fallback of D20
+- [x] 11.4 In the preview, a page, a sample and an in-site link work under `/docs/master/`
 
 ## 12. P12: Preview of the undeployed VitePress site
 
