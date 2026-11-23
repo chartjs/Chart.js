@@ -1,9 +1,9 @@
 ## 1. P1: Fix links that resolve only by accident
 
-- [ ] 1.1 Show the failure: open `docs/latest/axes/radial/linear.html` and follow the grid `Color` link (404)
-- [ ] 1.2 Make the links in `docs/axes/_common_ticks.md` root-relative, since the partial is included from two directory depths
-- [ ] 1.3 Correct `docs/axes/radial/linear.md` (two links), `docs/axes/index.md` (trailing slash), `docs/developers/index.md` (the v3 migration guide's real path), `docs/getting-started/index.md` (the samples information page)
-- [ ] 1.4 `pnpm run docs` still succeeds and the links resolve; a throwaway VitePress build of `docs/` reports no dead in-site link outside `api/`
+- [x] 1.1 Show the failure: open `docs/latest/axes/radial/linear.html` and follow the grid `Color` link (404)
+- [x] 1.2 Make the links in `docs/axes/_common_ticks.md` root-relative, since the partial is included from two directory depths
+- [x] 1.3 Correct `docs/axes/radial/linear.md` (two links), `docs/axes/index.md` (trailing slash), `docs/developers/index.md` (the v3 migration guide's real path), `docs/getting-started/index.md` (the samples information page)
+- [x] 1.4 `pnpm run docs` still succeeds and the links resolve; a throwaway VitePress build of `docs/` reports no dead in-site link outside `api/`
 
 ## 2. P2: A VitePress site beside VuePress
 

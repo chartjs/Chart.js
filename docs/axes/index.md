@@ -145,7 +145,7 @@ In contrast to the `suggested*` settings, the `min` and `max` settings set expli
 
 ## Stacking
 
-By default, data is not stacked. If the `stacked` option of the value scale (y-axis on horizontal chart) is `true`, positive and negative values are stacked separately. Additionally, a `stack` option can be defined per dataset to further divide into stack groups [more...](../general/data-structures/#dataset-configuration).
+By default, data is not stacked. If the `stacked` option of the value scale (y-axis on horizontal chart) is `true`, positive and negative values are stacked separately. Additionally, a `stack` option can be defined per dataset to further divide into stack groups [more...](../general/data-structures.md#dataset-configuration).
 For some charts, you might want to stack positive and negative values together. That can be achieved by specifying `stacked: 'single'`.
 
 ## Callbacks
