@@ -3,6 +3,27 @@ import {formatNumber} from '../helpers/helpers.intl.js';
 import {log10} from '../helpers/helpers.math.js';
 
 /**
+ * Merges the user's number format over the defaults. When the format sets only one of
+ * the fraction digit bounds, the other one follows it instead of contradicting it.
+ * @param {Intl.NumberFormatOptions} options - the defaults, modified in place
+ * @param {Intl.NumberFormatOptions} [format] - the `ticks.format` option
+ * @return {Intl.NumberFormatOptions}
+ */
+function applyNumberFormat(options, format) {
+  Object.assign(options, format);
+
+  if (options.minimumFractionDigits > options.maximumFractionDigits) {
+    if (format.minimumFractionDigits === undefined) {
+      options.minimumFractionDigits = options.maximumFractionDigits;
+    } else if (format.maximumFractionDigits === undefined) {
+      options.maximumFractionDigits = options.minimumFractionDigits;
+    }
+  }
+
+  return options;
+}
+
+/**
  * Namespace to hold formatters for different types of ticks
  * @namespace Chart.Ticks.formatters
  */
@@ -28,11 +49,10 @@ const formatters = {
   numeric(tickValue, index, ticks) {
     const locale = this.chart.options.locale;
     if (tickValue === 0) {
-      return formatNumber(0, locale, {
+      return formatNumber(0, locale, applyNumberFormat({
         minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-        ...this.options.ticks.format
-      });
+        maximumFractionDigits: 0
+      }, this.options.ticks.format));
     }
 
     let notation;
@@ -57,19 +77,9 @@ const formatters = {
     // toFixed has a max of 20 decimal places
     const numDecimal = isNaN(logDelta) ? 1 : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
 
-    const format = this.options.ticks.format;
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
-    Object.assign(options, format);
 
-    if (options.minimumFractionDigits > options.maximumFractionDigits) {
-      if (format.minimumFractionDigits === undefined) {
-        options.minimumFractionDigits = options.maximumFractionDigits;
-      } else if (format.maximumFractionDigits === undefined) {
-        options.maximumFractionDigits = options.minimumFractionDigits;
-      }
-    }
-
-    return formatNumber(tickValue, locale, options);
+    return formatNumber(tickValue, locale, applyNumberFormat(options, this.options.ticks.format));
   },
 
 
