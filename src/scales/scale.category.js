@@ -67,6 +67,13 @@ export default class CategoryScale extends Scale {
     super.init(scaleOptions);
   }
 
+  beforeLayout() {
+    super.beforeLayout();
+    // Dataset parsing has now finished adding the inferred labels.
+    this._userMin = this.parse(this.options.min);
+    this._userMax = this.parse(this.options.max);
+  }
+
   parse(raw, index) {
     if (isNullOrUndef(raw)) {
       return null;
