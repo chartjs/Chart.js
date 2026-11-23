@@ -159,6 +159,29 @@ function getContainerSize(canvas: HTMLCanvasElement, width: number, height: numb
 
 const round1 = (v: number) => Math.round(v * 10) / 10;
 
+/**
+ * Measures the content height the container has when the canvas is `height` pixels high.
+ * A container that takes its height from its content grows with the canvas, one with a
+ * height of its own does not. The canvas is restored before returning, and because it is
+ * only made higher, the document never gets shorter while measuring.
+ */
+function getContainerHeightFor(canvas: HTMLCanvasElement, height: number): number | undefined {
+  const container = _getParentNode(canvas);
+  const canvasStyle = canvas.style;
+  if (!container || !canvasStyle) {
+    return undefined;
+  }
+  const previousHeight = canvasStyle.height;
+  canvasStyle.height = `${height}px`;
+  const style = getComputedStyle(container);
+  let containerHeight = parseFloat(style.height);
+  if (style.boxSizing === 'border-box') {
+    containerHeight -= getPositionedStyle(style, 'padding').height + getPositionedStyle(style, 'border', 'width').height;
+  }
+  canvasStyle.height = previousHeight;
+  return isNaN(containerHeight) ? undefined : containerHeight;
+}
+
 // eslint-disable-next-line complexity
 export function getMaximumSize(
   canvas: HTMLCanvasElement,
@@ -192,8 +215,18 @@ export function getMaximumSize(
   const maintainHeight = bbWidth !== undefined || bbHeight !== undefined;
 
   if (maintainHeight && aspectRatio && containerSize.height && height > containerSize.height) {
-    height = containerSize.height;
-    width = round1(Math.floor(height * aspectRatio));
+    // The container is lower than the chart would be. That only limits the chart when the
+    // container does not grow with the canvas: the height of a container sized by its
+    // content is the previous height of the canvas, which would keep the chart from ever
+    // growing back (https://github.com/chartjs/Chart.js/issues/11005).
+    const available = getContainerHeightFor(canvas, height);
+    if (available === undefined) {
+      height = containerSize.height;
+      width = round1(Math.floor(height * aspectRatio));
+    } else if (available < height - 0.5) {
+      height = round1(available);
+      width = round1(Math.floor(height * aspectRatio));
+    }
   }
 
   return {width, height};
