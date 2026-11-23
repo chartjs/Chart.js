@@ -1,0 +1,20 @@
+# Previews of the documentation on pull requests. Production docs are not
+# served from here: they are deployed to chartjs.github.io by the workflows.
+
+[build]
+  # The same two commands the deploy runs. The result is published under
+  # /docs/master/, the path it has on chartjs.org, because the site is built
+  # with that base.
+  command = "./scripts/docs-config.sh master && pnpm run docs && mkdir -p _preview/docs && cp -r dist/docs _preview/docs/master"
+  publish = "_preview"
+  # Exit code 0 skips the build: nothing the docs are built from changed since
+  # the last build of this branch. The first build of a branch always runs.
+  ignore = "[ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- docs src scripts package.json pnpm-lock.yaml pnpm-workspace.yaml netlify.toml"
+
+[build.environment]
+  NODE_VERSION = "26"
+
+[[redirects]]
+  from = "/"
+  to = "/docs/master/"
+  status = 302
