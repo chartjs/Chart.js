@@ -223,10 +223,10 @@ importers:
         version: 5.1.1(vitest@5.1.1)
       chartjs-adapter-luxon:
         specifier: ^1.2.0
-        version: 1.3.1(chart.js@4.6.2)(luxon@3.3.0)
+        version: 1.3.1(chart.js@4.6.1)(luxon@3.3.0)
       chartjs-adapter-moment:
         specifier: ^1.0.0
-        version: 1.0.1(chart.js@4.6.2)(moment@2.29.4)
+        version: 1.0.1(chart.js@4.6.1)(moment@2.29.4)
       chartjs-test-utils:
         specifier: ^1.1.1
         version: 1.1.1(@vitest/browser@5.1.1(vite@8.3.8(stylus@0.54.8(supports-color@8.1.1))(terser@5.51.2))(vitest@5.1.1))(vitest@5.1.1)
@@ -382,7 +382,7 @@ importers:
         version: 0.11.2(typedoc-plugin-markdown@3.14.0(typedoc@0.23.28(typescript@4.9.5)))(typedoc@0.23.28(typescript@4.9.5))
       vuepress-theme-chartjs:
         specifier: ^0.2.0
-        version: 0.2.0(chart.js@4.6.2)(postcss@8.5.33)(vue@2.7.14)
+        version: 0.2.0(chart.js@4.6.1)(postcss@8.5.33)(vue@2.7.14)
       webpack:
         specifier: ^4.46.0
         version: 4.46.0(supports-color@6.1.0)
@@ -1498,6 +1498,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@kurkle/color@0.3.2':
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
 
   '@kurkle/color@0.6.6':
     resolution: {integrity: sha512-Bd1NjGyoe27ExXRIBu13YymFP6k/wFxpUkX97Z3RlofLFV43nECB2G8vETZzcZzz2Ct2oRzwYElX65lxyi5UNg==}
@@ -3405,9 +3408,9 @@ packages:
   character-reference-invalid@1.1.4:
     resolution: {integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==}
 
-  chart.js@4.6.2:
-    resolution: {integrity: sha512-xachB+pPHjp0syJi7llUBA1w3kMYl6NF3o7eVrvjnWCT+IB2zMaF2pX5UYDiwbbfsioFEIRnAjreNOMsGj5TIA==}
-    engines: {pnpm: '>=12'}
+  chart.js@4.6.1:
+    resolution: {integrity: sha512-hJyniucsFmq//EvXYvJ6c6mahPoI3kaxdjVH8awTaJ/fDNWeSqqqArixMJWkWNN6fcYvPU3HneSANFNYtRi61g==}
+    engines: {pnpm: '>=8'}
 
   chartjs-adapter-luxon@1.3.1:
     resolution: {integrity: sha512-yxHov3X8y+reIibl1o+j18xzrcdddCLqsXhriV2+aQ4hCR66IYFchlRXUvrJVoxglJ380pgytU7YWtoqdIgqhg==}
@@ -11999,6 +12002,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
+  '@kurkle/color@0.3.2': {}
+
   '@kurkle/color@0.6.6': {}
 
   '@leichtgewicht/ip-codec@2.0.4': {}
@@ -14411,18 +14416,18 @@ snapshots:
 
   character-reference-invalid@1.1.4: {}
 
-  chart.js@4.6.2:
+  chart.js@4.6.1:
     dependencies:
-      '@kurkle/color': 0.6.6
+      '@kurkle/color': 0.3.2
 
-  chartjs-adapter-luxon@1.3.1(chart.js@4.6.2)(luxon@3.3.0):
+  chartjs-adapter-luxon@1.3.1(chart.js@4.6.1)(luxon@3.3.0):
     dependencies:
-      chart.js: 4.6.2
+      chart.js: 4.6.1
       luxon: 3.3.0
 
-  chartjs-adapter-moment@1.0.1(chart.js@4.6.2)(moment@2.29.4):
+  chartjs-adapter-moment@1.0.1(chart.js@4.6.1)(moment@2.29.4):
     dependencies:
-      chart.js: 4.6.2
+      chart.js: 4.6.1
       moment: 2.29.4
 
   chartjs-test-utils@0.4.0(jasmine@3.99.0)(karma-jasmine@5.1.0(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)))(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)):
@@ -21856,10 +21861,10 @@ snapshots:
       typedoc: 0.23.28(typescript@4.9.5)
       typedoc-plugin-markdown: 3.14.0(typedoc@0.23.28(typescript@4.9.5))
 
-  vuepress-theme-chartjs@0.2.0(chart.js@4.6.2)(postcss@8.5.33)(vue@2.7.14):
+  vuepress-theme-chartjs@0.2.0(chart.js@4.6.1)(postcss@8.5.33)(vue@2.7.14):
     dependencies:
       acorn: 8.8.2
-      chart.js: 4.6.2
+      chart.js: 4.6.1
       vue-prism-editor: 1.3.0(vue@2.7.14)
       vue2-perfect-scrollbar: 1.5.56(postcss@8.5.33)
     transitivePeerDependencies:

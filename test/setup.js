@@ -11,10 +11,8 @@ import 'chartjs-adapter-moment';
 // fixes https://github.com/chartjs/Chart.js/issues/4515
 window.devicePixelRatio = 1;
 
-// src/index.umd.ts registers the built-ins by passing the module namespaces to
-// Chart.register(). Unbundled, those are real namespace objects, which
-// Chart.register() does not iterate (isObject() rejects '[object Module]'),
-// so nothing gets registered. The bundle Karma loads has plain objects there.
+// src/index.umd.ts passes module namespaces to Chart.register(), which registers
+// nothing from them unbundled because isObject() rejects '[object Module]'.
 Chart.register(...registerables.flatMap((namespace) => Object.values(namespace)));
 
 // Keep the scriptable default instead of the fixed 1 that setup() would set:

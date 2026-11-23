@@ -34,8 +34,8 @@ docs/.vuepress/dist
 # Generated
 /test/types/autogen*.ts
 
-# Vitest: screenshots of failing browser tests
-__screenshots__/
+# Vitest: attachments, such as screenshots of failing browser tests
+/.vitest/
 
 # Eslint
 .eslintcache
