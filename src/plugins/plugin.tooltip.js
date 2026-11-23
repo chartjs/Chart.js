@@ -1117,7 +1117,7 @@ export class Tooltip extends Element {
         element: meta.data[index],
         index,
       };
-    });
+    }).filter(({element}) => element);
     const changed = !_elementsEqual(lastActive, active);
     const positionChanged = this._positionChanged(active, eventPosition);
 

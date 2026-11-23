@@ -1621,6 +1621,27 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
     });
 
+    it('should ignore active elements with an out-of-range index', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B'],
+          datasets: [{data: [1, 2]}]
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[0];
+      const outside = {datasetIndex: 0, index: 99};
+      const position = {x: 0, y: 0};
+
+      chart.tooltip.setActiveElements([outside, {datasetIndex: 0, index: 0}], position);
+      chart.update();
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
+
+      chart.tooltip.setActiveElements([outside], position);
+      chart.update();
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+    });
+
     it('should not replace the user set active elements by event replay', async function() {
       var chart = window.acquireChart({
         type: 'line',

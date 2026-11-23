@@ -2290,6 +2290,24 @@ describe('Chart', function() {
       expect(active[0].element).toBe(meta.data[0]);
     });
 
+    it('should ignore active elements with an out-of-range index', function() {
+      const chart = acquireChart({
+        type: 'pie',
+        data: {
+          datasets: [{data: [1, 2]}]
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[0];
+
+      chart.setActiveElements([
+        {datasetIndex: 0, index: 99},
+        {datasetIndex: 0, index: 0},
+      ]);
+      chart.update();
+
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
+    });
+
     it('should ignore active elements that have not been built', function() {
       const chart = acquireChart({
         type: 'pie',
