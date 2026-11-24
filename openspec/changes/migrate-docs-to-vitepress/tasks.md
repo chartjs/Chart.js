@@ -9,7 +9,7 @@
 
 - [x] 2.1 Add the root scripts `docs:vitepress` and `docs:vitepress:dev` (build the library, then run the site) and confirm they fail for lack of a site
 - [x] 2.2 Add the temporary workspace package `docs/.vitepress/package.json` (scripts `site:build`, `site:dev`) and register it in `pnpm-workspace.yaml`; if pnpm rejects a package in a dot directory, use the sibling directory of D5 and note it in `design.md`
-- [x] 2.3 Add `docs/.vitepress/docs-version.json` and `config.ts`: title, description, base, favicon link, nav, repository link, `lastUpdated`, `markdown-it-include`, `anchor.uniqueSlugStartIndex: 2`, local search, `appearance: false`, the `chart.js` alias, the two Vue 3 aliases, `srcExclude` for partials, `ignoreDeadLinks` patterns for localhost and, until P4, `/api/`
+- [x] 2.3 Add `docs/.vitepress/docs-version.json` and `config.ts`: title, description, base, favicon link, nav, repository link, `lastUpdated`, `markdown-it-include`, `anchor.uniqueSlugStartIndex: 2`, local search, `appearance: false`, the `chart.js` alias, the two Vue 3 aliases, `srcExclude` for partials and, until P4, `api/**`, `ignoreDeadLinks` patterns for localhost and, until P4, `/api/`
 - [x] 2.4 Add the theme entry and the brand palette; copy the three public files to `docs/public/`
 - [x] 2.5 Make `scripts/docs-config.sh` write the tag to the version marker beside the existing `sed`; check master, a release, latest and next give bases `/docs/master/`, `/docs/x.y.z/`, `/docs/latest/`, `/docs/next/`
 - [x] 2.6 Add `docs/.vitepress/tsconfig.json` and a `typecheck` script (`vue-tsc --noEmit`) with a root `docs:typecheck`; see it fail on a deliberate type error in `config.ts`
