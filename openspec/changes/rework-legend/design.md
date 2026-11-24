@@ -168,6 +168,15 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
     - A piece in the legend chain rebases over whatever has landed. It does not wait for an author-owned PR it shares no lines with.
 16. **Tests sit with the test migration.** P1 to P5 add specs to `test/specs/plugin.legend.tests.js`. If migrate-tests-to-vitest converts that file first, they move with its recipe. Pieces written after the conversion use `plugin.legend.spec.js`. New image fixtures are made by whichever runner owns fixtures at the time.
 
+### Decided by the user (2026-11-24)
+
+17. **P13 ships as a fix in a patch release, with a release-note line.** The tooltip and hover style the pointer started end outside the chart area. For the pointer this restores the behaviour before 3.7.
+18. **P17 and P18 ship in 4.7.0, each with a release-note line.**
+19. **P14's option is `labels.boxYOffset`.**
+20. **P15 adds `labels.decorationWidth`** (default 2), not a width that scales with the font.
+21. **#11825 rebases onto P9 and drops its copies of the #11280 and #11824 fixes.** Overflow (#10893, #11397, #12129) is designed next, for 4.8.
+22. **Collapsed hidden bars that hover can still find are a follow-up issue**, not part of P12.
+
 ### What the review changed
 
 - The separate `_layout` became private fields on the hit boxes. The title layout piece was dropped, because its test passed on master (complexity review).
@@ -186,7 +195,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 ## Risks / Trade-offs
 
 - **Counts that change between fit and draw** (a `generateLabels` that reads the scales, which is the workaround for #11194) draw only the items with a hit box. Today they draw at guessed positions. P1 and P9 have a spec for it.
-- **The pointer rule (P13) changes visible behaviour.** With `intersect: false`, the tooltip now hides when the pointer moves over the axes or the legend. It ships as a fix with a release-note line (Open Question 1).
+- **The pointer rule (P13) changes visible behaviour.** With `intersect: false`, the tooltip now hides when the pointer moves over the axes or the legend. It ships as a fix with a release-note line (Decision 17).
 - **Data visibility (P17, P18) changes defaults** for charts that replace labels or hide bars. That is why they are minor releases with a release-note line.
 - **#11825 must rebase onto P9.** It changes 666 lines of `plugin.legend.js` and re-implements two fixes this change makes. Its author is asked to build pages as ranges of hit-box lines.
 
@@ -206,7 +215,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 | P10 | Rows as tall as their tallest item | same | three-line label in a top legend: the next row starts below line 3 (master overlaps) | ~40 | P9 | | #11824 |
 | P11 | Wrap within `maxWidth` / `maxHeight` | same, plus `docs/configuration/legend.md` | right legend with `maxHeight: 100`: every hit box within 100 px of the first, in two or more columns (master: one column to 400 px); top legend with `maxWidth: 150`: every row within 150 px | ~50 | P10 | | #11805 |
 | P12 | Hidden data is not active | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update) | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()` | ~130 | P6 (same file), P8 (same sample); #12391 | | #10882 |
-| P13 | The pointer's active elements end outside the chart area | `src/plugins/plugin.tooltip.js`, `src/core/core.controller.js`, `test/specs/plugin.tooltip.tests.js`, `test/specs/core.controller.tests.js`, `docs/configuration/tooltip.md`, `docs/configuration/interactions.md` | pie: hover a slice, move onto a legend item: tooltip active 0 (master 1); back on the slice: 1; a legend `onHover` that sets the already-active element keeps the tooltip | ~200 | P12 (same file); #12275 (same file, 4.6.3); Open Question 1 | | #11801 |
+| P13 | The pointer's active elements end outside the chart area | `src/plugins/plugin.tooltip.js`, `src/core/core.controller.js`, `test/specs/plugin.tooltip.tests.js`, `test/specs/core.controller.tests.js`, `docs/configuration/tooltip.md`, `docs/configuration/interactions.md` | pie: hover a slice, move onto a legend item: tooltip active 0 (master 1); back on the slice: 1; a legend `onHover` that sets the already-active element keeps the tooltip | ~200 | P12 (same file); #12275 (same file, 4.6.3) | | #11801 |
 | P14 | feat: `labels.boxYOffset` (#12242 renamed) | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/point-style.md`, fixture | #12242's spec (the symbol moves, the text does not) | ~60 | P11 (same file); the author's rename; 4.7.0 | | #11884 |
 | P15 | feat: `LegendItem.textDecoration`, `labels.decorationWidth`; a legend item styling sample | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/item-style.md` | underline drawn; strike width 1 with `decorationWidth: 1` (master always 2); `'none'` on a hidden item draws no line | ~80 | P14 (same file); 4.7.0 | #11571, #11941 | #11692, #11725 |
 | P16 | feat: legend `padding` | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md` | the gap between a top legend and the chart area grows by `padding.bottom`; `align: 'start'` with `padding.left: 20` moves the first item 20 px right | ~60 | P15 (same file); 4.7.0 | | #11740, #11280 |
@@ -261,24 +270,4 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 
 ## Open Questions
 
-1. **P13, release level.** The tooltip closing outside the chart area changes what users see. Two tests pin today's behaviour.
-   - Options:
-     - (a) a fix in a patch with a release-note line, since it restores pre-3.7 behaviour for the pointer;
-     - (b) a fix in 4.7.0;
-     - (c) an option.
-   - Recommendation: (a).
-2. **P17 and P18, release level.** They change defaults that users can see.
-   - Options: 4.7.0 with release notes; a patch; 5.0.
-   - Recommendation: 4.7.0.
-3. **P14, the option's name.**
-   - Options: `labels.boxYOffset`; keep `pointStyleYOffset`; `labels.symbolOffset`.
-   - Recommendation: `boxYOffset`.
-4. **P15, the decoration width.**
-   - Options: a `labels.decorationWidth` option (images unchanged); a width that scales with the font size (no option, changes images at sizes other than 12).
-   - Recommendation: the option.
-5. **#11825 (legend navigation) and overflow.** This change leaves them out.
-   - Options: ask the author to rebase onto P9 and drop the duplicate fixes, with overflow designed next (4.8); fold navigation into this change.
-   - Recommendation: rebase, and design overflow next.
-6. **Collapsed hidden bars and hit-testing.** A hidden bar at zero height can still be found with `intersect: false`.
-   - Options: P12 also checks P18's hook; a follow-up.
-   - Recommendation: a follow-up.
+None. The user's answers are recorded under Decisions ("Decided by the user").
