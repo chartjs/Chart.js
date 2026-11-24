@@ -10,3 +10,22 @@ globals:
 
 rules:
   max-statements: ["warn", 50]
+
+overrides:
+  # Specs that run under Vitest (vitest.config.js, `globals: true`) and its setup.
+  - files: ['specs/**/*.spec.js', 'setup.js', 'vitest.shared.js']
+    env:
+      jasmine: false
+    globals:
+      afterAll: readonly
+      afterEach: readonly
+      beforeAll: readonly
+      beforeEach: readonly
+      createMockContext: readonly
+      describe: readonly
+      expect: readonly
+      it: readonly
+      releaseChart: readonly
+      test: readonly
+      triggerMouseEvent: readonly
+      vi: readonly

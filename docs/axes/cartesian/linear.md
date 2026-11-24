@@ -59,6 +59,8 @@ let options = {
 If the value is a string ending with `%`, it's treated as a percentage. If a number, it's treated as a value.
 The value is added to the maximum data value and subtracted from the minimum data. This extends the scale range as if the data values were that much greater.
 
+A bound that is set with `min` or `max` is not extended by `grace`. Bounds that come from the data, or from `suggestedMin` and `suggestedMax`, are.
+
 ```js chart-editor
 // <block:setup:1>
 const labels = Utils.months({count: 7});

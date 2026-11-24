@@ -286,7 +286,7 @@ module.exports = {
 
 ### Config Options
 
-The configuration options for the vertical line chart are the same as for the [line chart](#configuration-options). However, any options specified on the x-axis in a line chart, are applied to the y-axis in a vertical line chart.
+The configuration options for the vertical line chart are the same as for the [line chart](#dataset-properties). However, any options specified on the x-axis in a line chart, are applied to the y-axis in a vertical line chart.
 
 ## Internal data format
 

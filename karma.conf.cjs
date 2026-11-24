@@ -14,7 +14,8 @@ module.exports = async function(karma) {
     .argv;
 
   const grep = (args.grep === true || args.grep === undefined) ? '' : args.grep;
-  const specPattern = 'test/specs/**/*' + grep + '*.js';
+  // Only unconverted specs: `*.spec.js` files run under Vitest (vitest.config.js).
+  const specPattern = 'test/specs/**/*' + grep + '*.tests.js';
 
   // Use the same rollup config as our dist files: when debugging (npm run dev),
   // we will prefer the unminified build which is easier to browse and works

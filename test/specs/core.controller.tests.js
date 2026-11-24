@@ -694,6 +694,32 @@ describe('Chart', function() {
       wrapper.style.width = '455px';
     });
 
+    it('should call update with the resize mode when resizeDelay is set', function(done) {
+      var chart = acquireChart({
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 10
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; height: 350px; position: relative'
+        }
+      });
+
+      spyOn(chart, 'update').and.callThrough();
+      waitForResize(chart, function() {
+        setTimeout(function() {
+          expect(chart.update).toHaveBeenCalledWith('resize');
+          done();
+        }, 50);
+      });
+      chart.canvas.parentNode.style.width = '455px';
+    });
+
     it('should restore the original size when parent became invisible', function(done) {
       var chart = acquireChart({
         options: {
@@ -1012,6 +1038,91 @@ describe('Chart', function() {
       wrapper.style.cssText = 'width: 455px; height: 355px';
       wrapper.appendChild(canvas);
       body.appendChild(wrapper);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/12166
+    // https://github.com/chartjs/Chart.js/issues/12269
+    it('should update before drawing if attached to the DOM after construction with resizeDelay', function(done) {
+      var canvas = document.createElement('canvas');
+      var wrapper = document.createElement('div');
+      var body = window.document.body;
+      var hooks = [];
+      var chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [1, 2]}]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 50
+        },
+        plugins: [{
+          id: 'recorder',
+          beforeUpdate: () => hooks.push('beforeUpdate'),
+          beforeDraw: () => hooks.push('beforeDraw')
+        }]
+      });
+
+      expect(hooks).toEqual([]);
+      expect(chart.chartArea).toBeUndefined();
+
+      waitForResize(chart, function() {
+        expect(hooks[0]).toBe('beforeUpdate');
+        expect(chart.chartArea).not.toBeUndefined();
+
+        body.removeChild(wrapper);
+        chart.destroy();
+        done();
+      });
+
+      wrapper.style.cssText = 'width: 455px; height: 355px';
+      wrapper.appendChild(canvas);
+      body.appendChild(wrapper);
+    });
+
+    it('should not draw on resize before the first update with resizeDelay', function() {
+      var cancelUpdate = true;
+      var hooks = [];
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [1, 2]}]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 50
+        },
+        plugins: [{
+          id: 'recorder',
+          beforeUpdate() {
+            hooks.push('beforeUpdate');
+            return !cancelUpdate;
+          },
+          beforeDraw: () => hooks.push('beforeDraw')
+        }]
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; height: 350px; position: relative'
+        }
+      });
+
+      // The first update was cancelled, so there is nothing to draw yet.
+      expect(chart.chartArea).toBeUndefined();
+      expect(hooks).not.toContain('beforeDraw');
+
+      cancelUpdate = false;
+      hooks = [];
+      chart.resize(200, 250);
+
+      expect(hooks[0]).toBe('beforeUpdate');
+      expect(chart.chartArea).not.toBeUndefined();
     });
 
     it('should resize the canvas when attached to a different parent', function(done) {
@@ -1342,6 +1453,56 @@ describe('Chart', function() {
       wrapper.style.width = '450px';
     });
 
+    // https://github.com/chartjs/Chart.js/issues/11005
+    it('should grow back when the parent has no height of its own', function(done) {
+      var chart = acquireChart({
+        type: 'line', // AR == 2
+        options: {
+          animation: false,
+          responsive: true,
+          maintainAspectRatio: true
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          style: 'width: 300px; position: relative'
+        }
+      });
+
+      expect(chart).toBeChartOfSize({
+        dw: 300, dh: 150,
+        rw: 300, rh: 150,
+      });
+
+      var wrapper = chart.canvas.parentNode;
+      waitForResize(chart, function() {
+        expect(chart).toBeChartOfSize({
+          dw: 150, dh: 75,
+          rw: 150, rh: 75,
+        });
+
+        // The canvas getting lower made the parent lower, which the resize observer
+        // reports once more. Widen the parent only after that has been handled, so that
+        // the new width arrives from the observer together with the height of the parent.
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            waitForResize(chart, function() {
+              expect(chart).toBeChartOfSize({
+                dw: 450, dh: 225,
+                rw: 450, rh: 225,
+              });
+
+              done();
+            });
+            wrapper.style.width = '450px';
+          });
+        });
+      });
+      wrapper.style.width = '150px';
+    });
+
     it('should maintain aspect ratio when parent height changes', function(done) {
       var chart = acquireChart({
         options: {
@@ -1508,6 +1669,47 @@ describe('Chart', function() {
       });
       chart.options.aspectRatio = 2;
       chart.resize();
+    });
+  });
+
+  // https://github.com/chartjs/Chart.js/issues/12256
+  describe('initial animation with a fractional container width', function() {
+    it('should play the enter animation when the container CSS pixel width is fractional', function() {
+      var chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [3, 5, 2]}]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {duration: 1000}
+        }
+      }, {
+        canvas: {
+          style: ''
+        },
+        wrapper: {
+          // Sub-integer CSS pixel width, as produced by CSS grid `fr` units,
+          // percentage widths or `calc()` expressions.
+          style: 'width: 200.4px; height: 200px; position: relative'
+        }
+      });
+
+      // Make sure the container width really is fractional, otherwise the test
+      // would not cover the reported scenario.
+      expect(chart.width % 1).not.toBe(0);
+
+      // The enter animation starts each point at the scale base and animates it
+      // up to its value. With the bug, a premature internal resize finalises the
+      // elements before the constructor's update(), so the points are rendered
+      // straight at their final position and the animation never plays.
+      var point = chart.getDatasetMeta(0).data[1];
+      var baseY = chart.scales.y.getBasePixel();
+      var finalY = chart.scales.y.getPixelForValue(5);
+      expect(point.y).toBeCloseTo(baseY, 0);
+      expect(point.y).not.toBeCloseTo(finalY, 0);
     });
   });
 
@@ -2288,6 +2490,48 @@ describe('Chart', function() {
       const active = chart.getActiveElements();
       expect(active.length).toEqual(1);
       expect(active[0].element).toBe(meta.data[0]);
+    });
+
+    it('should ignore active elements with an out-of-range index', function() {
+      const chart = acquireChart({
+        type: 'pie',
+        data: {
+          datasets: [{data: [1, 2]}]
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[0];
+
+      chart.setActiveElements([
+        {datasetIndex: 0, index: 99},
+        {datasetIndex: 0, index: 0},
+      ]);
+      chart.update();
+
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
+    });
+
+    it('should ignore active elements that have not been built', function() {
+      const chart = acquireChart({
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: [1],
+            borderColor: 'red',
+            hoverBorderColor: 'blue',
+          }]
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[0];
+
+      chart.data.datasets.push({data: [2]});
+      chart.setActiveElements([
+        {datasetIndex: 1, index: 0},
+        {datasetIndex: 0, index: 0},
+      ]);
+      chart.update();
+
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
+      expect(element.options.borderColor).toBe('blue');
     });
   });
 

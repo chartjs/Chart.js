@@ -579,7 +579,7 @@ export default class TimeScale extends Scale {
 	 */
   getValueForPixel(pixel) {
     const offsets = this._offsets;
-    const pos = this.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
+    const pos = this.getDecimalForPixel(pixel) / offsets.factor - offsets.start;
     return this.min + pos * (this.max - this.min);
   }
 

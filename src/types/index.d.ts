@@ -108,6 +108,11 @@ export interface BarControllerDatasetOptions
   yAxisID: string;
 
   /**
+   * Should null or undefined values be omitted from drawing
+   */
+  skipNull?: boolean;
+
+  /**
    * Percent (0-1) of the available width each bar should be within the category width. 1.0 will take the whole category width and put the bars right next to each other.
    * @default 0.9
    */
@@ -274,7 +279,7 @@ export interface DoughnutControllerDatasetOptions
   weight: number;
 
   /**
-    * Similar to the `offset` option, but applies to all arcs. This can be used to to add spaces
+    * Similar to the `offset` option, but applies to all arcs. This can be used to add spaces
     * between arcs
     * @default 0
     */
@@ -2462,7 +2467,8 @@ export interface LegendOptions<TType extends ChartType> {
    */
   onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**
-   * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
+   * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item,
+   * or when the pointer leaves the canvas ('mouseout') while a label item is hovered.
    */
   onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
 
@@ -2841,7 +2847,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   titleFont: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableTooltipContext<TType>>;
   /**
-   * Spacing to add to top and bottom of each title line.
+   * Spacing to add between title lines.
    * @default 2
    */
   titleSpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
@@ -2856,7 +2862,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   titleAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
-   * Spacing to add to top and bottom of each tooltip item.
+   * Spacing to add between body lines.
    * @default 2
    */
   bodySpacing: Scriptable<number, ScriptableTooltipContext<TType>>;
@@ -2876,7 +2882,7 @@ export interface TooltipOptions<TType extends ChartType = ChartType> extends Cor
    */
   bodyAlign: Scriptable<TextAlign, ScriptableTooltipContext<TType>>;
   /**
-   * Spacing to add to top and bottom of each footer line.
+   * Spacing to add between footer lines.
    * @default 2
    */
   footerSpacing: Scriptable<number, ScriptableTooltipContext<TType>>;

@@ -189,6 +189,67 @@ describe('Legend block tests', function() {
     }]);
   });
 
+  it('should take the dataset dash for a line point style', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'solid',
+          data: []
+        }, {
+          label: 'dashed',
+          borderDash: [6, 3],
+          borderDashOffset: 4,
+          data: []
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'line'
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.legend.legendItems.map(function(item) {
+      return item.lineDash;
+    })).toEqual([[], [6, 3]]);
+    expect(chart.legend.legendItems.map(function(item) {
+      return item.lineDashOffset;
+    })).toEqual([0, 4]);
+  });
+
+  it('should leave other point styles solid', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'dashed',
+          borderDash: [6, 3],
+          data: []
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.legend.legendItems[0].lineDash).toBeUndefined();
+  });
+
   it('should reverse correctly', function() {
     var chart = window.acquireChart({
       type: 'line',
@@ -568,6 +629,40 @@ describe('Legend block tests', function() {
     // Check whether any legend items reach outside the established bounds
     chart.legend.legendHitBoxes.forEach(function(item) {
       expect(item.left + item.width).toBeLessThanOrEqual(chart.width);
+    });
+  });
+
+  ['left', 'right'].forEach(function(position) {
+    it('should fit the widest line of a multiline ' + position + ' legend label', function() {
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {
+          labels: [['WWW', 'iiiiiiii']],
+          datasets: [{data: [1]}]
+        },
+        options: {
+          plugins: {
+            legend: {
+              position,
+              labels: {
+                font: {family: 'Arial'}
+              }
+            }
+          }
+        }
+      });
+
+      const ctx = chart.ctx;
+      ctx.font = Chart.helpers.toFont(chart.legend.options.labels.font).string;
+      expect(ctx.measureText('WWW').width).toBeGreaterThan(ctx.measureText('iiiiiiii').width);
+
+      const multilineWidth = chart.legend.width;
+      const multilineHitboxWidth = chart.legend.legendHitBoxes[0].width;
+      chart.data.labels[0] = 'WWW';
+      chart.update();
+
+      expect(multilineWidth).toBeCloseTo(chart.legend.width, 5);
+      expect(multilineHitboxWidth).toBeCloseTo(chart.legend.legendHitBoxes[0].width, 5);
     });
   });
 
@@ -1109,6 +1204,7 @@ describe('Legend block tests', function() {
     it('should call onLeave when the mouse leaves the canvas', async function() {
       var hoverItem = null;
       var leaveItem = null;
+      var leaveCount = 0;
 
       var chart = acquireChart({
         type: 'line',
@@ -1126,6 +1222,7 @@ describe('Legend block tests', function() {
               },
               onLeave: function(_, item) {
                 leaveItem = item;
+                leaveCount++;
               }
             }
           }
@@ -1143,6 +1240,20 @@ describe('Legend block tests', function() {
 
       await jasmine.triggerMouseEvent(chart, 'mouseout');
       expect(leaveItem).toBe(chart.legend.legendItems[0]);
+      expect(chart.legend._hoveredItem).toBeNull();
+
+      await jasmine.triggerMouseEvent(chart, 'mousemove', el);
+      expect(chart.legend._hoveredItem).toBe(chart.legend.legendItems[0]);
+      leaveItem = null;
+      leaveCount = 0;
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', el);
+      expect(leaveItem).toBe(chart.legend.legendItems[0]);
+      expect(leaveCount).toBe(1);
+      expect(chart.legend._hoveredItem).toBeNull();
+
+      await jasmine.triggerMouseEvent(chart, 'mouseout', el);
+      expect(leaveCount).toBe(1);
     });
 
 
