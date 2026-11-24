@@ -559,6 +559,192 @@ describe('Chart.DatasetController', function() {
     expect(controller.getParsed(2)).toBe(data[2]);
   });
 
+  describe('when data is changed in place before an update', function() {
+    [true, false].forEach(function(parsing) {
+      describe('and parsing is ' + parsing, function() {
+        function createChart() {
+          return acquireChart({
+            type: 'line',
+            data: {
+              labels: ['a', 'b', 'c'],
+              datasets: [{data: [{x: 0, y: 1}, {x: 1, y: 2}]}]
+            },
+            options: {parsing}
+          });
+        }
+
+        it('should keep the old elements on a push and a pop', function() {
+          const chart = createChart();
+          const meta = chart.getDatasetMeta(0);
+          const [first, last] = meta.data;
+          const data = chart.data.datasets[0].data;
+
+          data.push({x: 2, y: 3});
+          data.pop();
+          chart.update();
+
+          expect(meta.data.length).toBe(2);
+          expect(meta.data[0]).toBe(first);
+          expect(meta.data[1]).toBe(last);
+        });
+
+        it('should remove the old last element on a pop and a push', function() {
+          const chart = createChart();
+          const meta = chart.getDatasetMeta(0);
+          const [first, last] = meta.data;
+          const data = chart.data.datasets[0].data;
+
+          data.pop();
+          data.push({x: 1, y: 3});
+          chart.update();
+
+          expect(meta.data.length).toBe(2);
+          expect(meta.data[0]).toBe(first);
+          expect(meta.data.indexOf(last)).toBe(-1);
+        });
+      });
+    });
+
+    it('should start an animated pushed point from its reset state', function() {
+      const data = [1, 2];
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data}]
+        },
+        options: {
+          animation: {duration: 1000}
+        }
+      });
+      const meta = chart.getDatasetMeta(0);
+      const startX = chart.scales.x.getPixelForValue(2);
+      const startY = chart.scales.y.getBasePixel();
+
+      data.push(3);
+      chart.update();
+
+      expect(meta.data.length).toBe(3);
+      expect(meta.data[2].x).toBeCloseToPixel(startX);
+      expect(meta.data[2].y).toBeCloseToPixel(startY);
+      chart.stop();
+    });
+
+    it('should start animated points from their reset state at their final index', function() {
+      const data = [1, 2];
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c', 'd'],
+          datasets: [{data}]
+        },
+        options: {
+          animation: {duration: 1000}
+        }
+      });
+      const meta = chart.getDatasetMeta(0);
+      const startX = [0, 1, 2, 3].map(i => chart.scales.x.getPixelForValue(i));
+      const startY = chart.scales.y.getBasePixel();
+
+      data.push(3);
+      data.unshift(0);
+      chart.update();
+
+      expect(meta.data.length).toBe(4);
+      expect(meta.data[0].x).toBeCloseToPixel(startX[0]);
+      expect(meta.data[0].y).toBeCloseToPixel(startY);
+      expect(meta.data[3].x).toBeCloseToPixel(startX[3]);
+      expect(meta.data[3].y).toBeCloseToPixel(startY);
+      chart.stop();
+    });
+
+    ['bar', 'line'].forEach(function(type) {
+      describe('in a stacked ' + type + ' chart', function() {
+        function createChart() {
+          return acquireChart({
+            type,
+            data: {
+              labels: ['a', 'b', 'c'],
+              datasets: [{data: [1, 2]}, {data: [10, 20, 30]}]
+            },
+            options: {
+              scales: {
+                x: {stacked: true},
+                y: {stacked: true}
+              }
+            }
+          });
+        }
+
+        function stackValues(chart) {
+          const stacks = chart._stacks['x.y.' + type];
+          return Object.keys(stacks).map(key => [stacks[key][0], stacks[key][1]]);
+        }
+
+        it('should stack a pushed value', function() {
+          const chart = createChart();
+          chart.data.datasets[0].data.push(3);
+          chart.update();
+          expect(stackValues(chart)).toEqual([[1, 10], [2, 20], [3, 30]]);
+        });
+
+        it('should stack an unshifted value', function() {
+          const chart = createChart();
+          chart.data.datasets[0].data.unshift(0);
+          chart.update();
+          expect(stackValues(chart)).toEqual([[0, 10], [1, 20], [2, 30]]);
+        });
+
+        it('should stack a spliced value', function() {
+          const chart = createChart();
+          chart.data.datasets[0].data.splice(1, 0, 5);
+          chart.update();
+          expect(stackValues(chart)).toEqual([[1, 10], [5, 20], [2, 30]]);
+        });
+
+        it('should handle a push and a pop', function() {
+          const chart = createChart();
+          const data = chart.data.datasets[0].data;
+          data.push(3);
+          data.pop();
+          chart.update();
+          expect(chart.getDatasetMeta(0).data.length).toBe(2);
+          expect(stackValues(chart)).toEqual([[1, 10], [2, 20], [undefined, 30]]);
+        });
+
+        it('should handle a push and a splice that removes the pushed value', function() {
+          const chart = createChart();
+          const data = chart.data.datasets[0].data;
+          data.push(3);
+          data.splice(2, 1);
+          chart.update();
+          expect(chart.getDatasetMeta(0).data.length).toBe(2);
+          expect(stackValues(chart)).toEqual([[1, 10], [2, 20], [undefined, 30]]);
+        });
+
+        it('should handle an unshift and a shift', function() {
+          const chart = createChart();
+          const data = chart.data.datasets[0].data;
+          data.unshift(0);
+          data.shift();
+          chart.update();
+          expect(chart.getDatasetMeta(0).data.length).toBe(2);
+          expect(stackValues(chart)).toEqual([[1, 10], [2, 20], [undefined, 30]]);
+        });
+
+        it('should handle a splice that removes an inserted value', function() {
+          const chart = createChart();
+          const data = chart.data.datasets[0].data;
+          data.splice(1, 0, 5);
+          data.splice(1, 1);
+          chart.update();
+          expect(chart.getDatasetMeta(0).data.length).toBe(2);
+          expect(stackValues(chart)).toEqual([[1, 10], [2, 20], [undefined, 30]]);
+        });
+      });
+    });
+  });
+
   it('should re-synchronize metadata when the data object reference changes', function() {
     var data0 = [0, 1, 2, 3, 4, 5];
     var data1 = [6, 7, 8];
