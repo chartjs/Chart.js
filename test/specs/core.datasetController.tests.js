@@ -17,7 +17,7 @@ describe('Chart.DatasetController', function() {
       '_onDataPush',
       '_onDataPop',
       '_onDataShift',
-      '_onDataSplice',
+      '_onDataSpliceWithContext',
       '_onDataUnshift'
     ];
 

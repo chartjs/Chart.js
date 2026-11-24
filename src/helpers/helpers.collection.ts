@@ -104,6 +104,8 @@ export interface ArrayListener<T> {
   _onDataPop?(): void;
   _onDataShift?(): void;
   _onDataSplice?(index: number, deleteCount: number, ...items: T[]): void;
+  /** @internal */
+  _onDataSpliceWithContext?(args: unknown[], length: number, result: unknown): void;
   _onDataUnshift?(...item: T[]): void;
 }
 
@@ -135,10 +137,13 @@ export function listenArrayEvents(array, listener) {
       configurable: true,
       enumerable: false,
       value(...args) {
+        const length = key === 'splice' ? this.length : 0;
         const res = base.apply(this, args);
 
         array._chartjs.listeners.forEach((object) => {
-          if (typeof object[method] === 'function') {
+          if (key === 'splice' && typeof object._onDataSpliceWithContext === 'function') {
+            object._onDataSpliceWithContext(args, length, res);
+          } else if (typeof object[method] === 'function') {
             object[method](...args);
           }
         });
