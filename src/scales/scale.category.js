@@ -1,8 +1,26 @@
 import Scale from '../core/core.scale.js';
-import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
+import {isArray, isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
 
-const addIfString = (labels, raw, index) => {
-  if (typeof raw === 'string') {
+// A multi-line label is an array of lines; equal lines make the same label.
+const sameLabel = (a, b) => a === b ||
+  (isArray(a) && isArray(b) && a.length === b.length && a.every((line, i) => line === b[i]));
+
+function findLabel(labels, raw, fromEnd) {
+  if (!isArray(raw)) {
+    return fromEnd ? labels.lastIndexOf(raw) : labels.indexOf(raw);
+  }
+  if (!fromEnd) {
+    return labels.findIndex((label) => sameLabel(label, raw));
+  }
+  let i = labels.length - 1;
+  while (i >= 0 && !sameLabel(labels[i], raw)) {
+    i--;
+  }
+  return i;
+}
+
+const addIfLabel = (labels, raw, index) => {
+  if (typeof raw === 'string' || isArray(raw)) {
     index = labels.push(raw) - 1;
   } else if (isNaN(raw)) {
     index = null;
@@ -11,11 +29,11 @@ const addIfString = (labels, raw, index) => {
 };
 
 function findOrAddLabel(labels, raw, index) {
-  const first = labels.indexOf(raw);
+  const first = findLabel(labels, raw);
   if (first === -1) {
-    return addIfString(labels, raw, index);
+    return addIfLabel(labels, raw, index);
   }
-  const last = labels.lastIndexOf(raw);
+  const last = findLabel(labels, raw, true);
   return first !== last ? index : first;
 }
 
@@ -82,7 +100,7 @@ export default class CategoryScale extends Scale {
       return null;
     }
     const labels = this.getLabels();
-    index = isFinite(index) && labels[index] === raw ? index
+    index = isFinite(index) && sameLabel(labels[index], raw) ? index
       : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
     return validIndex(index, labels.length - 1);
   }
