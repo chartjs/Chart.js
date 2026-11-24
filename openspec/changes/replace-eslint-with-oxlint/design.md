@@ -127,7 +127,7 @@ P1 and P2 can be built in parallel. Contributor pull requests that share `index.
 ## Contracts
 
 - **P1 → P3:** on 53849f16 with P1 applied, the configuration below reports only the 15 indentation lines of D4 (P3) and, until P2 has landed, the documentation site findings. On P3's own base it may report more (see Risks); P3 fixes them.
-- **P3:** the committed `.oxlintrc.json` is the configuration below, with the answers to the open questions applied. If #12444 has landed, the `test/**` overrides also take its additions (`triggerMouseEvent` for `test/fixtures/**/*.js`).
+- **P3:** the committed `.oxlintrc.json` is the configuration below, which already reflects D11. If #12444 has landed, the `test/**` overrides also take its additions (`triggerMouseEvent` for `test/fixtures/**/*.js`).
 - **P3 → later Vitest pieces:** test lint settings live in the `test/` overrides of `.oxlintrc.json`.
 - **P4:** after P3, nothing reads `.eslintignore` except oxlint, whose ignores already cover it.
 

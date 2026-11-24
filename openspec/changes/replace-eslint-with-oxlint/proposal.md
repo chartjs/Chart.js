@@ -10,7 +10,7 @@ The repository lints with ESLint 8, which reached end of life in October 2024, t
 - The ES2018 syntax guard for library and test code stays, through `eslint-plugin-es-x`.
 - **BREAKING (contributors):** code examples in Markdown files are no longer linted (oxlint has no processor support). `lint-md` goes away.
 - The style checks now also read TypeScript type syntax that the ESLint 8 core rules skipped. About 45 lines in `src/types` and `src/helpers` are fixed before the switch.
-- Files ESLint never read become linted: the type tests and the CommonJS integration checks, and, depending on an open question, the documentation site's TypeScript and Vue code.
+- Files ESLint never read become linted: the type tests and the CommonJS integration checks and the documentation site's TypeScript and Vue code.
 - Five rules have no oxlint equivalent and are dropped or replaced (design D5).
 - Existing `eslint-disable` comments keep working unchanged.
 - `eslint`, `eslint-config-chartjs`, `eslint-plugin-es`, `eslint-plugin-html`, `eslint-plugin-markdown` and both `@typescript-eslint` packages leave the dev dependencies. `oxlint`, `@stylistic/eslint-plugin` and `eslint-plugin-es-x` are added.
