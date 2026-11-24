@@ -1042,5 +1042,27 @@ describe('Category scale tests', function() {
       expect(chart.scales.y.getLabels()).toEqual(['Jan', 'Feb', 'Low', 'High']);
       expect(chart.data.labels).toEqual(['Jan', 'Feb']);
     });
+
+    it('should show only its own labels on a second category axis with a labels option', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb'],
+          datasets: [{
+            data: [{x: 'Jan', y: 'Low'}, {x: 'Feb', y: 'High'}]
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'category'},
+            y: {type: 'category', labels: ['Low', 'High']}
+          }
+        }
+      });
+
+      expect(getLabels(chart.scales.x)).toEqual(['Jan', 'Feb']);
+      expect(getLabels(chart.scales.y)).toEqual(['Low', 'High']);
+      expect(chart.data.labels).toEqual(['Jan', 'Feb']);
+    });
   });
 });
