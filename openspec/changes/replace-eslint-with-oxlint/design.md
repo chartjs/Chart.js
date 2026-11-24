@@ -63,7 +63,8 @@ What oxlint does, tested:
 | `no-unused-vars` `caughtErrors: "none"` | ESLint 8 default; oxlint follows ESLint 9 (`all`) |
 | `no-redeclare` `builtinGlobals: false` | oxlint parses the CommonJS integration checks as scripts, which clashed with the `Chart` test global |
 | `object-curly-spacing` `TSTypeLiteral`/`TSMappedType: "always"` | ESLint never checked type literals; the code's own convention is spaced (12 findings with "always", 142 with "never"); there is no "ignore" value |
-| `env` `es6`, test globals writable | as in the ESLint files |
+| `env` `es6`, test globals writable | as in the ESLint files; `es6` also declares `Promise`, without which `es-x/no-promise-all-settled` sees nothing (tested) |
+| `globals` `Object`, `RegExp`, `globalThis` | the es-x rules for built-ins track references to declared globals; without these three, `Object.fromEntries`, `new RegExp('(?<=a)')`, `RegExp(..., 's')` and `globalThis` pass (tested; found in review) |
 
 The remaining new findings, all fixed in P1 or P3:
 
@@ -78,21 +79,24 @@ The remaining new findings, all fixed in P1 or P3:
 
 ESLint gives the same messages before and after the P1 edits (checked with ESLint's `lintText` on the edited text), so P1 can land while ESLint still runs.
 
-**D5. Lost rules.** No oxlint equivalent: `no-dupe-args`, `no-octal`, `no-octal-escape` (parse errors in module code, so nothing is lost); deprecated `no-catch-shadow`, `no-native-reassign`, `no-negated-in-lhs`, `no-new-symbol` are covered by `no-shadow`, `no-global-assign`, `no-unsafe-negation`, `no-new-native-nonconstructor`. Real losses: `consistent-this`, `no-process-exit`, `dot-notation`, `camelcase`, `no-undef-init`; see open question 3.
+**D5. Lost rules.** No oxlint equivalent: `no-dupe-args`, `no-octal`, `no-octal-escape` (parse errors in module code, so nothing is lost); deprecated `no-catch-shadow`, `no-native-reassign`, `no-negated-in-lhs`, `no-new-symbol` are covered by `no-shadow`, `no-global-assign`, `no-unsafe-negation`, `no-new-native-nonconstructor`. Real losses: `consistent-this`, `no-process-exit`, `dot-notation`, `camelcase`, `no-undef-init`; see open question 3. Two silent differences found in review: oxlint's `es6` environment declares newer globals (`WeakRef`, `AggregateError`, `SharedArrayBuffer`, `Atomics`, `BigInt64Array`), so `no-undef` no longer rejects them as ESLint 8's `es6` did; and oxlint's `no-shadow` does not report TypeScript enum members that share a name with an outer binding (the two enums in `src/types/index.d.ts` have none).
 
-**D6. The ES2018 guard moves from `eslint-plugin-es` to its successor `eslint-plugin-es-x`**, with all 16 rules of `restrict-to-es2018`. SWC targets ES2022 in `rollup.config.js`, so nothing lowers this syntax and the guard protects browser support. The documentation site, which is not shipped, is exempt.
+**D6. The ES2018 guard moves from `eslint-plugin-es` to its successor `eslint-plugin-es-x`**, with all 16 rules of `restrict-to-es2018`. SWC targets ES2022 in `rollup.config.js`, so nothing lowers this syntax and the guard protects browser support. The rules are listed once, in an override for `src/**`, `test/**` and `docs/scripts/**`, the files ESLint applied them to; the documentation site, which is not shipped, falls outside it.
 
 **D7. Versions.** The JS plugin API is alpha. `eslint-plugin-es-x` 10.1 declares a required peer `eslint >=10.6`, which pnpm would install. See open questions 4 and 5.
 
 **D8. Directives, cache and scripts.** The `eslint-disable*` spelling stays: oxlint honours it, and renaming would touch 27 files, many held by open pull requests. The 9 dead directives stay; they are not part of parity. `--cache` and the `.eslintcache` ignore line go. `lint-js` keeps its name and becomes `oxlint src test docs`; `lint-md` is removed. `ticks-reverse-min.js` stays unlinted; renaming a fixture and its image for the linter is not worth it.
 
-**D9. The approved migrate-tests-to-vitest design.** Its P3 and P12, and the open #12444, edit `test/.eslintrc.yml`. P3 here deletes that file and carries the contents, including what #12444 adds, into the `test/` overrides of `.oxlintrc.json`. It also edits the Files cells of that design's P3 and P12 rows and adds one sentence before its Pieces table: after this change, `test/.eslintrc.yml` means the `test/` overrides of `.oxlintrc.json`, whose globs are relative to the root. The VitePress design's P10, which deletes `docs/.vuepress`, then also drops `docs/.vuepress/**` from `ignorePatterns`.
+**D9. The approved migrate-tests-to-vitest design.** Its P3 and P12, and the open #12444, edit `test/.eslintrc.yml`. P3 here deletes that file and carries the contents, including what #12444 adds, into the `test/` overrides of `.oxlintrc.json`. The Vitest override matches `test/**/*.spec.js` and `test/setup*.js`, so later Vitest files such as `test/umd/umd.spec.js` and `test/setup.umd.js` get the Vitest globals without a config edit. It also edits the Files cells of that design's P3 and P12 rows and adds one sentence before its Pieces table: after this change, `test/.eslintrc.yml` means the `test/` overrides of `.oxlintrc.json`, whose globs are relative to the root. The VitePress design's P10, which deletes `docs/.vuepress`, then also drops `docs/.vuepress/**` from `ignorePatterns`.
+
+**D10. Review changes.** The design review led to: the three `globals` and a task and scenarios for the built-in checks of the ES2018 guard (the first config missed them); the es-x rules listed once in a scoped override instead of on everywhere and off for the docs site; the wider Vitest glob; P3 re-measuring on its own base; the three nested ESLint files and `.gitignore` moving from P4 into P3. Kept against review advice: `env.es6` (it declares `Promise`, see D4), the TypeScript override's off-list for rules the compiler covers (parity; only `no-redeclare` and `no-undef` change results today) and `jasmine: false` in the Vitest override (it flags Jasmine use in converted specs).
 
 ## Risks / Trade-offs
 
 - **JS plugins are alpha.** An oxlint minor can break `@stylistic` or `es-x`. Mitigation: exact pins and a manual upgrade (no bot updates npm dev dependencies here). If oxlint drops the API, the fallback is dropping style checks (D1).
 - **Windows.** CI lints on `windows-latest`; JS plugins were tested on macOS only. The switch pull request's CI is the test.
 - **Weaker checks.** Markdown examples, `camelcase`, `dot-notation` and `no-undef-init` are no longer checked.
+- **Work landing between P1 and P3.** The counts are measured on 53849f16. Maintainer pieces that land in between (VitePress P4 and later under `docs/.vitepress`, rework-legend P7 and P19 in `src/types/index.d.ts` and a new `plugin.legend.ts`) are checked only by ESLint and can add findings. P3 therefore re-runs the configuration on its own base and fixes what is new.
 - **Contributor pull requests.** Open pull requests that add TypeScript may get new findings on rebase (#12386 adds a type alias without a semicolon); `--fix` handles them.
 - **Deprecation notices.** `@stylistic` 6 deprecates `object-curly-spacing` and `array-bracket-spacing` in favour of `list-style` and prints two notice lines on every run. Moving to `list-style` changes the style (592 findings in the closest configuration), so the rules stay until `@stylistic` 7.
 
@@ -104,19 +108,19 @@ Sizes are hand-edited changed lines; the lockfile is excluded.
 | --- | --- | --- | --- | --- | --- | --- |
 | P1 | `style:` fix the TypeScript type syntax and type-test lines the new checks read and ESLint skips | `src/types/{index,utils,geometric,layout}.d.ts`, `src/helpers/helpers.{canvas,collection,config,config.types,curve,easing}.ts`, `src/elements/element.point.ts`, `test/types/{extensions/scale,interaction,date_adapter,options}.ts` | oxlint with the Contracts config reports 43 errors and 4 warnings in these files; ESLint stays at 0 errors | ~45 | nothing | none |
 | P2 | `style:` restyle the documentation site's code (only if open question 1 is "in scope") | 9 files under `docs/.vitepress` | the Contracts config reports 52 errors there | ~29 | #12484 (`docs/.vitepress/config.ts`) | none |
-| P3 | `build:` the switch: `.oxlintrc.json`; `lint-js` on oxlint, `lint-md` removed; dev dependencies swapped; the TypeScript re-indent; `test/.eslintrc.yml` deleted and carried into the config; contributing guide; the note in the Vitest design | `.oxlintrc.json`, `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `src/helpers/helpers.{curve,dom}.ts`, `src/types/index.d.ts`, `test/.eslintrc.yml`, `docs/developers/contributing.md`, `openspec/changes/migrate-tests-to-vitest/design.md` | `pnpm why eslint` lists eslint; `type P = {x: number};` in a `.d.ts` passes lint | ~345 | P1, P2; #12444 (`package.json`, `test/.eslintrc.yml`) | none |
-| P4 | `chore:` remove the dead ESLint configuration | delete `.eslintrc.yml`, `.eslintignore`, `docs/samples/.eslintrc.yml`, `test/types/.eslintrc.yml`; `.gitignore` | `git ls-files '*eslint*'` lists 4 files | ~73, deleted | P3; #12484 (`.eslintignore`) | none |
+| P3 | `build:` the switch: `.oxlintrc.json`; `lint-js` on oxlint, `lint-md` removed; dev dependencies swapped; the TypeScript re-indent and any findings new since 53849f16; `test/.eslintrc.yml` carried into the config; the ESLint config files deleted except `.eslintignore`; `.gitignore`; contributing guide; the note in the Vitest design | `.oxlintrc.json`, `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `src/helpers/helpers.{curve,dom}.ts`, `src/types/index.d.ts`, files with new findings (**wide**), `.gitignore`, `docs/developers/contributing.md`, `openspec/changes/migrate-tests-to-vitest/design.md`; deleted: `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml` | `pnpm why eslint` lists eslint; `type P = {x: number};` in a `.d.ts` passes lint | ~345 edited, ~70 deleted | P1, P2; #12444 (`package.json`, `test/.eslintrc.yml`) | none |
+| P4 | `chore:` delete `.eslintignore` | `.eslintignore` | `git ls-files '*eslint*'` lists it | 3, deleted | P3; #12484 (`.eslintignore`) | none |
 
-P3 and P4 together come to about 415 lines, so they are separate. Between them oxlint still reads `.eslintignore`, which has the same entries as `ignorePatterns` and `.gitignore`.
+`.eslintignore` waits for #12484, which edits it; until P4, oxlint still reads it, and its entries are already covered by `ignorePatterns` and `.gitignore`. If #12484 has merged when P3 is built, P3 deletes it too and P4 is dropped.
 
 P1 and P2 can be built in parallel. Contributor pull requests that share `index.d.ts`, `helpers.dom.ts` or the type tests do not order anything (open question 6); they rebase over one-line edits.
 
 ## Contracts
 
-- **P1 → P3:** after P1, the configuration below reports only the 15 indentation lines of D4 (P3) and, unless P2 has landed or open question 1 is "out of scope", the documentation site findings.
-- **P3:** the committed `.oxlintrc.json` is the configuration below, with the answers to the open questions applied. If #12444 has landed, the `test/**` overrides also take its additions (`triggerMouseEvent` for `test/fixtures/**/*.js`). If open question 1 is "out of scope", `**/*.vue` and the `docs/.vitepress/**` override go and `docs/.vitepress/**` joins `ignorePatterns`.
+- **P1 → P3:** on 53849f16 with P1 applied, the configuration below reports only the 15 indentation lines of D4 (P3) and, unless P2 has landed or open question 1 is "out of scope", the documentation site findings. On P3's own base it may report more (see Risks); P3 fixes them.
+- **P3:** the committed `.oxlintrc.json` is the configuration below, with the answers to the open questions applied. If #12444 has landed, the `test/**` overrides also take its additions (`triggerMouseEvent` for `test/fixtures/**/*.js`). If open question 1 is "out of scope", `**/*.vue` goes and `docs/.vitepress/**` joins `ignorePatterns`.
 - **P3 → later Vitest pieces:** test lint settings live in the `test/` overrides of `.oxlintrc.json`.
-- **P4:** after P3, nothing reads the four ESLint files.
+- **P4:** after P3, nothing reads `.eslintignore` except oxlint, whose ignores already cover it.
 
 The configuration, as measured (170 problems on master):
 
@@ -127,6 +131,7 @@ The configuration, as measured (170 problems on master):
   "jsPlugins": ["@stylistic/eslint-plugin", "eslint-plugin-es-x"],
   "categories": {"correctness": "off"},
   "env": {"browser": true, "node": true, "es6": true},
+  "globals": {"Object": "readonly", "RegExp": "readonly", "globalThis": "readonly"},
   "ignorePatterns": ["test/integration/react-browser/**", "docs/.vuepress/**"],
   "rules": {
     "accessor-pairs": "error", "complexity": ["warn", 10], "constructor-super": "error",
@@ -192,16 +197,7 @@ The configuration, as measured (170 problems on master):
     "@stylistic/space-in-parens": ["error", "never"], "@stylistic/space-infix-ops": "error",
     "@stylistic/space-unary-ops": ["error", {"words": true, "nonwords": false}],
     "@stylistic/spaced-comment": ["error", "always"], "@stylistic/switch-colon-spacing": "error",
-    "@stylistic/wrap-iife": "error", "@stylistic/wrap-regex": "error",
-
-    "es-x/no-async-iteration": "error", "es-x/no-bigint": "error", "es-x/no-export-ns-from": "error",
-    "es-x/no-global-this": "error", "es-x/no-json-superset": "error",
-    "es-x/no-malformed-template-literals": "error", "es-x/no-nullish-coalescing-operators": "error",
-    "es-x/no-object-fromentries": "error", "es-x/no-optional-catch-binding": "error",
-    "es-x/no-optional-chaining": "error", "es-x/no-promise-all-settled": "error",
-    "es-x/no-regexp-lookbehind-assertions": "error", "es-x/no-regexp-named-capture-groups": "error",
-    "es-x/no-regexp-s-flag": "error", "es-x/no-regexp-unicode-property-escapes": "error",
-    "es-x/no-regexp-unicode-property-escapes-2019": "error"
+    "@stylistic/wrap-iife": "error", "@stylistic/wrap-regex": "error"
   },
   "overrides": [
     {
@@ -233,7 +229,7 @@ The configuration, as measured (170 problems on master):
       "rules": {"max-statements": ["warn", 50]}
     },
     {
-      "files": ["test/specs/**/*.spec.js", "test/setup.js", "test/vitest.shared.js"],
+      "files": ["test/**/*.spec.js", "test/setup*.js", "test/vitest.shared.js"],
       "env": {"jasmine": false},
       "globals": {"afterAll": "readonly", "afterEach": "readonly", "beforeAll": "readonly", "beforeEach": "readonly", "createMockContext": "readonly", "describe": "readonly", "expect": "readonly", "it": "readonly", "releaseChart": "readonly", "test": "readonly", "triggerMouseEvent": "readonly", "vi": "readonly"}
     },
@@ -246,16 +242,16 @@ The configuration, as measured (170 problems on master):
       }
     },
     {
-      "files": ["docs/.vitepress/**"],
+      "files": ["src/**", "test/**", "docs/scripts/**"],
       "rules": {
-        "es-x/no-async-iteration": "off", "es-x/no-bigint": "off", "es-x/no-export-ns-from": "off",
-        "es-x/no-global-this": "off", "es-x/no-json-superset": "off",
-        "es-x/no-malformed-template-literals": "off", "es-x/no-nullish-coalescing-operators": "off",
-        "es-x/no-object-fromentries": "off", "es-x/no-optional-catch-binding": "off",
-        "es-x/no-optional-chaining": "off", "es-x/no-promise-all-settled": "off",
-        "es-x/no-regexp-lookbehind-assertions": "off", "es-x/no-regexp-named-capture-groups": "off",
-        "es-x/no-regexp-s-flag": "off", "es-x/no-regexp-unicode-property-escapes": "off",
-        "es-x/no-regexp-unicode-property-escapes-2019": "off"
+        "es-x/no-async-iteration": "error", "es-x/no-bigint": "error", "es-x/no-export-ns-from": "error",
+        "es-x/no-global-this": "error", "es-x/no-json-superset": "error",
+        "es-x/no-malformed-template-literals": "error", "es-x/no-nullish-coalescing-operators": "error",
+        "es-x/no-object-fromentries": "error", "es-x/no-optional-catch-binding": "error",
+        "es-x/no-optional-chaining": "error", "es-x/no-promise-all-settled": "error",
+        "es-x/no-regexp-lookbehind-assertions": "error", "es-x/no-regexp-named-capture-groups": "error",
+        "es-x/no-regexp-s-flag": "error", "es-x/no-regexp-unicode-property-escapes": "error",
+        "es-x/no-regexp-unicode-property-escapes-2019": "error"
       }
     }
   ]

@@ -57,6 +57,10 @@ The lint command SHALL fail when library or test code uses syntax or built-ins n
 - **WHEN** a library source file uses `a?.b`
 - **THEN** `pnpm lint` fails with an ES-version finding
 
+#### Scenario: Newer built-ins in library code
+- **WHEN** a library source file uses `Object.fromEntries`, `globalThis`, or a `RegExp` constructor with a lookbehind, a named group or the `s` flag
+- **THEN** `pnpm lint` fails with an ES-version finding for each
+
 #### Scenario: Optional chaining in the documentation site
 - **WHEN** a documentation site file uses `a?.b`
 - **THEN** `pnpm lint` reports no ES-version finding for it

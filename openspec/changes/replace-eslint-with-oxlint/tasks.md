@@ -20,15 +20,15 @@
 - [ ] 3.4 Handle the `eslint` peer of `eslint-plugin-es-x` as agreed (open question 5), and confirm `pnpm why eslint` is empty for the library package
 - [ ] 3.5 `lint-js` becomes `oxlint src test docs`; remove `lint-md`
 - [ ] 3.6 Re-indent the 15 TypeScript lines in `helpers.curve.ts`, `helpers.dom.ts` and `index.d.ts`
-- [ ] 3.7 Delete `test/.eslintrc.yml`
+- [ ] 3.6a Run the configuration on this piece's base and fix every finding that is new since 53849f16; list them in the pull request
+- [ ] 3.7 Delete `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml` and `docs/samples/.eslintrc.yml`; remove the `# Eslint` and `.eslintcache` lines from `.gitignore`; if #12484 has merged, also delete `.eslintignore` and drop P4
 - [ ] 3.8 Contributing guide: oxlint instead of ESLint, Markdown examples are not linted, the Node version the plugins need
 - [ ] 3.9 Edit `openspec/changes/migrate-tests-to-vitest/design.md` as design D9 says
-- [ ] 3.10 Confirm: `pnpm lint` passes with exactly the warnings ESLint gave (21 complexity, 18 max-statements, 10 no-explicit-any, 1 unused variable); a `debugger` in `src` fails it; `a?.b` in `src` fails it and in `docs/.vitepress` does not; removing the `eslint-disable-line` comments in `src/platform/platform.base.js` brings up the unused-parameter findings; no new file in `git status` after a run
+- [ ] 3.10 Confirm: `pnpm lint` passes with exactly the warnings ESLint gave (21 complexity, 18 max-statements, 10 no-explicit-any, 1 unused variable); a `debugger` in `src` fails it; `a?.b`, `Object.fromEntries([])`, `new RegExp('(?<=a)b')` and `globalThis` in `src` each fail it, and `a?.b` in `docs/.vitepress` does not; removing the `eslint-disable-line` comments in `src/platform/platform.base.js` brings up the unused-parameter findings; no new file in `git status` after a run
 - [ ] 3.11 CI is green on Ubuntu and Windows
 
-## 4. P4: Remove the dead ESLint configuration
+## 4. P4: Delete `.eslintignore`
 
-- [ ] 4.1 Show `git ls-files '*eslint*'` lists `.eslintrc.yml`, `.eslintignore`, `docs/samples/.eslintrc.yml` and `test/types/.eslintrc.yml`
-- [ ] 4.2 Rebase on #12484 once it has merged, then delete the four files
-- [ ] 4.3 Remove the `# Eslint` and `.eslintcache` lines from `.gitignore`
-- [ ] 4.4 Confirm `pnpm lint` gives the same output as before the deletion
+- [ ] 4.1 Show `git ls-files '*eslint*'` lists `.eslintignore`
+- [ ] 4.2 Rebase on #12484 once it has merged, then delete it
+- [ ] 4.3 Confirm `pnpm lint` gives the same output as before the deletion
