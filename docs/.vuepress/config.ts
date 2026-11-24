@@ -37,6 +37,8 @@ export default defineConfig({
         entryPoints: ['../../src/types/index.d.ts'],
         hideInPageTOC: true,
         tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
+        // docs/api may hold the VitePress site's reference.
+        cleanOutputDir: true,
       },
     ],
     ['@simonbrunel/vuepress-plugin-versions', {

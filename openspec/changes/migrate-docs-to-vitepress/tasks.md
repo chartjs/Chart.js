@@ -25,11 +25,11 @@
 
 ## 4. P4: API reference
 
-- [ ] 4.1 Remove the `/api/` exemption and the `api/**` entry of `srcExclude`, and see the 20 guide links fail the build
-- [ ] 4.2 Add `docs/typedoc.json` and the `api` script, which cleans `docs/api` before writing; run it before `site:build` and `site:dev`
-- [ ] 4.3 Load the generated sidebar for `/api/`, tolerating its absence
-- [ ] 4.4 Check `api/classes/Chart.html`, `api/interfaces/Plugin.html`, `api/enumerations/UpdateModeEnum.html` and that `api/#color` lands on the alias; record the anchor format in `design.md` if it differs
-- [ ] 4.5 Run `pnpm run docs:vitepress` and then `pnpm run docs`: the VuePress output has the same `api/` file list as before this piece
+- [x] 4.1 Remove the `/api/` exemption and the `api/**` entry of `srcExclude`, and see the 19 guide links fail the build
+- [x] 4.2 Add `docs/.vitepress/typedoc.json` and the `api` script, which cleans `docs/api` before writing; run it before `site:build` and `site:dev`
+- [x] 4.3 Load the generated sidebar for `/api/`, tolerating its absence
+- [x] 4.4 Check `api/classes/Chart.html`, `api/interfaces/Plugin.html`, `api/enumerations/UpdateModeEnum.html` and that `api/#color` lands on the alias; record the anchor format in `design.md` if it differs
+- [x] 4.5 Run `pnpm run docs:vitepress` and then `pnpm run docs`: the VuePress output has the same `api/` file list as before this piece
 
 ## 5. P5: Redirects
 
@@ -60,8 +60,8 @@
 ## 9. P9: The switch
 
 - [ ] 9.1 See `pnpm run docs` leave VuePress output in `dist/docs` and `pnpm why vuepress` list it
-- [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site, and the `test` script that runs `theme/versions.test.ts`); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
-- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`, with the `DOCS_BASE` override in `docs/.vitepress/config.ts` that only it sets; `docs:typecheck` points at `docs/package.json`, and so does the "Test docs site code" step in `ci.yml`
+- [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site, and the `test` script that runs `theme/versions.test.ts`); the `api` script becomes `typedoc --options typedoc.json --out api` in `docs/` (the command-line path resolves against the working directory), and `docs/.vitepress/typedoc.json` moves to `docs/typedoc.json` with its paths made relative to `docs/` (entry, tsconfig, `docsRoot: "."`, plugins `./node_modules/<plugin>/dist/index.js`); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
+- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`, with the `DOCS_BASE` override in `docs/.vitepress/config.ts` that only it sets; `docs:typecheck` points at `docs/package.json`, and so does the "Test docs site code" step in `ci.yml`; check that `docs/api/typedoc-sidebar.json` links start with `/api/` and that the build reads it
 - [ ] 9.4 Add `vitepress-plugin-tabs` and convert the three tab pages; check tabs switch and a sample in a tab hidden at first draws at full size
 - [ ] 9.5 Update the command and port in `docs/samples/information.md`
 - [ ] 9.6 Compare one wide options table page and one sample page with the live site
@@ -72,7 +72,7 @@
 
 - [ ] 10.1 Confirm one clean master deploy since P9
 - [ ] 10.2 Delete `docs/.vuepress/` and the `sed` line in `scripts/docs-config.sh`; `git status` after `./scripts/docs-config.sh 4.6.1 release` shows only the version marker
-- [ ] 10.3 Remove the `html-entities` override, the `minimumReleaseAgeExclude` entry of D22 if still present, and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
+- [ ] 10.3 Remove the `html-entities` override, the `minimumReleaseAgeExclude` entry of D22 if still present, and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`; remove the `typedocOptions` block of the root `tsconfig.json`
 - [ ] 10.4 Name VitePress in `docs/developers/contributing.md`, say that a new page is added to `docs/.vitepress/sidebar.ts`, and give the command that tests the docs code and its Node requirement (Node runs the TypeScript natively, so at least the version CI uses)
 - [ ] 10.5 `git grep -i vuepress` finds only the history line in `docs/migration/v3-migration.md`
 
