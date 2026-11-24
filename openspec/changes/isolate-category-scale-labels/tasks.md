@@ -38,18 +38,18 @@
   - `Co-authored-by` for the authors of #12344 and #12405;
   - the release note line in the pull request body;
   - `Closes #11495` and `Closes #11893`.
-- [ ] 3.8 After the merge, close #12344 and #12405 with thanks, and ask #12222 to drop its category-scale hunk.
+- [x] 3.8 After the merge, close #12344 and #12405 with thanks, and ask #12222 to drop its category-scale hunk.
 
 ## 4. P4: Multi-line labels
 
-- [ ] 4.1 Add specs that fail on master:
+- [x] 4.1 Add specs that fail on master:
   - array labels inferred from object data;
   - arrays matched by content against `data.labels`;
   - equal arrays share a tick;
   - `getPixelForValue(['Line', 'two'])`.
-- [ ] 4.2 Implement label equality for arrays (same length, items `===`) in the lookup and in the fast path of `parse()`, and add arrays like strings. The search from the end is a plain loop, because the TypeScript target is `es2018`.
-- [ ] 4.3 In `docs/general/data-structures.md`, say that the index value in object data may be an array for a multi-line category label.
-- [ ] 4.4 The pull request says `Closes #12065`.
+- [x] 4.2 Implement label equality for arrays (same length, items `===`) in the lookup and in the fast path of `parse()`, and add arrays like strings. The search from the end is a plain loop, because the TypeScript target is `es2018`.
+- [x] 4.3 In `docs/general/data-structures.md`, say that the index value in object data may be an array for a multi-line category label.
+- [x] 4.4 The pull request says `Closes #12065`.
 
 ## 5. P5: Labels found in the data follow the data after a push
 
