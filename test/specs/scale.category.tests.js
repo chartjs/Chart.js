@@ -1065,4 +1065,72 @@ describe('Category scale tests', function() {
       expect(chart.data.labels).toEqual(['Jan', 'Feb']);
     });
   });
+
+  describe('labels found in data changed in place', function() {
+    function createChart() {
+      return window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{data: [{x: 'a', y: 1}, {x: 'b', y: 2}]}]
+        }
+      });
+    }
+
+    function parsedX(chart) {
+      return chart.getDatasetMeta(0)._parsed.map(p => p.x);
+    }
+
+    it('should keep the labels in data order after a push', function() {
+      var chart = createChart();
+
+      chart.data.datasets[0].data.push({x: 'n', y: 3});
+      chart.update();
+
+      expect(chart.scales.x.getLabels()).toEqual(['a', 'b', 'n']);
+      expect(parsedX(chart)).toEqual([0, 1, 2]);
+    });
+
+    it('should keep the labels in data order after a splice', function() {
+      var chart = createChart();
+
+      chart.data.datasets[0].data.splice(1, 0, {x: 'n', y: 3});
+      chart.update();
+
+      expect(chart.scales.x.getLabels()).toEqual(['a', 'n', 'b']);
+      expect(parsedX(chart)).toEqual([0, 1, 2]);
+    });
+
+    it('should keep the labels in data order after an unshift', function() {
+      var chart = createChart();
+
+      chart.data.datasets[0].data.unshift({x: 'n', y: 3});
+      chart.update();
+
+      expect(chart.scales.x.getLabels()).toEqual(['n', 'a', 'b']);
+      expect(parsedX(chart)).toEqual([0, 1, 2]);
+    });
+
+    it('should not move a pushed duplicate label to the front', function() {
+      var chart = createChart();
+
+      chart.data.datasets[0].data.push({x: 'b', y: 3});
+      chart.update();
+
+      expect(chart.scales.x.getLabels()).toEqual(['a', 'b']);
+      expect(parsedX(chart)).toEqual([0, 1, 1]);
+    });
+
+    it('should keep the labels in data order after several changes', function() {
+      var chart = createChart();
+      var data = chart.data.datasets[0].data;
+
+      data.push({x: 'n', y: 3});
+      data.unshift({x: 'm', y: 4});
+      data.splice(2, 0, {x: 'o', y: 5});
+      chart.update();
+
+      expect(chart.scales.x.getLabels()).toEqual(['m', 'a', 'o', 'b', 'n']);
+      expect(parsedX(chart)).toEqual([0, 1, 2, 3, 4]);
+    });
+  });
 });

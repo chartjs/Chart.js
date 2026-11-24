@@ -29,7 +29,7 @@ None.
 
 ## Impact
 
-- Code: `src/scales/scale.category.js`; the tooltip label fallback in `src/controllers/controller.scatter.js` and `src/controllers/controller.bubble.js`.
+- Code: `src/scales/scale.category.js`; the tooltip label fallback in `src/controllers/controller.scatter.js` and `src/controllers/controller.bubble.js`; `src/core/core.datasetController.js`, where data changed in place is parsed once, in index order, and `pop()` takes its index from the data.
 - Docs: `docs/axes/cartesian/category.md` and `docs/general/data-structures.md`.
 - Users: code that read labels inferred from the data back out of `chart.data.labels` gets only its own labels. `scale.getLabels()` returns the axis' labels. Between updates, `getLabels()` reflects the label source as it was at the last update.
 - Open pull requests:
@@ -37,3 +37,4 @@ None.
   - #12344's code is the base of the label-copy piece, which credits its author and closes it.
   - #12405 is superseded; its isolation specs move into the label-copy piece with credit.
   - #12222 keeps its bar changes, but its category-scale hunk becomes unnecessary.
+  - The parsing order of data changed in place (P5) is added to this change by its own pull request, #12452.

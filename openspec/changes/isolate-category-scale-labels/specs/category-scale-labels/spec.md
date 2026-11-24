@@ -95,6 +95,13 @@ An axis SHALL show the labels given by the user first, then the labels found in 
 - **WHEN** the dataset that contained `'z'` is removed and `update()` is called
 - **THEN** the axis no longer shows `z`
 
+#### Scenario: A point pushed to the data
+
+- **WHEN** a dataset with no labels has object data at `'a'` and `'b'`, the user pushes a point at `'n'` to its `data` array, and calls `update()`
+- **THEN** the axis shows `a`, `b`, `n`
+
+The same applies to `splice` and `unshift`: the labels follow the final order of the data.
+
 ### Requirement: Point chart tooltips keep the category label
 
 In scatter and bubble charts, the label of a point SHALL be the `data.labels` entry at its index when there is one. Otherwise, when the index axis is a category axis, it SHALL be that axis' label for the point. Otherwise, when the value axis is a category axis, it SHALL be that axis' label for the point.
