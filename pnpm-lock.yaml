@@ -5490,9 +5490,6 @@ packages:
     resolution: {integrity: sha512-dm9s5Pw7Jc0GvMYbshN6zchCA9RgQlzzEZX3vylR9IqFfS8XciblUXOKfW6SiuJ0e13eDYZoZV5wdrev7P3Nwg==}
     engines: {node: ^10.12.0 || >=12.0.0}
 
-  flatted@3.2.7:
-    resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
-
   flatted@3.4.4:
     resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
@@ -17526,10 +17523,8 @@ snapshots:
 
   flat-cache@3.0.4:
     dependencies:
-      flatted: 3.2.7
+      flatted: 3.4.4
       rimraf: 3.0.2
-
-  flatted@3.2.7: {}
 
   flatted@3.4.4: {}
 
@@ -19381,7 +19376,7 @@ snapshots:
     dependencies:
       date-format: 4.0.14
       debug: 4.4.3(supports-color@8.1.1)
-      flatted: 3.2.7
+      flatted: 3.4.4
       rfdc: 1.3.0
       streamroller: 3.1.5(supports-color@8.1.1)
     transitivePeerDependencies:
