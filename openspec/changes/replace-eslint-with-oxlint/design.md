@@ -75,21 +75,30 @@ The remaining new findings, all fixed in P1 or P3:
 | `space-infix-ops` in unions | `index.d.ts` 2010-2016 | 7 lines | P1 |
 | type tests newly in scope | `test/types/extensions/scale.ts`, `interaction.ts` (errors), `date_adapter.ts`, `options.ts` (warnings) | 4 lines | P1 |
 | typescript-eslint 5 indent quirks (return-type literal members, type-argument lists) | `helpers.curve.ts`, `helpers.dom.ts`, `index.d.ts` | 15 lines | P3, because ESLint rejects this fix |
-| documentation site newly in scope | 9 files under `docs/.vitepress` | 52 findings, ~29 lines | P2, if in scope (open question 1) |
+| documentation site newly in scope | 9 files under `docs/.vitepress` | 52 findings, ~29 lines | P2 (D11) |
 
 ESLint gives the same messages before and after the P1 edits (checked with ESLint's `lintText` on the edited text), so P1 can land while ESLint still runs.
 
-**D5. Lost rules.** No oxlint equivalent: `no-dupe-args`, `no-octal`, `no-octal-escape` (parse errors in module code, so nothing is lost); deprecated `no-catch-shadow`, `no-native-reassign`, `no-negated-in-lhs`, `no-new-symbol` are covered by `no-shadow`, `no-global-assign`, `no-unsafe-negation`, `no-new-native-nonconstructor`. Real losses: `consistent-this`, `no-process-exit`, `dot-notation`, `camelcase`, `no-undef-init`; see open question 3. Two silent differences found in review: oxlint's `es6` environment declares newer globals (`WeakRef`, `AggregateError`, `SharedArrayBuffer`, `Atomics`, `BigInt64Array`), so `no-undef` no longer rejects them as ESLint 8's `es6` did; and oxlint's `no-shadow` does not report TypeScript enum members that share a name with an outer binding (the two enums in `src/types/index.d.ts` have none).
+**D5. Lost rules.** No oxlint equivalent: `no-dupe-args`, `no-octal`, `no-octal-escape` (parse errors in module code, so nothing is lost); deprecated `no-catch-shadow`, `no-native-reassign`, `no-negated-in-lhs`, `no-new-symbol` are covered by `no-shadow`, `no-global-assign`, `no-unsafe-negation`, `no-new-native-nonconstructor`. Real losses: `consistent-this`, `no-process-exit`, `dot-notation`, `camelcase`, `no-undef-init`; see D11. Two silent differences found in review: oxlint's `es6` environment declares newer globals (`WeakRef`, `AggregateError`, `SharedArrayBuffer`, `Atomics`, `BigInt64Array`), so `no-undef` no longer rejects them as ESLint 8's `es6` did; and oxlint's `no-shadow` does not report TypeScript enum members that share a name with an outer binding (the two enums in `src/types/index.d.ts` have none).
 
 **D6. The ES2018 guard moves from `eslint-plugin-es` to its successor `eslint-plugin-es-x`**, with all 16 rules of `restrict-to-es2018`. SWC targets ES2022 in `rollup.config.js`, so nothing lowers this syntax and the guard protects browser support. The rules are listed once, in an override for `src/**`, `test/**` and `docs/scripts/**`, the files ESLint applied them to; the documentation site, which is not shipped, falls outside it.
 
-**D7. Versions.** The JS plugin API is alpha. `eslint-plugin-es-x` 10.1 declares a required peer `eslint >=10.6`, which pnpm would install. See open questions 4 and 5.
+**D7. Versions.** The JS plugin API is alpha. `eslint-plugin-es-x` 10.1 declares a required peer `eslint >=10.6`, which pnpm would install. See D11.
 
 **D8. Directives, cache and scripts.** The `eslint-disable*` spelling stays: oxlint honours it, and renaming would touch 27 files, many held by open pull requests. The 9 dead directives stay; they are not part of parity. `--cache` and the `.eslintcache` ignore line go. `lint-js` keeps its name and becomes `oxlint src test docs`; `lint-md` is removed. `ticks-reverse-min.js` stays unlinted; renaming a fixture and its image for the linter is not worth it.
 
 **D9. The approved migrate-tests-to-vitest design.** Its P3 and P12, and the open #12444, edit `test/.eslintrc.yml`. P3 here deletes that file and carries the contents, including what #12444 adds, into the `test/` overrides of `.oxlintrc.json`. The Vitest override matches `test/**/*.spec.js` and `test/setup*.js`, so later Vitest files such as `test/umd/umd.spec.js` and `test/setup.umd.js` get the Vitest globals without a config edit. It also edits the Files cells of that design's P3 and P12 rows and adds one sentence before its Pieces table: after this change, `test/.eslintrc.yml` means the `test/` overrides of `.oxlintrc.json`, whose globs are relative to the root. The VitePress design's P10, which deletes `docs/.vuepress`, then also drops `docs/.vuepress/**` from `ignorePatterns`.
 
 **D10. Review changes.** The design review led to: the three `globals` and a task and scenarios for the built-in checks of the ES2018 guard (the first config missed them); the es-x rules listed once in a scoped override instead of on everywhere and off for the docs site; the wider Vitest glob; P3 re-measuring on its own base; the three nested ESLint files and `.gitignore` moving from P4 into P3. Kept against review advice: `env.es6` (it declares `Promise`, see D4), the TypeScript override's off-list for rules the compiler covers (parity; only `no-redeclare` and `no-undef` change results today) and `jasmine: false` in the Vitest override (it flags Jasmine use in converted specs).
+
+**D11. Answers from the user (2026-11-24).**
+
+- *Documentation site:* `docs/.vitepress` is linted (P2), without the ES2018 guard. Rejected: leaving it unlinted, as ESLint did.
+- *Spacing in TypeScript types:* the code is fixed to spaced type literals and spaced `|`, and both are enforced. Rejected: `ignoreTypes` for exact parity.
+- *Lost rules:* `typescript/no-this-alias` replaces `consistent-this` and `unicorn/no-process-exit` replaces `no-process-exit`; `dot-notation`, `camelcase` and `no-undef-init` are dropped. Rejected: dropping all five.
+- *Pins:* `oxlint` exact (`1.95.0`), `@stylistic/eslint-plugin` `^6.0.1`, `eslint-plugin-es-x` `^10.1.0`. Rejected: all exact, all caret.
+- *`eslint` peer of `eslint-plugin-es-x`:* marked optional with `packageExtensions` in `pnpm-workspace.yaml` for `eslint-plugin-es-x` and `eslint-type-tracer`; P3 proves nothing imports it. Rejected: accepting ESLint 10 in the lockfile; dropping es-x.
+- *Waiting:* pieces wait only on the maintainer pull requests #12444 and #12484; contributor pull requests rebase.
 
 ## Risks / Trade-offs
 
@@ -107,18 +116,18 @@ Sizes are hand-edited changed lines; the lockfile is excluded.
 | Piece | Builds | Files | Fails without it | Size | Waits on | Issues |
 | --- | --- | --- | --- | --- | --- | --- |
 | P1 | `style:` fix the TypeScript type syntax and type-test lines the new checks read and ESLint skips | `src/types/{index,utils,geometric,layout}.d.ts`, `src/helpers/helpers.{canvas,collection,config,config.types,curve,easing}.ts`, `src/elements/element.point.ts`, `test/types/{extensions/scale,interaction,date_adapter,options}.ts` | oxlint with the Contracts config reports 43 errors and 4 warnings in these files; ESLint stays at 0 errors | ~45 | nothing | none |
-| P2 | `style:` restyle the documentation site's code (only if open question 1 is "in scope") | 9 files under `docs/.vitepress` | the Contracts config reports 52 errors there | ~29 | #12484 (`docs/.vitepress/config.ts`) | none |
+| P2 | `style:` restyle the documentation site's code | 9 files under `docs/.vitepress` | the Contracts config reports 52 errors there | ~29 | #12484 (`docs/.vitepress/config.ts`) | none |
 | P3 | `build:` the switch: `.oxlintrc.json`; `lint-js` on oxlint, `lint-md` removed; dev dependencies swapped; the TypeScript re-indent and any findings new since 53849f16; `test/.eslintrc.yml` carried into the config; the ESLint config files deleted except `.eslintignore`; `.gitignore`; contributing guide; the note in the Vitest design | `.oxlintrc.json`, `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `src/helpers/helpers.{curve,dom}.ts`, `src/types/index.d.ts`, files with new findings (**wide**), `.gitignore`, `docs/developers/contributing.md`, `openspec/changes/migrate-tests-to-vitest/design.md`; deleted: `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml` | `pnpm why eslint` lists eslint; `type P = {x: number};` in a `.d.ts` passes lint | ~345 edited, ~70 deleted | P1, P2; #12444 (`package.json`, `test/.eslintrc.yml`) | none |
 | P4 | `chore:` delete `.eslintignore` | `.eslintignore` | `git ls-files '*eslint*'` lists it | 3, deleted | P3; #12484 (`.eslintignore`) | none |
 
 `.eslintignore` waits for #12484, which edits it; until P4, oxlint still reads it, and its entries are already covered by `ignorePatterns` and `.gitignore`. If #12484 has merged when P3 is built, P3 deletes it too and P4 is dropped.
 
-P1 and P2 can be built in parallel. Contributor pull requests that share `index.d.ts`, `helpers.dom.ts` or the type tests do not order anything (open question 6); they rebase over one-line edits.
+P1 and P2 can be built in parallel. Contributor pull requests that share `index.d.ts`, `helpers.dom.ts` or the type tests do not order anything (D11); they rebase over one-line edits.
 
 ## Contracts
 
-- **P1 → P3:** on 53849f16 with P1 applied, the configuration below reports only the 15 indentation lines of D4 (P3) and, unless P2 has landed or open question 1 is "out of scope", the documentation site findings. On P3's own base it may report more (see Risks); P3 fixes them.
-- **P3:** the committed `.oxlintrc.json` is the configuration below, with the answers to the open questions applied. If #12444 has landed, the `test/**` overrides also take its additions (`triggerMouseEvent` for `test/fixtures/**/*.js`). If open question 1 is "out of scope", `**/*.vue` goes and `docs/.vitepress/**` joins `ignorePatterns`.
+- **P1 → P3:** on 53849f16 with P1 applied, the configuration below reports only the 15 indentation lines of D4 (P3) and, until P2 has landed, the documentation site findings. On P3's own base it may report more (see Risks); P3 fixes them.
+- **P3:** the committed `.oxlintrc.json` is the configuration below, with the answers to the open questions applied. If #12444 has landed, the `test/**` overrides also take its additions (`triggerMouseEvent` for `test/fixtures/**/*.js`).
 - **P3 → later Vitest pieces:** test lint settings live in the `test/` overrides of `.oxlintrc.json`.
 - **P4:** after P3, nothing reads `.eslintignore` except oxlint, whose ignores already cover it.
 
@@ -260,9 +269,4 @@ The configuration, as measured (170 problems on master):
 
 ## Open Questions
 
-1. **Is the documentation site's TypeScript and Vue code (`docs/.vitepress`, 9 files) linted?** The VitePress design's D18 left this to this change. *In scope:* 52 findings fixed in ~29 lines (P2, waits on #12484), the ES2018 guard off there, and every later VitePress piece must pass lint. *Out of scope:* parity with ESLint, which never read dot-directories. Recommendation: in scope; nothing else lints that code. P2 waits on this.
-2. **Spacing in TypeScript types.** *Fix:* spaced type literals (6 lines) and spaces around `|` (7 lines). *Parity:* `space-infix-ops` with `ignoreTypes`, leaving the unions as they are. Recommendation: fix. P1 waits on this.
-3. **Lost rules.** *Replace two:* `unicorn/no-process-exit` and `typescript/no-this-alias` for `consistent-this` (0 findings each), and drop `dot-notation`, `camelcase`, `no-undef-init`. *Drop all five.* Recommendation: replace two. P3 waits on this.
-4. **Version pins.** *oxlint exact, plugins caret:* `oxlint` `1.95.0`, `@stylistic/eslint-plugin` `^6.0.1`, `eslint-plugin-es-x` `^10.1.0`. *All exact.* *All caret.* Recommendation: oxlint exact, plugins caret. P3 waits on this.
-5. **`eslint-plugin-es-x`'s required `eslint` peer.** *Mark optional* through `packageExtensions` in `pnpm-workspace.yaml`; neither plugin imports `eslint` at runtime (only in `.d.ts`), which P3 proves with `pnpm why eslint` empty and `pnpm lint` passing. *Accept* an ESLint 10 in the lockfile. *Drop es-x* and lose the ES2018 guard. Recommendation: mark optional. P3 waits on this.
-6. **Waiting on contributor pull requests** that share `index.d.ts`, `helpers.dom.ts` or the type tests (15 or more). Recommendation: wait only on the maintainer pull requests #12444 and #12484; the others rebase over one-line edits.
+None.
