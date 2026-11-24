@@ -10,3 +10,4 @@ MODE=$2
 TAG=$(tag_from_version "$VERSION" "$MODE")
 
 sed -i -e "s/VERSION/$TAG/g" "docs/.vuepress/config.ts"
+printf '{\n  "version": "%s"\n}\n' "$TAG" > docs/.vitepress/docs-version.json

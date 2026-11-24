@@ -7,15 +7,15 @@
 
 ## 2. P2: A VitePress site beside VuePress
 
-- [ ] 2.1 Add the root scripts `docs:vitepress` and `docs:vitepress:dev` (build the library, then run the site) and confirm they fail for lack of a site
-- [ ] 2.2 Add the temporary workspace package `docs/.vitepress/package.json` (scripts `site:build`, `site:dev`) and register it in `pnpm-workspace.yaml`; if pnpm rejects a package in a dot directory, use the sibling directory of D5 and note it in `design.md`
-- [ ] 2.3 Add `docs/.vitepress/docs-version.json` and `config.ts`: title, description, base, favicon link, nav, repository link, `lastUpdated`, `markdown-it-include`, `anchor.uniqueSlugStartIndex: 2`, local search, `appearance: false`, the `chart.js` alias, the two Vue 3 aliases, `srcExclude` for partials, `ignoreDeadLinks` patterns for localhost and, until P4, `/api/`
-- [ ] 2.4 Add the theme entry and the brand palette; copy the three public files to `docs/public/`
-- [ ] 2.5 Make `scripts/docs-config.sh` write the tag to the version marker beside the existing `sed`; check master, a release, latest and next give bases `/docs/master/`, `/docs/x.y.z/`, `/docs/latest/`, `/docs/next/`
-- [ ] 2.6 Add `docs/.vitepress/tsconfig.json` and a `typecheck` script (`vue-tsc --noEmit`) with a root `docs:typecheck`; see it fail on a deliberate type error in `config.ts`
-- [ ] 2.7 Ignore `docs/.vitepress/{cache,.temp,dist}` in `.gitignore`
-- [ ] 2.8 Check the output: `getting-started/usage.html` exists, `axes/_common.html` does not, `configuration/animations.html` contains `id="animations-2"`, `charts/bar.html` has a tip callout and a copy button, `axes/cartesian/linear.html` contains the included common options, a page shows its last-updated date and the repository link
-- [ ] 2.9 Check `pnpm run docs` still writes the VuePress site to `dist/docs` and `pnpm pack` lists no docs file
+- [x] 2.1 Add the root scripts `docs:vitepress` and `docs:vitepress:dev` (build the library, then run the site) and confirm they fail for lack of a site
+- [x] 2.2 Add the temporary workspace package `docs/.vitepress/package.json` (scripts `site:build`, `site:dev`) and register it in `pnpm-workspace.yaml`; if pnpm rejects a package in a dot directory, use the sibling directory of D5 and note it in `design.md`
+- [x] 2.3 Add `docs/.vitepress/docs-version.json` and `config.ts`: title, description, base, favicon link, nav, repository link, `lastUpdated`, `markdown-it-include`, `anchor.uniqueSlugStartIndex: 2`, local search, `appearance: false`, the `chart.js` alias, the two Vue 3 aliases, `srcExclude` for partials, `ignoreDeadLinks` patterns for localhost and, until P4, `/api/`
+- [x] 2.4 Add the theme entry and the brand palette; copy the three public files to `docs/public/`
+- [x] 2.5 Make `scripts/docs-config.sh` write the tag to the version marker beside the existing `sed`; check master, a release, latest and next give bases `/docs/master/`, `/docs/x.y.z/`, `/docs/latest/`, `/docs/next/`
+- [x] 2.6 Add `docs/.vitepress/tsconfig.json` and a `typecheck` script (`vue-tsc --noEmit`) with a root `docs:typecheck`; see it fail on a deliberate type error in `config.ts`
+- [x] 2.7 Ignore `docs/.vitepress/{cache,.temp,dist}` in `.gitignore`
+- [x] 2.8 Check the output: `getting-started/usage.html` exists, `axes/_common.html` does not, `configuration/animations.html` contains `id="animations-2"`, `charts/bar.html` has a tip callout and a copy button, `axes/cartesian/linear.html` contains the included common options, a page shows its last-updated date and the repository link
+- [x] 2.9 Check `pnpm run docs` still writes the VuePress site to `dist/docs` and `pnpm pack` lists no docs file
 
 ## 3. P3: Sidebar
 
@@ -25,7 +25,7 @@
 
 ## 4. P4: API reference
 
-- [ ] 4.1 Remove the `/api/` exemption and see the 20 guide links fail the build
+- [ ] 4.1 Remove the `/api/` exemption and the `api/**` entry of `srcExclude`, and see the 20 guide links fail the build
 - [ ] 4.2 Add `docs/typedoc.json` and the `api` script, which cleans `docs/api` before writing; run it before `site:build` and `site:dev`
 - [ ] 4.3 Load the generated sidebar for `/api/`, tolerating its absence
 - [ ] 4.4 Check `api/classes/Chart.html`, `api/interfaces/Plugin.html`, `api/enumerations/UpdateModeEnum.html` and that `api/#color` lands on the alias; record the anchor format in `design.md` if it differs
@@ -72,7 +72,7 @@
 
 - [ ] 10.1 Confirm one clean master deploy since P9
 - [ ] 10.2 Delete `docs/.vuepress/` and the `sed` line in `scripts/docs-config.sh`; `git status` after `./scripts/docs-config.sh 4.6.1 release` shows only the version marker
-- [ ] 10.3 Remove the `html-entities` override and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
+- [ ] 10.3 Remove the `html-entities` override, the `minimumReleaseAgeExclude` entry of D22 if still present, and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
 - [ ] 10.4 Name VitePress in `docs/developers/contributing.md`
 - [ ] 10.5 `git grep -i vuepress` finds only the history line in `docs/migration/v3-migration.md`
 

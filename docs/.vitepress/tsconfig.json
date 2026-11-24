@@ -1,0 +1,20 @@
+{
+  // Standalone rather than extending the root config: the docs site is a Vue 3
+  // app built by Vite, not part of the published library.
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["node", "vitepress/client"]
+  },
+  "include": ["**/*.ts", "**/*.vue"],
+  "exclude": ["cache", ".temp", "dist", "node_modules"]
+}
