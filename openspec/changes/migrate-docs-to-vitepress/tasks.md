@@ -19,9 +19,9 @@
 
 ## 3. P3: Sidebar
 
-- [ ] 3.1 Make the build fail when a non-partial page outside `api/` is in no sidebar, and see it fail for every page
-- [ ] 3.2 Add `docs/.vitepress/sidebar.ts` with the guide and samples trees as path lists and a helper that reads each page's first heading
-- [ ] 3.3 Wire it into the config; compare sections, order and titles with the live site
+- [x] 3.1 Make the build fail when a non-partial page outside `api/` is in no sidebar, and see it fail for every page
+- [x] 3.2 Add `docs/.vitepress/sidebar.ts` with the guide and samples trees as path lists and a helper that reads each page's first heading
+- [x] 3.3 Wire it into the config; compare sections, order and titles with the live site
 
 ## 4. P4: API reference
 
