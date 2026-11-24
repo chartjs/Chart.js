@@ -7,6 +7,7 @@ import {
   callback as call,
   clipArea,
   getRtlAdapter,
+  isArray,
   overrideTextDirection,
   restoreTextDirection,
   toFont,
@@ -507,7 +508,11 @@ export class Legend extends Element {
     }
     ctx.save();
     ctx.font = toFont(title.font).string;
-    const width = ctx.measureText(title.text).width;
+    const lines = isArray(title.text) ? title.text : [title.text];
+    let width = 0;
+    for (const line of lines) {
+      width = Math.max(width, ctx.measureText(line).width);
+    }
     ctx.restore();
     return width + toPadding(title.padding).width;
   }
