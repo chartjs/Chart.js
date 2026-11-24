@@ -364,7 +364,7 @@ importers:
         version: 1.5.0(vue@2.7.14)
       vuepress:
         specifier: ^1.9.7
-        version: 1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)
+        version: 1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)
       vuepress-plugin-code-copy:
         specifier: ^1.0.6
         version: 1.0.6
@@ -4859,8 +4859,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  ejs@3.1.9:
-    resolution: {integrity: sha512-rC+QVNMJWv+MtPgkt0y+0rVEIdbtxVADApW9JXrUVlzHetgcyczP/E7DJmWJ4fJCZF2cPcBk0laWO9ZHMG3DmQ==}
+  ejs@3.1.10:
+    resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
     hasBin: true
 
@@ -13432,7 +13432,7 @@ snapshots:
 
   '@surma/rollup-plugin-off-main-thread@2.2.3':
     dependencies:
-      ejs: 3.1.9
+      ejs: 3.1.10
       json5: 2.2.3
       magic-string: 0.25.9
       string.prototype.matchall: 4.0.8
@@ -14257,9 +14257,9 @@ snapshots:
       '@vue/compiler-dom': 3.5.46
       '@vue/shared': 3.5.46
 
-  '@vue/component-compiler-utils@3.3.0(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)':
+  '@vue/component-compiler-utils@3.3.0(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)':
     dependencies:
-      consolidate: 0.15.1(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)
+      consolidate: 0.15.1(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)
       hash-sum: 1.0.2
       lru-cache: 4.1.5
       merge-source-map: 1.1.0
@@ -14376,7 +14376,7 @@ snapshots:
 
   '@vue/shared@3.5.46': {}
 
-  '@vuepress/core@1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)':
+  '@vuepress/core@1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)':
     dependencies:
       '@babel/core': 7.29.6(supports-color@6.1.0)
       '@vue/babel-preset-app': 4.5.19(@babel/core@7.29.6(supports-color@6.1.0))(supports-color@6.1.0)(vue@2.7.14)
@@ -14408,7 +14408,7 @@ snapshots:
       toml: 3.0.0
       url-loader: 1.1.2(webpack@4.46.0(supports-color@6.1.0))
       vue: 2.7.14
-      vue-loader: 15.10.1(@vue/compiler-sfc@3.5.46)(cache-loader@3.0.1(webpack@4.46.0(supports-color@6.1.0)))(css-loader@2.1.1(webpack@4.46.0(supports-color@6.1.0)))(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(vue-template-compiler@2.7.14)(webpack@4.46.0(supports-color@6.1.0))
+      vue-loader: 15.10.1(@vue/compiler-sfc@3.5.46)(cache-loader@3.0.1(webpack@4.46.0(supports-color@6.1.0)))(css-loader@2.1.1(webpack@4.46.0(supports-color@6.1.0)))(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(vue-template-compiler@2.7.14)(webpack@4.46.0(supports-color@6.1.0))
       vue-router: 3.6.5(vue@2.7.14)
       vue-server-renderer: 2.7.14
       vue-template-compiler: 2.7.14
@@ -15958,11 +15958,11 @@ snapshots:
 
   console-browserify@1.2.0: {}
 
-  consolidate@0.15.1(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1):
+  consolidate@0.15.1(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1):
     dependencies:
       bluebird: 3.7.2
     optionalDependencies:
-      ejs: 3.1.9
+      ejs: 3.1.10
       handlebars: 4.7.10
       hogan.js: 3.0.2
       lodash: 4.18.1
@@ -16760,7 +16760,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  ejs@3.1.9:
+  ejs@3.1.10:
     dependencies:
       jake: 10.8.5
 
@@ -18801,7 +18801,7 @@ snapshots:
       async: 3.2.4
       chalk: 4.1.2
       filelist: 1.0.4
-      minimatch: 3.1.2
+      minimatch: 3.1.5
 
   jasmine-core@3.99.1: {}
 
@@ -23380,9 +23380,9 @@ snapshots:
 
   vue-hot-reload-api@2.3.4: {}
 
-  vue-loader@15.10.1(@vue/compiler-sfc@3.5.46)(cache-loader@3.0.1(webpack@4.46.0(supports-color@6.1.0)))(css-loader@2.1.1(webpack@4.46.0(supports-color@6.1.0)))(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(vue-template-compiler@2.7.14)(webpack@4.46.0(supports-color@6.1.0)):
+  vue-loader@15.10.1(@vue/compiler-sfc@3.5.46)(cache-loader@3.0.1(webpack@4.46.0(supports-color@6.1.0)))(css-loader@2.1.1(webpack@4.46.0(supports-color@6.1.0)))(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(vue-template-compiler@2.7.14)(webpack@4.46.0(supports-color@6.1.0)):
     dependencies:
-      '@vue/component-compiler-utils': 3.3.0(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)
+      '@vue/component-compiler-utils': 3.3.0(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)
       css-loader: 2.1.1(webpack@4.46.0(supports-color@6.1.0))
       hash-sum: 1.0.2
       loader-utils: 1.4.2
@@ -23573,9 +23573,9 @@ snapshots:
       - postcss
       - vue
 
-  vuepress@1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0):
+  vuepress@1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0):
     dependencies:
-      '@vuepress/core': 1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.9)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)
+      '@vuepress/core': 1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.10)(handlebars@4.7.10)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)
       '@vuepress/theme-default': 1.9.9(debug@4.4.3(supports-color@6.1.0))(supports-color@6.1.0)
       '@vuepress/types': 1.9.9(debug@4.4.3(supports-color@6.1.0))
       cac: 6.7.14
