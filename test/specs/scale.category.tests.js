@@ -1133,4 +1133,89 @@ describe('Category scale tests', function() {
       expect(parsedX(chart)).toEqual([0, 1, 2, 3, 4]);
     });
   });
+
+  describe('multi-line labels', function() {
+    function parsedX(chart) {
+      return chart.getDatasetMeta(0)._parsed.map(p => p.x);
+    }
+
+    it('should infer multi-line labels from object data', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: ['Line', 'one'], y: 1}, {x: ['Line', 'two'], y: 2}]
+          }]
+        }
+      });
+      var scale = chart.scales.x;
+
+      expect(scale.getLabels()).toEqual([['Line', 'one'], ['Line', 'two']]);
+      expect(parsedX(chart)).toEqual([0, 1]);
+      expect(chart.getDatasetMeta(0).data[1].x).toBeCloseToPixel(scale.getPixelForTick(1));
+      expect(chart.data.labels).toEqual([]);
+    });
+
+    it('should match multi-line labels in data.labels by their lines', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: [['Line', 'one'], ['Line', 'two']],
+          datasets: [{
+            data: [{x: ['Line', 'one'], y: 1}, {x: ['Line', 'two'], y: 2}]
+          }]
+        }
+      });
+      var scale = chart.scales.x;
+
+      expect(parsedX(chart)).toEqual([0, 1]);
+      expect(scale.getLabels().length).toBe(2);
+      expect(chart.getDatasetMeta(0).data[0].x).toBeCloseToPixel(scale.getPixelForTick(0));
+      expect(chart.getDatasetMeta(0).data[1].x).toBeCloseToPixel(scale.getPixelForTick(1));
+    });
+
+    it('should draw equal multi-line labels at the same tick', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: ['Line', 'one'], y: 1}, {x: ['Line', 'one'], y: 2}]
+          }]
+        }
+      });
+
+      expect(chart.scales.x.getLabels()).toEqual([['Line', 'one']]);
+      expect(parsedX(chart)).toEqual([0, 0]);
+    });
+
+    it('should get the pixel of a multi-line label', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: [['Line', 'one'], ['Line', 'two']],
+          datasets: [{
+            data: [1, 2]
+          }]
+        }
+      });
+      var scale = chart.scales.x;
+
+      expect(scale.getPixelForValue(['Line', 'two'])).toBeCloseToPixel(scale.getPixelForTick(1));
+      expect(scale.getLabels().length).toBe(2);
+    });
+
+    it('should treat a one-item numeric array as a label, not as an index', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: 'a', y: 1}, {x: [0], y: 2}]
+          }]
+        }
+      });
+
+      expect(chart.scales.x.getLabels()).toEqual(['a', [0]]);
+      expect(parsedX(chart)).toEqual([0, 1]);
+    });
+  });
 });
