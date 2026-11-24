@@ -11,8 +11,9 @@ const vueDir = path.dirname(createRequire(import.meta.url).resolve('vue/package.
 // Which copy of the docs this build is: master, latest, next or an exact
 // version. scripts/docs-config.sh rewrites docs-version.json before a release
 // build; the committed default is master, so a local build or the dev server
-// needs no extra step.
-const base = `/docs/${version}/` as const;
+// needs no extra step. DOCS_BASE overrides the base: the Netlify preview
+// serves this site under /vitepress/ beside the VuePress one.
+const base = process.env.DOCS_BASE ?? `/docs/${version}/`;
 
 export default defineConfig({
   title: 'Chart.js',

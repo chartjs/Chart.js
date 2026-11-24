@@ -5,7 +5,11 @@
   # The same two commands the deploy runs. The result is published under
   # /docs/master/, the path it has on chartjs.org, because the site is built
   # with that base.
-  command = "./scripts/docs-config.sh master && pnpm run docs && mkdir -p _preview/docs && cp -r dist/docs _preview/docs/master"
+  # Until it replaces VuePress, the VitePress site is published beside it under
+  # /vitepress/. Its site:build uses the library that `pnpm run docs` has just
+  # built (dist/chart.js), so it must run after it; `pnpm run docs:vitepress`
+  # would build the library again.
+  command = "./scripts/docs-config.sh master && pnpm run docs && mkdir -p _preview/docs && cp -r dist/docs _preview/docs/master && DOCS_BASE=/vitepress/ pnpm --filter chartjs-docs-vitepress site:build && cp -r docs/.vitepress/dist _preview/vitepress"
   publish = "_preview"
   # Exit code 0 skips the build: nothing the docs are built from changed since
   # the last build of this branch. The first build of a branch always runs.
