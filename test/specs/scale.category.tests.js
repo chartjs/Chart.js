@@ -710,6 +710,44 @@ describe('Category scale tests', function() {
     expect(chart.scales.x.max).toBe(5);
   });
 
+  it('should apply a string suggestedMax that only a hidden dataset reaches', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [
+          {data: [{x: 'L0', y: 0}, {x: 'L1', y: 1}, {x: 'L2', y: 2}]},
+          {data: [{x: 'L3', y: 3}, {x: 'L4', y: 4}], hidden: true}
+        ]
+      },
+      options: {
+        scales: {x: {bounds: 'data', suggestedMax: 'L4'}}
+      }
+    });
+
+    expect(chart.scales.x.getLabels()).toEqual(['L0', 'L1', 'L2', 'L3', 'L4']);
+    expect(chart.scales.x.min).toBe(0);
+    expect(chart.scales.x.max).toBe(4);
+  });
+
+  it('should apply a string suggestedMin that only a hidden dataset reaches', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [
+          {data: [{x: 'L0', y: 0}, {x: 'L1', y: 1}], hidden: true},
+          {data: [{x: 'L2', y: 2}, {x: 'L3', y: 3}, {x: 'L4', y: 4}]}
+        ]
+      },
+      options: {
+        scales: {x: {bounds: 'data', suggestedMin: 'L0'}}
+      }
+    });
+
+    expect(chart.scales.x.getLabels()).toEqual(['L0', 'L1', 'L2', 'L3', 'L4']);
+    expect(chart.scales.x.min).toBe(0);
+    expect(chart.scales.x.max).toBe(4);
+  });
+
   it('should add a string bound that is not in the data after the inferred labels', function() {
     var chart = window.acquireChart({
       type: 'line',
