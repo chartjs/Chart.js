@@ -52,7 +52,8 @@ jobs:
               - 'package.json'
             test:
               - 'test/**'
-              - 'karma.conf.js'
+              - 'karma.conf.cjs'
+              - 'vitest*.config.js'
               - 'package.json'
             types:
               - 'package.json'
@@ -63,6 +64,12 @@ jobs:
         run: pnpm run lint
       - name: Build
         run: pnpm run build
+      - name: Install Playwright browsers
+        if: |
+          (steps.changes.outputs.src == 'true' ||
+          steps.changes.outputs.test == 'true') &&
+          runner.os != 'Windows'
+        run: pnpm exec playwright install --with-deps chromium firefox
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
@@ -102,6 +109,17 @@ jobs:
           file: './coverage/firefox/lcov.info'
           coverage-reporter-version: v0.6.22
           flag-name: ${{ matrix.os }}-firefox
+          parallel: true
+      - name: Coveralls Parallel - Vitest
+        if: |
+          steps.changes.outputs.src == 'true' &&
+          runner.os != 'Windows'
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
+        with:
+          github-token: ${{ secrets.github_token }}
+          file: './coverage/vitest/lcov.info'
+          coverage-reporter-version: v0.6.22
+          flag-name: ${{ matrix.os }}-vitest
           parallel: true
 
   finish:

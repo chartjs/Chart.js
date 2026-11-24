@@ -107,7 +107,7 @@ describe('Default Configs', function() {
           }]
         },
       });
-      spyOn(chart, 'update').and.callThrough();
+      vi.spyOn(chart, 'update');
 
       var legendItem = chart.legend.legendItems[0];
       config.plugins.legend.onClick(null, legendItem, chart.legend);
@@ -183,7 +183,7 @@ describe('Default Configs', function() {
           }]
         },
       });
-      spyOn(chart, 'update').and.callThrough();
+      vi.spyOn(chart, 'update');
 
       var legendItem = chart.legend.legendItems[0];
       config.plugins.legend.onClick(null, legendItem, chart.legend);

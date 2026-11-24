@@ -49,6 +49,11 @@ State of `master` when this was written (2026-11-22). Nothing here has been exec
 
 ## Decisions
 
+Notes from building P1:
+
+- What fails without P1: Karma's old glob (`*.js`) also matched `*.spec.js`, so before P1 Karma ran the converted `global.defaults.spec.js` and failed on `vi`; after P1 Karma skips it and Vitest runs its 5 tests.
+- Unbundled, `Chart.register(namespace)` registers nothing, because `isObject()` rejects a real module namespace (`[object Module]`); the bundle has plain objects there. `test/setup.js` therefore registers `Object.values()` of each of `registerables` itself (D7).
+
 ### D1. Both runners side by side; free files first, in large pieces
 Decided by the maintainers. Spec files no open pull request touches are converted first, grouped by area into large pieces, because a conversion edits only 2-3% of a file's lines and is mechanical. Files that open pull requests touch follow straight after (D13).
 *Alternatives:* a compatibility layer that runs the specs unedited (keeps Jasmine vocabulary indefinitely); one conversion of everything at once (conflicts with about 65 open pull requests).
