@@ -61,7 +61,7 @@
 
 - [ ] 9.1 See `pnpm run docs` leave VuePress output in `dist/docs` and `pnpm why vuepress` list it
 - [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
-- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`; `docs:typecheck` points at `docs/package.json`
+- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`, with the `DOCS_BASE` override in `docs/.vitepress/config.ts` that only it sets; `docs:typecheck` points at `docs/package.json`
 - [ ] 9.4 Add `vitepress-plugin-tabs` and convert the three tab pages; check tabs switch and a sample in a tab hidden at first draws at full size
 - [ ] 9.5 Update the command and port in `docs/samples/information.md`
 - [ ] 9.6 Compare one wide options table page and one sample page with the live site
@@ -85,7 +85,7 @@
 
 ## 12. P12: Preview of the undeployed VitePress site
 
-- [ ] 12.1 See that the preview has nothing under `/vitepress/`
-- [ ] 12.2 Let an environment variable override the base in `docs/.vitepress/config.ts`
-- [ ] 12.3 Extend the Netlify build to run the VitePress build with base `/vitepress/` and publish it beside `docs/master/`
+- [x] 12.1 See that the preview has nothing under `/vitepress/`
+- [x] 12.2 Let an environment variable override the base in `docs/.vitepress/config.ts`
+- [x] 12.3 Extend the Netlify build to run the VitePress build with base `/vitepress/` and publish it beside `docs/master/`
 - [ ] 12.4 Check a page and an in-site link under `/vitepress/`, and that `/docs/master/` is unchanged
