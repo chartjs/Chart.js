@@ -7,6 +7,7 @@
     "scripts": {
         "site:build": "vitepress build ..",
         "site:dev": "vitepress dev ..",
+        "test": "node --test theme/versions.test.ts",
         "typecheck": "vue-tsc --noEmit"
     },
     "devDependencies": {
