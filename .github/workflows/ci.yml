@@ -83,9 +83,6 @@ jobs:
             xvfb-run --auto-servernum pnpm run test-ci
           fi
         shell: bash
-      - name: Test docs site code
-        if: steps.changes.outputs.docs == 'true'
-        run: pnpm --filter chartjs-docs-vitepress test
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |
@@ -96,6 +93,9 @@ jobs:
       - name: Type-check docs
         if: steps.changes.outputs.docs == 'true'
         run: pnpm run docs:typecheck
+      - name: Test docs site code
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm --filter chartjs-docs-vitepress test
       - name: Build VitePress docs
         if: steps.changes.outputs.docs == 'true'
         run: pnpm run docs:vitepress
