@@ -4,7 +4,7 @@ If the global configuration is used, labels are drawn from one of the label arra
 
 Specifying any of the settings above defines the x-axis as `type: 'category'` if not defined otherwise. For more fine-grained control of category labels, it is also possible to add `labels` as part of the category axis definition. Doing so does not apply the global defaults.
 
-`data.labels` applies to every category axis that has no `labels` of its own and no `xLabels` or `yLabels` for its orientation. To give a second category axis different labels, use `data.yLabels` (or `data.xLabels`) or the axis' `labels` option.
+`data.labels` applies to every category axis that has no `labels` of its own and no `xLabels` or `yLabels` for its orientation. `data.xLabels` applies to every horizontal axis and `data.yLabels` to every vertical one, so they give a horizontal axis different labels from a vertical one. To give a second axis of the same orientation its own labels, set its `labels` option.
 
 ## Labels found in the data
 
