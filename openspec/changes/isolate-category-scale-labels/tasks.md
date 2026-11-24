@@ -1,11 +1,11 @@
 ## 1. P1: Bounds resolved after the data (#12431)
 
-- [ ] 1.1 The specs from #12431 run against master and fail there: "should apply string bounds to inferred labels without reordering them" on the x and the y axis, and "should add a string bound that is not in the data after the inferred labels".
-- [ ] 1.2 Add a spec for `suggestedMax: 'L4'` with `bounds: 'data'`, where only a hidden dataset contains `L4`. Expect the axis to reach index 4. Add the `suggestedMin` mirror. Both fail when the suggested bounds are not parsed again.
-- [ ] 1.3 Rebase onto master, so that a single `beforeLayout()` parses `min`, `max`, `suggestedMin` and `suggestedMax`. ESLint reports no duplicate class member.
-- [ ] 1.4 Resolve the conflict in `test/specs/scale.category.tests.js`, keeping #12414's specs from master.
-- [ ] 1.5 In `docs/axes/cartesian/category.md` (Min Max Configuration): a string bound that is not among the labels is added after them.
-- [ ] 1.6 The pull request says `Closes #12430`.
+- [x] 1.1 The specs from #12431 run against master and fail there: "should apply string bounds to inferred labels without reordering them" on the x and the y axis, and "should add a string bound that is not in the data after the inferred labels".
+- [x] 1.2 Add a spec for `suggestedMax: 'L4'` with `bounds: 'data'`, where only a hidden dataset contains `L4`. Expect the axis to reach index 4. Add the `suggestedMin` mirror. Both fail when the suggested bounds are not parsed again.
+- [x] 1.3 Rebase onto master, so that a single `beforeLayout()` parses `min`, `max`, `suggestedMin` and `suggestedMax`. ESLint reports no duplicate class member.
+- [x] 1.4 Resolve the conflict in `test/specs/scale.category.tests.js`, keeping #12414's specs from master.
+- [x] 1.5 In `docs/axes/cartesian/category.md` (Min Max Configuration): a string bound that is not among the labels is added after them.
+- [x] 1.6 The pull request says `Closes #12430`.
 
 ## 2. P2: Point chart tooltip labels through the axis
 
