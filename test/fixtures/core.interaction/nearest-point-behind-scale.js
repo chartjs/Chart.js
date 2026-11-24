@@ -39,7 +39,7 @@ module.exports = {
     },
     async run(chart) {
       const point = chart.getDatasetMeta(0).data[0];
-      await jasmine.triggerMouseEvent(chart, 'click', {y: point.y, x: chart.chartArea.left});
+      await triggerMouseEvent(chart, 'click', {y: point.y, x: chart.chartArea.left});
     }
   }
 };

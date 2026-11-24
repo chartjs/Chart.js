@@ -54,6 +54,14 @@ Notes from building P1:
 - What fails without P1: Karma's old glob (`*.js`) also matched `*.spec.js`, so before P1 Karma ran the converted `global.defaults.spec.js` and failed on `vi`; after P1 Karma skips it and Vitest runs its 5 tests.
 - Unbundled, `Chart.register(namespace)` registers nothing, because `isObject()` rejects a real module namespace (`[object Module]`); the bundle has plain objects there. `test/setup.js` therefore registers `Object.values()` of each of `registerables` itself (D7).
 
+Notes from building P2:
+
+- `test/fixtures/scale.linear/grace/grace-10%.{js,png}` is renamed `grace-10-percent`: Vite puts the `%` raw into the import URL, its server rejects the request as a malformed URI, and the whole fixture spec fails to load.
+- `test/.eslintrc.yml` gains an override that declares `triggerMouseEvent` for `fixtures/**/*.js`; without it the D5 replacement in the four fixtures fails `no-undef`.
+- D7's identity question had a real answer: `moment` was not pre-bundled, so the excluded adapter imported its own copy beside the one inside the `moment-timezone` pre-bundle, and formatted dates in the machine's zone instead of `Etc/UTC`. `optimizeDeps.include` lists `moment`; a test in `test/specs/vitest.setup.spec.js` pins it in any zone. On a machine whose clock is UTC, as CI's is, the time-scale fixtures cannot show this.
+- Local image results differ from CI's: on macOS, Karma itself fails 6 to 7 fixtures on `master`. The D11 count is taken from the pull request's CI run on Ubuntu; local results are listed beside Karma's local failures for comparison only.
+- `controller.line/point-style-offscreen-canvas` fails in both browsers because `chartjs-test-utils` 1.1.1 accepts only a `CanvasRenderingContext2D` in its image matcher, not the `OffscreenCanvasRenderingContext2D` of a chart on an `OffscreenCanvas`. It waits on a release of that package.
+
 ### D1. Both runners side by side; free files first, in large pieces
 Decided by the maintainers. Spec files no open pull request touches are converted first, grouped by area into large pieces, because a conversion edits only 2-3% of a file's lines and is mechanical. Files that open pull requests touch follow straight after (D13).
 *Alternatives:* a compatibility layer that runs the specs unedited (keeps Jasmine vocabulary indefinitely); one conversion of everything at once (conflicts with about 65 open pull requests).

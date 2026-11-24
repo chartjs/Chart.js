@@ -67,6 +67,7 @@
         "docs:typecheck": "pnpm --filter chartjs-docs-vitepress typecheck",
         "docs:vitepress": "pnpm run build && pnpm --filter chartjs-docs-vitepress site:build",
         "docs:vitepress:dev": "pnpm run build && pnpm --filter chartjs-docs-vitepress site:dev",
+        "fixtures:update": "cross-env UPDATE_FIXTURES=1 vitest run --browser.headless test/specs/fixtures.spec.js",
         "lint-js": "eslint \"src/**/*.{js,ts}\" \"test/**/*.js\" \"docs/**/*.js\" --cache",
         "lint-md": "eslint \"**/*.md\" --cache",
         "lint-types": "pnpm build && node test/types/autogen.js && tsc -p test/types",

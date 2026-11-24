@@ -1,4 +1,4 @@
-import {acquireChart, releaseChart, createMockContext, afterEvent, waitForResize, injectWrapperCSS, specsFromFixtures, triggerMouseEvent, addMatchers, releaseCharts} from 'chartjs-test-utils-karma';
+import {acquireChart, releaseChart, createMockContext, afterEvent, waitForResize, injectWrapperCSS, triggerMouseEvent, addMatchers, releaseCharts} from 'chartjs-test-utils-karma';
 
 // force ratio=1 for tests on high-res/retina devices
 // fixes https://github.com/chartjs/Chart.js/issues/4515
@@ -12,8 +12,13 @@ window.createMockContext = createMockContext;
 
 injectWrapperCSS();
 
+// The image fixtures run under Vitest, from test/specs/fixtures.spec.js. The
+// `describe('auto', jasmine.fixture.specs(...))` lines left in the Karma specs
+// get one placeholder each, because Jasmine rejects an empty describe.
 jasmine.fixture = {
-  specs: specsFromFixtures
+  specs: () => () => {
+    it('runs under Vitest (test/specs/fixtures.spec.js)', () => {});
+  }
 };
 
 jasmine.triggerMouseEvent = triggerMouseEvent;

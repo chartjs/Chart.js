@@ -29,3 +29,8 @@ overrides:
       test: readonly
       triggerMouseEvent: readonly
       vi: readonly
+  # Image fixtures, evaluated by test/specs/fixtures.spec.js with the globals of
+  # test/setup.js.
+  - files: ['fixtures/**/*.js']
+    globals:
+      triggerMouseEvent: readonly
