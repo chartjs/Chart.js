@@ -4,7 +4,15 @@ import * as path from 'node:path';
 // Addresses that served a page on the VuePress site but have no page of
 // their own here: [file written into the output, page it leads to]. Both are
 // relative to the site base, with '/' separators.
-export const redirects: [from: string, to: string][] = [];
+export const redirects: [from: string, to: string][] = [
+  ['charts/index.html', 'charts/line.html'],
+  ['general/index.html', 'general/data-structures.html'],
+  ['samples/index.html', 'samples/information.html'],
+  ['getting-started/v3-migration/index.html', 'migration/v3-migration.html'],
+  // TypeDoc names the enumeration directory enumerations/, no longer enums/.
+  ['api/enums/DecimationAlgorithm.html', 'api/enumerations/DecimationAlgorithm.html'],
+  ['api/enums/UpdateModeEnum.html', 'api/enumerations/UpdateModeEnum.html'],
+];
 
 function stub(url: string): string {
   // The script runs first so that a #heading survives; the meta refresh is

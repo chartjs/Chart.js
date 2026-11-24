@@ -33,9 +33,9 @@
 
 ## 5. P5: Redirects
 
-- [ ] 5.1 Check that `charts/index.html` and `api/enums/UpdateModeEnum.html` are absent from the output
-- [ ] 5.2 Add `docs/.vitepress/redirects.ts` and write the six stubs in `buildEnd`, base-aware and keeping the hash
-- [ ] 5.3 Open each stub from a local preview and land on its target
+- [x] 5.1 Check that `charts/index.html` and `api/enums/UpdateModeEnum.html` are absent from the output
+- [x] 5.2 Add `docs/.vitepress/redirects.ts` and write the six stubs in `buildEnd`, base-aware and keeping the hash
+- [x] 5.3 Open each stub from a local preview and land on its target
 
 ## 6. P6: Version menu
 
@@ -60,7 +60,7 @@
 ## 9. P9: The switch
 
 - [ ] 9.1 See `pnpm run docs` leave VuePress output in `dist/docs` and `pnpm why vuepress` list it
-- [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site, and the `test` script that runs `theme/versions.test.ts`); the `api` script becomes `typedoc --options typedoc.json --out api` in `docs/` (the command-line path resolves against the working directory), and `docs/.vitepress/typedoc.json` moves to `docs/typedoc.json` with its paths made relative to `docs/` (entry, tsconfig, `docsRoot: "."`, plugins `./node_modules/<plugin>/dist/index.js`); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
+- [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site, and the `test` script that runs `theme/versions.test.ts` and `redirects.test.ts`, with their paths relative to `docs/`); the `api` script becomes `typedoc --options typedoc.json --out api` in `docs/` (the command-line path resolves against the working directory), and `docs/.vitepress/typedoc.json` moves to `docs/typedoc.json` with its paths made relative to `docs/` (entry, tsconfig, `docsRoot: "."`, plugins `./node_modules/<plugin>/dist/index.js`); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
 - [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`, with the `DOCS_BASE` override in `docs/.vitepress/config.ts` that only it sets; `docs:typecheck` points at `docs/package.json`, and so does the "Test docs site code" step in `ci.yml`; check that `docs/api/typedoc-sidebar.json` links start with `/api/` and that the build reads it
 - [ ] 9.4 Add `vitepress-plugin-tabs` and convert the three tab pages; check tabs switch and a sample in a tab hidden at first draws at full size
 - [ ] 9.5 Update the command and port in `docs/samples/information.md`
