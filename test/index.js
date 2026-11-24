@@ -1,4 +1,4 @@
-import {acquireChart, releaseChart, createMockContext, afterEvent, waitForResize, injectWrapperCSS, specsFromFixtures, triggerMouseEvent, addMatchers, releaseCharts} from 'chartjs-test-utils';
+import {acquireChart, releaseChart, createMockContext, afterEvent, waitForResize, injectWrapperCSS, specsFromFixtures, triggerMouseEvent, addMatchers, releaseCharts} from 'chartjs-test-utils-karma';
 
 // force ratio=1 for tests on high-res/retina devices
 // fixes https://github.com/chartjs/Chart.js/issues/4515

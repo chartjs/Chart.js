@@ -35,6 +35,13 @@ describe('Chart.Animation', function() {
       expect(target.color).toEqual('#0000FF80');
     });
 
+    it('should mix oklch() colors', function() {
+      const target = {color: 'transparent'};
+      const anim = new Chart.Animation({duration: 1000, type: 'color'}, target, 'color', 'oklch(62.8% 0.2577 29.23)');
+      anim.tick(anim._start + 500);
+      expect(target.color).toEqual('#FF000080');
+    });
+
     it('should not try to mix invalid color', function() {
       const target = {color: 'blue'};
       const anim = new Chart.Animation({duration: 1000, type: 'color'}, target, 'color', 'invalid');

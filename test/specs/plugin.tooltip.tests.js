@@ -1621,6 +1621,27 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.getActiveElements()[0].element).toBe(meta.data[0]);
     });
 
+    it('should ignore active elements with an out-of-range index', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B'],
+          datasets: [{data: [1, 2]}]
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[0];
+      const outside = {datasetIndex: 0, index: 99};
+      const position = {x: 0, y: 0};
+
+      chart.tooltip.setActiveElements([outside, {datasetIndex: 0, index: 0}], position);
+      chart.update();
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
+
+      chart.tooltip.setActiveElements([outside], position);
+      chart.update();
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+    });
+
     it('should not replace the user set active elements by event replay', async function() {
       var chart = window.acquireChart({
         type: 'line',
@@ -1772,6 +1793,40 @@ describe('Plugin.Tooltip', function() {
     await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
 
     expect(chart.tooltip.getActiveElements()).toEqual([expectedPoints[0]]);
+  });
+
+  // https://github.com/chartjs/Chart.js/issues/12397
+  it('should tolerate destroyed dataset controllers on events outside chartArea', async function() {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        }
+      }
+    });
+
+    const point = chart.getDatasetMeta(0).data[1];
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    expect(chart.tooltip.getActiveElements().length).toBe(1);
+
+    // Detaching the canvas stops the chart, which destroys the dataset metas,
+    // while the dataset itself is still in the data.
+    chart._stop();
+
+    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
+    expect(chart.tooltip.getActiveElements()).toEqual([]);
   });
 
   it('should tolerate elements removed on events outside chartArea', async function() {

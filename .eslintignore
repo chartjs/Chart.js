@@ -1,2 +1,3 @@
 dist/*
+docs/api/*
 test/integration/react-browser/*

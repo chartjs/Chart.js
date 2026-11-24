@@ -1,22 +1,39 @@
 import Scale from '../core/core.scale.js';
-import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
+import {isArray, isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
 
-const addIfString = (labels, raw, index, addedLabels) => {
-  if (typeof raw === 'string') {
+// A multi-line label is an array of lines; equal lines make the same label.
+const sameLabel = (a, b) => a === b ||
+  (isArray(a) && isArray(b) && a.length === b.length && a.every((line, i) => line === b[i]));
+
+function findLabel(labels, raw, fromEnd) {
+  if (!isArray(raw)) {
+    return fromEnd ? labels.lastIndexOf(raw) : labels.indexOf(raw);
+  }
+  if (!fromEnd) {
+    return labels.findIndex((label) => sameLabel(label, raw));
+  }
+  let i = labels.length - 1;
+  while (i >= 0 && !sameLabel(labels[i], raw)) {
+    i--;
+  }
+  return i;
+}
+
+const addIfLabel = (labels, raw, index) => {
+  if (typeof raw === 'string' || isArray(raw)) {
     index = labels.push(raw) - 1;
-    addedLabels.unshift({index, label: raw});
   } else if (isNaN(raw)) {
     index = null;
   }
   return index;
 };
 
-function findOrAddLabel(labels, raw, index, addedLabels) {
-  const first = labels.indexOf(raw);
+function findOrAddLabel(labels, raw, index) {
+  const first = findLabel(labels, raw);
   if (first === -1) {
-    return addIfString(labels, raw, index, addedLabels);
+    return addIfLabel(labels, raw, index);
   }
-  const last = labels.lastIndexOf(raw);
+  const last = findLabel(labels, raw, true);
   return first !== last ? index : first;
 }
 
@@ -50,21 +67,32 @@ export default class CategoryScale extends Scale {
     /** @type {number} */
     this._startValue = undefined;
     this._valueRange = 0;
-    this._addedLabels = [];
+    /** @type {any[]} */
+    this._labels = undefined;
   }
 
   init(scaleOptions) {
-    const added = this._addedLabels;
-    if (added.length) {
-      const labels = this.getLabels();
-      for (const {index, label} of added) {
-        if (labels[index] === label) {
-          labels.splice(index, 1);
-        }
-      }
-      this._addedLabels = [];
-    }
+    // The labels found in the data go into this axis' own copy of the label source, so the
+    // user's arrays and the other axes never see them. The copy is rebuilt on every update.
+    this._labels = undefined;
     super.init(scaleOptions);
+    // Parsing the bounds in init() may have taken a copy before the data labels are known and
+    // before the beforeUpdate hook. Drop it; beforeLayout() parses the bounds again.
+    this._labels = undefined;
+  }
+
+  getLabels() {
+    return this._labels || (this._labels = super.getLabels().slice());
+  }
+
+  beforeLayout() {
+    super.beforeLayout();
+    // Dataset parsing has now finished adding the inferred labels.
+    const options = this.options;
+    this._userMin = this.parse(options.min);
+    this._userMax = this.parse(options.max);
+    this._suggestedMin = this.parse(options.suggestedMin);
+    this._suggestedMax = this.parse(options.suggestedMax);
   }
 
   parse(raw, index) {
@@ -72,8 +100,8 @@ export default class CategoryScale extends Scale {
       return null;
     }
     const labels = this.getLabels();
-    index = isFinite(index) && labels[index] === raw ? index
-      : findOrAddLabel(labels, raw, valueOrDefault(index, raw), this._addedLabels);
+    index = isFinite(index) && sameLabel(labels[index], raw) ? index
+      : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
     return validIndex(index, labels.length - 1);
   }
 

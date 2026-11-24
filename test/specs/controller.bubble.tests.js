@@ -423,4 +423,54 @@ describe('Chart.controllers.bubble', function() {
       after: []
     }]);
   });
+
+  describe('tooltip label', function() {
+    function labelOf(index, data, scales) {
+      const chart = window.acquireChart({
+        type: 'bubble',
+        data,
+        options: {scales}
+      });
+      return chart.getDatasetMeta(0).controller.getLabelAndValue(index).label;
+    }
+
+    it('should come from a category x axis whose labels come from the data', function() {
+      const data = {datasets: [{data: [{x: 'a', y: 1, r: 5}, {x: 'b', y: 2, r: 5}]}]};
+      expect(labelOf(1, data, {x: {type: 'category'}})).toBe('b');
+    });
+
+    it('should come from a category y axis when the x axis is linear', function() {
+      const data = {datasets: [{data: [{x: 1, y: 'a', r: 5}, {x: 2, y: 'b', r: 5}]}]};
+      expect(labelOf(1, data, {x: {type: 'linear'}, y: {type: 'category'}})).toBe('b');
+    });
+
+    it('should come from the x axis when both axes are category axes', function() {
+      const data = {datasets: [{data: [{x: 'a', y: 'c', r: 5}, {x: 'b', y: 'd', r: 5}]}]};
+      const scales = {x: {type: 'category', labels: ['a', 'b']}, y: {type: 'category', labels: ['c', 'd']}};
+      expect(labelOf(1, data, scales)).toBe('b');
+    });
+
+    it('should name the category of the point, not the label at its index', function() {
+      const data = {datasets: [{data: [{x: 'a', y: 1, r: 5}, {x: 'b', y: 2, r: 5}, {x: 'a', y: 3, r: 5}]}]};
+      expect(labelOf(2, data, {x: {type: 'category'}})).toBe('a');
+    });
+
+    it('should be the entry of data.labels at the index when there is one', function() {
+      const data = {
+        labels: ['first', 'second'],
+        datasets: [{data: [{x: 'a', y: 1, r: 5}, {x: 'b', y: 2, r: 5}]}]
+      };
+      expect(labelOf(1, data, {x: {type: 'category', labels: ['a', 'b']}})).toBe('second');
+    });
+
+    it('should be empty without data.labels or a category axis', function() {
+      const data = {datasets: [{data: [{x: 1, y: 1, r: 5}, {x: 2, y: 2, r: 5}]}]};
+      expect(labelOf(1, data, {})).toBe('');
+    });
+
+    it('should be empty for a point without a category', function() {
+      const data = {datasets: [{data: [{x: 'a', y: 1, r: 5}, {x: null, y: 2, r: 5}]}]};
+      expect(labelOf(1, data, {x: {type: 'category'}})).toBe('');
+    });
+  });
 });

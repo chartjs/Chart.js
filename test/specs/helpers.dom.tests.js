@@ -512,6 +512,81 @@ describe('DOM helpers tests', function() {
     document.body.removeChild(container);
   });
 
+  it('should not limit the height to a container that grows with its content', () => {
+    // https://github.com/chartjs/Chart.js/issues/11005
+    const container = document.createElement('div');
+    container.style.width = '900px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '600px';
+    target.style.height = '300px';
+    container.appendChild(target);
+
+    expect(container.clientHeight).toBe(300);
+    expect(helpers.getMaximumSize(target, 900, 300, 2)).toEqual(jasmine.objectContaining({width: 900, height: 450}));
+    expect(target.style.height).toBe('300px');
+
+    document.body.removeChild(container);
+  });
+
+  it('should not limit the height to a grid row that is as high as its neighbour', () => {
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; width: 900px';
+
+    document.body.appendChild(grid);
+
+    const targets = [0, 1].map(() => {
+      const container = document.createElement('div');
+      grid.appendChild(container);
+      const target = document.createElement('div');
+      target.style.width = '300px';
+      target.style.height = '150px';
+      container.appendChild(target);
+      return target;
+    });
+
+    // The neighbour alone keeps the row, and so the container, 150px high.
+    expect(helpers.getMaximumSize(targets[0], 450, 150, 2)).toEqual(jasmine.objectContaining({width: 450, height: 225}));
+    expect(helpers.getMaximumSize(targets[1], 450, 150, 2)).toEqual(jasmine.objectContaining({width: 450, height: 225}));
+
+    document.body.removeChild(grid);
+  });
+
+  it('should limit the height to the max-height of a container that grows with its content', () => {
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.maxHeight = '200px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '300px';
+    target.style.height = '150px';
+    container.appendChild(target);
+
+    expect(helpers.getMaximumSize(target, 600, 150, 2)).toEqual(jasmine.objectContaining({width: 400, height: 200}));
+
+    document.body.removeChild(container);
+  });
+
+  it('should limit the height to a container sized by a border-box height', () => {
+    const container = document.createElement('div');
+    container.style.cssText = 'box-sizing: border-box; width: 520px; height: 220px; padding: 10px';
+
+    document.body.appendChild(container);
+
+    const target = document.createElement('div');
+    target.style.width = '300px';
+    target.style.height = '150px';
+    container.appendChild(target);
+
+    expect(helpers.getMaximumSize(target, 500, 200, 2)).toEqual(jasmine.objectContaining({width: 400, height: 200}));
+
+    document.body.removeChild(container);
+  });
+
   it('should respect aspect ratio and skip container height', () => {
     const container = document.createElement('div');
     container.style.width = '500px';

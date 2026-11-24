@@ -6,7 +6,11 @@ source ./scripts/utils.sh
 
 TARGET_DIR='gh-pages'
 TARGET_BRANCH='master'
-TARGET_REPO_URL="https://$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
+TARGET_REPO_URL="https://x-access-token:$GITHUB_TOKEN@github.com/chartjs/chartjs.github.io.git"
+
+# Commit as the GitHub App that minted $GITHUB_TOKEN
+BOT_NAME="${GH_APP_SLUG}[bot]"
+BOT_ID=$(gh api "/users/${BOT_NAME}" --jq .id)
 
 VERSION=$1
 MODE=$2
@@ -46,7 +50,7 @@ cd $TARGET_DIR
 git checkout $TARGET_BRANCH
 
 # https://www.chartjs.org/dist/$VERSION
-if [["$VERSION" != "$TAG"]]; then
+if [[ "$VERSION" != "$TAG" ]]; then
   deploy_versioned_files $VERSION
 fi
 
@@ -58,8 +62,8 @@ deploy_tagged_files $TAG
 git add --all
 
 git remote add auth-origin $TARGET_REPO_URL
-git config --global user.email "$GH_AUTH_EMAIL"
-git config --global user.name "Chart.js"
+git config --global user.email "${BOT_ID}+${BOT_NAME}@users.noreply.github.com"
+git config --global user.name "$BOT_NAME"
 git commit -m "Deploy $VERSION from $GITHUB_REPOSITORY" -m "Commit: $GITHUB_SHA"
 git push -q auth-origin $TARGET_BRANCH
 git remote rm auth-origin

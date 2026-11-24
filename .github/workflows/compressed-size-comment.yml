@@ -1,0 +1,79 @@
+# Posts the report of the "Compressed Size" workflow as a pull request comment.
+#
+# That workflow runs the pull request's code, and for pull requests from forks
+# its token is read-only. This one runs from the default branch with a token
+# that can comment, and never checks out or runs anything from the pull request:
+# the report is read as text, and the pull request number in it is used only if
+# that pull request's head is the commit the report was built from.
+name: Compressed Size Comment
+
+on:
+  workflow_run:
+    workflows: ["Compressed Size"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  comment:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    permissions:
+      actions: read  # to download the report of the other run
+      pull-requests: write  # to create or update the comment
+    runs-on: ubuntu-latest
+    # One at a time per branch, so two runs cannot both create the comment.
+    concurrency:
+      group: size-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+    steps:
+      - name: Post the report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          gh run download "$RUN_ID" --name size-report --dir size-report
+
+          for f in size-report/pr-number size-report/comment.md; do
+            if [ ! -f "$f" ] || [ -L "$f" ]; then
+              echo "::error::$f is missing or not a regular file"
+              exit 1
+            fi
+          done
+
+          pr=$(head -c 16 size-report/pr-number | tr -cd '0-9')
+          if [ -z "$pr" ]; then
+            echo "::error::no pull request number in the report"
+            exit 1
+          fi
+
+          # The report comes from code the pull request controls, so its number
+          # is only a claim: accept it when that pull request is open and its
+          # head is the commit this report was built from.
+          read -r state head_sha < <(gh api "repos/$GH_REPO/pulls/$pr" --jq '"\(.state) \(.head.sha)"')
+          if [ "$state" != open ] || [ "$head_sha" != "$HEAD_SHA" ]; then
+            echo "Pull request #$pr is $state at $head_sha; the report is for $HEAD_SHA. Not commenting."
+            exit 0
+          fi
+
+          # The action's own footer marks the comment, and the next run finds
+          # the comment by it, so it has to survive the size cap.
+          head -c 20000 size-report/comment.md > body.md
+          if ! grep -q 'compressed-size-action</sub>' body.md; then
+            echo "::error::the report does not look like a size report, or is too long"
+            exit 1
+          fi
+
+          comment_id=$(gh api "repos/$GH_REPO/issues/$pr/comments" --paginate \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | test("compressed-size-action</sub>"))) | .id' | tail -n 1)
+
+          if [ -n "$comment_id" ]; then
+            gh api --method PATCH "repos/$GH_REPO/issues/comments/$comment_id" -F body=@body.md --silent
+            echo "Updated comment $comment_id on #$pr"
+          else
+            gh api --method POST "repos/$GH_REPO/issues/$pr/comments" -F body=@body.md --silent
+            echo "Commented on #$pr"
+          fi

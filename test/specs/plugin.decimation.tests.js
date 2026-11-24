@@ -1,7 +1,5 @@
 describe('Plugin.decimation', function() {
 
-  describe('auto', jasmine.fixture.specs('plugin.decimation'));
-
   describe('lttb', function() {
     const originalData = [
       {x: 0, y: 0},

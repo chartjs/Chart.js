@@ -1,3 +1,23 @@
 packages:
   - 'docs'
+  # The VitePress site's dependencies, until it replaces VuePress.
+  - 'docs/.vitepress'
   - 'test/integration/*'
+
+overrides:
+  html-entities: 1.4.0
+
+peerDependencyRules:
+  ignoreMissing:
+    - chart.js
+
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+  core-js: false
+  core-js-pure: false
+  highlight.js: false
+  vuepress: false
+
+minimumReleaseAgeExclude:
+  - chart.js@4.6.2

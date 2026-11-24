@@ -23,13 +23,24 @@ jobs:
     needs: correct_repository
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 24
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - name: Use Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
           cache: pnpm
+      - name: Generate docs deploy token
+        id: app-token
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
+        with:
+          client-id: ${{ vars.DOCS_DEPLOY_CLIENT_ID }}
+          private-key: ${{ secrets.DOCS_DEPLOY_PRIVATE_KEY }}
+          owner: chartjs
+          repositories: chartjs.github.io
+          permission-contents: write
       - name: Package & Deploy Docs
         run: |
           pnpm install
@@ -39,5 +50,5 @@ jobs:
           pnpm pack
           ./scripts/deploy-docs.sh "master"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_AUTH_TOKEN }}
-          GH_AUTH_EMAIL: ${{ secrets.GH_AUTH_EMAIL }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}

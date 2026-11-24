@@ -1160,6 +1160,45 @@ describe('Time scale tests', function() {
     expect(scale.getPixelForDecimal(1.0)).toBeCloseToPixel(512);
   });
 
+  it('should invert getPixelForValue when the axis has asymmetric offsets', function() {
+    // Irregularly spaced labels so the first and last gaps differ, giving
+    // offsets.start !== offsets.end once offset is enabled.
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: [
+          '2015-01-01T00:00:00',
+          '2015-01-01T06:00:00',
+          '2015-01-02T00:00:00',
+          '2015-01-05T00:00:00'
+        ],
+        datasets: [{data: [1, 2, 3, 4]}]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'time',
+            offset: true,
+            time: {unit: 'hour'},
+            ticks: {source: 'labels'}
+          }
+        }
+      }
+    }, {canvas: {width: 600, height: 200}});
+
+    var scale = chart.scales.x;
+    // Guard the premise of the test: the offsets really are asymmetric here.
+    expect(scale._offsets.start).not.toEqual(scale._offsets.end);
+
+    // getValueForPixel is the inverse of getPixelForValue, so a round trip
+    // through an interior value should return that value.
+    var value = moment('2015-01-02T00:00:00').valueOf();
+    expect(scale.getValueForPixel(scale.getPixelForValue(value))).toBeCloseToTime({
+      value: moment(value),
+      unit: 'hour'
+    });
+  });
+
   ['data', 'labels'].forEach(function(source) {
     ['timeseries', 'time'].forEach(function(type) {
       describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
