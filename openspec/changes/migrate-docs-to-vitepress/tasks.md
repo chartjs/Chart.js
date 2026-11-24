@@ -39,10 +39,10 @@
 
 ## 6. P6: Version menu
 
-- [ ] 6.1 Unit-check the version grouping: one entry per minor from 2.6 on, newest patch, 0.x, 1.x and 2.0 to 2.5 excluded
-- [ ] 6.2 Add the build-time loader with a fallback to the built version alone
-- [ ] 6.3 Add the component and mount it after the site title and in the mobile nav screen
-- [ ] 6.4 Check the three titles (master, latest, outdated) and that a version link leaves the app
+- [x] 6.1 Unit-check the version grouping: one entry per minor from 2.6 on, newest patch, 0.x, 1.x and 2.0 to 2.5 excluded
+- [x] 6.2 Add the build-time loader with a fallback to the built version alone
+- [x] 6.3 Add the component and mount it after the site title and in the mobile nav screen
+- [x] 6.4 Check the three titles (master, latest, outdated) and that a version link leaves the app
 
 ## 7. P7: CI builds the new site
 

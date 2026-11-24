@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {describe, it} from 'node:test';
-import {parseVersions, versionMenu} from './versions.ts';
+import { describe, it } from 'node:test';
+import { parseVersions, versionMenu } from './versions.ts';
 
 // The shape of https://data.jsdelivr.com/v1/package/npm/chart.js, trimmed to
 // the cases that matter, plus a 4.12 and a 5.0 prerelease that do not exist yet.
@@ -15,8 +15,17 @@ const published = parseVersions({
 
 const texts = (items: {text: string}[]) => items.map((item) => item.text);
 
+describe('parseVersions', () => {
+  it('orders newest first by semver precedence and skips what is not semver', () => {
+    const names = parseVersions({
+      versions: ['3.0.0-rc', '3.0.0-alpha', '3.0.0-rc.10', 'latest', '3.0.0', '3.0.0-rc.x', '3.0.0-rc.9', '2.10.0', '2.9.4'],
+    }).map((v) => v.name);
+    assert.deepEqual(names, ['3.0.0', '3.0.0-rc.x', '3.0.0-rc.10', '3.0.0-rc.9', '3.0.0-rc', '3.0.0-alpha', '2.10.0', '2.9.4']);
+  });
+});
+
 describe('versionMenu', () => {
-  const menu = versionMenu({docsVersion: 'master', version: '4.6.2', versions: published});
+  const menu = versionMenu({version: 'master', versions: published});
 
   it('lists master, latest and the newest patch of each minor from 2.6 on', () => {
     assert.deepEqual(texts(menu.documentation), [
@@ -53,19 +62,21 @@ describe('versionMenu', () => {
   });
 
   it('still offers master and latest without a version list', () => {
-    const offline = versionMenu({docsVersion: '4.6.2', version: '4.6.2', versions: []});
+    const offline = versionMenu({version: '4.6.2', number: '4.6.2', versions: []});
     assert.deepEqual(texts(offline.documentation), ['Development (master)', 'Latest version']);
     assert.deepEqual(offline.releaseNotes, []);
   });
 });
 
 describe('versionMenu title', () => {
-  const title = (docsVersion: string, version: string, versions = published) =>
-    versionMenu({docsVersion, version, versions}).title;
+  // The two fields of docs-version.json: the tag the docs are published
+  // under, and the release they were built from (none for master).
+  const title = (version: string, number?: string, versions = published) =>
+    versionMenu({version, number, versions}).title;
   const untagged = published.map((v) => ({...v, tag: null}));
 
   it('names the development docs', () => {
-    assert.equal(title('master', '4.6.2'), 'Development (master)');
+    assert.equal(title('master'), 'Development (master)');
   });
 
   it('names the latest release', () => {
@@ -78,6 +89,8 @@ describe('versionMenu title', () => {
   it('marks an older release outdated, also one built when it was the latest', () => {
     assert.equal(title('4.5.1', '4.5.1'), '4.5.1 (outdated)');
     assert.equal(title('latest', '4.5.1'), '4.5.1 (outdated)');
+    // A marker without the release number names the release by its tag.
+    assert.equal(title('4.5.1'), '4.5.1 (outdated)');
   });
 
   it('names a prerelease by its tag', () => {
