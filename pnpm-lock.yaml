@@ -5505,8 +5505,8 @@ packages:
   focus-trap@7.8.0:
     resolution: {integrity: sha512-/yNdlIkpWbM0ptxno3ONTuf+2g318kh2ez3KSeZN5dZ8YC6AAmgeWz+GasYYiBJPFaYcSAPeu4GfhUaChzIJXA==}
 
-  follow-redirects@1.15.6:
-    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
+  follow-redirects@1.16.3:
+    resolution: {integrity: sha512-toOSoqN6d51Wjf1aOFJYcoVv1aND9rj/CwjLU0Vz40oDuSpWDayCeKe4JpL5NL0WdFvoOOCI3BRo69HahjbR1A==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -17544,15 +17544,15 @@ snapshots:
     dependencies:
       tabbable: 6.5.2
 
-  follow-redirects@1.15.6(debug@4.3.4(supports-color@6.1.0)):
+  follow-redirects@1.16.3(debug@4.3.4(supports-color@6.1.0)):
     optionalDependencies:
       debug: 4.3.4(supports-color@6.1.0)
 
-  follow-redirects@1.15.6(debug@4.4.3(supports-color@6.1.0)):
+  follow-redirects@1.16.3(debug@4.4.3(supports-color@6.1.0)):
     optionalDependencies:
       debug: 4.4.3(supports-color@6.1.0)
 
-  follow-redirects@1.15.6(debug@4.4.3(supports-color@8.1.1)):
+  follow-redirects@1.16.3(debug@4.4.3(supports-color@8.1.1)):
     optionalDependencies:
       debug: 4.4.3(supports-color@8.1.1)
 
@@ -18110,7 +18110,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.3.4(supports-color@6.1.0)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.6(debug@4.3.4(supports-color@6.1.0))
+      follow-redirects: 1.16.3(debug@4.3.4(supports-color@6.1.0))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -18118,7 +18118,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.4.3(supports-color@6.1.0)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.6(debug@4.4.3(supports-color@6.1.0))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@6.1.0))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -18126,7 +18126,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.4.3(supports-color@8.1.1)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.6(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
