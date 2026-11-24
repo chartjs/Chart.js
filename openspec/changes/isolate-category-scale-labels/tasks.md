@@ -54,7 +54,7 @@
 ## 5. P5: Labels found in the data follow the data after a push
 
 - [x] 5.1 Add specs that fail on master: a push, a splice and several queued changes keep the labels found in the data in data order, and a pushed duplicate does not move to the front. Add the unshift case as a guard.
-- [x] 5.2 Add specs for the reset start state under animation: a pushed point, and points that a later queued change shifts, start at the old scale's pixel for their final index and at the base pixel.
+- [x] 5.2 Add specs for the reset start state under animation: a pushed point, and points that a later queued change shifts, start at the old scale's pixel for their final index and at the base pixel. Every point of a multi-point push and splice is reset, and two runs split by old points reset only the new ones.
 - [x] 5.3 Add stacked bar and stacked line specs: push, unshift and splice keep the stack values; a push and a pop, a push and a splice that removes it, an unshift and a shift, and a splice that removes an inserted value leave no stale stack entry and do not throw.
 - [x] 5.4 Add specs with parsing on and off: after a push and a pop the old last element survives, and after a pop and a push it is removed.
 - [x] 5.5 Implement: queued inserts only move and create elements and record them; `_resyncElements` parses the whole dataset once and then resets the recorded elements still in the dataset, in contiguous runs; `clearStacks` skips empty entries; `_onDataPop` takes its index from the data.

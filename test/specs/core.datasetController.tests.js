@@ -658,6 +658,70 @@ describe('Chart.DatasetController', function() {
       chart.stop();
     });
 
+    describe('with several new points under animation', function() {
+      let chart, data, meta, startX, startY;
+
+      beforeEach(function() {
+        data = [1, 2];
+        chart = acquireChart({
+          type: 'line',
+          data: {
+            labels: ['a', 'b', 'c', 'd', 'e', 'f'],
+            datasets: [{data}]
+          },
+          options: {
+            animation: {duration: 1000}
+          }
+        });
+        meta = chart.getDatasetMeta(0);
+        startX = [0, 1, 2, 3, 4, 5].map(i => chart.scales.x.getPixelForValue(i));
+        startY = chart.scales.y.getBasePixel();
+      });
+
+      afterEach(function() {
+        chart.stop();
+      });
+
+      function expectReset(indices) {
+        for (const i of indices) {
+          expect(meta.data[i].x).withContext('x of ' + i).toBeCloseToPixel(startX[i]);
+          expect(meta.data[i].y).withContext('y of ' + i).toBeCloseToPixel(startY);
+        }
+      }
+
+      it('should reset every point of a push', function() {
+        data.push(3, 4);
+        chart.update();
+
+        expect(meta.data.length).toBe(4);
+        expectReset([2, 3]);
+      });
+
+      it('should reset every point of a splice', function() {
+        data.splice(1, 0, 5, 6);
+        chart.update();
+
+        expect(meta.data.length).toBe(4);
+        expectReset([1, 2]);
+      });
+
+      it('should reset every point of two runs, but not the old points between them', function() {
+        const old = meta.data.map(point => ({point, x: point.x, y: point.y}));
+
+        data.unshift(-1, 0);
+        data.push(3, 4);
+        chart.update();
+
+        expect(meta.data.length).toBe(6);
+        expectReset([0, 1, 4, 5]);
+        old.forEach(function({point, x, y}, i) {
+          expect(meta.data[i + 2]).toBe(point);
+          expect(point.x).withContext('x of old ' + i).toBeCloseToPixel(x);
+          expect(point.y).withContext('y of old ' + i).toBeCloseToPixel(y);
+        });
+      });
+    });
+
     ['bar', 'line'].forEach(function(type) {
       describe('in a stacked ' + type + ' chart', function() {
         function createChart() {
