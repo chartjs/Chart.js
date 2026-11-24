@@ -50,7 +50,7 @@ What ESLint 10 does, tested on master with the configuration in Contracts:
 - `eslint-plugin-html` does nothing today: no `.html` file is in the globs, and `html` fences are not linted.
 - With ESLint 10 at the workspace root, `test/integration/react-browser` fails to build (`[eslint] Invalid Options: Unknown options: extensions, resolvePluginsRelativeTo`). react-scripts 5 resolves the root `eslint`. `DISABLE_ESLINT_PLUGIN=true`, set in the example's `.env`, makes the build pass. Pinning `eslint@^8.57` inside the example fails differently: it then tries to load the root's eslintrc config.
 - `pnpm install` gives no new peer warnings for the lint packages. Its one unmet `eslint` peer is react-scripts' plugins inside the React example (which wants `^8`), and that is covered by the item above.
-- `@stylistic` 6 prints one deprecation line per run for `object-curly-spacing` (it prefers `list-style`).
+- `@stylistic` 6 prints two deprecation lines per run, for `array-bracket-spacing` and `object-curly-spacing` (it prefers `list-style`).
 
 ## Goals / Non-Goals
 
@@ -102,10 +102,13 @@ What ESLint 10 does, tested on master with the configuration in Contracts:
 - `lint-js`, `lint-md`, `--cache` and the `.eslintcache` ignore line stay.
 - `.eslintignore` and the four `.eslintrc.yml` files are deleted.
 - `eslint-plugin-html` leaves without replacement.
+- `test/types/.eslintrc.yml` gets no block of its own. It reaches only `test/types/autogen.js`, since the `.ts` type tests are not linted, and its only effective rule is `object-curly-spacing: always` for that file's one spaced import. P3 unspaces that import instead (`import {fileURLToPath} from 'url'`); ESLint 8's override would warn on that edit, so it cannot land earlier.
 
 **D10. The React integration example builds without react-scripts' ESLint step.** A one-line `test/integration/react-browser/.env` sets `DISABLE_ESLINT_PLUGIN=true`. react-scripts reads it on every platform, so the script and the dependencies stay as they are. The example checks that Chart.js builds in a React app; its ESLint step lints only the example's few lines with react-scripts' own config. *Alternative:* `eslint@^8` pinned inside the example, which fails because ESLint 8 then finds no eslintrc config of its own.
 
 **D11. Test globals.** Karma specs get `globals.jasmine` and the 5 helpers as writable. Specs that run under Vitest (`test/**/*.spec.js`, `test/setup*.js`, `test/vitest.shared.js`) get the Jasmine globals turned off and the 12 Vitest names as readonly. The glob matches the same 4 files as today's override, and it also covers the Vitest design's later `test/setup.umd.js` without another edit. If #12444 lands first, `test/fixtures/**/*.js` also get `triggerMouseEvent`, as that pull request adds to `test/.eslintrc.yml`.
+
+**D13. What the design review changed.** The architecture, complexity and rule-readers reviews found no failure scenario. Two measured simplifications were taken: the Markdown block drops an unused `plugins` key (the processor is passed as an object, and the result stays 5 warnings), and the `test/types` block goes (D9). A third, applying the Jasmine globals through `ignores` instead of turning them off for Vitest specs, gives the same result but adds a block, so it was not taken. The es-x `flat/restrict-to-es2018` preset was tested in place of the 16 named rules: with the class-field rules off it gives 218 errors, most of them false positives such as `no-iterator-prototype-map` on every `.map(`, which confirms D5. The VitePress design's `.eslintignore` edit (its P4, #12484) has already landed, so deleting the file orders nothing.
 
 **D12. The approved migrate-tests-to-vitest design.** Its P3 and P12 edit `test/.eslintrc.yml`. P3 here adds one sentence before its Pieces table, saying that after this change `test/.eslintrc.yml` means the `test/` blocks of `eslint.config.js`.
 
@@ -114,7 +117,7 @@ What ESLint 10 does, tested on master with the configuration in Contracts:
 - **The Markdown wrapper relies on how `@eslint/markdown` maps fence labels to file extensions.** That mapping is an implementation detail, not an API. If a minor version changes it, coverage changes; the wrapper is ten lines and goes away if open question 2 widens coverage.
 - **Node floor.** `eslint-plugin-es-x` 10.1 declares Node `^22.23 || ^24.18 || >=26.4`. CI uses 26; contributors on older Node get an engine warning.
 - **ESLint 11** removes the core Node rules (D2). They then move to `eslint-plugin-n` or go.
-- **Deprecation notice.** `@stylistic` prints one line per run for `object-curly-spacing`. Moving to `list-style` changes the style, so the rule stays until `@stylistic` 7.
+- **Deprecation notices.** `@stylistic` prints two lines per run, for `array-bracket-spacing` and `object-curly-spacing`. Moving to `list-style` changes the style, so the rule stays until `@stylistic` 7.
 - **Contributor pull requests.** Open pull requests that add TypeScript may get new findings on rebase; `--fix` handles the style ones.
 - **Windows.** No path-specific configuration; the CI run of P3 on `windows-latest` is the test.
 
@@ -142,7 +145,7 @@ Sizes are hand-edited changed lines. The lockfile is excluded.
 | --- | --- | --- | --- | --- | --- | --- |
 | P1 | `style:` fix what the new checks read and ESLint 8 accepts: semicolons after type aliases, spaced type literals, spaced unions, the `ts` example in `data-structures.md`; delete the 6 dead `prefer-const` directives; rename the directive at `helpers.rtl.ts:37` to `@typescript-eslint/no-unused-vars` | `src/types/{index,utils,geometric,layout}.d.ts`, `src/helpers/helpers.{canvas,collection,config,config.types,curve,easing,rtl}.ts`, `src/elements/element.point.ts`, `src/core/core.controller.js`, `src/elements/element.line.js`, `src/helpers/helpers.segment.js`, `src/plugins/plugin.tooltip.js`, `src/scales/scale.{linearbase,time}.js`, `docs/general/data-structures.md` | `pnpm exec eslint "src/**/*.{js,ts}" "test/**/*.js" "docs/**/*.js" --report-unused-disable-directives --rule '@typescript-eslint/semi: [error, always]' --rule '@typescript-eslint/space-infix-ops: error'` gives 42 errors on master and 0 after; `pnpm lint-js` stays at 0 errors | ~50 | nothing | none |
 | P2 | `refactor:` remove the 11 dead assignments `no-useless-assignment` reports | `src/core/core.controller.js`, `src/helpers/helpers.segment.js`, `src/plugins/plugin.colors.ts`, `src/plugins/plugin.decimation.js`, `src/plugins/plugin.filler/filler.helper.js`, `src/scales/scale.radialLinear.js`, `test/specs/{core.datasetController,core.layouts,scale.time}.tests.js` | `pnpm dlx eslint@10 --no-config-lookup --rule 'no-useless-assignment: error' "src/**/*.js" "test/**/*.js"` gives 10 errors on master and 0 after; `plugin.colors.ts:39` is checked by hand (`return ++i` → `return i + 1`) | ~15 | P1 (`core.controller.js`, `helpers.segment.js`) | none |
-| P3 | `build:` the switch: `eslint.config.js`; dev dependencies; the five ESLint 8 files deleted; the 15 TypeScript indentation lines; the two `ban-types` directives renamed and the `Scale` merge directive; the React example without its ESLint step; the note in the Vitest design | `eslint.config.js`, `package.json`, `pnpm-lock.yaml`, `src/helpers/helpers.{curve,dom}.ts`, `src/types/{index,utils}.d.ts`, `test/integration/react-browser/.env`, `openspec/changes/migrate-tests-to-vitest/design.md`; deleted: `.eslintrc.yml`, `.eslintignore`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml` | `pnpm exec eslint --version` prints v8.37.0; `type P = {x: number};` in a `.d.ts` passes lint | ~190 edited, 103 deleted | P1, P2; #12444 (`package.json`, `test/.eslintrc.yml`, the Vitest design) | none |
+| P3 | `build:` the switch: `eslint.config.js`; dev dependencies; the five ESLint 8 files deleted; the 15 TypeScript indentation lines; the two `ban-types` directives renamed and the `Scale` merge directive; the React example without its ESLint step; the note in the Vitest design | `eslint.config.js`, `package.json`, `pnpm-lock.yaml`, `src/helpers/helpers.{curve,dom}.ts`, `src/types/{index,utils}.d.ts`, `test/types/autogen.js`, `test/integration/react-browser/.env`, `openspec/changes/migrate-tests-to-vitest/design.md`; deleted: `.eslintrc.yml`, `.eslintignore`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml` | `pnpm exec eslint --version` prints v8.37.0; `type P = {x: number};` in a `.d.ts` passes lint | ~190 edited, 103 deleted | P1, P2; #12444 (`package.json`, `test/.eslintrc.yml`, the Vitest design) | none |
 
 P1 and P2 share two files, so P2 follows P1. Both are small and can be built back to back. Contributor pull requests that touch `index.d.ts` (15 of them), `helpers.config.ts`, `helpers.dom.ts` and the other P1 and P2 files do not order anything: they rebase over one-line edits.
 
@@ -180,7 +183,7 @@ const markdownJsTs = {
 
 export default defineConfig([
   globalIgnores(['dist/', 'docs/api/', 'test/integration/react-browser/', '**/.*/']),
-  {files: ['**/*.md'], plugins: {markdown}, processor: markdownJsTs},
+  {files: ['**/*.md'], processor: markdownJsTs},
   {
     plugins: {'@stylistic': stylistic, 'es-x': esX},
     languageOptions: {
@@ -266,7 +269,6 @@ export default defineConfig([
       ...named(['afterAll', 'afterEach', 'beforeAll', 'beforeEach', 'createMockContext', 'describe', 'expect',
         'it', 'releaseChart', 'test', 'triggerMouseEvent', 'vi'], 'readonly')}},
   },
-  {files: ['test/types/**'], rules: {'@stylistic/object-curly-spacing': ['warn', 'always']}},
 ]);
 ```
 
