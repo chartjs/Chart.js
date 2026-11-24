@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import markdownItInclude from 'markdown-it-include';
 import { defineConfig } from 'vitepress';
 import { version } from './docs-version.json';
+import { checkSidebar, sidebar } from './sidebar';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const vueDir = path.dirname(createRequire(import.meta.url).resolve('vue/package.json'));
@@ -21,6 +22,7 @@ export default defineConfig({
   base,
   head: [['link', {rel: 'icon', href: `${base}favicon.ico`}]],
   lastUpdated: true,
+  buildEnd: checkSidebar,
   // Light only: Chart.js default tick and grid colours, and several samples,
   // assume a light page.
   appearance: false,
@@ -79,5 +81,6 @@ export default defineConfig({
         ],
       },
     ],
+    sidebar,
   },
 });

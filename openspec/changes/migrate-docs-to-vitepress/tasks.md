@@ -19,9 +19,9 @@
 
 ## 3. P3: Sidebar
 
-- [ ] 3.1 Make the build fail when a non-partial page outside `api/` is in no sidebar, and see it fail for every page
-- [ ] 3.2 Add `docs/.vitepress/sidebar.ts` with the guide and samples trees as path lists and a helper that reads each page's first heading
-- [ ] 3.3 Wire it into the config; compare sections, order and titles with the live site
+- [x] 3.1 Make the build fail when a non-partial page outside `api/` is in no sidebar, and see it fail for every page
+- [x] 3.2 Add `docs/.vitepress/sidebar.ts` with the guide and samples trees as path lists and a helper that reads each page's first heading
+- [x] 3.3 Wire it into the config; compare sections, order and titles with the live site
 
 ## 4. P4: API reference
 
@@ -73,7 +73,7 @@
 - [ ] 10.1 Confirm one clean master deploy since P9
 - [ ] 10.2 Delete `docs/.vuepress/` and the `sed` line in `scripts/docs-config.sh`; `git status` after `./scripts/docs-config.sh 4.6.1 release` shows only the version marker
 - [ ] 10.3 Remove the `html-entities` override, the `minimumReleaseAgeExclude` entry of D22 if still present, and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
-- [ ] 10.4 Name VitePress in `docs/developers/contributing.md`
+- [ ] 10.4 Name VitePress in `docs/developers/contributing.md`, and say that a new page is added to `docs/.vitepress/sidebar.ts`
 - [ ] 10.5 `git grep -i vuepress` finds only the history line in `docs/migration/v3-migration.md`
 
 ## 11. P11: Docs preview on pull requests
