@@ -79,7 +79,7 @@ At width 120 the source churn is nearly line-neutral (+2398/−2305 in `src`), a
 - *Turned on although not in the preset:* `noUndeclaredVariables`, `noInvalidUseBeforeDeclaration`, `useBlockStatements`, `useDefaultSwitchClause`, `useCollapsedElseIf`, `useLiteralKeys`, `noDoubleEquals` with `ignoreNull: false`, `noShadow` and others.
 - *Stricter rule:* `noShadow` also reports outer bindings declared later, which ESLint skips; this gives 20 renames, done in P1.
 - *Complexity:* Biome measures cognitive complexity, a different metric. A threshold of 15 gives 25 warnings, against ESLint's 21 at 10.
-- *Nursery rules:* `max-statements`, `accessor-pairs`, `no-caller`, `no-extend-native`, `no-implied-eval`, `no-extra-bind`, `no-useless-call`, `global-require`, `no-process-exit`, `no-path-concat` and `triple-slash-reference` map to nursery rules. They give 0 findings except statement counts (20 warnings against ESLint's 18).
+- *Nursery rules:* `max-statements`, `accessor-pairs`, `no-caller`, `no-extend-native`, `no-implied-eval`, `no-extra-bind`, `no-useless-call`, `global-require`, `no-process-exit`, `no-path-concat` and `triple-slash-reference` map to nursery rules. They give 0 findings except statement counts (20 warnings against ESLint's 18). They are kept for parity: the ESLint rules they replace also have no findings today, and they guard against regressions. They are reviewed on each Biome upgrade (D8).
 - *Added:* `noFocusedTests`, so a stray `fit` cannot skip the suite.
 
 **D5. The ES2018 guard is a GritQL plugin, `es2018.grit`, scoped to `src`, `test` and `docs/scripts`.**
@@ -103,14 +103,31 @@ At width 120 the source churn is nearly line-neutral (+2398/−2305 in `src`), a
 
 **D8. Version pin: `@biomejs/biome` at an exact version.** Formatter output, nursery rules and the Grit node names can change between versions, so an upgrade is its own pull request, which carries any formatting delta.
 
-**D9. The reformat is its own piece, squash-merged as one commit that contains only `biome format --write` output**, listed in `.git-blame-ignore-revs` by the next piece, because the SHA exists only after the merge. Formatting is enforced (`biome check`) only after the reformat, so the switch does not break the open pull requests. Contributors rebase with a recipe in the contributing guide. It merges the commit before the reformat, runs `pnpm format`, commits, merges the reformat with `-X ours` (safe because it holds only formatter output), and then merges master.
+**D9. The reformat is its own piece, squash-merged as one commit.** The commit holds the one-line switch of `formatter.enabled` to `true` and the `biome format --write` output, nothing else. The next piece lists it in `.git-blame-ignore-revs`, because the SHA exists only after the merge. The formatter settings are committed in P2 with `formatter.enabled: false`. Before the reformat, neither `pnpm format` nor an editor's format-on-save can rewrite whole files into a pull request. Formatting is enforced (`biome check`) and `pnpm format` is added only after the reformat, so the switch does not break the open pull requests. (Changed by review: P2 had enabled the formatter and the `format` script, so a contributor formatting between P2 and P4 would have pulled whole-file rewrites into a pull request that the recipe cannot untangle.) Contributors rebase with a recipe in the contributing guide, where R is the reformat commit:
+
+```
+git merge R^                      # master just before the reformat; resolve real conflicts
+git checkout R -- biome.json      # the formatter enabled, exactly as R has it
+pnpm install && pnpm exec biome format --write
+git commit -am "style: format with Biome"
+git merge -X ours R               # R holds only formatter output and that biome.json
+git merge upstream/master && pnpm lint
+```
+
+P5 tests the recipe on one open pull request before documenting it.
+
+**D13. Line-anchored directives are made layout-proof before the reformat** (added by review). `@ts-ignore` and `@ts-expect-error` cover only the next line. With the Contracts formatter settings, the reformat moves the guarded expression off that line in two places: `tsc -p test/types` (inside `pnpm lint`) then fails at `src/scales/scale.time.js:489` (TS2345) and at `test/types/extensions/plugin.ts:25` (TS2578, an unused `@ts-expect-error`). Tested by `biome format --write` and then `tsc -p test/types` on 53849f16. P4 may hold only formatter output, so P1 restructures these sites (for example, the sorted keys are assigned to a variable first) so the directive stays on the line the error is reported on. P1 proves it on a scratch copy: format, then `tsc -p test/types` passes. The same holds for `biome-ignore`, which must stay directly above its node, so P2 checks its suppressions on a formatted scratch copy.
+
+**D14. Line endings are pinned to LF in the repository** (added by review). Every tracked file is LF (`git ls-files --eol`), but the Windows CI job checks out with Git's default `core.autocrlf=true`. With `lineEnding: lf`, `biome check` fails on a CRLF checkout (tested with a CRLF file: exit 1). ESLint passes today because `eslint-config-chartjs` turns `linebreak-style` off. P5, which enforces the format, adds `.gitattributes` with `* text=auto eol=lf`. This needs no renormalization, since the index is already LF. *Alternatives:* `lineEnding: auto`, rejected because a CRLF file could then be committed; `core.autocrlf false` in CI only, rejected because it leaves Windows contributors' local `pnpm lint` failing.
+
+**D12. Patch branches for older releases keep ESLint** (added by review). `MAINTAINING.md` cuts a patch branch from an old tag and cherry-picks fixes from master. Such a branch always predates the reformat, and CI does not run on it. A fix cherry-picked across the reformat conflicts on layout. The patch branch's ESLint config also rejects Biome-formatted code (164 errors measured on formatted source). P5 adds a section to `MAINTAINING.md`: cherry-pick, resolve conflicts by keeping the patch branch's layout, and run that branch's own `pnpm lint`. The builder tests this procedure on a branch cut from the last tag before P5 is opened. *Alternative:* backport with `git diff -w`. It is rejected because it does not handle quote or parenthesis changes.
 
 **D10. The approved designs.**
-- *migrate-tests-to-vitest:* P2 adds one sentence before its Pieces table: after this change, `test/.eslintrc.yml` means the `test/**` overrides of `biome.json`. It also notes that globals overrides replace each other, so each list is complete. P2 also takes #12444's `triggerMouseEvent` into the Karma-side globals list if #12444 has landed.
+- *migrate-tests-to-vitest:* P2 adds one sentence before its Pieces table: after this change, `test/.eslintrc.yml` means the `test/**` overrides of `biome.json`. It also notes that globals overrides replace each other, so each list is complete. It names the file patterns: Vitest specs are `test/**/*.spec.js`, setup files `test/setup*.js`, and the shared config `test/vitest.shared.js`; every other file under `test/` gets the Karma-side list. A new test file must match exactly one of the two, and the piece that removes Karma removes the Karma-side override with it. (Sharpened by review: a Vitest file named outside these patterns would silently get the Karma globals.) P2 also takes #12444's `triggerMouseEvent` into the Karma-side globals list if #12444 has landed.
 - *migrate-docs-to-vitepress:* D18 is answered by open question 5.
 
 **D11. Scope and tooling.**
-- *Files:* `src/**/*.{js,ts}`, `test/**/*.{js,cjs,ts}` without `test/integration/react-browser`, `docs/scripts/**/*.js` and `docs/.vitepress/**/*.ts`.
+- *Files:* `src/**/*.{js,ts}`, `test/**/*.{js,cjs,ts}` without `test/integration/react-browser`, `docs/scripts/**/*.js` and `docs/.vitepress/**/*.ts`. Some of these files ESLint never read, so they are now linted and reformatted: the 46 type tests in `test/types`, which ESLint reached only through `autogen.js`; 3 integration `.ts` files; 2 `.cjs` files; and the documentation site.
 - *Ignores:* build output and `docs/api` are left out through `.gitignore` (`vcs.useIgnoreFile`).
 - *Scripts:* `lint-js` becomes `biome lint` in P2 and `biome check` in P5. `format` is `biome format --write`. `lint-md` goes, and so do `--cache` and the `.eslintcache` line.
 - *CI:* no change. Biome's native binaries come as per-platform optional dependencies, so the Windows job is the test.
@@ -123,6 +140,7 @@ At width 120 the source churn is nearly line-neutral (+2398/−2305 in `src`), a
 - **Nursery rules are unstable.** They are pinned with the version (D8) and reviewed on upgrade.
 - **Weaker checks** than ESLint: the rules in D6 and Markdown examples.
 - **Blame is noisier for local `git blame`** unless `blame.ignoreRevsFile` is configured; GitHub honours the file automatically.
+- **Patch branches** keep ESLint, and cherry-picks across the reformat are resolved by hand (D12).
 - **Against the competing designs:**
   - Speed: Biome is the fastest of the three, at 0.8 s for lint and format against oxlint's 1.5 s (per that design) and ESLint's 6.2 s.
   - API stability: Biome has no alpha plugin API for style.
@@ -134,17 +152,17 @@ Sizes are hand-edited changed lines; the lockfile and the mechanical reformat ar
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Issues |
 | --- | --- | --- | --- | --- | --- | --- |
-| P1 | `refactor:` code that both ESLint and Biome accept: `useConst` (26), `noShadow` renames (20), one unused import, collapse `core.scale.js:1250` (drops its `no-lonely-if` disable), merge the string literals in `docs/scripts/analyzer.js:41`, `Array.isArray` (4), redundant `'use strict'` (3), one approximate constant, one duplicate test title, 9 infos | about 35 files in `src`, `test`, `docs/scripts`; **wide** if the base has new findings | Biome with the Contracts config reports 27 errors; after P1 only the suppression sites remain; ESLint stays at 0 errors | ~100 | nothing (leave `test/fixtures/**/event-replay.js` to P2 while #12444 is open) | none |
-| P2 | `build:` the switch: `biome.json`, `es2018.grit`, `lint-js` on `biome lint`, `format` script, `lint-md` removed, dependencies swapped, the 5 ESLint config and ignore files deleted, the 15 suppressions of D7, `.gitignore`, contributing guide, the note in the Vitest design | `package.json`, `pnpm-lock.yaml`, `biome.json`, `es2018.grit`, `.gitignore`, `docs/developers/contributing.md`, `openspec/changes/migrate-tests-to-vitest/design.md`, 14 suppression files; deleted `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml`, `.eslintignore` | `pnpm why eslint` lists eslint; `a?.b` in `src` passes `pnpm lint` | ~280 edited, ~110 deleted | P1; #12444 (`package.json`, `test/.eslintrc.yml`, contributing guide, Vitest design) | none |
+| P1 | `refactor:` code that both ESLint and Biome accept: `useConst` (26), `noShadow` renames (20), one unused import, collapse `core.scale.js:1250` (drops its `no-lonely-if` disable), merge the string literals in `docs/scripts/analyzer.js:41`, `Array.isArray` (4), redundant `'use strict'` (3), one approximate constant, one duplicate test title, 9 infos | about 37 files in `src`, `test`, `docs/scripts`, including `src/scales/scale.time.js` and `test/types/extensions/plugin.ts` for D13; **wide** if the base has new findings | Biome with the Contracts config reports 27 errors; after P1 only the suppression sites remain; ESLint stays at 0 errors; formatting a scratch copy makes `tsc -p test/types` fail (D13) | ~110 | nothing (leave `test/fixtures/**/event-replay.js` to P2 while #12444 is open) | none |
+| P2 | `build:` the switch: `biome.json` (formatter settings present, `formatter.enabled: false`), `es2018.grit`, `lint-js` on `biome lint`, `lint-md` removed, dependencies swapped, the 5 ESLint config and ignore files deleted, the 15 suppressions of D7, `.gitignore`, contributing guide, the note in the Vitest design | `package.json`, `pnpm-lock.yaml`, `biome.json`, `es2018.grit`, `.gitignore`, `docs/developers/contributing.md`, `openspec/changes/migrate-tests-to-vitest/design.md`, 14 suppression files; deleted `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml`, `.eslintignore` | `pnpm why eslint` lists eslint; `a?.b` in `src` passes `pnpm lint` | ~280 edited, ~110 deleted | P1; #12444 (`package.json`, `test/.eslintrc.yml`, contributing guide, Vitest design) | none |
 | P3 | `test:` the guard's self-test as `lint-es2018` inside `pnpm lint`; delete the 32 dead `eslint-disable` comments | a script under `scripts/`, 2 sample files outside the lint scope, `package.json`, ~20 files in `src` and `test` | a Grit pattern that stops matching passes `pnpm lint` silently | ~110 | P2 | none |
-| P4 | `style:` the reformat: only `biome format --write` output | ~630 files, **wide** | `biome format` reports the files as unformatted | 0 hand-written | P2; #12444 merged; timed by open question 12 | none |
-| P5 | `chore:` enforce the format: `lint-js` on `biome check`, `.git-blame-ignore-revs` with P4's merge SHA, the contributing guide's blame setting and rebase recipe | `package.json`, `.git-blame-ignore-revs`, `docs/developers/contributing.md` | an unformatted file passes `pnpm lint` | ~25 | P4 | none |
+| P4 | `style:` the reformat: `formatter.enabled: true` and the `biome format --write` output, nothing else | `biome.json`, ~630 files, **wide** | `biome format` reports the files as unformatted | 0 hand-written | P2; #12444 merged; timed by open question 12 | none |
+| P5 | `chore:` enforce the format: `lint-js` on `biome check`, `.gitattributes` with LF (D14), the `format` script, `.git-blame-ignore-revs` with P4's merge SHA, the contributing guide's format command, blame setting and rebase recipe, and the patch-branch section of D12 | `package.json`, `.gitattributes`, `.git-blame-ignore-revs`, `docs/developers/contributing.md`, `MAINTAINING.md` | an unformatted file passes `pnpm lint` | ~50 | P4 | none |
 
 P1 can start now. P3 and P4 can be built in parallel after P2; P5 needs P4's merge commit. If code lands unformatted between P4 and P5, P5 first adds a formatter-only commit, also listed in the ignore file.
 
 Every piece leaves master releasable:
 - After P1, ESLint is green.
-- After P2, Biome lints and the formatter is configured but not enforced, so existing code and pull requests pass.
+- After P2, Biome lints and the formatter is configured but disabled, so existing code and pull requests pass.
 - P4 changes only whitespace and layout.
 - P5 enforces the format.
 
@@ -154,17 +172,18 @@ Every piece leaves master releasable:
 - **P2:** the committed `biome.json` is the configuration below with the answers to the open questions applied. Each test file matches exactly one globals override, and each globals list is complete. `pnpm lint` passes with warnings only.
 - **P2 → later Vitest pieces:** test lint settings live in the `test/**` overrides of `biome.json`.
 - **P3:** a guard that stops matching its positive sample fails `pnpm lint`.
-- **P4:** a single squash-merged commit containing only formatter output.
+- **P2 → P4:** the formatter settings in `biome.json` are final, and only `formatter.enabled` changes in P4.
+- **P4:** a single squash-merged commit containing only that switch and formatter output.
 - **P5:** `.git-blame-ignore-revs` holds P4's 40-character merge SHA.
 
-The configuration, as measured (27 errors, 106 warnings, 9 infos on 53849f16):
+The configuration as P2 commits it. It was measured with `formatter.enabled: true` (27 errors, 106 warnings, 9 infos on 53849f16; a review measured 105 warnings on 5c2cbe21):
 
 ```json
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {"enabled": true, "clientKind": "git", "useIgnoreFile": true},
   "files": {"includes": ["src/**/*.{js,ts}", "test/**/*.{js,cjs,ts}", "docs/scripts/**/*.js", "docs/.vitepress/**/*.ts", "!test/integration/react-browser"]},
-  "formatter": {"enabled": true, "indentStyle": "space", "indentWidth": 2, "lineEnding": "lf", "lineWidth": 120},
+  "formatter": {"enabled": false, "indentStyle": "space", "indentWidth": 2, "lineEnding": "lf", "lineWidth": 120},
   "javascript": {
     "formatter": {"quoteStyle": "single", "semicolons": "always", "trailingCommas": "none", "bracketSpacing": false, "arrowParentheses": "asNeeded", "quoteProperties": "asNeeded"},
     "globals": ["arguments"]

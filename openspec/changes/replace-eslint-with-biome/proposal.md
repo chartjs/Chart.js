@@ -6,7 +6,7 @@ The repository lints with ESLint 8, which reached end of life in October 2024, t
 
 - `pnpm lint` runs Biome instead of ESLint over the library source, the tests (now including the type tests and the integration checks' TypeScript) and the documentation scripts and site. The type check (`lint-types`) stays as it is.
 - One self-contained `biome.json` at the root replaces the five ESLint config and ignore files. The rules of `eslint-config-chartjs`, `eslint:recommended` and the TypeScript override are mapped to Biome rules where Biome has them.
-- **BREAKING (contributors):** the code style becomes Biome's formatter output. Anonymous functions get a space (`function ()`), `case` labels are indented inside `switch`, and lines wrap at 120 columns. One mechanical reformat commit (about 630 files) applies it, and `.git-blame-ignore-revs` keeps it out of blame. `pnpm format` rewrites a file into that style.
+- **BREAKING (contributors):** the code style becomes Biome's formatter output. Anonymous functions get a space (`function ()`), `case` labels are indented inside `switch`, and lines wrap at 120 columns. One mechanical reformat commit (about 630 files) applies it, and `.git-blame-ignore-revs` keeps it out of blame. `pnpm format` rewrites a file into that style once the reformat has landed.
 - **BREAKING (contributors):** inline suppressions become `// biome-ignore <rule>: <reason>`. `eslint-disable` comments stop working: 11 are converted, 32 dead ones are deleted.
 - **BREAKING (contributors):** code examples in Markdown files are no longer linted. `lint-md` goes away.
 - The ES2018 syntax guard stays, as a GritQL plugin in the repository instead of `eslint-plugin-es`, with a self-test so a Biome upgrade cannot silently disable it.
@@ -30,5 +30,5 @@ None.
 - Contributors: `pnpm lint` and a new `pnpm format`; no `.eslintcache`; the Biome editor extension replaces the ESLint one.
 - Open pull requests: the reformat touches files in 69 of the 76 open pull requests. The contributing guide gets a rebase recipe (design D9).
 - The `migrate-tests-to-vitest` design names `test/.eslintrc.yml` in later pieces; after the switch those edits go to the `test/**` overrides of `biome.json` (design D10). The `migrate-docs-to-vitepress` design's D18 left linting of the site to this change.
-- Patch releases cherry-pick from master (MAINTAINING.md); cherry-picks across the reformat need the same recipe, so the reformat is timed right after a release.
+- Patch releases cherry-pick from master onto branches cut from old tags (MAINTAINING.md). Those branches keep ESLint, and cherry-picks across the reformat are resolved by hand. `MAINTAINING.md` gets the procedure (design D12).
 - CI: the lint step is unchanged (`pnpm run lint`), on Ubuntu and Windows.
