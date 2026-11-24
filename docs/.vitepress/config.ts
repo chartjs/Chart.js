@@ -1,8 +1,9 @@
+import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import markdownItInclude from 'markdown-it-include';
-import { defineConfig } from 'vitepress';
+import { type DefaultTheme, defineConfig } from 'vitepress';
 import { version } from './docs-version.json';
 import { checkSidebar, sidebar } from './sidebar';
 
@@ -15,6 +16,19 @@ const vueDir = path.dirname(createRequire(import.meta.url).resolve('vue/package.
 // needs no extra step. DOCS_BASE overrides the base: the Netlify preview
 // serves this site under /vitepress/ beside the VuePress one.
 const base = process.env.DOCS_BASE ?? `/docs/${version}/`;
+
+// The API reference's sidebar, generated with the pages into docs/api by the
+// package's `api` script (TypeDoc with ./typedoc.json, which is not in docs/
+// because the VuePress build's TypeDoc reads a typedoc.json from there). The
+// script passes --out because the root tsconfig.json's typedocOptions, which
+// the VuePress build still reads, would otherwise send the output to
+// dist/docs/typedoc.
+// Read at run time so that the config loads, and type-checks, before the
+// reference has been generated.
+const apiSidebarFile = path.resolve(here, '../api/typedoc-sidebar.json');
+const apiSidebar: DefaultTheme.SidebarItem[] = existsSync(apiSidebarFile)
+  ? JSON.parse(readFileSync(apiSidebarFile, 'utf8'))
+  : [];
 
 export default defineConfig({
   title: 'Chart.js',
@@ -77,6 +91,10 @@ export default defineConfig({
         ],
       },
     ],
-    sidebar,
+    // The API tree stays out of `sidebar`, whose completeness check skips api/.
+    sidebar: {
+      ...sidebar,
+      '/api/': [{text: 'API', link: '/api/'}, ...apiSidebar],
+    },
   },
 });
