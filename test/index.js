@@ -17,7 +17,10 @@ injectWrapperCSS();
 // get one placeholder each, because Jasmine rejects an empty describe.
 jasmine.fixture = {
   specs: () => () => {
-    it('runs under Vitest (test/specs/fixtures.spec.js)', () => {});
+    it('runs under Vitest (test/specs/fixtures.spec.js)', () => {
+      // Without an expectation Jasmine warns about every placeholder.
+      expect().nothing();
+    });
   }
 };
 
