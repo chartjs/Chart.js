@@ -1,24 +1,19 @@
 import Scale from '../core/core.scale.js';
 import {isNullOrUndef, valueOrDefault, _limitValue} from '../helpers/index.js';
 
-const addIfString = (labels, raw, index, addedLabels) => {
+const addIfString = (labels, raw, index) => {
   if (typeof raw === 'string') {
-    if (!addedLabels) {
-      // Lookup only, do not add the label
-      return null;
-    }
     index = labels.push(raw) - 1;
-    addedLabels.unshift({index, label: raw});
   } else if (isNaN(raw)) {
     index = null;
   }
   return index;
 };
 
-function findOrAddLabel(labels, raw, index, addedLabels) {
+function findOrAddLabel(labels, raw, index) {
   const first = labels.indexOf(raw);
   if (first === -1) {
-    return addIfString(labels, raw, index, addedLabels);
+    return addIfString(labels, raw, index);
   }
   const last = labels.lastIndexOf(raw);
   return first !== last ? index : first;
@@ -54,26 +49,22 @@ export default class CategoryScale extends Scale {
     /** @type {number} */
     this._startValue = undefined;
     this._valueRange = 0;
-    this._addedLabels = [];
-    this._lookupOnly = false;
+    /** @type {any[]} */
+    this._labels = undefined;
   }
 
   init(scaleOptions) {
-    const added = this._addedLabels;
-    if (added.length) {
-      const labels = this.getLabels();
-      for (const {index, label} of added) {
-        if (labels[index] === label) {
-          labels.splice(index, 1);
-        }
-      }
-      this._addedLabels = [];
-    }
-    // When the labels are inferred from the data, they are not known yet. Adding a string
-    // bound now would put it before the data labels, so only look the bounds up here.
-    this._lookupOnly = true;
+    // The labels found in the data go into this axis' own copy of the label source, so the
+    // user's arrays and the other axes never see them. The copy is rebuilt on every update.
+    this._labels = undefined;
     super.init(scaleOptions);
-    this._lookupOnly = false;
+    // Parsing the bounds in init() may have taken a copy before the data labels are known and
+    // before the beforeUpdate hook. Drop it; beforeLayout() parses the bounds again.
+    this._labels = undefined;
+  }
+
+  getLabels() {
+    return this._labels || (this._labels = super.getLabels().slice());
   }
 
   beforeLayout() {
@@ -92,7 +83,7 @@ export default class CategoryScale extends Scale {
     }
     const labels = this.getLabels();
     index = isFinite(index) && labels[index] === raw ? index
-      : findOrAddLabel(labels, raw, valueOrDefault(index, raw), this._lookupOnly ? null : this._addedLabels);
+      : findOrAddLabel(labels, raw, valueOrDefault(index, raw));
     return validIndex(index, labels.length - 1);
   }
 

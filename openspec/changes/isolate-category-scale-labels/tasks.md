@@ -16,25 +16,25 @@
 
 ## 3. P3: Each category axis owns its labels
 
-- [ ] 3.1 Take #12344's specs: neither `options.labels` nor `data.labels` is modified.
-- [ ] 3.2 Add specs:
+- [x] 3.1 Take #12344's specs: neither `options.labels` nor `data.labels` is modified.
+- [x] 3.2 Add specs:
   - `chart.data.labels` stays `[]` when every label comes from the data;
   - labels pushed to `data.labels` before an `update()` are shown;
   - a removed dataset drops its label;
   - an unknown string bound does not reach `data.labels`;
   - a label a `beforeUpdate` plugin pushes to `data.labels` is shown on an axis with `min` set.
-- [ ] 3.3 Take #12405's specs for two category x axes (each value at its axis' first tick) and for a category x and y that infer labels, plus "should still share user provided labels across category scales". Do not take "should keep inferring labels into data.labels".
-- [ ] 3.4 Add a spec for two stacked category axes that each show only their own category.
-- [ ] 3.5 Implement:
+- [x] 3.3 Take #12405's specs for two category x axes (each value at its axis' first tick) and for a category x and y that infer labels, plus "should still share user provided labels across category scales". Do not take "should keep inferring labels into data.labels".
+- [x] 3.4 Add a spec for two stacked category axes that each show only their own category.
+- [x] 3.5 Implement:
   - `getLabels()` returns a copy of `super.getLabels()`, made on first use;
   - `init()` drops the copy, runs `super.init()`, and drops the copy again;
   - remove `_addedLabels`, its bookkeeping, the splice loop, P1's `_lookupOnly` flag and the `addedLabels = null` sentinel.
-- [ ] 3.6 In `docs/axes/cartesian/category.md`, say:
+- [x] 3.6 In `docs/axes/cartesian/category.md`, say:
   - labels found in the data are kept per axis and never written to `data.labels`;
   - `data.labels` applies to every category axis;
   - a second category axis uses `yLabels`/`xLabels` or its `labels` option;
   - call `update()` after changing labels.
-- [ ] 3.7 Credit the earlier work:
+- [x] 3.7 Credit the earlier work:
   - `Co-authored-by` for the authors of #12344 and #12405;
   - the release note line in the pull request body;
   - `Closes #11495` and `Closes #11893`.
