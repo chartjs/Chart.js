@@ -73,7 +73,7 @@
 - [ ] 10.1 Confirm one clean master deploy since P9
 - [ ] 10.2 Delete `docs/.vuepress/` and the `sed` line in `scripts/docs-config.sh`; `git status` after `./scripts/docs-config.sh 4.6.1 release` shows only the version marker
 - [ ] 10.3 Remove the `html-entities` override, the `minimumReleaseAgeExclude` entry of D22 if still present, and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
-- [ ] 10.4 Name VitePress in `docs/developers/contributing.md`
+- [ ] 10.4 Name VitePress in `docs/developers/contributing.md`, and say that a new page is added to `docs/.vitepress/sidebar.ts`
 - [ ] 10.5 `git grep -i vuepress` finds only the history line in `docs/migration/v3-migration.md`
 
 ## 11. P11: Docs preview on pull requests
