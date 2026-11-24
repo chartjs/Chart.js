@@ -1,9 +1,43 @@
 version: 2
 updates:
+  - package-ecosystem: "npm"
+    # The pnpm workspace root: one pnpm-lock.yaml covers every package in it.
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # No version updates for npm, only security updates. Security updates have
+    # their own fixed limit, which this option does not change.
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    # A dependency goes to the first group it matches, so `babel` must come
+    # before the catch-all.
+    groups:
+      # Babel packages must move together: bumping @babel/core alone left
+      # @babel/preset-env behind and broke the react-browser integration test.
+      babel:
+        applies-to: security-updates
+        patterns:
+          - "@babel/*"
+          - "babel-*"
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
     ignore:
       # `v3` of this action is an unreleased branch, not a tag. Dependabot has
       # proposed it as a version before; stay on tagged 2.x releases.
