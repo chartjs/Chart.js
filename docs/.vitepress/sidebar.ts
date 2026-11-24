@@ -240,12 +240,20 @@ function links(items: Item[]): string[] {
 }
 
 // Fails the build for a page that no sidebar lists, so that a page added to
-// the docs cannot be left out of the navigation. The API reference has its
-// own generated sidebar.
+// the docs cannot be left out of the navigation, and for a page listed twice.
+// The API reference has its own generated sidebar.
 export function checkSidebar({pages}: SiteConfig): void {
-  const listed = new Set(Object.values(sidebar).flatMap(tree => links(tree).map(pageOf)));
-  const missing = pages.filter(page => !page.startsWith('api/') && !listed.has(page));
+  const listed = Object.values(sidebar).flatMap(items => links(items).map(pageOf));
+  const errors: string[] = [];
+  const missing = pages.filter(page => !page.startsWith('api/') && !listed.includes(page));
   if (missing.length) {
-    throw new Error(`Pages in no sidebar (add them to docs/.vitepress/sidebar.ts):\n  ${missing.join('\n  ')}`);
+    errors.push(`Pages in no sidebar (add them to docs/.vitepress/sidebar.ts):\n  ${missing.join('\n  ')}`);
+  }
+  const twice = [...new Set(listed.filter((page, i) => listed.indexOf(page) !== i))];
+  if (twice.length) {
+    errors.push(`Pages listed more than once in docs/.vitepress/sidebar.ts:\n  ${twice.join('\n  ')}`);
+  }
+  if (errors.length) {
+    throw new Error(errors.join('\n'));
   }
 }
