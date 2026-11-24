@@ -4,14 +4,15 @@
 
 The layout is worked out in three places, and the title in a fourth:
 
-- `fit()` measures and wraps the items, through `_fitRows` (top/bottom) and `_fitCols` (left/right). It writes `legendHitBoxes`, `lineWidths` and `columnSizes`.
+- `fit()` measures and wraps the items through `_fitRows` (top/bottom) and `_fitCols` (left/right). It writes `legendHitBoxes`, `lineWidths` and `columnSizes`.
   - `_fitRows` gives every item the same height.
-  - Both wrap against the box the layout offers (`this.maxWidth`/`this.maxHeight`), not against the `maxWidth`/`maxHeight` options. The options only clamp the other dimension.
+  - Both wrap against the box the layout offers (`this.maxWidth`/`this.maxHeight`), not against the `maxWidth`/`maxHeight` options. The options only clamp the other dimension. On the main axis that clamp has no effect either, because a `fullSize` box is given the full width or height afterwards (`core.layouts.js` `placeBoxes`).
   - `_fitCols` does not count the title's width.
 - `adjustHitBoxes()` (in `afterUpdate`) aligns rows and columns again and mirrors them for right-to-left. A hit box is the symbol plus the text placed at the left, whatever `textAlign` is.
-- `_draw()` measures the text again and wraps with its own test: `x + width + padding > this.right` for rows, and `y + lineHeight > this.bottom` for columns. It then indexes `lineWidths[cursor.line]` and `columnSizes[cursor.line]`, and moves down one `lineHeight` per row.
-- `drawTitle()` works out its position from `lineWidths`/`columnSizes`, and uses only the top padding.
+- `_draw()` measures the text again and wraps with its own test (`x + width + padding > this.right` for rows, `y + lineHeight > this.bottom` for columns). It indexes `lineWidths[cursor.line]` and `columnSizes[cursor.line]`. Rows advance by one `lineHeight`, and column items by an item height that `typeof text !== 'string'` decides.
+- `drawTitle()` takes its position from `lineWidths`/`columnSizes`. It uses only the title's top padding and does not measure.
 - `_getLegendItemAt()` reads `legendHitBoxes`.
+- `afterUpdate` calls `buildLabels()` again after `fit()`. A `generateLabels` or `filter` that returns a different count the second time leaves `legendItems` and `legendHitBoxes` with different lengths. On master that draws without error: with 3 hit boxes and 1 item, the probe drew fine.
 
 Nothing in `src` or `docs` outside the file reads `legendHitBoxes`, `lineWidths` or `columnSizes`, and the types do not declare them:
 
@@ -23,168 +24,261 @@ test/specs/plugin.legend.tests.js:563,566,627,630,660,665,698,1188,1232,1286
 
 Plugins outside this repository do read `legendHitBoxes` (for example the workaround in #11280), so the field keeps its shape.
 
-Each bug below was reproduced on master ab3ac077 with a probe spec. It is caused by the places above disagreeing:
+Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from the places above disagreeing:
 
 | Issue | Observed on master | Cause |
 |---|---|---|
-| #12345 | an end-aligned row that fills the width exactly: the item's right edge minus `right` is 0, and the item is drawn at NaN depending on rounding | draw's wrap test differs from fit's, so at equality rounding decides, and `lineWidths[1]` is undefined |
+| #12345 | end-aligned row that fills the width exactly: the last item's edge minus `right` is 0, and it is drawn at NaN depending on rounding | draw's wrap test differs from fit's; at equality rounding decides, and `lineWidths[1]` is undefined |
 | #12196 | changing `Chart.defaults.font` after render throws "reading 'height'" | draw measures with the new font and wraps into a column fit never made |
 | #11824 | a three-line label in a top legend: hit box 12 px tall, next row at 32 | one item height per row |
-| #11594 | numeric labels with the legend on the right throw "reduce is not a function" | anything that is not a string is treated as an array |
+| #11594 | numeric labels with the legend on the right throw "reduce is not a function" | anything that is not a string is treated as an array, in the width, the height and the draw cursor |
 | #11850 | a right legend 72 px wide with a 149 px title | `_fitCols` ignores the title |
-| #12066, #11280 | title drawn at x=0 with `padding.left: 50` | `drawTitle` ignores left and right padding |
-| #12067 | `textAlign: 'right'`: hit box ends at 446, text at about 502 | hit box at the left, text placed with `_textX` up to `this.right` |
+| #12066 | title drawn at x=0 with `padding.left: 50` | `drawTitle` ignores left and right padding |
+| #12067 | `textAlign: 'right'`: hit box ends at 446, text at about 502 | the hit box is at the left; the text is placed with `_textX` up to `this.right` |
 | (no issue) | several columns with `textAlign: 'right'`: every column draws its text at the legend's right edge, so they overlap | draw passes `this.right` as the text area's end for every column |
-| #11805 | right legend with `maxHeight: 100`: 400 px tall, one column; top legend with `maxWidth: 150`: 400 px wide | wraps against the layout's box, not the option |
+| #11805 | right legend with `maxHeight: 100`: one column, items down to 400 px; top legend with `maxWidth: 150`: one row 400 px wide | wraps against the layout's box, not the option |
+| #11280 | `align: 'start'` and a centred title with `padding.left: 20`: the items do not move | there is no space option around the legend; the title padding only moves the title |
 
 ### Events
 
-- `isListened()` in the legend treats both `click` and `mouseup` as clicks. `_isClickEvent()` in `helpers.core.ts` does the same for the chart's `onClick`. With `events: ['click', 'mouseup', ...]`, one press ran `onClick` twice (#11538; probe: count 2).
-  - `mouseup` has been there since v2 (01b88f19). It is for charts that list `mouseup`, `touchend` or `pointerup` instead of `click`. `platform.dom.js` maps the last two to `mouseup`. The default `events` never had `mouseup`.
-- When an event falls outside the chart area, `plugin.tooltip.js` (`_getActiveElements`) and `core.controller.js` (`_getActiveElements`) keep the last active elements. This came in with #9970 (v3.7.0) so that a tooltip set by a legend `onHover` through `setActiveElements` stays. As a side effect, a tooltip the pointer opened also stays when the pointer moves onto the legend (#11801; probe: 1 active before and after). The tests `plugin.tooltip.tests.js:1681` and `core.controller.tests.js:365` pin that behaviour.
+- `isListened()` in the legend treats both `click` and `mouseup` as clicks. `_isClickEvent()` in `helpers.core.ts` does the same for the chart's `onClick`. With `events: ['click', 'mouseup', ...]`, one press runs `onClick` twice (#11538; probe count 2).
+  - `mouseup` has been there since v2 (01b88f19), for charts that list `mouseup`, `touchend` or `pointerup` instead of `click`. `platform.dom.js` maps the last two to `mouseup`. The default `events` never had `mouseup`.
+  - `_isClickEvent` also decides, through `determineLastEvent`, which event is kept for replay after `update()`. A click is never kept.
+- Outside the chart area, `plugin.tooltip.js` (`_getActiveElements`) and `core.controller.js` (`_getActiveElements`) keep the last active elements.
+  - This came in with #9970 (v3.7.0), so that a tooltip set by a legend `onHover` through `setActiveElements` stays.
+  - As a side effect, a tooltip and a hover style that the pointer started also stay when the pointer moves onto the legend (#11801; probe: 1 active before and after).
+  - `plugin.tooltip.tests.js:1681` and `core.controller.tests.js:365` pin this behaviour.
+  - Plugin order is legend, then tooltip, so in one event a legend `onHover` runs before the tooltip handles the same event.
+  - Both `setActiveElements` change state only when the elements or the position changed.
 
 ### Visibility
 
-- `_updateVisibility()` in `core.controller.js` animates `visible` and updates the dataset in `'hide'` mode (colours to transparent).
-  - When the hidden dataset was active, the update replays the last event, or re-applies `_active` when the pointer is outside the chart area. Removing or re-applying the hover style starts an `'active'` colour animation. `Animation.update()` retargets the running hide animation to that colour.
-  - Probe for #10882: borderColor goes `#FF000087` → transparent when not hovered, and `#F10000` → `#F00` when hovered, after which the line vanishes.
-- `chart._hiddenIndices` is keyed by data index. `_updateHiddenIndices()` shifts it only for push, splice and shift. Replacing the labels array keeps the old indices (#10120; probe: after hiding `a` and replacing with `[b, c]`, `b` is hidden).
-- `getMinMax()` in `core.datasetController.js` never asks whether a data item is hidden. A hidden bar collapses to its base on purpose (#7870), but it still counts towards the value axis (#11949; probe: y max stays 100). polarArea already leaves hidden data out of its own `getMinMax`.
+- `_updateVisibility()` in `core.controller.js` animates `visible` and updates the dataset in `'hide'` mode, which sends colours to transparent.
+  - When the hidden dataset was active, the update replays the last event, or re-applies `_active` when the pointer is outside the chart area.
+  - Removing or re-applying the hover style starts an `'active'` colour animation, and `Animation.update()` retargets the running hide animation to that colour.
+  - Probe for #10882: without hover, borderColor goes from `#FF000087` to transparent. With hover it goes from `#F10000` to `#F00`, and then the line vanishes.
+- There are two hidden states for a data item:
+  - `chart._hiddenIndices`, set by `toggleDataVisibility`, keyed by data index and shared by all datasets;
+  - `meta.data[i].hidden`, set by `hide(datasetIndex, dataIndex)`.
+
+  `_updateHiddenIndices()` shifts the first for push, splice and shift. Replacing the labels array keeps the old indices (#10120; probe: after hiding `a` and replacing with `[b, c]`, `b` is hidden).
+- `getMinMax()` in `core.datasetController.js` never asks whether a data item is hidden. A hidden bar collapses to its base on purpose (#7870) but still counts towards the value axis (#11949; probe: y max stays 100). polarArea already leaves hidden data out of its own `getMinMax`.
 
 ### Types
 
-`onClick`, `onHover` and `onLeave` are typed `(this: LegendElement<TType>, …, legend: LegendElement<TType>)` (`index.d.ts` 2464–2473). A handler whose `legend` parameter is annotated `LegendElement<ChartType>` becomes a second inference site for `TType`, so a line chart is typed as `ChartType`. `c.options.scales?.x?.title` then fails against the radialLinear options (#10442). This reproduces with TypeScript 4.9.5 and 6.0.3. #11666 did not reproduce with TypeScript 4.6 to 6.0, on master or on v4.4.1.
+`onClick`, `onHover` and `onLeave` are typed `(this: LegendElement<TType>, …, legend: LegendElement<TType>)` (`index.d.ts` 2464–2473). A handler whose `legend` parameter is annotated `LegendElement<ChartType>` becomes a second inference site for `TType`, so a line chart is typed as `ChartType`. `c.options.scales?.x?.title` then fails against the radialLinear options (#10442). This reproduces on TypeScript 4.9.5 and 6.0.3, and the fix in Decision 9 was compiled against it.
+
+#11666 did not reproduce with TypeScript 4.6 to 6.0, on master or on v4.4.1, by two independent tries.
 
 ## Goals / Non-Goals
 
 **Goals**
 
-- One legend layout, computed in `fit()`, that hit-testing and drawing only read.
-- Every issue the user put in scope is either completed by one piece or answered with the evidence for why no code is needed.
+- One legend layout, decided in `fit()`, that hit-testing and drawing only read.
+- Every open legend issue is either completed by one piece or answered with the evidence for why no code is needed (see the list after the pieces).
 - The open legend pull requests that fit go first.
 - Patch releases for the fixes. The new options go in 4.7.0.
 
 **Non-Goals**
 
-- Overflow when the items do not fit: paging, scrolling, ellipsis (#10893, #11397, #12129, #11825). This needs its own design on top of the layout.
+- Overflow when the items do not fit: paging, scrolling, ellipsis, word wrap (#10893, #11397, #12129, #11825). This needs its own design on top of the layout.
 - The v5 legend refactor (#9342): merging items and hit boxes into one state, a scriptable legend context, and replacing the styling in `generateLabels`.
 - Text spacing on canvas (#12246), which would be a font option for all chart text.
 - Following page scroll with a still pointer (#10384).
-- Removing hidden categories from the category axis (#11949's second half; also a non-goal of isolate-category-scale-labels).
-- Bold or italic text on hover (#11571 asks for it). The item's `fontColor` and the label font already allow styling, and only decoration is added.
+- Removing hidden categories from the category axis, and widening the remaining bars (#11949's second half, #11319). This is also a non-goal of isolate-category-scale-labels.
+- Bold or italic text on hover (part of #11571), and decorations for other text than the legend (part of #11941).
+- Aligned legend columns in a horizontal legend (#11658).
 
 ## Decisions
 
-1. **The layout lives in `fit()`, kept on a private `_layout`.** `fit()` is the only step that knows the font, the limits and the items together. `adjustHitBoxes()` keeps doing what only it can: placing lines in the final box and mirroring for right-to-left. It does not measure or wrap.
-   - Alternative: compute in `draw()` and copy back to the hit boxes. Rejected: the hit boxes are needed before drawing, for events.
-   - Alternative: merge `legendItems` and the hit boxes (#9342). Rejected: breaking, and the user chose 4.x.
-2. **The shape of `_layout`:**
-   - `font`: the label font resolved during fit;
-   - `symbol: {width, height}` and `padding`;
-   - `lines[]`: `{first, last, width, height, x, y}`;
-   - `items[]`: `{line, x, y, width, height, symbol: {x, y, width, height}, text: {lines, x, y, textAlign, width, height}}`;
-   - `title: {x, y, width, height, textAlign}` or null.
+1. **The hit boxes are the layout.** `fit()` decides, for each item, everything drawing needs:
+   - its row or column;
+   - its size;
+   - its text lines and text width;
+   - the symbol's offset in the item.
 
-   Drawing takes geometry from the layout, and colours and styles from `legendItems[i]`. Because the font is the one fit measured with, a later change to the defaults cannot move items (#12196).
-3. **The public fields keep their meaning.**
-   - `legendHitBoxes[i]` is `{left, top, width, height, row | col}` in canvas coordinates.
+   It keeps these on the item's entry in `legendHitBoxes`. The new fields are private and start with `_`.
+
+   `adjustHitBoxes()` keeps doing what only it can: placing lines in the final box, mirroring for right-to-left, and writing the absolute text and symbol positions. It does not measure or wrap. `_draw()` reads the hit boxes for geometry and `legendItems[i]` for colours and styles. The font is resolved once in fit and kept on the legend, so a later change to the defaults cannot move items (#12196).
+
+   Alternatives:
+   - A separate private `_layout` next to the hit boxes. Rejected in review: it would store every item's geometry twice.
+   - Merging `legendItems` and the hit boxes (#9342). Rejected: breaking, and the user chose 4.x.
+   - The title gets no layout piece. `drawTitle()` does not measure, and P2/P3 fix its size and position where they are computed today.
+2. **The public fields keep their meaning.**
+   - `legendHitBoxes[i]` is `{left, top, width, height, row | col}` in canvas coordinates, plus private fields.
    - `lineWidths[r]` is the sum of `itemWidth + padding` over row `r`.
    - `columnSizes[c]` is `{width, height}`.
 
    The hit box grows to cover aligned text (P4). That is the fix for #12067, not a change of meaning.
-4. **The open PRs go first, before the refactor.** The user asked for that. Each is small and has a test that fails on master, so it is a releasable fix on its own. The refactor then keeps their tests green, and those tests guard it.
+3. **The open PRs go first, before the refactor.** The user asked for that. Each is small and has a test that fails on master, so each is a releasable fix on its own. The refactor then keeps their tests green, and those tests guard it.
    - #12346 already makes draw follow the hit box's row or column in both orientations. That also fixes #12196, so #12205 (the same lines) is superseded, and its test moves into P1 with credit.
+   - #12346's fallback for an item without a hit box stays. A count that changes between fit and draw must not throw in a patch release.
    - #12316 as it stands makes column-0 hit boxes 197 px wide in a two-column legend, so clicking an item in column 1 can return an item of column 0. Its author bounds the text area by the next column's left edge minus padding before it lands (P4).
-5. **Refactor and behaviour stay apart.** P9 and P10 change no output: every legend fixture stays pixel-identical, and a spec counts `measureText` calls during `draw()` (zero after P9). The layout fixes that need the refactor (#11824, #11805) are their own pieces after it.
-6. **`mouseup` counts as a click only when `click` is not listened to.** This keeps charts that list `mouseup`, `touchend` or `pointerup` instead of `click` working, and stops the double call. The rule sits in `_isClickEvent(e, events)`, which already owns "what is a click". The legend passes `this.options.events || chart.options.events`, mirroring the plugin event filter at `core.controller.js:1174`. Replay keeps the one-argument call.
-   - Alternative: drop `mouseup` from the legend. Rejected: it breaks those charts.
-7. **Active elements remember where they came from.** The chart and the tooltip each mark their active set as set by the pointer or by `setActiveElements`. Outside the chart area, a set made by the pointer becomes empty, and a set made by code is kept, validity-filtered as today.
-   - Alternative: #11849's extra `update()` parameter. Rejected: moving back onto the same slice no longer showed the tooltip (found in its review), and it spreads the rule over the update path.
-   - This restores the behaviour before 3.7.0 for the pointer and keeps what #9970 wanted for code. The two pinned tests are changed to set their active elements with `setActiveElements`.
-8. **Hidden data cannot be active.** One check in `core.controller.js`: an item may be active only while its dataset is visible and its element is not hidden. `_updateHoverStyles` drops failing items from the activated set, and clears `active` on deactivated ones without animating, so the hide transition keeps its colours. The replay in `update()` moves into a helper that also filters `_active`, so `update()` does not grow (it is at the max-statements limit).
-9. **Hidden state is re-keyed by label only when the labels array is replaced.** At update, when `data.labels` is a different array and something is hidden:
+   - If an author does not answer within two weeks, the piece is built by a maintainer on top of the PR, with credit.
+4. **Refactor and behaviour stay apart.** P9 changes no output.
+   - Every legend fixture stays pixel-identical.
+   - A spec counts `measureText` calls during `draw()` for a legend with no hidden or decorated items, and expects zero. A decoration still measures its line inside `renderText`, and that is the only measuring allowed in draw.
+
+   The layout fixes that need the refactor (#11824, #11805) are their own pieces after it.
+5. **`mouseup` counts as a click only when `click` is not listened to.** This keeps charts that list `mouseup`, `touchend` or `pointerup` instead of `click` working, and stops the double call.
+   - The rule sits in `_isClickEvent(e, events)`, which already owns "what is a click".
+   - The legend passes `this.options.events || chart.options.events`, mirroring the plugin event filter at `core.controller.js:1174`.
+   - The chart passes `options.events`, both for `onClick` and for the replay decision in `determineLastEvent`. Otherwise a `mouseup` that is no longer a click would be kept as the last event and replayed as a click on every `update()`.
+   - The chart's `onClick` is fixed in the same piece even though #11538 reports only the legend. It runs through the same helper with the same double call, and fixing one but not the other would split the rule.
+6. **Active elements remember where they came from.** The chart and the tooltip each keep a flag saying whether their active set was set by the pointer or by `setActiveElements`.
+   - `setActiveElements` sets the flag before its "changed" test, so a legend `onHover` that sets the elements already active still marks them as set by code.
+   - A pointer event that changes the set clears the flag.
+   - Outside the chart area, a set made by the pointer becomes empty. A set made by code is kept, validity-filtered as today.
+
+   Both owners get the flag. Otherwise the tooltip would close while the slice stays drawn in its hover style, which is the same stale state.
+
+   Rejected: #11849's extra `update()` parameter. With it, moving back onto the same slice no longer showed the tooltip (found in its review), and it spreads the rule over the update path.
+
+   This restores the pointer's behaviour before 3.7.0 and keeps what #9970 wanted for code. The two pinned tests are changed to set their active elements with `setActiveElements`.
+7. **Hidden data cannot be active.** One chart method decides whether an active item is still allowed: its dataset is visible and its element is not hidden.
+   - `_updateHoverStyles` drops failing items from the activated set. It clears `active` on deactivated ones without animating, so the hide transition keeps its colours.
+   - The replay in `update()` moves into a helper that also filters `_active`, so `update()` does not grow. It is at the max-statements limit.
+   - The tooltip calls the same method for its code-set elements in P13. That is a chart method a built-in plugin may call, like `getDatasetMeta`.
+8. **Hidden state is re-keyed by label only when the labels array is replaced.** At update, when `data.labels` is a different array and something is hidden:
    - each hidden index is moved to its label's index in the new array;
    - equal labels match by occurrence, and arrays are compared by content;
    - a hidden label that is gone is dropped.
 
-   The old labels are copied only while something is hidden. Wrappers that pass a new but equal array on every render keep their state, because the move is the identity.
-   - Rejected: resetting on a new array (wrappers would lose state on every render), and keying everything by label (breaks charts without labels or with duplicate labels).
+   The re-key runs first, and the array-mutation shifts recorded since the last update are discarded, because the labels describe the new order. The old labels are copied only while something is hidden. The comparison lives in a helper, not in `update()`. Wrappers that pass a new but equal array on every render keep their state, because the move is the identity.
+
+   Rejected:
+   - resetting on a new array, because wrappers would lose state on every render;
+   - keying everything by label, because it breaks charts without labels or with duplicate labels.
+9. **The legend callbacks use a no-infer alias** (`[T][T extends any ? 0 : never]`) for `TType` in `this` and `legend`. The built-in `NoInfer` needs TypeScript 5.4, and the repository supports `^4.7.4`.
 10. **Hidden bars leave the value axis.**
-    - A protected controller hook says whether a data item is left out of bounds: false in the base class, `!getDataVisibility(i)` in the bar controller.
-    - `getMinMax()` checks it only for the value axis, because the index axis' sorted fast path would trim only the first and last categories.
+    - A protected controller hook says whether a data item is left out of bounds. It is false in the base class. In the bar controller it is `!getDataVisibility(i) || meta.data[i]?.hidden`, so both kinds of hidden item count.
+    - `getMinMax()` checks it only for the value axis. The index axis' sorted fast path would trim only the first and last categories.
     - This matches polarArea. Line and scatter do not hide such points, so they are unchanged.
-11. **The legend symbol offset is `labels.boxYOffset`.** #12242 calls it `pointStyleYOffset` and its types declare `datasetRadiusBuffer`, but it moves box symbols too. The name sits next to `boxWidth` and `boxHeight`. #11884 is answered by the option, not by moving the text: measured, the ink sits 0.4–0.8 px above the symbol's centre at 12–24 px, and moving it would change every legend image.
-12. **Text decoration is a legend item property.** `LegendItem.textDecoration` (`'line-through' | 'underline' | 'none'`), with the hidden default kept, plus `labels.decorationWidth` (default 2). #4438 (transparency of hidden items) and #11885 (a border that does not follow the dataset) are answered by a docs sample that wraps the default `generateLabels`, not by new options. That keeps the option surface small until #9342.
-13. **`padding` is the legend's outer space.** `labels.padding` stays the gap between items and the inner margin. A legend without `padding` lays out as before.
-14. **Pieces that share a file with an open PR.** `plugin.legend.js`, `core.controller.js`, `index.d.ts`, `controller.bar.js` and `plugin.tooltip.js` are each held by several open PRs. Where those PRs are 4.6.3 candidates, the piece waits for them, so the release goes first. Where they are left out of the release plan, superseded or a feature, they rebase onto the piece instead (#11825, #12255, #12242 before it becomes P15, #12314, #12172, #11836, #12218).
-15. **Tests sit with the test migration.** P1 to P5 add specs to `test/specs/plugin.legend.tests.js`. If migrate-tests-to-vitest converts that file first, they move with its recipe. Pieces written after the conversion use `plugin.legend.spec.js`. New image fixtures are made by whichever runner owns fixtures at the time.
+11. **The legend symbol offset is `labels.boxYOffset`.** #12242 calls it `pointStyleYOffset`, and its types declare `datasetRadiusBuffer`, but it moves box symbols too. The name sits next to `boxWidth` and `boxHeight`. #11884 is answered by the option, not by moving the text: measured, the ink sits 0.4–0.8 px above the symbol's centre at 12–24 px, and moving it would change every legend image.
+12. **Text decoration is a legend item property.** `LegendItem.textDecoration` (`'line-through' | 'underline' | 'none'`), with the hidden default kept, plus `labels.decorationWidth` (default 2).
+    - `renderText` already supports `underline` and `decorationWidth`, and the types already declare them. Only the legend changes.
+    - A width that scales with the font size would also answer #11692 without an option, but it would change every image with a hidden item at a font size other than 12. The option keeps images unchanged.
+    - #4438 (transparency of hidden items) and #11885 (a border that does not follow the dataset) are possible today with `generateLabels`. P15's docs sample shows how, and the issues are closed as answered, not as built.
+13. **`padding` is the legend's outer space.** It moves the items and the title away from the legend's edges, and so from the chart area (#11740) and the canvas edge (#11280). `labels.padding` stays the gap between items. A legend without `padding` lays out as before.
+14. **`maxWidth` and `maxHeight` limit the wrapping.** A `fullSize` legend still gets the full width or height of the canvas on its main axis. The two options limit how far the items run, and `align` places that block in the box. The docs say so instead of "maximum height of the legend".
+15. **Pieces that share a file with an open PR.** `plugin.legend.js`, `core.controller.js`, `index.d.ts`, `controller.bar.js` and `plugin.tooltip.js` are each held by several open PRs.
+    - Where those PRs are 4.6.3 candidates, the piece waits for them, so the release goes first.
+    - Where they are left out of the release plan, superseded or a feature, they rebase onto the piece instead: #11825, #12255, #12242 before it becomes P14, #12314, #12172, #11836 and #12218.
+    - A piece in the legend chain rebases over whatever has landed. It does not wait for an author-owned PR it shares no lines with.
+16. **Tests sit with the test migration.** P1 to P5 add specs to `test/specs/plugin.legend.tests.js`. If migrate-tests-to-vitest converts that file first, they move with its recipe. Pieces written after the conversion use `plugin.legend.spec.js`. New image fixtures are made by whichever runner owns fixtures at the time.
+
+### What the review changed
+
+- The separate `_layout` became private fields on the hit boxes. The title layout piece was dropped, because its test passed on master (complexity review).
+- P1 keeps #12346's fallback for a count that changes between fit and draw (root-cause review).
+- P5 covers all three places that test for multi-line labels, and its spec checks every position is finite (root-cause review).
+- P6 passes `events` to the replay decision too (architecture review).
+- P13's flag is set before the "changed" test (architecture and rule-readers reviews).
+- P12's spec moved from the box size to the extent of the items, because a `fullSize` box takes the full height (root-cause review).
+- #11280 moved from P3 to P16. P3 also covers the default `'center'` title position (root-cause review).
+- P15 no longer changes `renderText` (architecture review).
+- P17 re-keys before the mutation shifts and discards them (rule-readers review).
+- P18 also counts items hidden with `hide(datasetIndex, dataIndex)` (rule-readers review).
+- `index.d.ts`'s `onClick` doc line joined P6 (rule-readers review).
+- #11978, #11806, #11937, #9773, #11319, #12179, #11609, #10280, #3787, #12030, #11425 and #11429 are accounted for. #11571, #11658, #11885 and #4438 are no longer claimed as built (scope review).
 
 ## Risks / Trade-offs
 
-- **`legendItems` is rebuilt in `afterUpdate`, after `fit()`.** If a filter changes the item count between the two, drawing pairs `_layout.items[i]` with `legendItems[i]` and draws only the shorter count. Today it draws at positions that do not exist. P9 adds a spec with a filter that changes its result between calls.
-- **The pointer rule (P14) changes visible behaviour:** with `intersect: false`, the tooltip now hides when the pointer moves over the axes or the legend. It is released as a fix with a release-note line (Open Question 1).
-- **Data visibility (P18, P19) changes defaults** for charts that replace labels or hide bars. That is why they are minor releases with a release-note line.
-- **Plugins that call `_draw` internals or read `columnSizes[cursor.line]`-style state** may see different timing. Only the documented fields are kept.
-- **#11825 must rebase onto P9.** It changes 666 lines of `plugin.legend.js` and re-implements two fixes this change makes. Its author is asked to build pages as ranges of layout lines.
+- **Counts that change between fit and draw** (a `generateLabels` that reads the scales, which is the workaround for #11194) draw only the items with a hit box. Today they draw at guessed positions. P1 and P9 have a spec for it.
+- **The pointer rule (P13) changes visible behaviour.** With `intersect: false`, the tooltip now hides when the pointer moves over the axes or the legend. It ships as a fix with a release-note line (Open Question 1).
+- **Data visibility (P17, P18) changes defaults** for charts that replace labels or hide bars. That is why they are minor releases with a release-note line.
+- **#11825 must rebase onto P9.** It changes 666 lines of `plugin.legend.js` and re-implements two fixes this change makes. Its author is asked to build pages as ranges of hit-box lines.
 
 ## Pieces
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes |
 |---|---|---|---|---|---|---|---|
-| P1 | #12346: drawing follows each hit box's row or column; #12205's test moves in with credit | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | #12346's spec (master draws Beta at NaN); #12205's spec (master throws "reading 'height'") | ~60 | the author's changes (drop the fallback and the `1e-6`) | | #12345, #12196 |
-| P2 | #12330: the title's width counts in a vertical legend | same | #12330's spec (master: legend 74 px, title 184 px) | ~70 | P1 (same file) | | #11850 |
-| P3 | #12187: the title's left and right padding move it | same | new spec for start and end alignment, horizontal and vertical (master: x=0 with `padding.left: 50`) | ~40 | P2 (so the padding also widens a vertical legend), the author's test | | #12066, #11280 |
-| P4 | #12316: hit boxes cover aligned text; each column's text area ends at the next column | same | #12316's 12 left/right center/right specs; a new two-column spec (clicking item 7 returns item 7) | ~110 | P1 (same lines), the author's column fix | | #12067 |
-| P5 | Only arrays are multi-line labels | same | pie with labels `[2010, 2011]` on the right (master throws) | ~30 | P4 | | #11594 |
-| P6 | One press runs `onClick` once (legend and chart) | `src/helpers/helpers.core.ts`, `src/plugins/plugin.legend.js` (event lines only), `src/core/core.controller.js`, `docs/configuration/interactions.md`, `docs/configuration/legend.md`, `test/specs/plugin.legend.tests.js`, `test/specs/core.controller.tests.js` | events `['click', 'mouseup']`: count 1 (master 2); `['mouseup']` only: count 1; the chart's `onClick` count 1 | ~90 | P5 (same file); #12391 (same file, 4.6.3); #12438 (other lines of helpers.core.ts, 4.6.3) | | #11538 |
-| P7 | The legend callbacks do not infer the chart type | `src/types/index.d.ts`, `test/types/plugins/plugin.legend/*.ts` | `pnpm lint-types` on the #10442 snippet; a #11666 regression snippet (passes on master, kept as a guard) | ~50 | the 4.6.3 type PRs on `index.d.ts` (#12349, #12342, #12317, #12313, #12250, #12221) | | #10442, #11666 |
-| P8 | Docs: the custom `onClick` per chart type, the TypeScript note for the HTML legend, a shadow-DOM-safe container in the HTML legend sample, and a note that `onLeave` does not fire while the page scrolls under a still pointer | `docs/configuration/legend.md`, `docs/samples/legend/html.md` | none (docs) | ~60 | P6 (same doc) | | #12144, #11877, #10624, #10384 |
-| P9 | refactor: `_layout` for items; hit boxes and drawing read it | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | `measureText` count during `draw()` is 0 (master > 0); every legend fixture unchanged; a filter that changes its count between fit and draw does not throw | ~250 | P6 (same file) | #9342 | |
-| P10 | refactor: the title's box in `_layout`; `drawTitle` reads it | same | no measuring during `drawTitle`; all title fixtures unchanged | ~80 | P9 | #9342 | |
-| P11 | Rows as tall as their tallest item | same | three-line label in a top legend: the next row starts below line 3 (master overlaps) | ~40 | P10 | | #11824 |
-| P12 | Wrap within `maxWidth` / `maxHeight` | same, plus `docs/configuration/legend.md` | right legend with `maxHeight: 100` wraps into columns (master: one column, 400 px) | ~40 | P11 | | #11805 |
-| P13 | Hidden data is not active | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update) | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()` | ~130 | P6 (same file), P8 (same sample); #12391 | | #10882 |
-| P14 | The pointer's active elements end outside the chart area | `src/plugins/plugin.tooltip.js`, `src/core/core.controller.js`, `test/specs/plugin.tooltip.tests.js`, `test/specs/core.controller.tests.js`, `docs/configuration/tooltip.md`, `docs/configuration/interactions.md` | pie: hover a slice, move onto a legend item: tooltip active 0 (master 1); back on the slice: 1 | ~200 | P13 (same file); #12275 (same file, 4.6.3); Open Question 1 | | #11801 |
-| P15 | feat: `labels.boxYOffset` (#12242 renamed) | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/point-style.md`, fixture | #12242's spec (the symbol moves, the text does not) | ~60 | P12 (same file); the author's rename; 4.7.0 | | #11884 |
-| P16 | feat: `LegendItem.textDecoration`, `labels.decorationWidth`; a legend item styling sample | `src/plugins/plugin.legend.js`, `src/helpers/helpers.canvas.ts`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/item-style.md` | underline drawn; strike width 1 with `decorationWidth: 1` (master always 2) | ~90 | P15 (same file); 4.7.0 | #11941 (legend part) | #11692, #11725, #11571, #4438, #11885 |
-| P17 | feat: legend `padding` | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md` | the gap between a top legend and the chart area grows by `padding.bottom` | ~60 | P16 (same file), P12; 4.7.0 | | #11740, #11658 |
-| P18 | feat: hidden state follows replaced labels | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/developers/api.md` | hide `a`, replace with `[b, c]`: `b` visible (master hidden); the equal-array spec; existing mutation specs stay green | ~140 | P14 (same file); 4.7.0 | | #10120 |
-| P19 | feat: hidden bars leave the value axis | `src/core/core.datasetController.js`, `src/controllers/controller.bar.js`, `test/specs/controller.bar.tests.js`, `docs/developers/api.md` | bar `[10, 100]`, hide item 1: y max below 100 (master 100) | ~90 | P18 (same doc); #12332, #12241 and the 4.6.3 bar PRs (#12335, #12334, #12331, #12263) on the same files; 4.7.0 | #11949 | |
+| P1 | #12346: drawing follows each hit box's row or column, falling back for an item without one; #12205's test moves in with credit | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | #12346's spec (master draws Beta at NaN); #12205's spec (master throws "reading 'height'"); a `generateLabels` whose count changes between calls draws without throwing | ~70 | the author's changes (drop the `1e-6`) | | #12345, #12196 |
+| P2 | #12330: the title's width counts in a vertical legend | same | #12330's spec (master: legend 74 px, title 184 px) | ~70 | P1 (same lines region) | | #11850 |
+| P3 | #12187: the title's left and right padding move it | same | new specs for `'start'`, `'center'` and `'end'`, horizontal and vertical (master: x=0 with `padding.left: 50`) | ~50 | P2 (so the padding also widens a vertical legend); the author's tests | | #12066 |
+| P4 | #12316: hit boxes cover aligned text; each column's text area ends at the next column | same | #12316's 12 left/right center/right specs; a new two-column spec (clicking item 7 returns item 7) | ~110 | P1 (same lines); the author's column fix | | #12067 |
+| P5 | Only arrays are multi-line labels, in width, height and the draw cursor | same | pie with labels `[2010, 2011]` on the right: renders, and every hit box's and item's position is finite (master throws); a numeric label mixed with an array label | ~35 | P1 | | #11594 |
+| P6 | One press runs `onClick` once (legend and chart) | `src/helpers/helpers.core.ts`, `src/plugins/plugin.legend.js` (event lines only), `src/core/core.controller.js`, `src/types/index.d.ts` (the `onClick` doc line), `docs/configuration/interactions.md`, `docs/configuration/legend.md`, `test/specs/plugin.legend.tests.js`, `test/specs/core.controller.tests.js` | events `['click', 'mouseup']`: count 1 (master 2); `['mouseup']` only: count 1; the chart's `onClick` count 1; click then `update()`: still 1 | ~100 | P5 (same file); #12391 (same file, 4.6.3); #12438 (other lines of helpers.core.ts, 4.6.3) | | #11538 |
+| P7 | The legend callbacks do not infer the chart type | `src/types/index.d.ts`, `test/types/plugins/plugin.legend/*.ts` | `pnpm lint-types` on the #10442 snippet; a #11666 snippet (passes on master, kept as a guard; the PR says it was not reproduced) | ~50 | P6 (same file); the 4.6.3 type PRs on `index.d.ts` (#12349, #12342, #12317, #12313, #12250, #12221) | | #10442, #11666 |
+| P8 | Docs: the custom `onClick` per chart type; the TypeScript note for the HTML legend; a container option in the HTML legend sample that accepts an element (works in a shadow root); `onLeave` and scrolling | `docs/configuration/legend.md`, `docs/samples/legend/html.md` | none (docs) | ~60 | P6 (same doc) | | #12144, #11877, #10624, #10384 |
+| P9 | refactor: the hit boxes carry what drawing needs; drawing reads them | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | `measureText` count during `draw()` is 0 for a legend without hidden or decorated items (master > 0); every legend fixture unchanged | ~220 | P6 (same file) | #9342 | |
+| P10 | Rows as tall as their tallest item | same | three-line label in a top legend: the next row starts below line 3 (master overlaps) | ~40 | P9 | | #11824 |
+| P11 | Wrap within `maxWidth` / `maxHeight` | same, plus `docs/configuration/legend.md` | right legend with `maxHeight: 100`: every hit box within 100 px of the first, in two or more columns (master: one column to 400 px); top legend with `maxWidth: 150`: every row within 150 px | ~50 | P10 | | #11805 |
+| P12 | Hidden data is not active | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update) | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()` | ~130 | P6 (same file), P8 (same sample); #12391 | | #10882 |
+| P13 | The pointer's active elements end outside the chart area | `src/plugins/plugin.tooltip.js`, `src/core/core.controller.js`, `test/specs/plugin.tooltip.tests.js`, `test/specs/core.controller.tests.js`, `docs/configuration/tooltip.md`, `docs/configuration/interactions.md` | pie: hover a slice, move onto a legend item: tooltip active 0 (master 1); back on the slice: 1; a legend `onHover` that sets the already-active element keeps the tooltip | ~200 | P12 (same file); #12275 (same file, 4.6.3); Open Question 1 | | #11801 |
+| P14 | feat: `labels.boxYOffset` (#12242 renamed) | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/point-style.md`, fixture | #12242's spec (the symbol moves, the text does not) | ~60 | P11 (same file); the author's rename; 4.7.0 | | #11884 |
+| P15 | feat: `LegendItem.textDecoration`, `labels.decorationWidth`; a legend item styling sample | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/item-style.md` | underline drawn; strike width 1 with `decorationWidth: 1` (master always 2); `'none'` on a hidden item draws no line | ~80 | P14 (same file); 4.7.0 | #11571, #11941 | #11692, #11725 |
+| P16 | feat: legend `padding` | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md` | the gap between a top legend and the chart area grows by `padding.bottom`; `align: 'start'` with `padding.left: 20` moves the first item 20 px right | ~60 | P15 (same file); 4.7.0 | | #11740, #11280 |
+| P17 | feat: hidden state follows replaced labels | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/developers/api.md` | hide `a`, replace with `[b, c]`: `b` visible (master hidden); equal new array keeps it; splice plus replaced labels hides the right item; existing mutation specs stay green | ~150 | P13 (same file); 4.7.0 | | #10120 |
+| P18 | feat: hidden bars leave the value axis | `src/core/core.datasetController.js`, `src/controllers/controller.bar.js`, `test/specs/controller.bar.tests.js`, `docs/developers/api.md` | bar `[10, 100]`: `toggleDataVisibility(1)` and `hide(0, 1)` each give y max below 100 (master 100) | ~100 | P17 (same doc); #12332, #12241 and the 4.6.3 bar PRs (#12335, #12334, #12331, #12263) on the same files; 4.7.0 | #11949 | |
 
-**In parallel:** P7 waits on nothing in this change. Within each of the two chains (P1 → P6 → P9 → … → P17 on the legend, and P6 → P13 → P14 → P18 on the controller), the order comes from a shared file. P8 needs only P6. P19 needs only P18's docs line and can be built beside P15 to P17.
+**In parallel:**
+- P7 needs only P6's line in `index.d.ts`.
+- P8 needs only P6.
+- The legend chain (P9 → P10 → P11 → P14 → P15 → P16) and the controller chain (P12 → P13 → P17) run beside each other after P6.
+- P18 can be built beside P14 to P16.
+- P2 to P5 all build on P1, and they are ordered only by the file they share.
 
-**Issue completed by no piece, with the reason:** #11804 and #11263 are fixed on master. #5665 is done by `pointStyleWidth` (3.8). #11234 is fixed by #12292 (4.6.2). #11194 and #11730 are possible with `generateLabels`/`filter`. #10196 uses an HTML legend. #11380 calls `generateLabels` with the legend instead of the chart. #11949 is advanced by P19, and its category half is a non-goal. #11941 is advanced by P16 for the legend only. The overflow issues are non-goals.
+### Issues completed by no piece, and why
+
+- **Fixed on master:**
+  - #11804 (#11858);
+  - #11263 (`initData` always defines `labels`);
+  - #5665 (`pointStyleWidth`, 3.8);
+  - #11234 (#12292, in 4.6.2).
+- **Fixed by an open PR outside this change:** #11978, by #12331, which is a 4.6.3 candidate.
+- **Possible today, answered with how:**
+  - #11194 and #11730 (`generateLabels`/`filter`);
+  - #4438 and #11885 (the P15 sample);
+  - #11609 (array labels, and the HTML legend);
+  - #10280 (`padding`, after P16);
+  - #11806 (`textDirection` sets the canvas `direction`, as a maintainer showed);
+  - #3787 (`position: 'chartArea'`).
+- **Not a legend bug:**
+  - #11380 (`generateLabels` called with the legend instead of the chart);
+  - #12030 (the reporter found a workaround);
+  - #10196 (HTML legend);
+  - #11425, #11429 and #9773 (a doughnut gives space to its legend by design; overflow is a non-goal).
+- **Non-goals, with their reasons above:**
+  - #10893, #11397, #12129 (overflow);
+  - #12246, #9342, #11319, #11658;
+  - #11937 (rtl for axes);
+  - #12179 (speed of many hidden datasets).
 
 ## Contracts
 
-- **P1 → P4, P9:** drawing places item `i` in `legendHitBoxes[i].row` (horizontal) or `.col` (vertical).
+- **P1 → P4, P9:** drawing places item `i` in `legendHitBoxes[i].row` (horizontal) or `.col` (vertical). An item without a hit box is not drawn.
 - **P4 → P9:** an item's text area runs from after its symbol to the next column's left edge minus `labels.padding`. For the last column, it runs to the legend's right edge. The hit box covers the symbol and the text inside that area.
-- **P9 → P10, P11, P12, P15, P16, P17:** `_layout` as in Decision 2.
-  - `fit()` writes everything except absolute positions.
-  - `adjustHitBoxes()` writes absolute positions and `legendHitBoxes`.
-  - `_draw()` reads `_layout` and the styles of `legendItems`, and nothing else.
-- **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. Without `events`, it behaves as before.
-- **P13 → P14:** one helper in `core.controller.js` decides whether an active item is still allowed (dataset visible, element not hidden). P14 uses it for the tooltip's code-set elements.
-- **P14:** the chart and the tooltip each keep a flag saying whether their active elements were set by the pointer or by `setActiveElements`. Setting them by code sets it; a pointer event that changes them clears it.
-- **P15 → P16:** `labels.boxYOffset` moves only `_layout.items[i].symbol.y`.
+- **P9 → P10, P11, P14, P15, P16:**
+  - `fit()` writes each hit box's size, row or column, and private `_text` (lines, width) and `_symbol` (offset, size) fields.
+  - `adjustHitBoxes()` writes the absolute positions.
+  - `_draw()` reads the hit boxes and the styles of `legendItems`, and nothing else.
+- **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. The chart passes its `events` everywhere it calls the helper.
+- **P12 → P13:** one chart method decides whether an active item is still allowed (dataset visible, element not hidden). P13 calls it for the tooltip's code-set elements.
+- **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. A pointer event that changes the set clears it.
+- **P14 → P15:** `labels.boxYOffset` moves only the symbol's y.
 
 ## Open Questions
 
-1. **P14, release level.** The tooltip closing outside the chart area changes what users see. Two tests pin today's behaviour.
-   - Options: (a) a fix in a patch with a release-note line, since it restores pre-3.7 behaviour for the pointer; (b) a fix in 4.7.0; (c) an option.
+1. **P13, release level.** The tooltip closing outside the chart area changes what users see. Two tests pin today's behaviour.
+   - Options:
+     - (a) a fix in a patch with a release-note line, since it restores pre-3.7 behaviour for the pointer;
+     - (b) a fix in 4.7.0;
+     - (c) an option.
    - Recommendation: (a).
-2. **P18 and P19, release level.** They change defaults that users can see.
-   - Options: 4.7.0 with release notes; patch; 5.0.
+2. **P17 and P18, release level.** They change defaults that users can see.
+   - Options: 4.7.0 with release notes; a patch; 5.0.
    - Recommendation: 4.7.0.
-3. **P15, the option's name.**
+3. **P14, the option's name.**
    - Options: `labels.boxYOffset`; keep `pointStyleYOffset`; `labels.symbolOffset`.
    - Recommendation: `boxYOffset`.
-4. **P16, the option's shape.**
-   - Options: an item property plus `labels.decorationWidth`; flat `labels.strikethrough` / `labels.hiddenOpacity`; a style callback.
-   - Recommendation: the item property.
+4. **P15, the decoration width.**
+   - Options: a `labels.decorationWidth` option (images unchanged); a width that scales with the font size (no option, changes images at sizes other than 12).
+   - Recommendation: the option.
 5. **#11825 (legend navigation) and overflow.** This change leaves them out.
    - Options: ask the author to rebase onto P9 and drop the duplicate fixes, with overflow designed next (4.8); fold navigation into this change.
    - Recommendation: rebase, and design overflow next.
 6. **Collapsed hidden bars and hit-testing.** A hidden bar at zero height can still be found with `intersect: false`.
-   - Options: P13 also checks data visibility for controllers with P19's hook; a follow-up.
+   - Options: P12 also checks P18's hook; a follow-up.
    - Recommendation: a follow-up.

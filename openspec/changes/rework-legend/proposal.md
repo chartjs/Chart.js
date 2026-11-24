@@ -4,14 +4,15 @@ The legend works out its layout three times: once when it is fitted, once when i
 
 ## What Changes
 
-- The legend measures and wraps its items once, when it is fitted. Placing the hit boxes and drawing only read that layout. The output stays the same wherever the three agreed: every existing legend image is unchanged.
+- The legend measures and wraps its items once, when it is fitted, and keeps the result on its hit boxes. Placing the hit boxes and drawing only read it. The output stays the same wherever the three agreed: every existing legend image is unchanged.
 - Fixes on the layout:
   - every item is drawn in the row or column its hit box is in, whatever the rounding or a font change after the update;
   - multi-line labels take their full height in a horizontal legend;
   - numeric labels work in a vertical legend;
   - the title's width and its left and right padding count;
+  - labels that change between fitting and drawing no longer risk a crash;
   - the hit box covers the text wherever `textAlign` puts it, and text stays inside its column;
-  - `maxWidth` limits a top/bottom legend and `maxHeight` a left/right one.
+  - `maxWidth` limits how far a top/bottom legend's items run, and `maxHeight` a left/right one's.
 - One press runs `onClick` once, also when the chart listens to both `click` and `mouseup`. This applies to the legend's and the chart's `onClick`.
 - The tooltip and the hover style the pointer started end when the pointer leaves the chart area. Active elements set by code still stay.
 - A dataset or data item that is hidden is no longer active, so hiding a hovered dataset fades it out.
@@ -19,10 +20,10 @@ The legend works out its layout three times: once when it is fitted, once when i
 - New options (minor release):
   - `labels.boxYOffset` moves the legend symbol vertically;
   - a legend item's `textDecoration` and `labels.decorationWidth` style the text (strike-through, underline or none);
-  - `padding` sets the space around the legend.
+  - `padding` sets the space around the legend's items and title.
 - Data visibility changes (minor release):
   - when `data.labels` is replaced by a new array, the hidden state follows the labels instead of the indices;
-  - a hidden bar data item no longer counts towards the value axis.
+  - a hidden bar data item (hidden with `toggleDataVisibility` or `hide`) no longer counts towards the value axis.
 - No change is **BREAKING**. The behaviour changes that users can notice are listed in the release notes of their pieces: the tooltip closing outside the chart area, hidden state following labels, and the value axis shrinking for hidden bars.
 
 ## Capabilities
@@ -48,22 +49,20 @@ None. `openspec/specs/` holds no specs yet.
   - `src/core/core.controller.js`;
   - `src/core/core.datasetController.js`;
   - `src/controllers/controller.bar.js`;
-  - `src/helpers/helpers.core.ts`, `src/helpers/helpers.canvas.ts`;
+  - `src/helpers/helpers.core.ts`;
   - `src/types/index.d.ts`.
 - Docs:
   - `docs/configuration/legend.md`, `interactions.md`, `tooltip.md`;
   - `docs/developers/api.md`;
   - `docs/samples/legend/html.md`, and a new legend item styling sample.
-- Public fields `legendHitBoxes`, `lineWidths` and `columnSizes` keep their meaning. The new layout is private.
-- Releases: P1 to P14 are fixes and refactors for patch releases (4.6.x). P15 to P19 add options or change visible defaults, so they go in 4.7.0.
+- Public fields `legendHitBoxes`, `lineWidths` and `columnSizes` keep their meaning. The hit boxes gain private fields.
+- Releases: P1 to P13 are fixes, docs and a refactor for patch releases (4.6.x). P14 to P18 add options or change visible defaults, so they go in 4.7.0.
 - Open pull requests:
   - #12346, #12330, #12187 and #12316 are the first pieces, in that order. #12187 and #12316 need changes by their authors.
   - #12205 is superseded by #12346; its test moves into P1 with credit.
-  - #12242 becomes P15 after a rename.
-  - #11849 is superseded by P14.
-  - #11825 (legend navigation) is not part of this change. It is asked to rebase onto the shared layout (P9) and drop its copies of the #11280 and #11824 fixes.
-- Issues with no code in this change, and why:
-  - fixed on master: #11804 (#11858), #11263, #5665 (`pointStyleWidth`), #11234 (#12292, in 4.6.2);
-  - by design or possible today: #11194 and #11730 (`generateLabels`), #10196 (HTML legend), #11380 (call with the chart, not the legend);
-  - not reproducible: #11666 (a regression test is added in P7).
-- Left for later designs: overflow when the items do not fit (#10893, #11397, #12129, #11825), text spacing on canvas (#12246), the v5 legend refactor (#9342), and following page scroll (#10384, documented in P8).
+  - #12242 becomes P14 after a rename.
+  - #11849 is superseded by P13.
+  - #11825 (legend navigation) is not part of this change. It is asked to rebase onto P9 and drop its copies of the #11280 and #11824 fixes.
+  - #12331 (a 4.6.3 candidate) fixes #11978, the stack order after hiding a dataset from the legend.
+- Issues with no code in this change: design.md lists each with its reason (fixed on master, fixed by an open PR, possible today, not a legend bug, or a non-goal).
+- Left for later designs: overflow when the items do not fit (#10893, #11397, #12129, #11825), text spacing on canvas (#12246), the v5 legend refactor (#9342), following page scroll (#10384, documented in P8), and aligned columns in a horizontal legend (#11658).

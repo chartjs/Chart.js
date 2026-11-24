@@ -24,6 +24,11 @@ Elements that became active because of the pointer SHALL stop being active, in t
 - **WHEN** a legend `onHover` calls the tooltip's `setActiveElements` for its item
 - **THEN** the tooltip shows for that item while the pointer is on the legend
 
+#### Scenario: Code sets the element the pointer had made active
+
+- **WHEN** the pointer hovers slice 0, then moves onto legend item 0, whose `onHover` sets slice 0 as the tooltip's active element
+- **THEN** the tooltip stays open for slice 0
+
 ### Requirement: Hidden data is not active
 
 A dataset or data item that is hidden SHALL NOT be active, in the chart or in the tooltip. Hiding it SHALL NOT start a hover or un-hover animation on it.

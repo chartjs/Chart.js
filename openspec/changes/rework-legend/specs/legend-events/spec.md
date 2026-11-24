@@ -18,6 +18,11 @@ A press and release SHALL run the legend's `onClick` and the chart's `onClick` o
 - **WHEN** the chart's `events` include `mouseup` but not `click`, and the user releases the pointer on a legend item
 - **THEN** the legend's `onClick` runs once
 
+#### Scenario: Update after a click
+
+- **WHEN** the chart's `events` include `click` and `mouseup`, the user clicks a data element, and then `update()` is called
+- **THEN** the chart's `onClick` has run once in total
+
 #### Scenario: Chart onClick
 
 - **WHEN** the chart's `events` include `click` and `mouseup`, and the user clicks a data element
