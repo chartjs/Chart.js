@@ -6860,8 +6860,8 @@ packages:
     resolution: {integrity: sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==}
     engines: {node: '>=8'}
 
-  launch-editor@2.6.0:
-    resolution: {integrity: sha512-JpDCcQnyAAzZZaZ7vEiSqL690w7dAEyLao+KC96zBplnYbJS7TYNjvM3M7y3dGz+v7aIsJk3hllWuc0kWAjyRQ==}
+  launch-editor@2.14.2:
+    resolution: {integrity: sha512-NHJEb30MGBCkmZXLZwz25t37QR4aY03ZzPYUJXOJaOa92uWwExI9SBQUuIznBYc1xkD7cJNGX7oc3Nl3sq2kQQ==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -19336,9 +19336,9 @@ snapshots:
     dependencies:
       package-json: 6.5.0
 
-  launch-editor@2.6.0:
+  launch-editor@2.14.2:
     dependencies:
-      picocolors: 1.0.0
+      picocolors: 1.1.1
       shell-quote: 1.12.0
 
   leven@3.1.0: {}
@@ -23581,7 +23581,7 @@ snapshots:
       html-entities: 1.4.0
       http-proxy-middleware: 2.0.6(@types/express@4.17.17)(debug@4.4.3(supports-color@8.1.1))
       ipaddr.js: 2.0.1
-      launch-editor: 2.6.0
+      launch-editor: 2.14.2
       open: 8.4.2
       p-retry: 4.6.2
       rimraf: 3.0.2
