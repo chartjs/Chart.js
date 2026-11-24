@@ -88,4 +88,4 @@
 - [x] 12.1 See that the preview has nothing under `/vitepress/`
 - [x] 12.2 Let an environment variable override the base in `docs/.vitepress/config.ts`
 - [x] 12.3 Extend the Netlify build to run the VitePress build with base `/vitepress/` and publish it beside `docs/master/`
-- [ ] 12.4 Check a page and an in-site link under `/vitepress/`, and that `/docs/master/` is unchanged
+- [x] 12.4 Check a page and an in-site link under `/vitepress/`, and that `/docs/master/` is unchanged
