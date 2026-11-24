@@ -46,8 +46,8 @@
 
 ## 7. P7: CI builds the new site
 
-- [ ] 7.1 Add steps to `ci.yml` that run `pnpm run docs:vitepress` and `pnpm run docs:typecheck` when `docs/**` changes
-- [ ] 7.2 Show it red on a branch with a dead link, and on one with a type error in the docs code
+- [x] 7.1 Add steps to `ci.yml` that run `pnpm run docs:vitepress` and `pnpm run docs:typecheck` when `docs/**` changes
+- [x] 7.2 Show it red on a branch with a dead link, and on one with a type error in the docs code
 
 ## 8. P8: Live samples
 

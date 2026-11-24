@@ -88,6 +88,14 @@ jobs:
         run: |
           pnpm run docs
           pnpm pack
+      # The VitePress site that will replace VuePress: checked until it does,
+      # so that a docs change cannot break it unnoticed.
+      - name: Type-check docs
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm run docs:typecheck
+      - name: Build VitePress docs
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm run docs:vitepress
       - name: Coveralls Parallel - Chrome
         if: |
           steps.changes.outputs.src == 'true' &&
