@@ -55,6 +55,7 @@ jobs:
               - 'karma.conf.cjs'
               - 'vitest*.config.js'
               - 'package.json'
+              - 'pnpm-lock.yaml'
             types:
               - 'package.json'
               - 'tsconfig.json'
