@@ -27,14 +27,10 @@ export default defineConfig({
   // assume a light page.
   appearance: false,
 
-  // Partials are included into pages, not published on their own. docs/api
-  // holds the VuePress build's TypeDoc output until this site generates its own.
-  srcExclude: ['**/_*.md', 'api/**'],
+  // Partials are included into pages, not published on their own.
+  srcExclude: ['**/_*.md'],
   ignoreDeadLinks: [
     /^https?:\/\/localhost/,
-    // The API reference is not part of this site yet. Links to it are
-    // relative, such as ./../api/index.
-    /\/api\//,
   ],
 
   markdown: {
