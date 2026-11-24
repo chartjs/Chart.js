@@ -265,5 +265,25 @@ describe('Chart.registry', function() {
         Chart.registry.getScale('test2');
       }).toThrow();
     });
+
+    it('as ES module namespace object', function() {
+      // A native `import * as ns` binds a namespace object, which carries the
+      // `[object Module]` tag and has a null prototype.
+      const namespace = Object.create(null);
+      Object.assign(namespace, {test1, test2});
+      Object.defineProperty(namespace, Symbol.toStringTag, {value: 'Module'});
+      expect(Object.prototype.toString.call(namespace)).toBe('[object Module]');
+
+      Chart.register(namespace);
+      expect(Chart.registry.getController('test1')).toEqual(test1);
+      expect(Chart.registry.getScale('test2')).toEqual(test2);
+      Chart.unregister(namespace);
+      expect(function() {
+        Chart.registry.getController('test1');
+      }).toThrow();
+      expect(function() {
+        Chart.registry.getScale('test2');
+      }).toThrow();
+    });
   });
 });
