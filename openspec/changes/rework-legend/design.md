@@ -170,11 +170,20 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 
 ### Decided by the user (2026-11-24)
 
+23. **The legend plugin is converted to TypeScript, in its own piece (P19), after P6 and before P9.**
+    - It goes after P1 to P6, because those PRs and pieces edit `plugin.legend.js`, and converting first would make every open PR conflict.
+    - It goes before P9, so that the refactor and every later legend piece are written and type-checked in TypeScript, and the private hit-box fields get an interface from the start.
+    - It is a refactor with no behaviour change, done like the earlier conversions of the config helpers (#11121) and the canvas helpers (#11100): the file is renamed in the same commit as its annotations, so git still sees a rename.
+    - The public types stay in `src/types/index.d.ts` (`LegendElement`, `LegendItem`, `LegendOptions`), which is copied to `dist/types`. The `.ts` file imports them as types and adds an interface only for its own internal shapes.
+    - Renaming the file on master gives 124 errors, all in that file: 121 are TS2339 (fields assigned in the constructor and not declared) and 3 are TS2345.
+    - #11825 and #12242 rebase onto it; #12242 is ported by its author when it becomes P14.
+
+
 17. **P13 ships as a fix in a patch release, with a release-note line.** The tooltip and hover style the pointer started end outside the chart area. For the pointer this restores the behaviour before 3.7.
 18. **P17 and P18 ship in 4.7.0, each with a release-note line.**
 19. **P14's option is `labels.boxYOffset`.**
 20. **P15 adds `labels.decorationWidth`** (default 2), not a width that scales with the font.
-21. **#11825 rebases onto P9 and drops its copies of the #11280 and #11824 fixes.** Overflow (#10893, #11397, #12129) is designed next, for 4.8.
+21. **#11825 rebases onto P19 and P9, and drops its copies of the #11280 and #11824 fixes.** Overflow (#10893, #11397, #12129) is designed next, for 4.8.
 22. **Collapsed hidden bars that hover can still find are a follow-up issue**, not part of P12.
 
 ### What the review changed
@@ -197,7 +206,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 - **Counts that change between fit and draw** (a `generateLabels` that reads the scales, which is the workaround for #11194) draw only the items with a hit box. Today they draw at guessed positions. P1 and P9 have a spec for it.
 - **The pointer rule (P13) changes visible behaviour.** With `intersect: false`, the tooltip now hides when the pointer moves over the axes or the legend. It ships as a fix with a release-note line (Decision 17).
 - **Data visibility (P17, P18) changes defaults** for charts that replace labels or hide bars. That is why they are minor releases with a release-note line.
-- **#11825 must rebase onto P9.** It changes 666 lines of `plugin.legend.js` and re-implements two fixes this change makes. Its author is asked to build pages as ranges of hit-box lines.
+- **#11825 must rebase onto P19 and P9.** It changes 666 lines of `plugin.legend.js` and re-implements two fixes this change makes. Its author is asked to build pages as ranges of hit-box lines.
 
 ## Pieces
 
@@ -211,21 +220,22 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 | P6 | One press runs `onClick` once (legend and chart) | `src/helpers/helpers.core.ts`, `src/plugins/plugin.legend.js` (event lines only), `src/core/core.controller.js`, `src/types/index.d.ts` (the `onClick` doc line), `docs/configuration/interactions.md`, `docs/configuration/legend.md`, `test/specs/plugin.legend.tests.js`, `test/specs/core.controller.tests.js` | events `['click', 'mouseup']`: count 1 (master 2); `['mouseup']` only: count 1; the chart's `onClick` count 1; click then `update()`: still 1 | ~100 | P5 (same file); #12391 (same file, 4.6.3); #12438 (other lines of helpers.core.ts, 4.6.3) | | #11538 |
 | P7 | The legend callbacks do not infer the chart type | `src/types/index.d.ts`, `test/types/plugins/plugin.legend/*.ts` | `pnpm lint-types` on the #10442 snippet; a #11666 snippet (passes on master, kept as a guard; the PR says it was not reproduced) | ~50 | P6 (same file); the 4.6.3 type PRs on `index.d.ts` (#12349, #12342, #12317, #12313, #12250, #12221) | | #10442, #11666 |
 | P8 | Docs: the custom `onClick` per chart type; the TypeScript note for the HTML legend; a container option in the HTML legend sample that accepts an element (works in a shadow root); `onLeave` and scrolling | `docs/configuration/legend.md`, `docs/samples/legend/html.md` | none (docs) | ~60 | P6 (same doc) | | #12144, #11877, #10624, #10384 |
-| P9 | refactor: the hit boxes carry what drawing needs; drawing reads them | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | `measureText` count during `draw()` is 0 for a legend without hidden or decorated items (master > 0); every legend fixture unchanged | ~220 | P6 (same file) | #9342 | |
+| P19 | refactor: `plugin.legend.js` becomes `plugin.legend.ts`; class fields, method signatures and an internal hit-box interface are typed; public types stay in `src/types/index.d.ts` | `src/plugins/plugin.legend.js` → `src/plugins/plugin.legend.ts` | none (no behaviour change): `tsc` reports no errors in the file (124 on a plain rename), `pnpm lint-types` passes, every legend spec and fixture is unchanged | ~250 | P6 (same file); P8 only for order | | |
+| P9 | refactor: the hit boxes carry what drawing needs; drawing reads them | `src/plugins/plugin.legend.ts`, `test/specs/plugin.legend.tests.js` | `measureText` count during `draw()` is 0 for a legend without hidden or decorated items (master > 0); every legend fixture unchanged | ~220 | P19 (same file) | #9342 | |
 | P10 | Rows as tall as their tallest item | same | three-line label in a top legend: the next row starts below line 3 (master overlaps) | ~40 | P9 | | #11824 |
 | P11 | Wrap within `maxWidth` / `maxHeight` | same, plus `docs/configuration/legend.md` | right legend with `maxHeight: 100`: every hit box within 100 px of the first, in two or more columns (master: one column to 400 px); top legend with `maxWidth: 150`: every row within 150 px | ~50 | P10 | | #11805 |
 | P12 | Hidden data is not active | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update) | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()` | ~130 | P6 (same file), P8 (same sample); #12391 | | #10882 |
 | P13 | The pointer's active elements end outside the chart area | `src/plugins/plugin.tooltip.js`, `src/core/core.controller.js`, `test/specs/plugin.tooltip.tests.js`, `test/specs/core.controller.tests.js`, `docs/configuration/tooltip.md`, `docs/configuration/interactions.md` | pie: hover a slice, move onto a legend item: tooltip active 0 (master 1); back on the slice: 1; a legend `onHover` that sets the already-active element keeps the tooltip | ~200 | P12 (same file); #12275 (same file, 4.6.3) | | #11801 |
-| P14 | feat: `labels.boxYOffset` (#12242 renamed) | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/point-style.md`, fixture | #12242's spec (the symbol moves, the text does not) | ~60 | P11 (same file); the author's rename; 4.7.0 | | #11884 |
-| P15 | feat: `LegendItem.textDecoration`, `labels.decorationWidth`; a legend item styling sample | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/item-style.md` | underline drawn; strike width 1 with `decorationWidth: 1` (master always 2); `'none'` on a hidden item draws no line | ~80 | P14 (same file); 4.7.0 | #11571, #11941 | #11692, #11725 |
-| P16 | feat: legend `padding` | `src/plugins/plugin.legend.js`, `src/types/index.d.ts`, `docs/configuration/legend.md` | the gap between a top legend and the chart area grows by `padding.bottom`; `align: 'start'` with `padding.left: 20` moves the first item 20 px right | ~60 | P15 (same file); 4.7.0 | | #11740, #11280 |
+| P14 | feat: `labels.boxYOffset` (#12242 renamed) | `src/plugins/plugin.legend.ts`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/point-style.md`, fixture | #12242's spec (the symbol moves, the text does not) | ~60 | P11 (same file); the author's rename; 4.7.0 | | #11884 |
+| P15 | feat: `LegendItem.textDecoration`, `labels.decorationWidth`; a legend item styling sample | `src/plugins/plugin.legend.ts`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/item-style.md` | underline drawn; strike width 1 with `decorationWidth: 1` (master always 2); `'none'` on a hidden item draws no line | ~80 | P14 (same file); 4.7.0 | #11571, #11941 | #11692, #11725 |
+| P16 | feat: legend `padding` | `src/plugins/plugin.legend.ts`, `src/types/index.d.ts`, `docs/configuration/legend.md` | the gap between a top legend and the chart area grows by `padding.bottom`; `align: 'start'` with `padding.left: 20` moves the first item 20 px right | ~60 | P15 (same file); 4.7.0 | | #11740, #11280 |
 | P17 | feat: hidden state follows replaced labels | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/developers/api.md` | hide `a`, replace with `[b, c]`: `b` visible (master hidden); equal new array keeps it; splice plus replaced labels hides the right item; existing mutation specs stay green | ~150 | P13 (same file); 4.7.0 | | #10120 |
 | P18 | feat: hidden bars leave the value axis | `src/core/core.datasetController.js`, `src/controllers/controller.bar.js`, `test/specs/controller.bar.tests.js`, `docs/developers/api.md` | bar `[10, 100]`: `toggleDataVisibility(1)` and `hide(0, 1)` each give y max below 100 (master 100) | ~100 | P17 (same doc); #12332, #12241 and the 4.6.3 bar PRs (#12335, #12334, #12331, #12263) on the same files; 4.7.0 | #11949 | |
 
 **In parallel:**
 - P7 needs only P6's line in `index.d.ts`.
 - P8 needs only P6.
-- The legend chain (P9 → P10 → P11 → P14 → P15 → P16) and the controller chain (P12 → P13 → P17) run beside each other after P6.
+- The legend chain (P19 → P9 → P10 → P11 → P14 → P15 → P16) and the controller chain (P12 → P13 → P17) run beside each other after P6. P19 comes first in the legend chain although its number is last, because piece numbers were fixed when the design's pull request opened.
 - P18 can be built beside P14 to P16.
 - P2 to P5 all build on P1, and they are ordered only by the file they share.
 
@@ -259,6 +269,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 
 - **P1 → P4, P9:** drawing places item `i` in `legendHitBoxes[i].row` (horizontal) or `.col` (vertical). An item without a hit box is not drawn.
 - **P4 → P9:** an item's text area runs from after its symbol to the next column's left edge minus `labels.padding`. For the last column, it runs to the legend's right edge. The hit box covers the symbol and the text inside that area.
+- **P19 → P9 and every later legend piece:** the plugin is `src/plugins/plugin.legend.ts`; its internal shapes have interfaces in that file, and its public types come from `src/types/index.d.ts`.
 - **P9 → P10, P11, P14, P15, P16:**
   - `fit()` writes each hit box's size, row or column, and private `_text` (lines, width) and `_symbol` (offset, size) fields.
   - `adjustHitBoxes()` writes the absolute positions.

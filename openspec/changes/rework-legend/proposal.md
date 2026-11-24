@@ -13,6 +13,7 @@ The legend works out its layout three times: once when it is fitted, once when i
   - labels that change between fitting and drawing no longer risk a crash;
   - the hit box covers the text wherever `textAlign` puts it, and text stays inside its column;
   - `maxWidth` limits how far a top/bottom legend's items run, and `maxHeight` a left/right one's.
+- The legend plugin is converted to TypeScript, after the open legend fixes land and before the layout refactor.
 - One press runs `onClick` once, also when the chart listens to both `click` and `mouseup`. This applies to the legend's and the chart's `onClick`.
 - The tooltip and the hover style the pointer started end when the pointer leaves the chart area. Active elements set by code still stay.
 - A dataset or data item that is hidden is no longer active, so hiding a hovered dataset fades it out.
@@ -44,7 +45,7 @@ None. `openspec/specs/` holds no specs yet.
 ## Impact
 
 - Code:
-  - `src/plugins/plugin.legend.js`;
+  - `src/plugins/plugin.legend.js`, renamed to `src/plugins/plugin.legend.ts`;
   - `src/plugins/plugin.tooltip.js`;
   - `src/core/core.controller.js`;
   - `src/core/core.datasetController.js`;
@@ -56,13 +57,13 @@ None. `openspec/specs/` holds no specs yet.
   - `docs/developers/api.md`;
   - `docs/samples/legend/html.md`, and a new legend item styling sample.
 - Public fields `legendHitBoxes`, `lineWidths` and `columnSizes` keep their meaning. The hit boxes gain private fields.
-- Releases: P1 to P13 are fixes, docs and a refactor for patch releases (4.6.x). P14 to P18 add options or change visible defaults, so they go in 4.7.0.
+- Releases: P1 to P13 and P19 are fixes, docs and refactors for patch releases (4.6.x). P14 to P18 add options or change visible defaults, so they go in 4.7.0.
 - Open pull requests:
   - #12346, #12330, #12187 and #12316 are the first pieces, in that order. #12187 and #12316 need changes by their authors.
   - #12205 is superseded by #12346; its test moves into P1 with credit.
   - #12242 becomes P14 after a rename.
   - #11849 is superseded by P13.
-  - #11825 (legend navigation) is not part of this change. It is asked to rebase onto P9 and drop its copies of the #11280 and #11824 fixes.
+  - #11825 (legend navigation) is not part of this change. It is asked to rebase onto P19 and P9 and drop its copies of the #11280 and #11824 fixes.
   - #12331 (a 4.6.3 candidate) fixes #11978, the stack order after hiding a dataset from the legend.
 - Issues with no code in this change: design.md lists each with its reason (fixed on master, fixed by an open PR, possible today, not a legend bug, or a non-goal).
 - Left for later designs: overflow when the items do not fit (#10893, #11397, #12129, #11825), text spacing on canvas (#12246), the v5 legend refactor (#9342), following page scroll (#10384, documented in P8), and aligned columns in a horizontal legend (#11658).

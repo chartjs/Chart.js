@@ -50,67 +50,74 @@
 - [ ] 8.3 samples/legend/html.md: a TypeScript note with the module augmentation for `htmlLegend`, and a container option that accepts an element, so it works in a shadow root.
 - [ ] 8.4 The pull request says `Closes #12144`, `Closes #11877`, `Closes #10624` and `Closes #10384`.
 
-## 9. P9: Drawing reads the hit boxes (refactor)
+## 9. P19: The legend plugin in TypeScript (refactor)
 
-- [ ] 9.1 Spec: `ctx.measureText` is not called during `chart.draw()` for a legend with no hidden or decorated items (fails on master).
-- [ ] 9.2 `fit()` resolves the font once and writes private `_text` (lines, width) and `_symbol` (offset, size) on each hit box. `adjustHitBoxes()` writes the absolute text and symbol positions. `_draw()` reads the hit boxes and the `legendItems` styles.
-- [ ] 9.3 `legendHitBoxes`, `lineWidths` and `columnSizes` keep their values: the existing specs that read them pass unchanged. P1's changing-count spec still passes.
-- [ ] 9.4 Every legend fixture is pixel-identical. Commit type `refactor`; the pull request says it is part of #9342.
+- [ ] 9.1 Rename `src/plugins/plugin.legend.js` to `src/plugins/plugin.legend.ts` in the same commit as its annotations, so git records a rename. Imports keep the `.js` extension.
+- [ ] 9.2 Declare the class fields, type the method signatures and the helper functions, and add an internal interface for a hit box. Import `LegendItem`, `LegendOptions` and the chart types from `src/types` as types; do not move public types out of `src/types/index.d.ts`.
+- [ ] 9.3 `tsc --noEmit` reports no errors in the file (a plain rename gives 124), `pnpm lint-types` passes, and the legend specs and fixtures pass unchanged.
+- [ ] 9.4 Commit type `refactor`. The pull request asks #11825 and #12242 to rebase onto it.
 
-## 10. P10: Rows as tall as their tallest item
+## 10. P9: Drawing reads the hit boxes (refactor)
 
-- [ ] 10.1 Spec: a top legend with a three-line label; the next row starts below its third line, and the legend is tall enough. It fails on master.
-- [ ] 10.2 Row height is the tallest item's height. The pull request says `Closes #11824`.
+- [ ] 10.1 Spec: `ctx.measureText` is not called during `chart.draw()` for a legend with no hidden or decorated items (fails on master).
+- [ ] 10.2 In `plugin.legend.ts`, `fit()` resolves the font once and writes private `_text` (lines, width) and `_symbol` (offset, size) on each hit box. `adjustHitBoxes()` writes the absolute text and symbol positions. `_draw()` reads the hit boxes and the `legendItems` styles.
+- [ ] 10.3 `legendHitBoxes`, `lineWidths` and `columnSizes` keep their values: the existing specs that read them pass unchanged. P1's changing-count spec still passes.
+- [ ] 10.4 Every legend fixture is pixel-identical. Commit type `refactor`; the pull request says it is part of #9342.
 
-## 11. P11: Wrap within maxWidth and maxHeight
+## 11. P10: Rows as tall as their tallest item
 
-- [ ] 11.1 Specs: a right legend with `maxHeight: 100` puts its items in two or more columns, all within 100 px of the first item's top; a top legend with `maxWidth: 150` keeps every row within 150 px. Both fail on master. The legend box itself keeps the full height or width.
-- [ ] 11.2 Wrap against the smaller of the layout's box and the option, and align lines within the legend's box.
-- [ ] 11.3 legend.md says the two options limit how far the items run, and `align` places them in the box. The pull request says `Closes #11805`.
+- [ ] 11.1 Spec: a top legend with a three-line label; the next row starts below its third line, and the legend is tall enough. It fails on master.
+- [ ] 11.2 Row height is the tallest item's height. The pull request says `Closes #11824`.
 
-## 12. P12: Hidden data is not active
+## 12. P11: Wrap within maxWidth and maxHeight
 
-- [ ] 12.1 Specs:
+- [ ] 12.1 Specs: a right legend with `maxHeight: 100` puts its items in two or more columns, all within 100 px of the first item's top; a top legend with `maxWidth: 150` keeps every row within 150 px. Both fail on master. The legend box itself keeps the full height or width.
+- [ ] 12.2 Wrap against the smaller of the layout's box and the option, and align lines within the legend's box.
+- [ ] 12.3 legend.md says the two options limit how far the items run, and `align` places them in the box. The pull request says `Closes #11805`.
+
+## 13. P12: Hidden data is not active
+
+- [ ] 13.1 Specs:
   - a hovered line dataset with mode `'dataset'` and `intersect: false`, `hide(0)`: the border alpha at mid-animation is below its start (master: it goes opaque);
   - the same with the active elements set by `setActiveElements` and the update the legend makes;
   - a pie slice hidden from the legend is not in `getActiveElements()`.
-- [ ] 12.2 One helper decides whether an active item is allowed. `_updateHoverStyles` drops the rest from the activated set and clears `active` on them without animating. The replay in `update()` moves into a helper that also filters `_active`.
-- [ ] 12.3 samples/legend/html.md uses `hide`/`show` for datasets. The pull request says `Closes #10882`.
+- [ ] 13.2 One helper decides whether an active item is allowed. `_updateHoverStyles` drops the rest from the activated set and clears `active` on them without animating. The replay in `update()` moves into a helper that also filters `_active`.
+- [ ] 13.3 samples/legend/html.md uses `hide`/`show` for datasets. The pull request says `Closes #10882`.
 
-## 13. P13: The pointer's active elements end outside the chart area
+## 14. P13: The pointer's active elements end outside the chart area
 
-- [ ] 13.1 Specs: hover a pie slice, move onto a legend item: the tooltip has no active elements (master 1); move back onto the slice: 1; a legend `onHover` that calls the tooltip's `setActiveElements` keeps the tooltip, also when it sets the element that the pointer had already made active.
-- [ ] 13.2 Change `plugin.tooltip.tests.js:1681`, `core.controller.tests.js:365` and the #12420 specs to set their active elements with `setActiveElements`.
-- [ ] 13.3 The chart and the tooltip remember whether their active elements came from the pointer or from code. `setActiveElements` sets the flag before its "changed" test. Outside the chart area, the pointer's set becomes empty, and the code's set stays, filtered by P12's method.
-- [ ] 13.4 tooltip.md and interactions.md. Close #11849 as superseded. The pull request says `Closes #11801` and carries the release-note line.
+- [ ] 14.1 Specs: hover a pie slice, move onto a legend item: the tooltip has no active elements (master 1); move back onto the slice: 1; a legend `onHover` that calls the tooltip's `setActiveElements` keeps the tooltip, also when it sets the element that the pointer had already made active.
+- [ ] 14.2 Change `plugin.tooltip.tests.js:1681`, `core.controller.tests.js:365` and the #12420 specs to set their active elements with `setActiveElements`.
+- [ ] 14.3 The chart and the tooltip remember whether their active elements came from the pointer or from code. `setActiveElements` sets the flag before its "changed" test. Outside the chart area, the pointer's set becomes empty, and the code's set stays, filtered by P12's method.
+- [ ] 14.4 tooltip.md and interactions.md. Close #11849 as superseded. The pull request says `Closes #11801` and carries the release-note line.
 
-## 14. P14: labels.boxYOffset (#12242)
+## 15. P14: labels.boxYOffset (#12242)
 
-- [ ] 14.1 #12242's spec fails on master. The author renames the option to `labels.boxYOffset` and declares it in the types instead of `datasetRadiusBuffer`.
-- [ ] 14.2 The offset moves the symbol's y (the hit box's `_symbol` offset) for boxes and point styles; text stays.
-- [ ] 14.3 Docs and the point-style sample. Commit type `feat`. The pull request says `Closes #11884`.
+- [ ] 15.1 #12242's spec fails on master. The author renames the option to `labels.boxYOffset` and declares it in the types instead of `datasetRadiusBuffer`.
+- [ ] 15.2 The offset moves the symbol's y (the hit box's `_symbol` offset) for boxes and point styles; text stays.
+- [ ] 15.3 Docs and the point-style sample. Commit type `feat`. The pull request says `Closes #11884`.
 
-## 15. P15: Text decoration
+## 16. P15: Text decoration
 
-- [ ] 15.1 Specs: an item with `textDecoration: 'underline'` draws an underline; a hidden item without `textDecoration` is struck through; `textDecoration: 'none'` on a hidden item draws no line; `labels.decorationWidth: 1` draws a 1 px line (master always 2).
-- [ ] 15.2 The legend passes `strikethrough`, `underline` and `decorationWidth` to `renderText`, which already supports them: the item's `textDecoration`, or `'line-through'` when hidden and none is given.
-- [ ] 15.3 Types for `LegendItem.textDecoration` and `labels.decorationWidth`. A docs sample "legend item styling": underline on hover, a faded colour for hidden items through a wrapped `generateLabels` (#4438), and a solid border that ignores the dataset's dash (#11885).
-- [ ] 15.4 Commit type `feat`. The pull request says `Closes #11692` and `Closes #11725`, and that it is part of #11571 (bold and italic are not built) and #11941 (the legend only).
+- [ ] 16.1 Specs: an item with `textDecoration: 'underline'` draws an underline; a hidden item without `textDecoration` is struck through; `textDecoration: 'none'` on a hidden item draws no line; `labels.decorationWidth: 1` draws a 1 px line (master always 2).
+- [ ] 16.2 The legend passes `strikethrough`, `underline` and `decorationWidth` to `renderText`, which already supports them: the item's `textDecoration`, or `'line-through'` when hidden and none is given.
+- [ ] 16.3 Types for `LegendItem.textDecoration` and `labels.decorationWidth`. A docs sample "legend item styling": underline on hover, a faded colour for hidden items through a wrapped `generateLabels` (#4438), and a solid border that ignores the dataset's dash (#11885).
+- [ ] 16.4 Commit type `feat`. The pull request says `Closes #11692` and `Closes #11725`, and that it is part of #11571 (bold and italic are not built) and #11941 (the legend only).
 
-## 16. P16: Legend padding
+## 17. P16: Legend padding
 
-- [ ] 16.1 Specs: a top legend with `padding: {bottom: 30}`; the chart area starts 30 px lower than without it. `align: 'start'` with `padding: {left: 20}` moves the first item and the title 20 px right. A legend without `padding` is unchanged.
-- [ ] 16.2 Add `padding` to the legend options, the types and the docs; `labels.padding` stays the gap between items.
-- [ ] 16.3 Commit type `feat`. The pull request says `Closes #11740` and `Closes #11280`.
+- [ ] 17.1 Specs: a top legend with `padding: {bottom: 30}`; the chart area starts 30 px lower than without it. `align: 'start'` with `padding: {left: 20}` moves the first item and the title 20 px right. A legend without `padding` is unchanged.
+- [ ] 17.2 Add `padding` to the legend options, the types and the docs; `labels.padding` stays the gap between items.
+- [ ] 17.3 Commit type `feat`. The pull request says `Closes #11740` and `Closes #11280`.
 
-## 17. P17: Hidden state follows replaced labels
+## 18. P17: Hidden state follows replaced labels
 
-- [ ] 17.1 Specs: hide `a` of `[a, b, c]`, replace labels and data with `[b, c]`: both visible (master: `b` hidden); replace with an equal new array: the same item stays hidden; duplicate labels match by occurrence; a splice of the data plus replaced labels before one update hides the right item; no labels: by index; the existing mutation specs pass.
-- [ ] 17.2 At update, when `data.labels` is a different array and something is hidden, move each hidden index to its label's index, or drop it, and discard the mutation shifts recorded since the last update. Copy the old labels only while something is hidden. The comparison lives in a helper, not in `update()`.
-- [ ] 17.3 api.md for `toggleDataVisibility` and `getDataVisibility`. Commit type `feat`, with a release-note line. The pull request says `Closes #10120`.
+- [ ] 18.1 Specs: hide `a` of `[a, b, c]`, replace labels and data with `[b, c]`: both visible (master: `b` hidden); replace with an equal new array: the same item stays hidden; duplicate labels match by occurrence; a splice of the data plus replaced labels before one update hides the right item; no labels: by index; the existing mutation specs pass.
+- [ ] 18.2 At update, when `data.labels` is a different array and something is hidden, move each hidden index to its label's index, or drop it, and discard the mutation shifts recorded since the last update. Copy the old labels only while something is hidden. The comparison lives in a helper, not in `update()`.
+- [ ] 18.3 api.md for `toggleDataVisibility` and `getDataVisibility`. Commit type `feat`, with a release-note line. The pull request says `Closes #10120`.
 
-## 18. P18: Hidden bars leave the value axis
+## 19. P18: Hidden bars leave the value axis
 
-- [ ] 18.1 Specs: bar `[10, 100]`, hide item 1 with `toggleDataVisibility(1)` and, separately, with `hide(0, 1)`: y max below 100 (master 100); show it: 100 again; the category axis keeps both categories; a line chart's axes do not change.
-- [ ] 18.2 A protected controller hook (false in the base, `!getDataVisibility(i) || meta.data[i]?.hidden` in the bar controller), checked in `getMinMax()` for the value axis only.
-- [ ] 18.3 api.md. Commit type `feat`, with a release-note line. The pull request says it is part of #11949.
+- [ ] 19.1 Specs: bar `[10, 100]`, hide item 1 with `toggleDataVisibility(1)` and, separately, with `hide(0, 1)`: y max below 100 (master 100); show it: 100 again; the category axis keeps both categories; a line chart's axes do not change.
+- [ ] 19.2 A protected controller hook (false in the base, `!getDataVisibility(i) || meta.data[i]?.hidden` in the bar controller), checked in `getMinMax()` for the value axis only.
+- [ ] 19.3 api.md. Commit type `feat`, with a release-note line. The pull request says it is part of #11949.
