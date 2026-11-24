@@ -12,6 +12,8 @@ Line numbers are from master 887518c1.
 
 **The order of an update.** `core.controller.js` runs `_updateScales()` (each scale's `init`), then `buildOrUpdateElements` (dataset parsing), then `_updateLayout`. `layouts.update` calls every box's `beforeLayout` before any `determineDataLimits`. `_resyncElements` re-parses all data on every update.
 
+**When data is changed in place.** The array listeners (`core.datasetController.js:1051-1076`) queue `_insertElements` and `_removeElements` calls while parsing is on. `_resyncElements` (`:962-989`) replays them first, and each queued `_insertElements` (`:994-1020`) parses its new range at once and resets it. Only then does `parse(0, count)` (`:981`) parse the whole dataset. So a pushed point is parsed ahead of the existing ones, and the category scale gives its new label index 0. Measured: with data `a, b`, pushing a point at `'n'` gives labels `['n', 'a', 'b']` and parsed indices `[1, 2, 0]`, and pushing a duplicate `b` gives `['b', 'a']`. The queued insert also reads data that already holds every later change, so with several queued changes it parses the wrong item and resets it at an index a later change shifts. Separately, `_onDataPop` (`:1056-1058`) takes the removed index from the elements, which are not synced yet when earlier changes are queued: after `push()` and then `pop()`, the old last element is removed and the new one kept.
+
 **Readers that go through the scale.** These read whatever the scale holds:
 
 - `core.datasetController.js:506` and `controller.bar.js:156` (primitive data);
@@ -50,7 +52,7 @@ It fails exactly one spec of #12405, "should keep inferring labels into data.lab
 **Non-Goals**
 
 - Limiting `data.labels` to the index axis (Decision 3).
-- Changes to `core.scale.js`, the time scale or the radial scale.
+- Changes to `core.scale.js`, the time scale or the radial scale. The only core file that changes is `core.datasetController.js`, in P5, for the order in which data changed in place is parsed (Decision 12).
 - Hiding the categories of hidden data (#11949) and tick skipping (#11816).
 
 ## Decisions
@@ -112,6 +114,18 @@ It fails exactly one spec of #12405, "should keep inferring labels into data.lab
 
 11. **The release note goes in P3's pull request body**, which release-drafter lists under its bug label. The repository has no changelog file. The lasting statement is in the category docs.
 
+12. **Data changed in place is parsed once, in index order, inside this design** (user's decision, 2026-11-24).
+    - `_resyncElements` applies the queued changes structurally first: the queued `_insertElements` moves `meta.data` and `meta._parsed` and creates the elements, but neither parses nor resets them. It then parses the whole dataset once, and then resets the elements created during the sync that are still in the dataset, in contiguous runs found by identity. Queued inserts keep resetting whatever `buildOrUpdateElements` is passed; the direct `_insertElements` call for data replaced without listeners is unchanged, and so is the path with `parsing: false`, which queues nothing.
+    - `clearStacks` skips an empty entry, because a slot inserted and removed again before the update was never parsed or stacked.
+    - Inserted points are parsed once instead of twice.
+    - Alternative: an issue only, outside this design. Not chosen: the requirement "Labels found in the data follow the data" is not true on master or with P3 while a push reorders the labels.
+    - Alternative: fix it in the category scale. Not chosen: the scale cannot know the data order when the controller parses out of order.
+    - Alternative: parse the old range before applying the queued changes. Not chosen: after `unshift` or `splice`, the old indices no longer match the data.
+
+13. **The `_onDataPop` index is fixed in P5** (user's decision, 2026-11-24). The queued remove takes its index from the data array after the pop, as `_onDataPush` does, instead of from the elements, which are not synced while earlier changes are queued. In the path with `parsing: false` both give the same index.
+    - Alternative: a separate pull request. Not chosen: it is the same queued-change replay, and P5's push-then-pop specs reach it.
+    - Alternative: an issue only. Not chosen: the fix is one line with a spec that fails on master.
+
 ## Risks / Trade-offs
 
 - **Labels are a snapshot between updates.** `getLabels()` reflects the label source as it was at the last update. Code that pushes to `data.labels` and calls `getLabelForValue` without `update()` sees the old labels; on master it would see the new one. The docs already say to call `update()` after changing data, and ticks are stale until then anyway (Decision 10).
@@ -121,6 +135,8 @@ It fails exactly one spec of #12405, "should keep inferring labels into data.lab
   - P3 then removes P1's `_lookupOnly` flag and its `addedLabels = null` sentinel, together with `_addedLabels` (Decision 5). P1's `beforeLayout()` and its specs stay as they are.
   - If P1 stalls, P3 can go first. P1 then shrinks to the one `beforeLayout()` and its specs.
 - **Held file.** `controller.scatter.js` is held by #12284 and #12347. Their hunks are in `update()` and `updateElements()`, not in `getLabelAndValue()`, so P2 does not wait for them (Decision 7). Whichever merges later may need a trivial rebase.
+- **Held file.** `core.datasetController.js` is held by #12332, #12284, #12241, #12176 and #12172. Only #12172 touches `_resyncElements`, in its final `numData > numMeta` branch, which P5 leaves as it is; that pull request has been idle since 2026-01-07. P5 does not wait for it, and whichever merges later needs a small rebase.
+- **Element resets move after the full parse.** Under animation, an inserted point starts from its reset state computed with the final parsed values at its final index, where master used the values parsed at its queued index. P5's specs pin the start state of a pushed point and of points shifted by a later queued change.
 
 ## Pieces
 
@@ -130,14 +146,16 @@ It fails exactly one spec of #12405, "should keep inferring labels into data.lab
 | P2 | Scatter and bubble take their tooltip label from their category axis (index axis first, then value axis) when `data.labels` has no entry | `src/controllers/controller.scatter.js`, `src/controllers/controller.bubble.js`, `test/specs/controller.scatter.tests.js`, `test/specs/controller.bubble.tests.js` | none on master (the label comes through the polluted `data.labels`); the specs for a category x and for a category y axis fail once P3 is applied without P2, and the PR says so | ~70 | nothing (#12284 and #12347 hold the file but not the function; Decision 7) | #11495, #11893 | |
 | P3 | Each category axis owns a copy of its labels, dropped before and after `super.init()`; `_addedLabels`, the splice loop and P1's lookup-only flag go away; #12405's specs and the stacked case; docs on where labels come from; the release note | `src/scales/scale.category.js`, `test/specs/scale.category.tests.js`, `docs/axes/cartesian/category.md` | #12344's `data.labels` not-modified spec; "`chart.data.labels` stays `[]`"; the pushed-labels spec; the unknown-bound spec; #12405's two-x-axes and x/y isolation specs; the stacked-axes spec; the Decision 3 spec (a second category axis starts from `data.labels`). "A removed dataset drops its label", #12344's `options.labels` spec (the config clones that option) and the `beforeUpdate` spec pass on master and pin behaviour P3 keeps | ~210 | P1 (same file), P2 (it would otherwise ship the tooltip regression) | | #11495, #11893 |
 | P4 | Multi-line labels compared by value and added like strings | `src/scales/scale.category.js`, `test/specs/scale.category.tests.js`, `docs/general/data-structures.md` | inferred array labels (master: `[]`, parsed `[null, null]`); arrays matched against `data.labels` by content; equal arrays share a tick; `getPixelForValue` of an array | ~95 | P3 (same file; builds on the copy and the three-argument `findOrAddLabel`) | | #12065 |
+| P5 | Data changed in place is applied structurally, then parsed once in index order, then the new elements are reset; `clearStacks` skips unparsed slots; `_onDataPop` takes its index from the data | `src/core/core.datasetController.js`, `test/specs/core.datasetController.tests.js`, `test/specs/scale.category.tests.js` | push, splice and several queued changes keep the labels in data order; a pushed duplicate does not move to the front; points shifted by a later queued change start from their reset state at their final index; a push and a pop in a stacked chart leave no stale stack entry; a push and a pop keep the old last element | ~315 | nothing (a different file from P3 and P4) | | |
 
-P2 can be built in parallel with P1. P3 waits for both. P4 waits for P3.
+P2 can be built in parallel with P1. P3 waits for both. P4 waits for P3. P5 waits on nothing; whichever of P4 and P5 lands last archives the change.
 
 ## Contracts
 
 - **P1 → P3:** `beforeLayout()` is the only place the category bounds become final. An unknown string bound is added after the data labels. `_lookupOnly` exists only to keep `init()` from adding; P3 removes it.
 - **P2 → P3:** no code in the library reads category labels inferred from the data out of `chart.data.labels`.
 - **P3 → P4:** `getLabels()` returns the axis' own copy. It is created on the first call after `init()` and stays valid until the next `init()`. `findOrAddLabel(labels, raw, index)` always adds. `_addedLabels` and `_lookupOnly` no longer exist.
+- **P5 → the category scale:** on every update, the changes queued by the array listeners are applied structurally first, then the dataset is parsed once in index order, then the elements they created are reset. So the scale sees every value in data order, whatever was pushed, spliced or unshifted.
 
 ## Open Questions
 
