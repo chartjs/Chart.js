@@ -357,11 +357,11 @@ importers:
         specifier: ^4.7.4
         version: 4.9.5
       vue:
-        specifier: ^2.6.14
-        version: 2.7.14
+        specifier: ^3.0.0
+        version: 3.5.46(typescript@4.9.5)
       vue-tabs-component:
         specifier: ^1.5.0
-        version: 1.5.0(vue@2.7.14)
+        version: 1.5.0(vue@3.5.46(typescript@4.9.5))
       vuepress:
         specifier: ^1.9.7
         version: 1.9.9(@vue/compiler-sfc@3.5.46)(debug@4.4.3(supports-color@6.1.0))(ejs@3.1.9)(handlebars@4.7.7)(hogan.js@3.0.2)(lodash@4.18.1)(supports-color@6.1.0)
@@ -382,7 +382,7 @@ importers:
         version: 0.11.2(typedoc-plugin-markdown@3.14.0(typedoc@0.23.28(typescript@4.9.5)))(typedoc@0.23.28(typescript@4.9.5))
       vuepress-theme-chartjs:
         specifier: ^0.2.0
-        version: 0.2.0(chart.js@4.6.2)(postcss@8.5.33)(vue@2.7.14)
+        version: 0.2.0(chart.js@4.6.2)(postcss@8.5.33)(vue@3.5.46(typescript@4.9.5))
       webpack:
         specifier: ^4.46.0
         version: 4.46.0(supports-color@6.1.0)
@@ -14301,7 +14301,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.46':
     dependencies:
-      '@babel/parser': 7.29.14
+      '@babel/parser': 7.29.15
       '@vue/shared': 3.5.46
       entities: 7.0.1
       estree-walker: 2.0.2
@@ -14320,7 +14320,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.46':
     dependencies:
-      '@babel/parser': 7.29.14
+      '@babel/parser': 7.29.15
       '@vue/compiler-core': 3.5.46
       '@vue/compiler-dom': 3.5.46
       '@vue/compiler-ssr': 3.5.46
@@ -23483,9 +23483,9 @@ snapshots:
       - walrus
       - whiskers
 
-  vue-prism-editor@1.3.0(vue@2.7.14):
+  vue-prism-editor@1.3.0(vue@3.5.46(typescript@4.9.5)):
     dependencies:
-      vue: 2.7.14
+      vue: 3.5.46(typescript@4.9.5)
 
   vue-router@3.6.5(vue@2.7.14):
     dependencies:
@@ -23507,9 +23507,9 @@ snapshots:
       hash-sum: 1.0.2
       loader-utils: 1.4.2
 
-  vue-tabs-component@1.5.0(vue@2.7.14):
+  vue-tabs-component@1.5.0(vue@3.5.46(typescript@4.9.5)):
     dependencies:
-      vue: 2.7.14
+      vue: 3.5.46(typescript@4.9.5)
 
   vue-template-compiler@2.7.14:
     dependencies:
@@ -23536,6 +23536,16 @@ snapshots:
     dependencies:
       '@vue/compiler-sfc': 2.7.14
       csstype: 3.1.1
+
+  vue@3.5.46(typescript@4.9.5):
+    dependencies:
+      '@vue/compiler-dom': 3.5.46
+      '@vue/compiler-sfc': 3.5.46
+      '@vue/runtime-dom': 3.5.46
+      '@vue/server-renderer': 3.5.46
+      '@vue/shared': 3.5.46
+    optionalDependencies:
+      typescript: 4.9.5
 
   vue@3.5.46(typescript@6.0.3):
     dependencies:
@@ -23598,11 +23608,11 @@ snapshots:
       typedoc: 0.23.28(typescript@4.9.5)
       typedoc-plugin-markdown: 3.14.0(typedoc@0.23.28(typescript@4.9.5))
 
-  vuepress-theme-chartjs@0.2.0(chart.js@4.6.2)(postcss@8.5.33)(vue@2.7.14):
+  vuepress-theme-chartjs@0.2.0(chart.js@4.6.2)(postcss@8.5.33)(vue@3.5.46(typescript@4.9.5)):
     dependencies:
       acorn: 8.8.2
       chart.js: 4.6.2
-      vue-prism-editor: 1.3.0(vue@2.7.14)
+      vue-prism-editor: 1.3.0(vue@3.5.46(typescript@4.9.5))
       vue2-perfect-scrollbar: 1.5.56(postcss@8.5.33)
     transitivePeerDependencies:
       - postcss
