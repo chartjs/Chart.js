@@ -18,9 +18,17 @@ const texts = (items: {text: string}[]) => items.map((item) => item.text);
 describe('parseVersions', () => {
   it('orders newest first by semver precedence and skips what is not semver', () => {
     const names = parseVersions({
-      versions: ['3.0.0-rc', '3.0.0-alpha', '3.0.0-rc.10', 'latest', '3.0.0', '3.0.0-rc.x', '3.0.0-rc.9', '2.10.0', '2.9.4'],
+      // Each pair is listed oldest first, so keeping the input order fails.
+      versions: ['3.0.0-alpha', '3.0.0-rc', '3.0.0-rc.9', 'latest', '3.0.0-rc.10', '3.0.0-rc.x', '3.0.0', '2.9.4', '2.10.0'],
     }).map((v) => v.name);
     assert.deepEqual(names, ['3.0.0', '3.0.0-rc.x', '3.0.0-rc.10', '3.0.0-rc.9', '3.0.0-rc', '3.0.0-alpha', '2.10.0', '2.9.4']);
+  });
+
+  it('orders patches, and the menu lists the newest patch of a minor with its tag', () => {
+    const versions = parseVersions({tags: {latest: '4.6.2'}, versions: ['4.6.0', '4.6.1', '4.6.2', '4.5.1']});
+    assert.deepEqual(versions.map((v) => v.name), ['4.6.2', '4.6.1', '4.6.0', '4.5.1']);
+    const menu = versionMenu({version: 'master', versions});
+    assert.deepEqual(texts(menu.documentation).slice(2), ['4.6.2 (latest)', '4.5.1']);
   });
 });
 
@@ -91,6 +99,16 @@ describe('versionMenu title', () => {
     assert.equal(title('latest', '4.5.1'), '4.5.1 (outdated)');
     // A marker without the release number names the release by its tag.
     assert.equal(title('4.5.1'), '4.5.1 (outdated)');
+  });
+
+  it('does not call a release build latest before npm says so', () => {
+    // The list built into the site, and no list at all.
+    for (const versions of [untagged, []]) {
+      assert.equal(title('4.5.1', '4.5.1', versions), '4.5.1 (outdated)');
+      assert.equal(title('4.6.2', '4.6.2', versions), '4.6.2 (outdated)');
+      assert.equal(title('latest', '4.6.2', versions), 'Latest (4.6.2)');
+      assert.equal(title('next', '5.0.0-beta.10', versions), '5.0.0-beta.10 (outdated)');
+    }
   });
 
   it('names a prerelease by its tag', () => {
