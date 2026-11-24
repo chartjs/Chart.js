@@ -9,10 +9,10 @@
 
 ## 2. P2: Point chart tooltip labels through the axis
 
-- [ ] 2.1 Add specs for scatter and bubble charts, with no `data.labels` and object data at `'a'` and `'b'`. Cover a category x axis, and a linear x axis with a category y axis. Each expects `getLabelAndValue(1).label` to be `'b'`. They pass on master. Verify that they fail with P3's label copy applied and this piece left out, and say so in the pull request.
-- [ ] 2.2 Add a spec where `data.labels` has an entry at the index; that entry is the label.
-- [ ] 2.3 In `getLabelAndValue()` of the scatter and bubble controllers, use `data.labels[index]`. Otherwise use the label from the index axis if it is a category axis, else from the value axis if it is a category axis (the axis' label for the point's own parsed value). Otherwise use `''`.
-- [ ] 2.4 The pull request says that this is part of #11495 and #11893.
+- [x] 2.1 Add specs for scatter and bubble charts, with no `data.labels` and object data at `'a'` and `'b'`. Cover a category x axis, and a linear x axis with a category y axis. Each expects `getLabelAndValue(1).label` to be `'b'`. They pass on master. Verify that they fail with P3's label copy applied and this piece left out, and say so in the pull request.
+- [x] 2.2 Add a spec where `data.labels` has an entry at the index; that entry is the label.
+- [x] 2.3 In `getLabelAndValue()` of the scatter and bubble controllers, use `data.labels[index]`. Otherwise use the label from the index axis if it is a category axis, else from the value axis if it is a category axis (the axis' label for the point's own parsed value). Otherwise use `''`.
+- [x] 2.4 The pull request says that this is part of #11495 and #11893.
 
 ## 3. P3: Each category axis owns its labels
 
