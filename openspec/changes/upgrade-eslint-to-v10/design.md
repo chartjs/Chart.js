@@ -63,14 +63,14 @@ What ESLint 10 does, tested on master with the configuration in Contracts:
 **Non-Goals**
 
 - Changing the style (no formatter, no `list-style`).
-- Linting more Markdown examples than today (open question 2).
-- A shared flat config in `eslint-config-chartjs` (open question 1).
-- Linting `docs/.vitepress`, the TypeScript type tests, or `.vue` files (open question 5).
+- Linting more Markdown examples than today (D14.2).
+- A shared flat config in `eslint-config-chartjs` (D14.1).
+- Linting `docs/.vitepress`, the TypeScript type tests, or `.vue` files (D14.5).
 - Type-aware rules.
 
 ## Decisions
 
-**D1. One `eslint.config.js` in this repository, with the chartjs rules inlined.** `eslint-config-chartjs` 0.3.0 is eslintrc-only and lives in another repository; a flat config there needs a release first and pays off only when the other chartjs repositories migrate too. *Alternative:* publish it first (open question 1).
+**D1. One `eslint.config.js` in this repository, with the chartjs rules inlined.** `eslint-config-chartjs` 0.3.0 is eslintrc-only and lives in another repository; a flat config there needs a release first and pays off only when the other chartjs repositories migrate too. *Alternative:* publish it first (D14.1).
 
 **D2. Correctness rules come from `@eslint/js` `recommended` plus the chartjs rules beyond it.** The four deprecated duplicates are dropped for the active rules that replace them. The deprecated Node rules (`callback-return`, `global-require`, `handle-callback-err`, `no-path-concat`, `no-process-exit`) stay core until ESLint 11 removes them. `camelcase`, `dot-notation`, `consistent-this` and `no-undef-init` are frozen, not removed. No rule is lost. *Alternative:* an explicit list without `recommended`, which would keep exact parity but leave out `no-useless-assignment` and the other six additions.
 
@@ -88,14 +88,14 @@ What ESLint 10 does, tested on master with the configuration in Contracts:
 
 **D5. The ES2018 guard lists the same 16 `eslint-plugin-es-x` rules that `plugin:es/restrict-to-es2018` enabled, with `aggressive` mode.** es-x's own `restrict-to-es2018` preset would also forbid class fields, which the library already uses 64 times. SWC targets ES2022 in `rollup.config.js`, so nothing lowers this syntax and the guard protects browser support. Flat config with `ecmaVersion: 2022` would declare the ES2016-2021 globals. `AggregateError`, `Atomics`, `BigInt`, `BigInt64Array`, `BigUint64Array`, `FinalizationRegistry`, `globalThis`, `SharedArrayBuffer` and `WeakRef` are set to `off`, so `no-undef` still rejects them as it does today.
 
-**D6. Markdown keeps today's coverage through a wrapper around `@eslint/markdown`'s processor.** Before the processor runs, the wrapper relabels `javascript` and `typescript` fences to a label of the same length that nothing lints, so line numbers stay right and the same fences as today (about 110) are checked. Inside examples, `no-undef`, `no-unused-vars`, `no-unused-expressions` and `eol-last` are off, as `plugin:markdown/recommended` had them. *Alternative:* lint every fence (open question 2).
+**D6. Markdown keeps today's coverage through a wrapper around `@eslint/markdown`'s processor.** Before the processor runs, the wrapper relabels `javascript` and `typescript` fences to a label of the same length that nothing lints, so line numbers stay right and the same fences as today (about 110) are checked. Inside examples, `no-undef`, `no-unused-vars`, `no-unused-expressions` and `eol-last` are off, as `plugin:markdown/recommended` had them. *Alternative:* lint every fence (D14.2).
 
 **D7. ESLint 9 and 10 default changes are set back where fixing is not possible.**
 - `no-unused-vars` keeps `caughtErrors: "none"`. The one finding the new default gives, `catch (e)` at `helpers.dom.ts:296`, cannot be fixed, because the guard forbids optional catch binding.
 - `no-inner-declarations` keeps `blockScopedFunctions: "disallow"`.
 - Unused directives are reported as warnings, which is ESLint 10's default; after P1 there are none.
 
-**D8. `no-useless-assignment` stays on, and its 11 findings are removed in their own piece (P2).** They are dead initial values and increments whose result is never read, and removing them changes no behaviour. *Alternative:* turn the rule off (open question 3).
+**D8. `no-useless-assignment` stays on, and its 11 findings are removed in their own piece (P2).** They are dead initial values and increments whose result is never read, and removing them changes no behaviour. *Alternative:* turn the rule off (D14.3).
 
 **D9. Ignores, scripts and cache.**
 - `globalIgnores` covers `dist/`, `docs/api/`, `test/integration/react-browser/` and `**/.*/`. The last entry keeps ESLint 8's skip of hidden directories: flat config does not skip them, and this checkout has hundreds of Markdown files under `.claude/`.
@@ -108,13 +108,21 @@ What ESLint 10 does, tested on master with the configuration in Contracts:
 
 **D11. Test globals.** Karma specs get `globals.jasmine` and the 5 helpers as writable. Specs that run under Vitest (`test/**/*.spec.js`, `test/setup*.js`, `test/vitest.shared.js`) get the Jasmine globals turned off and the 12 Vitest names as readonly. The glob matches the same 4 files as today's override, and it also covers the Vitest design's later `test/setup.umd.js` without another edit. If #12444 lands first, `test/fixtures/**/*.js` also get `triggerMouseEvent`, as that pull request adds to `test/.eslintrc.yml`.
 
+**D12. The approved migrate-tests-to-vitest design.** Its P3 and P12 edit `test/.eslintrc.yml`. P3 here adds one sentence before its Pieces table, saying that after this change `test/.eslintrc.yml` means the `test/` blocks of `eslint.config.js`.
+
 **D13. What the design review changed.** The architecture, complexity and rule-readers reviews found no failure scenario. Two measured simplifications were taken: the Markdown block drops an unused `plugins` key (the processor is passed as an object, and the result stays 5 warnings), and the `test/types` block goes (D9). A third, applying the Jasmine globals through `ignores` instead of turning them off for Vitest specs, gives the same result but adds a block, so it was not taken. The es-x `flat/restrict-to-es2018` preset was tested in place of the 16 named rules: with the class-field rules off it gives 218 errors, most of them false positives such as `no-iterator-prototype-map` on every `.map(`, which confirms D5. The VitePress design's `.eslintignore` edit (its P4, #12484) has already landed, so deleting the file orders nothing.
 
-**D12. The approved migrate-tests-to-vitest design.** Its P3 and P12 edit `test/.eslintrc.yml`. P3 here adds one sentence before its Pieces table, saying that after this change `test/.eslintrc.yml` means the `test/` blocks of `eslint.config.js`.
+**D14. The user's answers to the open questions** (2026-11-24):
+1. The chartjs rules are inlined in this repository's `eslint.config.js` (D1). No release of `eslint-config-chartjs` is needed.
+2. Markdown examples are linted as today, the `js` and `ts` fences only, through the wrapper (D6). Widening is its own change after the VitePress switch.
+3. `no-useless-assignment` stays on, and P2 removes its 11 findings (D8).
+4. The React integration example turns off its ESLint step with `DISABLE_ESLINT_PLUGIN=true` in its `.env` (D10).
+5. `docs/.vitepress`, the TypeScript type tests and `.vue` files stay unlinted, as ESLint 8 left them; a follow-up after the VitePress switch decides.
+6. Dependencies use caret ranges, and `typescript` rises to ^4.8.4.
 
 ## Risks / Trade-offs
 
-- **The Markdown wrapper relies on how `@eslint/markdown` maps fence labels to file extensions.** That mapping is an implementation detail, not an API. If a minor version changes it, coverage changes; the wrapper is ten lines and goes away if open question 2 widens coverage.
+- **The Markdown wrapper relies on how `@eslint/markdown` maps fence labels to file extensions.** That mapping is an implementation detail, not an API. If a minor version changes it, coverage changes; the wrapper is ten lines and goes away if a later change widens coverage.
 - **Node floor.** `eslint-plugin-es-x` 10.1 declares Node `^22.23 || ^24.18 || >=26.4`. CI uses 26; contributors on older Node get an engine warning.
 - **ESLint 11** removes the core Node rules (D2). They then move to `eslint-plugin-n` or go.
 - **Deprecation notices.** `@stylistic` prints two lines per run, for `array-bracket-spacing` and `object-curly-spacing`. Moving to `list-style` changes the style, so the rule stays until `@stylistic` 7.
@@ -153,7 +161,7 @@ P1 and P2 share two files, so P2 follows P1. Both are small and can be built bac
 
 - **P1 → P3:** after P1, the configuration below reports only the 15 indentation lines, the 2 unknown-rule directives, the `Scale` merge and the P2 findings.
 - **P2 → P3:** after P2, `no-useless-assignment` reports nothing.
-- **P3:** the committed `eslint.config.js` is the configuration below, with the answers to the open questions applied. If #12444 has landed, it also has the `test/fixtures/**/*.js` block of D11. After P3, `pnpm lint` gives 0 errors and 55 warnings: the 50 of `lint-js` after P1 and the 5 of `lint-md`.
+- **P3:** the committed `eslint.config.js` is the configuration below, as D14 settles it. If #12444 has landed, it also has the `test/fixtures/**/*.js` block of D11. After P3, `pnpm lint` gives 0 errors and 55 warnings: the 50 of `lint-js` after P1 and the 5 of `lint-md`.
 - **P3 → later Vitest pieces:** test lint settings live in the `test/` blocks of `eslint.config.js`.
 
 The configuration, as measured:
@@ -274,9 +282,4 @@ export default defineConfig([
 
 ## Open Questions
 
-1. **Where does the shared config live?** *Inline* in this repository's `eslint.config.js` (D1). *Publish a flat config from `chartjs/eslint-config-chartjs` first*, which needs a release there and helps only when the other chartjs repositories migrate. Recommendation: inline. P3 waits on this.
-2. **Which Markdown examples are linted?** *As today:* the about 110 `js` and `ts` fences, through the 10-line wrapper (D6). *All of them:* also the about 160 `javascript` and `typescript` fences. That gives 974 findings; 902 lines in 36 files are fixed by `--fix`, the rest by hand. It means three more `style:` pieces, which conflict with 13 open pull requests and the VitePress migration. Recommendation: as today, and widen as its own change after the VitePress switch. P3 waits on this.
-3. **`no-useless-assignment`.** *Keep it and remove the 11 findings* (P2, D8). *Turn it off*, and drop P2. Recommendation: keep it. P2 waits on this.
-4. **The React integration example.** *Turn off its ESLint step* with `DISABLE_ESLINT_PLUGIN=true` in its `.env` (D10, tested). *Move the example out of the pnpm workspace*, so it gets its own ESLint 8; that changes how CI installs and runs it. Not tested. Recommendation: turn it off. P3 waits on this.
-5. **Newly lintable code.** *Out* (parity): `docs/.vitepress`, `test/types/*.ts` and `.vue` files stay unlinted, as ESLint 8 never read them, and tsc and vue-tsc check them. *In*: `.vue` needs `eslint-plugin-vue`; oxlint measured 52 findings in 9 VitePress files and 4 lines in the type tests. Recommendation: out, with a follow-up after the VitePress switch. P3 waits on this.
-6. **Versions.** *Caret ranges* (the repository's convention), with `typescript` raised from ^4.7.4 to ^4.8.4 to meet typescript-eslint 8's peer (the lockfile already has 4.9.5). *Exact `eslint`*. Recommendation: caret, and raise the floor. P3 waits on this.
+None. The user answered all six (D14).

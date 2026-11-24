@@ -16,7 +16,7 @@
 
 - [ ] 3.1 On master, `pnpm exec eslint --version` prints v8.37.0, and a `.d.ts` with `type P = {x: number};` passes `pnpm lint-js`.
 - [ ] 3.2 Swap the dev dependencies (proposal, What Changes) with caret ranges, and raise `typescript` to ^4.8.4.
-- [ ] 3.3 Add `eslint.config.js` from design Contracts, with the open questions' answers applied, and the `test/fixtures/**/*.js` block if #12444 has landed. Delete `.eslintrc.yml`, `.eslintignore`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml` and `docs/samples/.eslintrc.yml`.
+- [ ] 3.3 Add `eslint.config.js` from design Contracts, as design D14 settles it, and the `test/fixtures/**/*.js` block if #12444 has landed. Delete `.eslintrc.yml`, `.eslintignore`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml` and `docs/samples/.eslintrc.yml`.
 - [ ] 3.4 Fix the 15 indentation lines in `helpers.curve.ts`, `helpers.dom.ts` and `index.d.ts` with `--fix`. Rename the `ban-types` directives (`no-empty-object-type` in `index.d.ts`, `no-unsafe-function-type` in `utils.d.ts`), and add a `no-unsafe-declaration-merging` directive at the `Scale` class in `index.d.ts`. Unspace the import at `test/types/autogen.js:3`.
 - [ ] 3.5 Add `test/integration/react-browser/.env` with `DISABLE_ESLINT_PLUGIN=true`; `pnpm test-ci-integration` passes after `pnpm build`.
 - [ ] 3.6 Add the sentence of design D12 before the Pieces table of `openspec/changes/migrate-tests-to-vitest/design.md`.
