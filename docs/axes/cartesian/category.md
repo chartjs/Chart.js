@@ -80,6 +80,8 @@ let chart = new Chart(ctx, {
 });
 ```
 
+A `string` that is not among the labels is added after them as a new label, and the same applies to `suggestedMin` and `suggestedMax`.
+
 ## Internal data format
 
 Internally category scale uses label indices
