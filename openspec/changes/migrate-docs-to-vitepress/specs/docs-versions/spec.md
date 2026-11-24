@@ -30,7 +30,9 @@ The menu SHALL offer the development docs, the latest docs, the newest patch of 
 
 #### Scenario: Opening the menu
 - **WHEN** the reader opens the menu
-- **THEN** it lists Development (master), Latest version, one entry per minor release from 2.6 on (prereleases have no entry: they are published under `/docs/next/`), and the five latest releases' notes
+- **THEN** it lists Development (master), Latest version, one documentation entry per minor release from 2.6 on, and the notes of the five latest releases
+- **AND** a documentation entry carries the npm tag of its version when npm has one, such as "4.6.2 (latest)"
+- **AND** prereleases have no documentation entry, being published under `/docs/next/`, but the release notes include a prerelease newer than every release of its version
 
 #### Scenario: Picking a version
 - **WHEN** the reader picks another version

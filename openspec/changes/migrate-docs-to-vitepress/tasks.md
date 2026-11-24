@@ -60,12 +60,12 @@
 ## 9. P9: The switch
 
 - [ ] 9.1 See `pnpm run docs` leave VuePress output in `dist/docs` and `pnpm why vuepress` list it
-- [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
-- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`, with the `DOCS_BASE` override in `docs/.vitepress/config.ts` that only it sets; `docs:typecheck` points at `docs/package.json`
+- [ ] 9.2 Replace the dependencies and scripts of `docs/package.json` with the VitePress set (`build`: API then site, and the `test` script that runs `theme/versions.test.ts`); delete `docs/.vitepress/package.json`, its workspace entry and the two Vue aliases
+- [ ] 9.3 Root `docs` and `docs:dev` lose the OpenSSL flag; `outDir` becomes `dist/docs`; remove the root `docs:vitepress` scripts and the CI build step from P7 and the `/vitepress/` build from `netlify.toml`, with the `DOCS_BASE` override in `docs/.vitepress/config.ts` that only it sets; `docs:typecheck` points at `docs/package.json`, and so does the "Test docs site code" step in `ci.yml`
 - [ ] 9.4 Add `vitepress-plugin-tabs` and convert the three tab pages; check tabs switch and a sample in a tab hidden at first draws at full size
 - [ ] 9.5 Update the command and port in `docs/samples/information.md`
 - [ ] 9.6 Compare one wide options table page and one sample page with the live site
-- [ ] 9.7 Check `pnpm why vuepress`, `pnpm why webpack` and `pnpm why vue` show no VuePress, webpack 4 or Vue 2; `pnpm pack` lists no docs file; `ci.yml` calls no removed script
+- [ ] 9.7 Check `pnpm why vuepress`, `pnpm why webpack` and `pnpm why vue` show no VuePress, webpack 4 or Vue 2; `pnpm pack` lists no docs file; `ci.yml` calls no removed script and no `--filter chartjs-docs-vitepress`
 - [ ] 9.8 After merge: `chartjs.org/docs/master/` serves the new site, an old page address, a redirect stub and a version link work
 
 ## 10. P10: Remove what is dead
@@ -73,7 +73,7 @@
 - [ ] 10.1 Confirm one clean master deploy since P9
 - [ ] 10.2 Delete `docs/.vuepress/` and the `sed` line in `scripts/docs-config.sh`; `git status` after `./scripts/docs-config.sh 4.6.1 release` shows only the version marker
 - [ ] 10.3 Remove the `html-entities` override, the `minimumReleaseAgeExclude` entry of D22 if still present, and each `allowBuilds` entry that `pnpm why` shows unused; remove `docs/.vuepress/dist` from `.gitignore`
-- [ ] 10.4 Name VitePress in `docs/developers/contributing.md`, and say that a new page is added to `docs/.vitepress/sidebar.ts`
+- [ ] 10.4 Name VitePress in `docs/developers/contributing.md`, say that a new page is added to `docs/.vitepress/sidebar.ts`, and give the command that tests the docs code and its Node requirement (Node runs the TypeScript natively, so at least the version CI uses)
 - [ ] 10.5 `git grep -i vuepress` finds only the history line in `docs/migration/v3-migration.md`
 
 ## 11. P11: Docs preview on pull requests
