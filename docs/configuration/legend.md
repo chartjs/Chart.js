@@ -22,6 +22,7 @@ Namespace: `options.plugins.legend`, the global options for the chart legend is 
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
+| `navigation` | `object` | | Handle large sets of legends with pagination. [more...](#legend-navigation-configuration)
 
 :::warning
 The doughnut, pie, and polar area charts override the legend defaults. To change the defaults for one of these chart types, use `Chart.overrides[type].plugins.legend`, where `type` is `'doughnut'`, `'pie'`, or `'polarArea'` (for example, `Chart.overrides.pie.plugins.legend`).
@@ -85,6 +86,24 @@ Namespace: `options.plugins.legend.title`
 | `font` | `Font` | `Chart.defaults.font` | See [Fonts](../general/fonts.md)
 | `padding` | [`Padding`](../general/padding.md) | `0` | Padding around the title.
 | `text` | `string` | | The string title.
+
+## Legend Navigation Configuration
+
+Namespace: `options.plugins.legend.navigation`
+
+| Name | Type | Default | Description
+| ---- | ---- | ------- | -----------
+| `display` | `string`\|`boolean` | `false` | Show/hide legend navigation. If `auto` is used, the navigation will be shown only if the legend overflows.
+| `color` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of the navigation page count label.
+| `activeColor` | [`Color`](../general/colors.md) | `Chart.defaults.color` | Color of active navigation arrows.
+| `inactiveColor` | [`Color`](../general/colors.md) | 40% opacity of the active color | Color of inactive navigation arrows.
+| `arrowSize` | `number` | `12` | Size of navigation arrows.
+| `maxCols` | `number` | `1` | Maximum number of columns, in vertical legends, for navigation to be activated.
+| `maxRows` | `number` | `3` | Maximum number of rows, in horizontal legends, for navigation to be activated.
+| `padding` | [`Padding`](../general/padding.md) | `{ x: 10, y: 10, top: 0 }` | Navigation buttons padding.
+| `align` | `string` | `'start'` | Alignment of navigation buttons. Possible options are `start`, `center` and `end`.
+| `grid` | `boolean`\|`object` | `true` | Align legends horizontally and vertically. Can be a `boolean` or an object containing `x` and `y` with boolean values ​​indicating whether the axis should be aligned.
+| `font` | `Font` | `{ weight: 'bold', size: 14 }` | Font style of the navigation page count label. See [Fonts](../general/fonts.md)
 
 ## Legend Item Interface
 
