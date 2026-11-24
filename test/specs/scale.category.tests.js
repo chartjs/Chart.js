@@ -739,12 +739,12 @@ describe('Category scale tests', function() {
         ]
       },
       options: {
-        scales: {x: {bounds: 'data', suggestedMin: 'L0'}}
+        scales: {x: {bounds: 'data', suggestedMin: 'L1'}}
       }
     });
 
     expect(chart.scales.x.getLabels()).toEqual(['L0', 'L1', 'L2', 'L3', 'L4']);
-    expect(chart.scales.x.min).toBe(0);
+    expect(chart.scales.x.min).toBe(1);
     expect(chart.scales.x.max).toBe(4);
   });
 
