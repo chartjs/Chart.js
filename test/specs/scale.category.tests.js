@@ -1204,6 +1204,39 @@ describe('Category scale tests', function() {
       expect(scale.getLabels().length).toBe(2);
     });
 
+    it('should find multi-line labels given out of data order', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: [['a'], ['b'], ['c']],
+          datasets: [{
+            data: [{x: ['c'], y: 1}, {x: ['a'], y: 2}]
+          }]
+        }
+      });
+      var scale = chart.scales.x;
+      var pixel = scale.getPixelForValue(['b']);
+
+      expect(parsedX(chart)).toEqual([2, 0]);
+      expect(pixel).not.toBeNaN();
+      expect(pixel).toBeCloseToPixel(scale.getPixelForTick(1));
+    });
+
+    it('should not match a multi-line label that has only some of the lines', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: [['a']],
+          datasets: [{
+            data: [{x: ['a', 'b'], y: 1}]
+          }]
+        }
+      });
+
+      expect(chart.scales.x.getLabels()).toEqual([['a'], ['a', 'b']]);
+      expect(parsedX(chart)).toEqual([1]);
+    });
+
     it('should treat a one-item numeric array as a label, not as an index', function() {
       var chart = window.acquireChart({
         type: 'line',
