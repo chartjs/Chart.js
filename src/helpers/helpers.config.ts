@@ -225,7 +225,7 @@ function _isCached(target: AnyObject, prop: string) {
   return Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor';
 }
 
-function _cache<V>(target: AnyObject, prop: string, value: V) {
+function _cache(target: AnyObject, prop: string, value: unknown) {
   target[prop] = value;
   return value;
 }

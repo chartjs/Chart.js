@@ -99,6 +99,28 @@ describe('Chart.helpers.config', function() {
       expect(resolver.getter).toEqual('options getter');
     });
 
+    it('should resolve each option only once', function() {
+      let reads = 0;
+      const options = {
+        get color() {
+          reads++;
+          return 'red';
+        },
+        sub: {value: 1}
+      };
+      const resolver = _createResolver([options]);
+      expect(resolver.color).toEqual('red');
+      expect(resolver.color).toEqual('red');
+      expect(reads).toEqual(1);
+      expect(resolver.sub).toBe(resolver.sub);
+    });
+
+    it('should not resolve the constructor from the scopes', function() {
+      class Options {}
+      const resolver = _createResolver([new Options()]);
+      expect(resolver.constructor).toBe(Object);
+    });
+
     it('should not fail on when options are frozen', function() {
       function create() {
         const defaults = Object.freeze({default: true});
@@ -536,6 +558,27 @@ describe('Chart.helpers.config', function() {
       expect(opts.color).toEqual('blue');
       expect(opts.backgroundColor).toEqual('green');
       expect(opts.hoverColor).toEqual(getHoverColor('blue'));
+    });
+
+    it('should resolve each option only once', function() {
+      let calls = 0;
+      const options = {
+        color: () => {
+          calls++;
+          return 'red';
+        },
+        sub: {value: 1}
+      };
+      const opts = _attachContext(_createResolver([options]), {index: 0});
+      expect(opts.color).toEqual('red');
+      expect(opts.color).toEqual('red');
+      expect(calls).toEqual(1);
+      expect(opts.sub).toBe(opts.sub);
+    });
+
+    it('should not resolve the constructor as a scriptable option', function() {
+      const opts = _attachContext(_createResolver([{}]), {index: 0});
+      expect(opts.constructor).toBe(Object);
     });
 
     it('should thrown on recursion', function() {
