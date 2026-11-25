@@ -175,32 +175,32 @@ describe('Chart.registry', function() {
     custom.afterUnregister = () => afterUnregisterCount++;
 
     Chart.registry.addControllers(custom);
-    expect(beforeRegisterCount).withContext('beforeRegister').toBe(1);
-    expect(afterRegisterCount).withContext('afterRegister').toBe(1);
+    expect(beforeRegisterCount, 'beforeRegister').toBe(1);
+    expect(afterRegisterCount, 'afterRegister').toBe(1);
     Chart.registry.removeControllers(custom);
-    expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(1);
-    expect(afterUnregisterCount).withContext('afterUnregister').toBe(1);
+    expect(beforeUnregisterCount, 'beforeUnregister').toBe(1);
+    expect(afterUnregisterCount, 'afterUnregister').toBe(1);
 
     Chart.registry.addScales(custom);
-    expect(beforeRegisterCount).withContext('beforeRegister').toBe(2);
-    expect(afterRegisterCount).withContext('afterRegister').toBe(2);
+    expect(beforeRegisterCount, 'beforeRegister').toBe(2);
+    expect(afterRegisterCount, 'afterRegister').toBe(2);
     Chart.registry.removeScales(custom);
-    expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(2);
-    expect(afterUnregisterCount).withContext('afterUnregister').toBe(2);
+    expect(beforeUnregisterCount, 'beforeUnregister').toBe(2);
+    expect(afterUnregisterCount, 'afterUnregister').toBe(2);
 
     Chart.registry.addElements(custom);
-    expect(beforeRegisterCount).withContext('beforeRegister').toBe(3);
-    expect(afterRegisterCount).withContext('afterRegister').toBe(3);
+    expect(beforeRegisterCount, 'beforeRegister').toBe(3);
+    expect(afterRegisterCount, 'afterRegister').toBe(3);
     Chart.registry.removeElements(custom);
-    expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(3);
-    expect(afterUnregisterCount).withContext('afterUnregister').toBe(3);
+    expect(beforeUnregisterCount, 'beforeUnregister').toBe(3);
+    expect(afterUnregisterCount, 'afterUnregister').toBe(3);
 
     Chart.register(custom);
-    expect(beforeRegisterCount).withContext('beforeRegister').toBe(4);
-    expect(afterRegisterCount).withContext('afterRegister').toBe(4);
+    expect(beforeRegisterCount, 'beforeRegister').toBe(4);
+    expect(afterRegisterCount, 'afterRegister').toBe(4);
     Chart.unregister(custom);
-    expect(beforeUnregisterCount).withContext('beforeUnregister').toBe(4);
-    expect(afterUnregisterCount).withContext('afterUnregister').toBe(4);
+    expect(beforeUnregisterCount, 'beforeUnregister').toBe(4);
+    expect(afterUnregisterCount, 'afterUnregister').toBe(4);
   });
 
   it('should preserve existing defaults', function() {

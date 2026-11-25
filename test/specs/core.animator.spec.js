@@ -1,11 +1,15 @@
 describe('Chart.animator', function() {
-  it('should fire onProgress for each draw', function(done) {
+  it('should fire onProgress for each draw', async function() {
+    let done;
+    const complete = new Promise((resolve) => {
+      done = resolve;
+    });
     let count = 0;
     let drawCount = 0;
     const progress = (animation) => {
       count++;
       expect(animation.numSteps).toEqual(250);
-      expect(animation.currentStep <= 250).toBeTrue();
+      expect(animation.currentStep <= 250).toBe(true);
     };
     acquireChart({
       type: 'bar',
@@ -36,6 +40,7 @@ describe('Chart.animator', function() {
         width: 250
       },
     });
+    await complete;
   });
 
   it('should not fail when adding no items', function() {
@@ -43,6 +48,6 @@ describe('Chart.animator', function() {
     Chart.animator.add(chart, undefined);
     Chart.animator.add(chart, []);
     Chart.animator.start(chart);
-    expect(Chart.animator.running(chart)).toBeFalse();
+    expect(Chart.animator.running(chart)).toBe(false);
   });
 });

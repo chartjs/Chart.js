@@ -45,9 +45,9 @@
 
 ## 6. P6: Free specs, core
 
-- [ ] 6.1 Record both test counts
-- [ ] 6.2 Rename and convert the nine `core.*` files
-- [ ] 6.3 Confirm the counts
+- [x] 6.1 Record both test counts
+- [x] 6.2 Rename and convert the nine `core.*` files
+- [x] 6.3 Confirm the counts
 
 ## 7. P7: Specs open pull requests touch, controllers
 
