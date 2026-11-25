@@ -213,5 +213,89 @@ describe('Plugin.decimation', function() {
       }
       expect(createChart).not.toThrow();
     });
+
+    function decimatedConfig(dataset) {
+      return {
+        type: 'line',
+        data: {
+          datasets: [dataset]
+        },
+        options: {
+          parsing: false,
+          scales: {
+            x: {
+              type: 'linear'
+            }
+          },
+          plugins: {
+            decimation: {
+              enabled: true,
+              algorithm: 'lttb',
+              samples: 5,
+              threshold: 7
+            }
+          }
+        }
+      };
+    }
+
+    it('should leave a frozen dataset undecimated', function() {
+      const dataset = Object.freeze({data: originalData, label: 'dataset1'});
+      let chart;
+
+      expect(function() {
+        chart = window.acquireChart(decimatedConfig(dataset));
+      }).not.toThrow();
+      expect(chart.getDatasetMeta(0).data.length).toBe(10);
+    });
+
+    it('should leave a sealed dataset undecimated', function() {
+      const dataset = Object.seal({data: originalData, label: 'dataset1'});
+      let chart;
+
+      expect(function() {
+        chart = window.acquireChart(decimatedConfig(dataset));
+      }).not.toThrow();
+      expect(chart.getDatasetMeta(0).data.length).toBe(10);
+    });
+
+    it('should not throw on destroy for a dataset frozen after decimation', function() {
+      const dataset = {data: originalData, label: 'dataset1'};
+      const chart = window.acquireChart(decimatedConfig(dataset));
+
+      expect(dataset.data.length).toBe(5);
+      Object.freeze(dataset);
+
+      expect(function() {
+        chart.destroy();
+      }).not.toThrow();
+    });
+
+    it('should restore the original data when the chart is destroyed', function() {
+      const dataset = {data: originalData, label: 'dataset1'};
+      const chart = window.acquireChart(decimatedConfig(dataset));
+
+      expect(dataset.data.length).toBe(5);
+
+      chart.destroy();
+
+      expect(dataset.data).toBe(originalData);
+      expect(dataset._data).toBeUndefined();
+      expect(dataset._decimated).toBeUndefined();
+    });
+
+    it('should restore the original data when decimation is turned off', function() {
+      const dataset = {data: originalData, label: 'dataset1'};
+      const chart = window.acquireChart(decimatedConfig(dataset));
+
+      expect(dataset.data.length).toBe(5);
+
+      chart.options.plugins.decimation = false;
+      chart.update();
+
+      expect(dataset.data).toBe(originalData);
+      expect(dataset._data).toBeUndefined();
+      expect(dataset._decimated).toBeUndefined();
+    });
   });
 });
