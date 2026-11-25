@@ -6,12 +6,22 @@ What a plugin gets when it layers an object or a block of options over the optio
 
 ### Requirement: A scriptable option reads the options without the hover layer
 
-The second argument of a scriptable option SHALL resolve options without the hover prefixes or the hover block being applied, in the same context as the call and with the same plain-object overrides.
+The second argument of a scriptable option SHALL resolve options without the prefixes that the last `setContext` call set and without the block being applied, in the same context as the call and with the same plain-object overrides. For the elements of a dataset it SHALL resolve without the hover prefixes, as before this change.
 
 #### Scenario: A hover key reads its normal value
 
 - **WHEN** options have `color: 'red'` and `hoverColor: (ctx, opts) => opts.color + '+dark'`, and are given a context with the prefixes `['hover', '']`
 - **THEN** `color` is `'red+dark'` and nothing throws; the same holds one level down, in `label.color`
+
+#### Scenario: Prefixes set in two calls
+
+- **WHEN** options are given a context with the prefixes `['point', '']`, then with `['pointHover', 'point', '']`, and `pointHoverColor` is `(ctx, opts) => opts.color`
+- **THEN** it returns the value of `pointColor`
+
+#### Scenario: A prefix of any name
+
+- **WHEN** `activeColor` is `(ctx, opts) => opts.color + '+dark'`, `color` is `'red'`, and the options are given a context with the prefixes `['active', '']`
+- **THEN** `color` is `'red+dark'`
 
 #### Scenario: The context follows
 

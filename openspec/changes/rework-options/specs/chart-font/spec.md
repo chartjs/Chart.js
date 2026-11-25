@@ -11,7 +11,7 @@ Each property of a text's font (family, size, style, weight, line height) SHALL 
 #### Scenario: Size set on the chart
 
 - **WHEN** `options.font.size` is 30 and no other font option is set
-- **THEN** tick labels, scale titles, legend labels, the legend title, the chart title, the subtitle and the tooltip's title, body and footer are measured and drawn at 30 px, and radial point labels stay 10 px in the chart's font family
+- **THEN** tick labels, scale titles, legend labels, the legend title, the chart title, the subtitle and the tooltip's title, body and footer are measured and drawn at 30 px, a radial scale limits its ticks for 30 px labels, and radial point labels stay 10 px in the chart's font family
 
 #### Scenario: A text's own font wins
 
@@ -23,6 +23,11 @@ Each property of a text's font (family, size, style, weight, line height) SHALL 
 - **WHEN** `options.font.family` is set and the tooltip is shown
 - **THEN** its title is bold in that family, `tooltip.options.bodyFont` read by a callback has that family, and the colour boxes are as wide as the body font size
 
+#### Scenario: A font set globally for one text
+
+- **WHEN** `Chart.defaults.plugins.tooltip.bodyFont.size` is 20 and a chart sets `options.font.size` to 30
+- **THEN** the tooltip's body is 20 px and its title 30 px
+
 #### Scenario: Two charts
 
 - **WHEN** two charts on a page set different `options.font`
@@ -30,10 +35,10 @@ Each property of a text's font (family, size, style, weight, line height) SHALL 
 
 #### Scenario: No chart font
 
-- **WHEN** a chart sets no `options.font`
+- **WHEN** a chart sets no `options.font` and `Chart.defaults.font` has not changed since the chart's last update
 - **THEN** it is drawn as before this change
 
 #### Scenario: Global font changed
 
 - **WHEN** `Chart.defaults.font` is changed
-- **THEN** every text of a chart follows at that chart's next update, and until then is drawn with the font it was laid out with
+- **THEN** every text of a chart follows at that chart's next update, and until then, also after a resize, is drawn with the font it was laid out with

@@ -6,7 +6,7 @@ How an object-valued option is merged across the layers that define it: the data
 
 ### Requirement: Object options merge key by key across layers
 
-An option whose value is an object SHALL take each key from the first layer that defines that key. A layer that gives the option as a function SHALL contribute the object the function returns. A function SHALL never be read for keys itself.
+An option whose value is an object SHALL take each key from the first layer that defines that key. A layer that gives a scriptable option as a function SHALL contribute the object the function returns for the current context. A function SHALL never be read for keys itself, and a function under an option that is not scriptable SHALL not be called.
 
 #### Scenario: Static object over a function
 
@@ -17,6 +17,11 @@ An option whose value is an object SHALL take each key from the first layer that
 
 - **WHEN** an option is `function foo(ctx) { return {color: 1}; }` and no layer defines `name` or `length` for it
 - **THEN** `name` and `length` of the resolved object are undefined
+
+#### Scenario: A function that is a value
+
+- **WHEN** plugin options that are not scriptable have a function under a key in one layer and an object under the same key in a higher layer
+- **THEN** the function is not called
 
 #### Scenario: Static objects only
 

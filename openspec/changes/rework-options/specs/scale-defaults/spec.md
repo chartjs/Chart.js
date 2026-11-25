@@ -61,7 +61,31 @@ The scale options a chart stores SHALL hold what the chart was given, and the ob
 - **WHEN** `chart.options.scales.y.min = 0`, `chart.options.scales.y = {type: 'logarithmic'}` or `chart.options.scales = {…}` is followed by an update
 - **THEN** the chart behaves as before this change
 
+#### Scenario: Replacing the chart's options
+
+- **WHEN** a bar chart has a line dataset on a scale `y1` that only the dataset names, and `chart.options = {scales: {y1: {}}}` is followed by an update
+- **THEN** `y1` begins at zero, as in a new chart with those options
+
+#### Scenario: Writing through the stored config
+
+- **WHEN** `chart.config.options.scales.y.min = 5` is followed by an update
+- **THEN** the y scale starts at 5
+
 #### Scenario: Listing a scale's options
 
-- **WHEN** the keys of `chart.options.scales.x` are listed
+- **WHEN** the keys of `chart.options.scales.x` or of the scale's `options` are listed
 - **THEN** they are `axis`, `id`, `position` and the keys the chart set; every other option is still readable by name
+
+#### Scenario: Nested objects of the stored config
+
+- **WHEN** the chart did not set `scales.x.grid` and `chart.config.options.scales.x.grid` is read
+- **THEN** it is undefined, while `chart.options.scales.x.grid.color` gives the default and can be assigned
+
+### Requirement: An undefined scale option is not set
+
+A scale option given as `undefined` SHALL resolve as if the chart did not set it.
+
+#### Scenario: beginAtZero undefined on a bar chart
+
+- **WHEN** a bar chart has `scales.y.beginAtZero: undefined` and data from 10 to 12
+- **THEN** the y scale begins at zero, as it does without the key

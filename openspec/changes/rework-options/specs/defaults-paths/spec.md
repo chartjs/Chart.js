@@ -20,7 +20,7 @@ Which paths the `Chart.defaults` methods accept.
 
 #### Scenario: Route name
 
-- **WHEN** `Chart.defaults.route('', '__proto__', '', 'color')` is called
+- **WHEN** `Chart.defaults.route('', '__proto__', '', 'color')` or `Chart.defaults.route('', 'constructor', '', 'color')` is called
 - **THEN** it throws, and the defaults gain no property
 
 #### Scenario: Other paths
