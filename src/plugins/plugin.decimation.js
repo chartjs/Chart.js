@@ -217,6 +217,10 @@ export default {
       const meta = chart.getDatasetMeta(datasetIndex);
       const data = _data || dataset.data;
 
+      if (!Object.isExtensible(dataset)) {
+        return;
+      }
+
       if (resolve([indexAxis, chart.options.indexAxis]) === 'y') {
         // Decimation is only supported for lines that have an X indexAxis
         return;
@@ -281,7 +285,7 @@ export default {
     });
   },
 
-  destroy(chart) {
+  stop(chart) {
     cleanDecimatedData(chart);
   }
 };
