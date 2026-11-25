@@ -285,5 +285,13 @@ describe('Chart.registry', function() {
         Chart.registry.getScale('test2');
       }).toThrow();
     });
+
+    it('and ignore a value that is neither registrable nor an object', function() {
+      expect(function() {
+        Chart.register('bar');
+        Chart.register(42);
+        Chart.unregister('bar');
+      }).not.toThrow();
+    });
   });
 });

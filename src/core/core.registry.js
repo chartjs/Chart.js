@@ -2,7 +2,7 @@ import DatasetController from './core.datasetController.js';
 import Element from './core.element.js';
 import Scale from './core.scale.js';
 import TypedRegistry from './core.typedRegistry.js';
-import {each, callback as call, _capitalize, isArray} from '../helpers/helpers.core.js';
+import {callback as call, _capitalize} from '../helpers/helpers.core.js';
 
 /**
  * Please use the module's default export which provides a singleton instance
@@ -126,14 +126,14 @@ export class Registry {
       const reg = typedRegistry || this._getRegistryForType(arg);
       if (typedRegistry || reg.isForType(arg) || (reg === this.plugins && arg.id)) {
         this._exec(method, reg, arg);
-      } else {
-        // Handle loopable args
+      } else if (arg && typeof arg === 'object') {
+        // Handle loopable args: arrays, plain objects and module namespaces
         // Use case:
         //  import * as plugins from './plugins.js';
         //  Chart.register(plugins);
         // A native module namespace is not an object to `each()` (it is tagged
         // `[object Module]`), so spread its values out here.
-        each(isArray(arg) ? arg : Object.values(arg), item => {
+        Object.values(arg).forEach(item => {
           // If there are mixed types in the loopable, make sure those are
           // registered in correct registry
           // Use case: (treemap exporting controller, elements etc)
