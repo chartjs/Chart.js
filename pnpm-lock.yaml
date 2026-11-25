@@ -228,8 +228,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.1(chart.js@4.6.2)(moment@2.29.4)
       chartjs-test-utils:
-        specifier: ^1.1.1
-        version: 1.1.1(@vitest/browser@5.1.1(vite@8.3.8(stylus@0.54.8(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vitest@5.1.1))(vitest@5.1.1)
+        specifier: ^1.1.2
+        version: 1.1.2(@vitest/browser@5.1.1(vite@8.3.8(stylus@0.54.8(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vitest@5.1.1))(vitest@5.1.1)
       chartjs-test-utils-karma:
         specifier: npm:chartjs-test-utils@^0.4.0
         version: chartjs-test-utils@0.4.0(jasmine@3.99.0)(karma-jasmine@5.1.0(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)))(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))
@@ -4032,8 +4032,8 @@ packages:
       karma: ^6.1.1
       karma-jasmine: ^4.0.1
 
-  chartjs-test-utils@1.1.1:
-    resolution: {integrity: sha512-2Hz9UQDLCnnaclSCkBb5Rm2xAzbf03d5JzWiDA1v28mVOBH3MrU1WqdB7XP4+wA8CktdWenmx3n9XOdT9IlVGA==}
+  chartjs-test-utils@1.1.2:
+    resolution: {integrity: sha512-Hzo0txiVultSYkVVUNS/N9/B5sNrQfDqhVFxKHyTBfyKmTREvwYMID7jJsSIpDMp3S5eOd2eH85Tptu3PgpMOg==}
     peerDependencies:
       '@vitest/browser': '>=5.0.0'
       vitest: '>=5.0.0'
@@ -16128,7 +16128,7 @@ snapshots:
       karma-jasmine: 5.1.0(karma@6.4.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))
       pixelmatch: 5.3.0
 
-  chartjs-test-utils@1.1.1(@vitest/browser@5.1.1(vite@8.3.8(stylus@0.54.8(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vitest@5.1.1))(vitest@5.1.1):
+  chartjs-test-utils@1.1.2(@vitest/browser@5.1.1(vite@8.3.8(stylus@0.54.8(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))(vitest@5.1.1))(vitest@5.1.1):
     dependencies:
       pixelmatch: 8.0.0
       vitest: 5.1.1(@vitest/browser-playwright@5.1.1)(@vitest/coverage-istanbul@5.1.1)(@vitest/ui@5.1.1)(jsdom@16.7.0(supports-color@8.1.1))(vite@8.3.8(stylus@0.54.8(supports-color@8.1.1))(terser@5.51.2)(yaml@2.9.1))

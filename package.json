@@ -97,7 +97,7 @@
         "@vitest/coverage-istanbul": "^5.1.1",
         "chartjs-adapter-luxon": "^1.2.0",
         "chartjs-adapter-moment": "^1.0.0",
-        "chartjs-test-utils": "^1.1.1",
+        "chartjs-test-utils": "^1.1.2",
         "chartjs-test-utils-karma": "npm:chartjs-test-utils@^0.4.0",
         "concurrently": "^7.3.0",
         "cross-env": "^7.0.3",

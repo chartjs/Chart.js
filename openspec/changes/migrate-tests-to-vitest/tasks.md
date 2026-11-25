@@ -19,7 +19,7 @@
 - [x] 2.2 Add the CommonJS fixture transform to `test/vitest.shared.js` and use it in `vitest.config.js`
 - [x] 2.3 Replace `jasmine.triggerMouseEvent` with the `triggerMouseEvent` global in the four fixtures
 - [x] 2.4 Make `jasmine.fixture.specs` in `test/index.js` a stub with one placeholder spec
-- [ ] 2.5 Run all fixtures in both browsers; if more than a handful fail, stop and report the list (design D11)
+- [x] 2.5 Run all fixtures in both browsers; if more than a handful fail, stop and report the list (design D11)
 - [x] 2.5a Confirm the fixture tests Vitest registers are the same set as the list from 2.1, and that their number equals the number of fixture configs
 - [x] 2.6 Add the update mode and the `fixtures:update` script; check that a normal run writes no PNG
 - [x] 2.7 Contributing docs: the new image-test recipe, running one directory's fixtures with `-t`, and what `"debug": true` does now
