@@ -91,9 +91,11 @@ No `jasmine` compatibility object. Vitest runs with `globals: true`, and `test/s
 | `jasmine.createSpy(...)` | `vi.fn()` |
 | `.calls.count()` / `.calls.argsFor(i)` / `.calls.first().args` / `.calls.all()` / `.calls.reset()` | `.mock.calls.length` / `.mock.calls[i]` / `.mock.calls[0]` / `.mock.calls` / `.mockClear()` |
 | `.calls.first().object` | `.mock.contexts[0]` |
+| `.calls.all()[i].object` | `.mock.contexts[i]` |
 | `jasmine.objectContaining` / `jasmine.any` | `expect.objectContaining` / `expect.any` |
 | `toBeTrue()` / `toBeFalse()` | `toBe(true)` / `toBe(false)` |
 | `expect(x).withContext(m)` | `expect(x, m)` |
+| `expect(x).withContext(i)` with a number `i` | ``expect(x, `${i}`)`` |
 | `function(done)` | an `async` test awaiting a Promise; `done.fail(m)` rejects |
 | `fail(m)` | `expect.unreachable(m)` |
 | `pending()` | `ctx.skip()` |
@@ -101,6 +103,8 @@ No `jasmine` compatibility object. Vitest runs with `globals: true`, and `test/s
 | `jasmine.addMatchers({...})` | `expect.extend({...})` in that spec |
 
 Config that keeps Jasmine's implicit behaviour: `restoreMocks: true` (Jasmine removes spies after each spec), `fileParallelism: false` (Karma ran one page serially; animation and resize specs need unthrottled frames), an explicit `browser.viewport` (Vitest's default is 414x896; Karma ran in a full window), and shuffled test order with the seed printed, as Jasmine does today.
+
+A recorded `this` can differ: Jasmine's spy is sloppy-mode code, so a call with `this` of `undefined` or `null` records `window`, while `vi.fn()` is strict and records the value passed; assert that value. Vitest drops a falsy message, so a numeric context such as a loop index `0` is turned into a string.
 
 `toEqual` stays `toEqual`. Vitest's is slightly looser than Jasmine's (it ignores `undefined` properties and constructors); converting to `toStrictEqual` would change meaning in the other direction and is not mechanical.
 

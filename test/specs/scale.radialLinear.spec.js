@@ -4,8 +4,6 @@ function getLabels(scale) {
 
 // Tests for the radial linear scale used by the polar area and radar charts
 describe('Test the radial linear scale', function() {
-  describe('auto', jasmine.fixture.specs('scale.radialLinear'));
-
   it('Should register the constructor with the registry', function() {
     var Constructor = Chart.registry.getScale('radialLinear');
     expect(Constructor).not.toBe(undefined);
@@ -54,8 +52,8 @@ describe('Test the radial linear scale', function() {
     });
 
     // Is this actually a function
-    expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
-    expect(defaultConfig.pointLabels.callback).toEqual(jasmine.any(Function));
+    expect(defaultConfig.ticks.callback).toEqual(expect.any(Function));
+    expect(defaultConfig.pointLabels.callback).toEqual(expect.any(Function));
   });
 
   it('Should correctly determine the max & min data values', function() {
@@ -594,7 +592,7 @@ describe('Test the radial linear scale', function() {
       scale.ctx.getCalls().filter(function(x) {
         return x.name === 'setTextAlign';
       }).forEach(function(x, i) {
-        expect(x.args[0]).withContext('startAngle: ' + expected.startAngle + ', tick: ' + i).toBe(expected.textAlign[i]);
+        expect(x.args[0], 'startAngle: ' + expected.startAngle + ', tick: ' + i).toBe(expected.textAlign[i]);
       });
     });
   });

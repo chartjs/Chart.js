@@ -128,19 +128,19 @@ describe('Chart.helpers.core', function() {
       expect(helpers.callback({})).not.toBeDefined();
     });
     it('should call fn with the given args', function() {
-      var spy = jasmine.createSpy('spy');
+      var spy = vi.fn();
       helpers.callback(spy);
       helpers.callback(spy, []);
       helpers.callback(spy, ['foo']);
       helpers.callback(spy, [42, 'bar']);
 
-      expect(spy.calls.argsFor(0)).toEqual([]);
-      expect(spy.calls.argsFor(1)).toEqual([]);
-      expect(spy.calls.argsFor(2)).toEqual(['foo']);
-      expect(spy.calls.argsFor(3)).toEqual([42, 'bar']);
+      expect(spy.mock.calls[0]).toEqual([]);
+      expect(spy.mock.calls[1]).toEqual([]);
+      expect(spy.mock.calls[2]).toEqual(['foo']);
+      expect(spy.mock.calls[3]).toEqual([42, 'bar']);
     });
     it('should call fn with the given scope', function() {
-      var spy = jasmine.createSpy('spy');
+      var spy = vi.fn();
       var scope = {};
 
       helpers.callback(spy);
@@ -148,10 +148,10 @@ describe('Chart.helpers.core', function() {
       helpers.callback(spy, [], undefined);
       helpers.callback(spy, [], scope);
 
-      expect(spy.calls.all()[0].object).toBe(window);
-      expect(spy.calls.all()[1].object).toBe(window);
-      expect(spy.calls.all()[2].object).toBe(window);
-      expect(spy.calls.all()[3].object).toBe(scope);
+      expect(spy.mock.contexts[0]).toBeUndefined();
+      expect(spy.mock.contexts[1]).toBeNull();
+      expect(spy.mock.contexts[2]).toBeUndefined();
+      expect(spy.mock.contexts[3]).toBe(scope);
     });
     it('should return the value returned by fn', function() {
       expect(helpers.callback(helpers.noop, [41])).toBe(undefined);
@@ -205,7 +205,7 @@ describe('Chart.helpers.core', function() {
       }, scope);
 
       expect(scopes).toEqual([scope, scope, scope]);
-      expect(items).toEqual(jasmine.objectContaining({a: 'foo', b: 'bar', c: 42}));
+      expect(items).toEqual(expect.objectContaining({a: 'foo', b: 'bar', c: 42}));
     });
     it('should not throw when called with a non iterable object', function() {
       expect(function() {
@@ -508,8 +508,8 @@ describe('Chart.helpers.core', function() {
       var b = new Set(['1']);
       var c = new Set([1]);
 
-      expect(helpers.setsEqual(a, b)).toBeFalse();
-      expect(helpers.setsEqual(a, c)).toBeTrue();
+      expect(helpers.setsEqual(a, b)).toBe(false);
+      expect(helpers.setsEqual(a, c)).toBe(true);
     });
   });
 });

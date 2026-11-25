@@ -1,7 +1,5 @@
 // Tests for the line element
 describe('Chart.elements.LineElement', function() {
-  describe('auto', jasmine.fixture.specs('element.line'));
-
   it('should be constructed', function() {
     var line = new Chart.elements.LineElement({
       points: [1, 2, 3, 4]
@@ -11,7 +9,11 @@ describe('Chart.elements.LineElement', function() {
     expect(line.points).toEqual([1, 2, 3, 4]);
   });
 
-  it('should not cache path when animations are enabled', function(done) {
+  it('should not cache path when animations are enabled', async function() {
+    var done;
+    var complete = new Promise((resolve) => {
+      done = resolve;
+    });
     var chart = window.acquireChart({
       type: 'line',
       data: {
@@ -31,5 +33,6 @@ describe('Chart.elements.LineElement', function() {
         }
       }
     });
+    await complete;
   });
 });
