@@ -164,9 +164,9 @@ P1 and P2 share two files, so P2 follows P1. Both are small and can be built bac
 - **P3:** the committed `eslint.config.js` is the configuration below, as D14 settles it. If #12444 has landed, it also has the `test/fixtures/**/*.js` block of D11. After P3, `pnpm lint` gives 0 errors and 55 warnings: the 50 of `lint-js` after P1 and the 5 of `lint-md`.
 - **P3 → later Vitest pieces:** test lint settings live in the `test/` blocks of `eslint.config.js`.
 
-The configuration, as measured:
+The configuration, as measured. The example is fenced `javascript` so that `lint-md` skips it: it uses `Object.fromEntries`, which the ES2018 guard rejects in `js` examples. `eslint.config.js` itself is outside the lint globs, so the guard does not apply to it.
 
-```js
+```javascript
 import js from '@eslint/js';
 import markdown from '@eslint/markdown';
 import stylistic from '@stylistic/eslint-plugin';
