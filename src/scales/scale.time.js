@@ -391,11 +391,10 @@ export default class TimeScale extends Scale {
       : determineMajorUnit(this._unit);
     this.initOffsets(timestamps);
 
-    if (options.reverse) {
-      ticks.reverse();
-    }
+    // Find the major ticks while the timestamps are in ascending order
+    const result = ticksFromTimestamps(this, ticks, this._majorUnit);
 
-    return ticksFromTimestamps(this, ticks, this._majorUnit);
+    return options.reverse ? result.reverse() : result;
   }
 
   afterAutoSkip() {
