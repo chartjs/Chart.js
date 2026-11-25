@@ -2,6 +2,84 @@
 describe('Legend block tests', function() {
   describe('auto', jasmine.fixture.specs('plugin.legend'));
 
+  describe('vertical legend titles', function() {
+    const padding = {left: 7, right: 17};
+
+    function measureTitleLine(chart, line) {
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.font = Chart.helpers.toFont(chart.legend.options.title.font).string;
+      const width = ctx.measureText(line).width;
+      ctx.restore();
+      return width;
+    }
+
+    for (const position of ['left', 'right']) {
+      for (const fontSize of [12, 24]) {
+        it(`should fit a long title on the ${position} with font size ${fontSize}`, function() {
+          const title = 'A title wider than the legend labels';
+          const chart = window.acquireChart({
+            type: 'doughnut',
+            data: {
+              labels: ['A', 'B'],
+              datasets: [{data: [1, 2]}]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  position,
+                  title: {display: true, text: title, font: {size: fontSize}, padding}
+                }
+              }
+            }
+          }, {canvas: {width: 1200, height: 400}});
+
+          expect(chart.legend.width).toBe(measureTitleLine(chart, title) + padding.left + padding.right + 10);
+          const widthWithTitle = chart.legend.width;
+          chart.options.plugins.legend.title.display = false;
+          chart.update();
+          expect(chart.legend.width).toBeLessThan(widthWithTitle);
+        });
+      }
+    }
+
+    it('should fit the widest line of a multi-line title', function() {
+      const widest = 'A title line wider than the legend labels';
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {labels: ['A'], datasets: [{data: [1]}]},
+        options: {
+          plugins: {
+            legend: {
+              position: 'left',
+              title: {display: true, text: ['Short', widest, 'Last line'], padding}
+            }
+          }
+        }
+      }, {canvas: {width: 1200, height: 400}});
+
+      expect(chart.legend.width).toBe(measureTitleLine(chart, widest) + padding.left + padding.right + 10);
+    });
+
+    it('should respect maxWidth when the title is wider', function() {
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {labels: ['A'], datasets: [{data: [1]}]},
+        options: {
+          plugins: {
+            legend: {
+              position: 'left',
+              maxWidth: 100,
+              title: {display: true, text: 'A title wider than the legend labels'}
+            }
+          }
+        }
+      }, {canvas: {width: 1200, height: 400}});
+
+      expect(chart.legend.width).toBe(100);
+    });
+  });
+
   it('should have the correct default config', function() {
     expect(Chart.defaults.plugins.legend).toEqual({
       display: true,
