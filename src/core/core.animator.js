@@ -1,5 +1,3 @@
-import {requestAnimFrame} from '../helpers/helpers.extras.js';
-
 /**
  * @typedef { import('./core.animation.js').default } Animation
  * @typedef { import('./core.controller.js').default } Chart
@@ -41,7 +39,7 @@ export class Animator {
     }
     this._running = true;
 
-    this._request = requestAnimFrame.call(window, () => {
+    this._request = requestAnimationFrame(() => {
       this._update();
       this._request = null;
 
