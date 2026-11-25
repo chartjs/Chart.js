@@ -11,13 +11,13 @@ describe('Chart.helpers.canvas', function() {
         }
       });
 
-      spyOn(chart.ctx, 'clearRect');
+      vi.spyOn(chart.ctx, 'clearRect').mockImplementation(() => {});
 
       helpers.clearCanvas(chart.canvas, chart.ctx);
 
-      expect(chart.ctx.clearRect.calls.count()).toBe(1);
-      expect(chart.ctx.clearRect.calls.first().object).toBe(chart.ctx);
-      expect(chart.ctx.clearRect.calls.first().args).toEqual([0, 0, 150, 245]);
+      expect(chart.ctx.clearRect.mock.calls.length).toBe(1);
+      expect(chart.ctx.clearRect.mock.contexts[0]).toBe(chart.ctx);
+      expect(chart.ctx.clearRect.mock.calls[0]).toEqual([0, 0, 150, 245]);
     });
 
     it('should not throw error when chart is null', function() {

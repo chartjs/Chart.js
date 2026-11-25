@@ -1,6 +1,4 @@
 describe('Plugin.colors', () => {
-  describe('auto', jasmine.fixture.specs('plugin.colors'));
-
   describe('Plugin.colors.chartDefaults', () => {
     beforeAll(() => {
       Chart.defaults.backgroundColor = ['green', 'yellow'];

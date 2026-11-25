@@ -33,9 +33,9 @@
 
 ## 4. P4: Free specs, helpers, elements and small files
 
-- [ ] 4.1 Record Karma's and Vitest's test counts before the change, without fixture placeholders
-- [ ] 4.2 Rename and convert the 16 files; delete `plugin.subtitle.tests.js`
-- [ ] 4.3 Confirm the counts moved by the same number (design, Pieces) and put both, and the placeholders removed, in the pull request description
+- [x] 4.1 Record Karma's and Vitest's test counts before the change, without fixture placeholders
+- [x] 4.2 Rename and convert the 16 files; delete `plugin.subtitle.tests.js`
+- [x] 4.3 Confirm the counts moved by the same number (design, Pieces) and put both, and the placeholders removed, in the pull request description
 
 ## 5. P5: Free specs, controllers
 

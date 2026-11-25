@@ -45,7 +45,7 @@ describe('Arc element tests', function() {
         const rad = angle / 180 * Math.PI;
         const x = Math.sin(rad) * radius;
         const y = Math.cos(rad) * radius;
-        expect(arc.inRange(x, y)).withContext(`radius: ${radius}, angle: ${angle}`).toBeTrue();
+        expect(arc.inRange(x, y), `radius: ${radius}, angle: ${angle}`).toBe(true);
       }
     }
     for (const radius of [4, 11]) {
@@ -53,7 +53,7 @@ describe('Arc element tests', function() {
         const rad = angle / 180 * Math.PI;
         const x = Math.sin(rad) * radius;
         const y = Math.cos(rad) * radius;
-        expect(arc.inRange(x, y)).withContext(`radius: ${radius}, angle: ${angle}`).toBeFalse();
+        expect(arc.inRange(x, y), `radius: ${radius}, angle: ${angle}`).toBe(false);
       }
     }
   });

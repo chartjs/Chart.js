@@ -1,6 +1,4 @@
 describe('Mixed charts', function() {
-  describe('auto', jasmine.fixture.specs('mixed'));
-
   it('shoud be constructed with doughnuts chart', function() {
     const chart = window.acquireChart({
       data: {
