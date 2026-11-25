@@ -4,41 +4,6 @@ import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} 
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection.js';
 import {createContext, sign} from '../helpers/index.js';
 
-function getSpliceStart(args, length, data) {
-  let start = args[0];
-  const type = typeof start;
-  if (start === null || type === 'undefined' || type === 'number' || type === 'string' || type === 'boolean') {
-    start = Math.trunc(+start) || 0;
-    return start < 0 ? Math.max(length + start, 0) : Math.min(start, length);
-  }
-  return findSpliceStart(data, args);
-}
-
-// An opaque start has already been coerced by splice. Locate a unique inserted
-// item instead of coercing it again; ambiguous changes must rebuild the elements.
-function findSpliceStart(data, args) {
-  if (args.length <= 2) {
-    return null;
-  }
-  let start = null;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i] === args[2]) {
-      if (start !== null) {
-        return null;
-      }
-      start = i;
-    }
-  }
-  if (start !== null) {
-    for (let i = 3; i < args.length; i++) {
-      if (data[start + i - 2] !== args[i]) {
-        return null;
-      }
-    }
-  }
-  return start;
-}
-
 /**
  * @typedef { import('./core.controller.js').default } Chart
  * @typedef { import('./core.scale.js').default } Scale
@@ -1138,21 +1103,11 @@ export default class DatasetController {
     this._sync(['_removeElements', 0, 1]);
   }
 
-  _onDataSpliceWithContext(args, length, result) {
-    const newCount = Math.max(args.length - 2, 0);
-    const count = isArray(result) ? result.length : Math.max(length + newCount - this._data.length, 0);
-    if (!count && !newCount) {
-      return;
-    }
-    const start = getSpliceStart(args, length, this._data);
-    if (start === null) {
-      this._syncList = [];
-      this._removeElements(0, this._cachedMeta.data.length);
-      return;
-    }
-    if (count > 0) {
+  _onDataSplice(start, count) {
+    if (count) {
       this._sync(['_removeElements', start, count]);
     }
+    const newCount = arguments.length - 2;
     if (newCount > 0) {
       this._sync(['_insertElements', start, newCount]);
     }
