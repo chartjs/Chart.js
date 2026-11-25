@@ -60,7 +60,7 @@ Found while reading, not reported:
 **Non-Goals:**
 
 - The compiled resolver and its performance (#10073, #11814), options that return a Promise (#11266), consistent alignment names (#10110).
-- Changing which hover options of a line dataset reach its points (#10381); see Open Questions.
+- Changing which hover options of a line dataset reach its points (#10381). It is documented here and stays open for 5.0.
 - Root `options.color` and `options.borderColor` as per-chart defaults for scales. They have the same gap as the font, no issue asks for it, and it would change colours of charts that set `options.color`.
 - A public type for the options object a plugin receives.
 - The hover state itself: a plugin still tracks which of its elements is hovered and resolves its options again when that changes.
@@ -199,6 +199,20 @@ With rework-legend: its P19 renames the legend plugin's file and its P9 resolves
 - A function layer is called only with a context and only for scriptable keys (D5).
 - P3 releases nothing. P7, P9 and P11 list the open pull requests that hold their files. P15 also completes #11176.
 
+### D14. The maintainer's decisions (25 November 2026)
+
+1. **Stored scale options (P9):** in a minor release with a release note. The keys of a scale's options list what the chart set, and nested objects the chart did not set are absent from the raw stored config.
+2. **Type defaults of a scale (P9):** decided again at every update.
+3. **An `undefined` scale option (P9):** counts as not set.
+4. **Axis order (P7):** the dataset binding comes before the first letter for every id, in a minor release, with the release note about a dataset without an axis id.
+5. **Root font (P11):** applies in a minor release with a release note.
+6. **#10381 (P14):** the docs piece is built; the issue stays open for 5.0, where only `point*` options would reach points.
+7. **#11786 (P15):** the current rule is documented and the issue closed; a single rule is an idea for 5.0.
+8. **Block rule (P5):** a function in a block reads the un-hovered options, also for options other than its own.
+9. **Merge rule (P12):** the full rule, in a minor release with a release note.
+
+Before the design: one design for the option fixes that need no major version, and both hover shapes supported in core.
+
 ## Risks / Trade-offs
 
 - [P9 changes what `Object.keys()` and `JSON.stringify` of a scale's options return] → release note; reads by name and writes are unchanged. `test/specs/core.controller.tests.js:458-499` compares scale options with `toEqual` and may need edits (not run).
@@ -226,8 +240,8 @@ With rework-legend: its P19 renames the legend plugin's file and its P9 resolves
 | P11 | the chart's font: one complete font per chart per update; readers pass it as the fallback; routed fonts enter a derived scope of plugin options | `src/core/core.config.js`, `src/core/core.scale.js`, `src/scales/scale.radialLinear.js`, `src/plugins/plugin.title.js`, `src/plugins/plugin.legend.js`, `src/types/index.d.ts` (comment), `docs/general/fonts.md`, `docs/general/options.md`, `test/specs/options.font.spec.js` (new) | with `options.font.size: 30` the font set on the canvas for ticks, scale title, legend, title, subtitle and tooltip is 30 px (master: 12); `tooltip.options.bodyFont.size` is 30, and 20 when `Chart.defaults.plugins.tooltip.bodyFont.size` is 20; a radar's tick limit is that of 30 px labels (master: of 12 px); point labels 10; a second chart without `options.font` stays 12 | ~260, wide: one-line edits in files held by rework-ticks (#12492), #12401, #12244, #12237, #12203, #11188 (`core.scale.js`), #12336 (`scale.radialLinear.js`), rework-legend P19 and P9 and the open legend pull requests (`plugin.legend.js`), and 14 pull requests on `index.d.ts` (a comment only) | P9 (the derived scope), P10 (the route record); merge order with the holders named under Size | | #10375, #11285 |
 | P12 | object options merge across function layers; a function is never a scope | `src/helpers/helpers.config.ts`, `src/core/core.config.js` (`needContext`), `test/specs/helpers.config.tests.js` | a static `label: {color}` over `label: ctx => ({color, padding: 5})` gives padding 5 (master: the next static layer's); `name` and `length` of an object from `function foo` are undefined (master `'foo'`, 1); a static `hover.label` block over a function-valued `label` keeps the function's other keys; a function under a plugin option that is not scriptable (`generateLabels` beside a static object in a higher layer) is not called | ~130, wide in effect: any scriptable object option given as a function in a lower layer | P5 (same file), P11 (`core.config.js`) | | |
 | P13 | docs: hover options for plugin authors (both shapes, the second-argument rule, layer merging) | `docs/developers/plugins.md`, `docs/general/options.md` | nothing (docs) | ~90 | P4, P5, P12 | | |
-| P14 | docs: a line or radar dataset's `hover*` options reach its points unless `pointHover*` is set | `docs/charts/line.md`, `docs/charts/radar.md` | nothing (docs) | ~12 | | | #10381 (see Open Questions) |
-| P15 | docs: which type defaults a scale receives; a chart type's defaults exist after its controller is registered | `docs/charts/mixed.md`, `docs/general/options.md` | nothing (docs) | ~30 | P9, P13 (same doc file) | | #11786 (see Open Questions), #11176 |
+| P14 | docs: a line or radar dataset's `hover*` options reach its points unless `pointHover*` is set | `docs/charts/line.md`, `docs/charts/radar.md` | nothing (docs) | ~12 | | #10381 | |
+| P15 | docs: which type defaults a scale receives; a chart type's defaults exist after its controller is registered | `docs/charts/mixed.md`, `docs/general/options.md` | nothing (docs) | ~30 | P9, P13 (same doc file) | | #11786, #11176 |
 
 In parallel: P1 → P10; P2 → P3 → P4 → P5; P6; P7 → P8 → P9; P14. Then P11 after P9 and P10, P12 after P5 and P11, P13 after P12, P15 after P13.
 
@@ -249,12 +263,4 @@ Shared files order the rest: `helpers.config.ts` (P2, P3, P4, P5, P12), `core.co
 
 ## Open Questions
 
-1. **P14, #10381.** A line dataset's `hoverBorderWidth` reaches its points, and a spec pins that. Document it in 4.x and close the issue, with "only `point*` options reach points" noted for 5.0 (recommended), or keep the issue open for 5.0?
-2. **P9.** The stored scale options stop holding copies of the defaults. `Object.keys()` and `JSON.stringify` of a scale's options list only what the chart set, and a write through the raw config to a nested object the chart did not set (`config.options.scales.x.grid.color = 'red'`) throws; the same through `chart.options` works. A minor release with a release note (recommended), or 5.0?
-3. **P9.** Type defaults of a scale are decided again at every update, so changing `config.type` changes offset, `beginAtZero` and the scale type where the chart does not set them. Recompute (recommended), or freeze per scale as today?
-4. **P9.** An explicit `undefined` scale option stops blocking the type's default: a bar chart with `scales.y.beginAtZero: undefined` starts at 10 today and at 0 after. Count `undefined` as not set, as every other option does (recommended), or keep it as a value for scales?
-5. **P7.** The dataset binding before the first letter for every id (recommended, a minor release with a note that a dataset without an axis id can move to the scale that became a y axis), only for ids that start with `r`, or 5.0?
-6. **P11.** The root `options.font` starts to apply to every text of charts that set it today. A minor release with a release note (recommended), or 5.0?
-7. **P15, #11786.** Either single rule for a scale's type defaults breaks a chart that works today. Document the current rule and close, with a new rule noted for 5.0 (recommended), or change it now? Documenting leaves what the reporter saw as it is, and the reporter's own chart could not be read (the reproduction here is a bar chart with a line and a scatter dataset).
-8. **P5.** A function in a block reads the un-hovered options, also for options other than its own (D4). Accept (recommended), or fall through only for a self-read?
-9. **P12.** The merge rule changes output for a static object over a function in a lower layer, completes no issue and is not prototyped; without it the block shape keeps one limit (a static `hover.label` over a function-valued `label` hides the function's other keys). The full rule in a minor release with a release note (recommended, since both hover shapes are to work), only the `name`/`length` fix, or leave it for 5.0 and document the limit?
+None.

@@ -93,10 +93,10 @@
 ## 14. P14: Docs: hover options of line and radar datasets
 
 - [ ] 14.1 In `docs/charts/line.md` and `docs/charts/radar.md`, say that the dataset's `hover*` options apply to its points unless the matching `pointHover*` option is set.
-- [ ] 14.2 The pull request says `Closes #10381`, if that is the answer to open question 1.
+- [ ] 14.2 The pull request says `Part of #10381` in a sentence; the issue stays open for 5.0.
 
 ## 15. P15: Docs: type defaults of a scale
 
 - [ ] 15.1 In `docs/charts/mixed.md` and `docs/general/options.md`, say which type defaults a scale receives: a scale given in `options.scales` takes the chart type's, a scale only a dataset implies takes the dataset types'.
 - [ ] 15.2 In `docs/general/options.md`, say that a chart type's defaults exist after its controller is registered.
-- [ ] 15.3 The pull request says `Closes #11176`, and `Closes #11786` if that is the answer to open question 7.
+- [ ] 15.3 The pull request says `Closes #11176` and `Closes #11786`.
