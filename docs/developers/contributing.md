@@ -36,9 +36,12 @@ The following commands are now available from the repository root:
 > pnpm test                  // perform code linting and run all tests with coverage
 > pnpm run test-ci-karma     // run the Karma specs once, in Chrome and Firefox
 > pnpm run test-ci-vitest    // run the Vitest specs once, in Chromium and Firefox
+> pnpm run test-ci-umd       // run the smoke suite against dist/chart.umd.min.js, in Chromium and Firefox
 ```
 
 The test suite is moving from Karma and Jasmine to [Vitest](https://vitest.dev/) browser mode. Until that is done, both run, and the name of a spec file decides which one: `test/specs/*.tests.js` runs under Karma, `test/specs/*.spec.js` under Vitest. Vitest specs run against the source in `src/` with no build step, and use Vitest's API (`vi.spyOn`, `expect.objectContaining`, ...) instead of Jasmine's.
+
+A small smoke suite in `test/umd` checks the built bundle instead of the source: that `dist/chart.umd.min.js` loads, has the whole `Chart` namespace and renders a few of the image fixtures. Its config is `vitest.umd.config.js`. It, and the packages in `test/integration`, use the files in `dist`, so run `pnpm run build` before `pnpm test` or `pnpm run test-ci`, and again after changing the source; without a build the smoke suite stops and says so.
 
 `pnpm run dev`, `pnpm run dev:ff`, `pnpm run dev:vitest`, `pnpm run test-ci-karma` and `pnpm run test-ci-vitest` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugin` will start Karma in watch mode for `test/specs/**/*plugin*.tests.js`, and `pnpm run dev:vitest plugin` will do the same with Vitest for the `*.spec.js` files whose path contains `plugin`. `pnpm test` takes no such string.
 

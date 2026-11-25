@@ -53,6 +53,7 @@ jobs:
             test:
               - 'test/**'
               - 'karma.conf.cjs'
+              - 'rollup.config.js'
               - 'vitest*.config.js'
               - 'package.json'
               - 'pnpm-lock.yaml'

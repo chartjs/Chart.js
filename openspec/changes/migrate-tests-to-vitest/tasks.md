@@ -26,10 +26,10 @@
 
 ## 3. P3: Built-bundle smoke suite
 
-- [ ] 3.1 Write `test/umd/umd.spec.js` (namespace assertions and about ten named fixtures, one of them mouse-driven) and see it fail without a config that runs it
-- [ ] 3.2 Write `test/setup.umd.js` (loads `dist/chart.umd.min.js`, calls `setup` with `window.Chart`), `vitest.umd.config.js` on top of `test/vitest.shared.js`, and the script `test-ci-umd`
-- [ ] 3.3 Check that it fails with a clear message when the bundle is not built, and when a namespace member is removed from the bundle
-- [ ] 3.4 Lint override, and a paragraph in the contributing docs that says `pnpm test-ci` needs a build
+- [x] 3.1 Write `test/umd/umd.spec.js` (namespace assertions and about ten named fixtures, one of them mouse-driven) and see it fail without a config that runs it
+- [x] 3.2 Write `test/setup.umd.js` (loads `dist/chart.umd.min.js`, calls `setup` with `window.Chart`), `vitest.umd.config.js` on top of `test/vitest.shared.js`, and the script `test-ci-umd`
+- [x] 3.3 Check that it fails with a clear message when the bundle is not built, and when a namespace member is removed from the bundle
+- [x] 3.4 Lint override, and a paragraph in the contributing docs that says `pnpm test-ci` needs a build
 
 ## 4. P4: Free specs, helpers, elements and small files
 

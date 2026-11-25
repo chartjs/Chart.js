@@ -76,6 +76,7 @@
         "test-ci": "concurrently \"pnpm:test-ci-*\"",
         "test-ci-karma": "cross-env NODE_ENV=test karma start ./karma.conf.cjs --auto-watch --single-run --coverage --grep",
         "test-ci-vitest": "vitest run --coverage --browser.headless",
+        "test-ci-umd": "vitest run --config vitest.umd.config.js --browser.headless",
         "test-ci-integration": "pnpm --filter \"./test/integration/**\" test"
     },
     "dependencies": {

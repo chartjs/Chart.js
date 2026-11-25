@@ -93,7 +93,7 @@ The test command SHALL fail when the minified UMD bundle does not load, lacks pa
 - **THEN** it fails with a message telling the contributor to build first
 
 ### Requirement: Coverage reaches Coveralls from every runner
-CI SHALL upload coverage from every runner that executed specs.
+CI SHALL upload coverage from every runner that executed specs against source. The built-bundle smoke suite runs against the minified bundle and reports no coverage.
 
 #### Scenario: Spec moves between runners
 - **WHEN** CI runs on a change that moves a spec from Karma to Vitest
