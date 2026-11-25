@@ -52,7 +52,7 @@ State of `master` when this was written (2026-11-22). Nothing here has been exec
 Notes from building P1:
 
 - What fails without P1: Karma's old glob (`*.js`) also matched `*.spec.js`, so before P1 Karma ran the converted `global.defaults.spec.js` and failed on `vi`; after P1 Karma skips it and Vitest runs its 5 tests.
-- Unbundled, `Chart.register(namespace)` registers nothing, because `isObject()` rejects a real module namespace (`[object Module]`); the bundle has plain objects there. `test/setup.js` therefore registers `Object.values()` of each of `registerables` itself (D7).
+- Unbundled, `Chart.register(namespace)` registered nothing at first, because `isObject()` rejected a real module namespace (`[object Module]`); the bundle has plain objects there. `test/setup.js` worked around it by registering `Object.values()` of each of `registerables` itself (D7). `Registry._each` now loops `Object.values(arg)` for anything that is not an array (#12438), so the workaround is gone and `test/specs/vitest.setup.spec.js` pins the case with real namespaces.
 
 Notes from building P2:
 
