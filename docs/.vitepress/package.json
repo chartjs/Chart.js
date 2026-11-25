@@ -8,7 +8,7 @@
         "api": "typedoc --options typedoc.json --out ../api",
         "site:build": "pnpm run api && vitepress build ..",
         "site:dev": "pnpm run api && vitepress dev ..",
-        "test": "node --test theme/versions.test.ts",
+        "test": "node --test theme/versions.test.ts redirects.test.ts",
         "typecheck": "vue-tsc --noEmit"
     },
     "devDependencies": {

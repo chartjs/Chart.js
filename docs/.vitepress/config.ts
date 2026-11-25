@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import markdownItInclude from 'markdown-it-include';
 import { type DefaultTheme, defineConfig } from 'vitepress';
 import { version } from './docs-version.json';
+import { writeRedirects } from './redirects';
 import { checkSidebar, sidebar } from './sidebar';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -36,7 +37,10 @@ export default defineConfig({
   base,
   head: [['link', {rel: 'icon', href: `${base}favicon.ico`}]],
   lastUpdated: true,
-  buildEnd: checkSidebar,
+  buildEnd(siteConfig) {
+    checkSidebar(siteConfig);
+    writeRedirects(siteConfig);
+  },
   // Light only: Chart.js default tick and grid colours, and several samples,
   // assume a light page.
   appearance: false,
