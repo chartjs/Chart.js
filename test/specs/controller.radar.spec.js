@@ -1,6 +1,4 @@
 describe('Chart.controllers.radar', function() {
-  describe('auto', jasmine.fixture.specs('controller.radar'));
-
   it('should be registered as dataset controller', function() {
     expect(typeof Chart.controllers.radar).toBe('function');
   });
@@ -59,19 +57,19 @@ describe('Chart.controllers.radar', function() {
 
     var meta = chart.getDatasetMeta(0);
 
-    spyOn(meta.dataset, 'draw');
-    spyOn(meta.data[0], 'draw');
-    spyOn(meta.data[1], 'draw');
-    spyOn(meta.data[2], 'draw');
-    spyOn(meta.data[3], 'draw');
+    vi.spyOn(meta.dataset, 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[0], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[1], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[2], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[3], 'draw').mockImplementation(() => {});
 
     chart.update();
 
-    expect(meta.dataset.draw.calls.count()).toBe(1);
-    expect(meta.data[0].draw.calls.count()).toBe(1);
-    expect(meta.data[1].draw.calls.count()).toBe(1);
-    expect(meta.data[2].draw.calls.count()).toBe(1);
-    expect(meta.data[3].draw.calls.count()).toBe(1);
+    expect(meta.dataset.draw.mock.calls.length).toBe(1);
+    expect(meta.data[0].draw.mock.calls.length).toBe(1);
+    expect(meta.data[1].draw.mock.calls.length).toBe(1);
+    expect(meta.data[2].draw.mock.calls.length).toBe(1);
+    expect(meta.data[3].draw.mock.calls.length).toBe(1);
   });
 
   it('should draw all elements with object notation and default key', function() {
@@ -87,17 +85,17 @@ describe('Chart.controllers.radar', function() {
 
     var meta = chart.getDatasetMeta(0);
 
-    spyOn(meta.dataset, 'draw');
-    spyOn(meta.data[0], 'draw');
-    spyOn(meta.data[1], 'draw');
-    spyOn(meta.data[2], 'draw');
+    vi.spyOn(meta.dataset, 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[0], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[1], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[2], 'draw').mockImplementation(() => {});
 
     chart.update();
 
-    expect(meta.dataset.draw.calls.count()).toBe(1);
-    expect(meta.data[0].draw.calls.count()).toBe(1);
-    expect(meta.data[1].draw.calls.count()).toBe(1);
-    expect(meta.data[2].draw.calls.count()).toBe(1);
+    expect(meta.dataset.draw.mock.calls.length).toBe(1);
+    expect(meta.data[0].draw.mock.calls.length).toBe(1);
+    expect(meta.data[1].draw.mock.calls.length).toBe(1);
+    expect(meta.data[2].draw.mock.calls.length).toBe(1);
   });
 
   it('should update elements', function() {
@@ -146,7 +144,7 @@ describe('Chart.controllers.radar', function() {
     chart.reset(); // reset first
 
     // Line element
-    expect(meta.dataset.options).toEqual(jasmine.objectContaining({
+    expect(meta.dataset.options).toEqual(expect.objectContaining({
       backgroundColor: 'rgb(255, 0, 0)',
       borderCapStyle: 'round',
       borderColor: 'rgb(0, 255, 0)',
@@ -164,9 +162,9 @@ describe('Chart.controllers.radar', function() {
       {x: 256, y: 256},
       {x: 256, y: 256},
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
-      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x, `${i}`).toBeCloseToPixel(expected.x);
+      expect(meta.data[i].y, `${i}`).toBeCloseToPixel(expected.y);
+      expect(meta.data[i].options, `${i}`).toEqual(expect.objectContaining({
         backgroundColor: Chart.defaults.backgroundColor,
         borderWidth: 1,
         borderColor: Chart.defaults.borderColor,
@@ -184,13 +182,13 @@ describe('Chart.controllers.radar', function() {
       {x: 256, y: 256, cppx: 277, cppy: 256, cpnx: 250, cpny: 256},
       {x: 202, y: 256, cppx: 202, cppy: 260, cpnx: 202, cpny: 246},
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
-      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].cp1x).withContext(i).toBeCloseToPixel(expected.cppx);
-      expect(meta.data[i].cp1y).withContext(i).toBeCloseToPixel(expected.cppy);
-      expect(meta.data[i].cp2x).withContext(i).toBeCloseToPixel(expected.cpnx);
-      expect(meta.data[i].cp2y).withContext(i).toBeCloseToPixel(expected.cpny);
-      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x, `${i}`).toBeCloseToPixel(expected.x);
+      expect(meta.data[i].y, `${i}`).toBeCloseToPixel(expected.y);
+      expect(meta.data[i].cp1x, `${i}`).toBeCloseToPixel(expected.cppx);
+      expect(meta.data[i].cp1y, `${i}`).toBeCloseToPixel(expected.cppy);
+      expect(meta.data[i].cp2x, `${i}`).toBeCloseToPixel(expected.cpnx);
+      expect(meta.data[i].cp2y, `${i}`).toBeCloseToPixel(expected.cpny);
+      expect(meta.data[i].options, `${i}`).toEqual(expect.objectContaining({
         backgroundColor: Chart.defaults.backgroundColor,
         borderWidth: 1,
         borderColor: Chart.defaults.borderColor,
@@ -220,7 +218,7 @@ describe('Chart.controllers.radar', function() {
 
     chart.update();
 
-    expect(meta.dataset.options).toEqual(jasmine.objectContaining({
+    expect(meta.dataset.options).toEqual(expect.objectContaining({
       backgroundColor: 'rgb(98, 98, 98)',
       borderCapStyle: 'butt',
       borderColor: 'rgb(8, 8, 8)',
@@ -239,9 +237,9 @@ describe('Chart.controllers.radar', function() {
       {x: 256, y: 256},
       {x: 202, y: 256},
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(expected.x);
-      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(expected.y);
-      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x, `${i}`).toBeCloseToPixel(expected.x);
+      expect(meta.data[i].y, `${i}`).toBeCloseToPixel(expected.y);
+      expect(meta.data[i].options, `${i}`).toEqual(expect.objectContaining({
         backgroundColor: 'rgb(128, 129, 130)',
         borderWidth: 1.123,
         borderColor: 'rgb(56, 57, 58)',
@@ -253,8 +251,10 @@ describe('Chart.controllers.radar', function() {
   });
 
   describe('Interactions', function() {
+    let chart;
+
     beforeEach(function() {
-      this.chart = window.acquireChart({
+      chart = window.acquireChart({
         type: 'radar',
         data: {
           labels: ['label1', 'label2', 'label3', 'label4'],
@@ -276,16 +276,15 @@ describe('Chart.controllers.radar', function() {
     });
 
     it('should handle default hover styles', async function() {
-      var chart = this.chart;
       var point = chart.getDatasetMeta(0).data[0];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       expect(point.options.backgroundColor).toBe('#3187DD');
       expect(point.options.borderColor).toBe('#175A9D');
       expect(point.options.borderWidth).toBe(1);
       expect(point.options.radius).toBe(4);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', point);
+      await triggerMouseEvent(chart, 'mouseout', point);
       expect(point.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(point.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(point.options.borderWidth).toBe(2);
@@ -293,7 +292,6 @@ describe('Chart.controllers.radar', function() {
     });
 
     it('should handle hover styles defined via dataset properties', async function() {
-      var chart = this.chart;
       var point = chart.getDatasetMeta(0).data[0];
 
       Chart.helpers.merge(chart.data.datasets[0], {
@@ -305,13 +303,13 @@ describe('Chart.controllers.radar', function() {
 
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       expect(point.options.backgroundColor).toBe('rgb(200, 100, 150)');
       expect(point.options.borderColor).toBe('rgb(150, 50, 100)');
       expect(point.options.borderWidth).toBe(8.4);
       expect(point.options.radius).toBe(4.2);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', point);
+      await triggerMouseEvent(chart, 'mouseout', point);
       expect(point.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(point.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(point.options.borderWidth).toBe(2);
@@ -319,7 +317,6 @@ describe('Chart.controllers.radar', function() {
     });
 
     it('should handle hover styles defined via element options', async function() {
-      var chart = this.chart;
       var point = chart.getDatasetMeta(0).data[0];
 
       Chart.helpers.merge(chart.options.elements.point, {
@@ -331,13 +328,13 @@ describe('Chart.controllers.radar', function() {
 
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       expect(point.options.backgroundColor).toBe('rgb(200, 100, 150)');
       expect(point.options.borderColor).toBe('rgb(150, 50, 100)');
       expect(point.options.borderWidth).toBe(8.4);
       expect(point.options.radius).toBe(4.2);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', point);
+      await triggerMouseEvent(chart, 'mouseout', point);
       expect(point.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(point.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(point.options.borderWidth).toBe(2);
@@ -428,7 +425,7 @@ describe('Chart.controllers.radar', function() {
     const {tooltip} = chart;
     const point = chart.getDatasetMeta(0).data[0];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(tooltip.title).toEqual(['Label 1']);
     expect(tooltip.body).toEqual([{
@@ -439,7 +436,7 @@ describe('Chart.controllers.radar', function() {
 
     chart.options.plugins.tooltip = {mode: 'dataset'};
     chart.update();
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(tooltip.title).toEqual(['Dataset 1']);
     expect(tooltip.body).toEqual([{
