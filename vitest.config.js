@@ -1,10 +1,16 @@
 import {fileURLToPath} from 'node:url';
+import {createSaveFixtureImage} from 'chartjs-test-utils/node';
 import {defineConfig} from 'vitest/config';
-import {browserProvider, viewport} from './test/vitest.shared.js';
+import {browserProvider, commonjsFixtures, viewport} from './test/vitest.shared.js';
+
+// `pnpm run fixtures:update`: write the reference images that are missing or
+// differ, rendered by Chromium. Without the command a fixture never writes.
+const updating = process.env.UPDATE_FIXTURES === '1';
 
 // Specs named `*.spec.js` run here; `*.tests.js` still run under Karma
 // (karma.conf.cjs) until they are converted.
 export default defineConfig({
+  plugins: [commonjsFixtures()],
   resolve: {
     alias: {
       // chartjs-adapter-moment imports 'chart.js'; point it at the same source
@@ -26,12 +32,17 @@ export default defineConfig({
     // of pre-bundling. When node_modules lies outside the project root (a git
     // worktree sharing another checkout's install), Vite refuses to serve it
     // and coverage fails while the tests pass.
-    include: ['@vitest/coverage-istanbul/browser']
+    // moment: the excluded adapter imports it, so it would be served on its
+    // own while moment-timezone's pre-bundle carries another copy. The adapter
+    // would then format dates in the machine's time zone instead of the
+    // default zone test/setup.js sets; pre-bundling it shares one instance.
+    include: ['@vitest/coverage-istanbul/browser', 'moment']
   },
   test: {
     browser: {
       enabled: true,
-      instances: [{browser: 'chromium'}, {browser: 'firefox'}],
+      instances: updating ? [{browser: 'chromium'}] : [{browser: 'chromium'}, {browser: 'firefox'}],
+      commands: updating ? {saveFixtureImage: createSaveFixtureImage()} : {},
       provider: browserProvider,
       viewport
     },

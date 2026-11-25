@@ -13,6 +13,7 @@ window.devicePixelRatio = 1;
 
 // src/index.umd.ts passes module namespaces to Chart.register(), which registers
 // nothing from them unbundled because isObject() rejects '[object Module]'.
+// https://github.com/chartjs/Chart.js/issues/12437
 Chart.register(...registerables.flatMap((namespace) => Object.values(namespace)));
 
 // Keep the scriptable default instead of the fixed 1 that setup() would set:

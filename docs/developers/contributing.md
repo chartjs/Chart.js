@@ -42,6 +42,8 @@ The test suite is moving from Karma and Jasmine to [Vitest](https://vitest.dev/)
 
 `pnpm run dev`, `pnpm run dev:ff`, `pnpm run dev:vitest`, `pnpm run test-ci-karma` and `pnpm run test-ci-vitest` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugin` will start Karma in watch mode for `test/specs/**/*plugin*.tests.js`, and `pnpm run dev:vitest plugin` will do the same with Vitest for the `*.spec.js` files whose path contains `plugin`. `pnpm test` takes no such string.
 
+All image-based tests run under Vitest from the one file `test/specs/fixtures.spec.js`, so a file name does not select them. Filter by test name with `-t` instead. Each fixture test is named after its path under `test/fixtures` without the extension (`scale.time/ticks-round`), in a group named after its top-level directory. `-t` takes a regular expression and runs every test whose full name contains a match, so `-t scale.time` runs `scale.timeseries` too. Include the slash to select one directory: `pnpm run dev:vitest fixtures -t "scale\.time/"` runs the fixtures in `test/fixtures/scale.time` and its subdirectories, and `-t "controller\.bar/stacking/"` only those in `test/fixtures/controller.bar/stacking`. End with `$` to select one fixture: `-t "scale\.time/ticks-round$"`.
+
 Vitest runs the tests in a random order and prints the seed it used (`Running tests with seed "..."`). To repeat an order, pass the seed: `pnpm run test-ci-vitest --sequence.seed=<seed>`.
 
 ### Documentation
@@ -54,24 +56,24 @@ We use [Vuepress](https://vuepress.vuejs.org/) to manage the docs which are cont
 
 ### Image-Based Tests
 
-Some display-related functionality is difficult to test via typical Jasmine units. For this reason, we introduced image-based tests ([#3988](https://github.com/chartjs/Chart.js/pull/3988) and [#5777](https://github.com/chartjs/Chart.js/pull/5777)) to assert that a chart is drawn pixel-for-pixel matching an expected image.
+Some display-related functionality is difficult to test via typical unit tests. For this reason, we introduced image-based tests ([#3988](https://github.com/chartjs/Chart.js/pull/3988) and [#5777](https://github.com/chartjs/Chart.js/pull/5777)) to assert that a chart is drawn pixel-for-pixel matching an expected image.
 
 Generated charts in image-based tests should be **as minimal as possible** and focus only on the tested feature to prevent failure if another feature breaks (e.g. disable the title and legend when testing scales).
 
-You can create a new image-based test by following the steps below:
+Every config file under `test/fixtures` is a test: `test/specs/fixtures.spec.js` finds them all and compares each rendered chart with the PNG of the same name, in Chromium and Firefox. No spec needs a line for it. You can create a new image-based test by following the steps below:
 
-- Create a JS file ([example](https://github.com/chartjs/Chart.js/blob/f7b671006a86201808402c3b6fe2054fe834fd4a/test/fixtures/controller.bubble/radius-scriptable.js)) or JSON file ([example](https://github.com/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/fixtures/plugin.filler/fill-line-dataset.json)) that defines chart config and generation options.
-- Add this file in `test/fixtures/{spec.name}/{feature-name}.json`.
-- Add a [describe line](https://github.com/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/specs/plugin.filler.tests.js#L10) to the beginning of `test/specs/{spec.name}.tests.js` if it doesn't exist yet.
-- Run `pnpm run dev`.
-- Click the *"Debug"* button (top/right): a test should fail with the associated canvas visible.
-- Right-click on the chart and *"Save image as..."* `test/fixtures/{spec.name}/{feature-name}.png` making sure not to activate the tooltip or any hover functionality
-- Refresh the browser page (`CTRL+R`): test should now pass
-- Verify test relevancy by changing the feature values *slightly* in the JSON file.
+- Create a JS file ([example](https://github.com/chartjs/Chart.js/blob/f7b671006a86201808402c3b6fe2054fe834fd4a/test/fixtures/controller.bubble/radius-scriptable.js)) or JSON file ([example](https://github.com/chartjs/Chart.js/blob/4b421a50bfa17f73ac7aa8db7d077e674dbc148d/test/fixtures/plugin.filler/fill-line-dataset.json)) that defines chart config and generation options. A JS file sets `module.exports`, as the existing ones do; it can use the globals `Chart`, `moment` and `triggerMouseEvent`.
+- Add this file in `test/fixtures/{area}/{feature-name}.json` (or `.js`), where `{area}` is an existing directory or a new one.
+- Run `pnpm run fixtures:update -t "{area}/{feature-name}$"`. It renders the selected fixtures in Chromium and writes the PNG of each one whose image is missing or differs, printing each file it writes. Without `-t` it does this for every fixture. (`-t` takes a regular expression, as described under [Building and Testing](#building-and-testing); the `$` keeps it from also selecting `{feature-name}-something`.)
+- Look at the written `test/fixtures/{area}/{feature-name}.png`: it should show the feature and nothing it does not test, with no tooltip or hover effect.
+- Run `pnpm run test-ci-vitest fixtures -t "{area}/{feature-name}$"`: the test should pass in both browsers.
+- Verify test relevancy by changing the feature values *slightly* in the config file: the test should then fail.
 
-Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them to pass between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust [`tolerance` and/or `threshold`](https://github.com/chartjs/Chart.js/blob/1ca0ffb5d5b6c2072176fd36fa85a58c483aa434/test/jasmine.matchers.js) at the beginning of the JSON file keeping them **as low as possible**.
+Only `pnpm run fixtures:update` writes images; every other run compares, and a fixture without a PNG fails with a message naming it. Run the update for a fixture whose image you mean to change, and look at each PNG it rewrites before committing it.
 
-When a test fails, the expected and actual images are shown. If you'd like to see the images even when the tests pass, set `"debug": true` in the JSON file.
+Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them to pass between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust `tolerance` (the accepted ratio of differing pixels) and/or `threshold` (how different a pixel must be to count) at the beginning of the config file, keeping them **as low as possible**.
+
+When a test fails, the actual, expected and difference images are logged to the browser console, where the Vitest UI (`pnpm run dev:vitest`) shows them. If you'd like to see the images of a test that passes, set `"debug": true` in the config file: the test then always fails and logs them. Remove it before committing.
 
 ## Bugs and Issues
 

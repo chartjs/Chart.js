@@ -1,5 +1,6 @@
-// What every Vitest config of this repository shares: the browsers and the page
-// size the specs and the reference images are run with.
+// What every Vitest config of this repository shares: the browsers, the page
+// size the specs and the reference images are run with, and the loader for the
+// CommonJS image fixtures.
 import {playwright} from '@vitest/browser-playwright';
 
 // Explicitly disable hardware acceleration to make image diff more stable,
@@ -27,3 +28,26 @@ export const browserProvider = playwright({
 // Karma ran the specs in a full browser window; Vitest's default is a phone
 // sized 414x896 frame, which is narrower than some charts the specs create.
 export const viewport = {width: 1024, height: 768};
+
+// The image fixtures in test/fixtures are CommonJS (`module.exports = {...}`),
+// the form Karma evaluated and the one fixtures in open pull requests use.
+// Vite serves source files as ES modules unchanged, so wrap each one to give
+// it a default export.
+const fixtureFile = /\/test\/fixtures\/.+\.js$/;
+
+export function commonjsFixtures() {
+  return {
+    name: 'chartjs-commonjs-fixtures',
+    enforce: 'pre',
+    transform(code, id) {
+      if (!fixtureFile.test(id.split('?')[0]) || !code.includes('module.exports')) {
+        return null;
+      }
+      // Prepended on the first line, so line numbers in errors stay the file's.
+      return {
+        code: 'const module = {exports: {}}; ' + code + '\nexport default module.exports;\n',
+        map: null
+      };
+    }
+  };
+}
