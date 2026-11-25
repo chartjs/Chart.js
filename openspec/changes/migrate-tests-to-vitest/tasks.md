@@ -39,9 +39,9 @@
 
 ## 5. P5: Free specs, controllers
 
-- [ ] 5.1 Record both test counts
-- [ ] 5.2 Rename and convert `controller.{bubble,polarArea,radar}`
-- [ ] 5.3 Confirm the counts
+- [x] 5.1 Record both test counts
+- [x] 5.2 Rename and convert `controller.{bubble,polarArea,radar}`
+- [x] 5.3 Confirm the counts
 
 ## 6. P6: Free specs, core
 

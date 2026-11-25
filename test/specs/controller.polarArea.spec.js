@@ -1,6 +1,4 @@
 describe('Chart.controllers.polarArea', function() {
-  describe('auto', jasmine.fixture.specs('controller.polarArea'));
-
   it('should update the scale correctly when data visibility is changed', function() {
     var expectedScaleMax = 1;
     var chart = window.acquireChart({
@@ -118,17 +116,17 @@ describe('Chart.controllers.polarArea', function() {
 
     var meta = chart.getDatasetMeta(0);
 
-    spyOn(meta.data[0], 'draw');
-    spyOn(meta.data[1], 'draw');
-    spyOn(meta.data[2], 'draw');
-    spyOn(meta.data[3], 'draw');
+    vi.spyOn(meta.data[0], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[1], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[2], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[3], 'draw').mockImplementation(() => {});
 
     chart.update();
 
-    expect(meta.data[0].draw.calls.count()).toBe(1);
-    expect(meta.data[1].draw.calls.count()).toBe(1);
-    expect(meta.data[2].draw.calls.count()).toBe(1);
-    expect(meta.data[3].draw.calls.count()).toBe(1);
+    expect(meta.data[0].draw.mock.calls.length).toBe(1);
+    expect(meta.data[1].draw.mock.calls.length).toBe(1);
+    expect(meta.data[2].draw.mock.calls.length).toBe(1);
+    expect(meta.data[3].draw.mock.calls.length).toBe(1);
   });
 
   it('should update elements when modifying data', function() {
@@ -166,13 +164,13 @@ describe('Chart.controllers.polarArea', function() {
       {o: 51, s: 0.5 * Math.PI, e: Math.PI},
       {o: 0, s: Math.PI, e: 1.5 * Math.PI}
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(256);
-      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(256);
-      expect(meta.data[i].innerRadius).withContext(i).toBeCloseToPixel(0);
-      expect(meta.data[i].outerRadius).withContext(i).toBeCloseToPixel(expected.o);
-      expect(meta.data[i].startAngle).withContext(i).toBe(expected.s);
-      expect(meta.data[i].endAngle).withContext(i).toBe(expected.e);
-      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x, `${i}`).toBeCloseToPixel(256);
+      expect(meta.data[i].y, `${i}`).toBeCloseToPixel(256);
+      expect(meta.data[i].innerRadius, `${i}`).toBeCloseToPixel(0);
+      expect(meta.data[i].outerRadius, `${i}`).toBeCloseToPixel(expected.o);
+      expect(meta.data[i].startAngle, `${i}`).toBe(expected.s);
+      expect(meta.data[i].endAngle, `${i}`).toBe(expected.e);
+      expect(meta.data[i].options, `${i}`).toEqual(expect.objectContaining({
         backgroundColor: 'rgb(255, 0, 0)',
         borderColor: 'rgb(0, 255, 0)',
         borderWidth: 1.2
@@ -240,13 +238,13 @@ describe('Chart.controllers.polarArea', function() {
       {o: 51, s: Math.PI, e: 1.5 * Math.PI},
       {o: 0, s: 1.5 * Math.PI, e: 2.0 * Math.PI}
     ].forEach(function(expected, i) {
-      expect(meta.data[i].x).withContext(i).toBeCloseToPixel(256);
-      expect(meta.data[i].y).withContext(i).toBeCloseToPixel(256);
-      expect(meta.data[i].innerRadius).withContext(i).toBeCloseToPixel(0);
-      expect(meta.data[i].outerRadius).withContext(i).toBeCloseToPixel(expected.o);
-      expect(meta.data[i].startAngle).withContext(i).toBe(expected.s);
-      expect(meta.data[i].endAngle).withContext(i).toBe(expected.e);
-      expect(meta.data[i].options).withContext(i).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].x, `${i}`).toBeCloseToPixel(256);
+      expect(meta.data[i].y, `${i}`).toBeCloseToPixel(256);
+      expect(meta.data[i].innerRadius, `${i}`).toBeCloseToPixel(0);
+      expect(meta.data[i].outerRadius, `${i}`).toBeCloseToPixel(expected.o);
+      expect(meta.data[i].startAngle, `${i}`).toBe(expected.s);
+      expect(meta.data[i].endAngle, `${i}`).toBe(expected.e);
+      expect(meta.data[i].options, `${i}`).toEqual(expect.objectContaining({
         backgroundColor: 'rgb(255, 0, 0)',
         borderColor: 'rgb(0, 255, 0)',
         borderWidth: 1.2
@@ -302,8 +300,10 @@ describe('Chart.controllers.polarArea', function() {
   });
 
   describe('Interactions', function() {
+    let chart;
+
     beforeEach(function() {
-      this.chart = window.acquireChart({
+      chart = window.acquireChart({
         type: 'polarArea',
         data: {
           labels: ['label1', 'label2', 'label3', 'label4'],
@@ -325,22 +325,20 @@ describe('Chart.controllers.polarArea', function() {
     });
 
     it('should handle default hover styles', async function() {
-      var chart = this.chart;
       var arc = chart.getDatasetMeta(0).data[0];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+      await triggerMouseEvent(chart, 'mousemove', arc);
       expect(arc.options.backgroundColor).toBe('#3187DD');
       expect(arc.options.borderColor).toBe('#175A9D');
       expect(arc.options.borderWidth).toBe(2);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+      await triggerMouseEvent(chart, 'mouseout', arc);
       expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(arc.options.borderWidth).toBe(2);
     });
 
     it('should handle hover styles defined via dataset properties', async function() {
-      var chart = this.chart;
       var arc = chart.getDatasetMeta(0).data[0];
 
       Chart.helpers.merge(chart.data.datasets[0], {
@@ -351,19 +349,18 @@ describe('Chart.controllers.polarArea', function() {
 
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+      await triggerMouseEvent(chart, 'mousemove', arc);
       expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
       expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
       expect(arc.options.borderWidth).toBe(8.4);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+      await triggerMouseEvent(chart, 'mouseout', arc);
       expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(arc.options.borderWidth).toBe(2);
     });
 
     it('should handle hover styles defined via element options', async function() {
-      var chart = this.chart;
       var arc = chart.getDatasetMeta(0).data[0];
 
       Chart.helpers.merge(chart.options.elements.arc, {
@@ -374,12 +371,12 @@ describe('Chart.controllers.polarArea', function() {
 
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+      await triggerMouseEvent(chart, 'mousemove', arc);
       expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
       expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
       expect(arc.options.borderWidth).toBe(8.4);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+      await triggerMouseEvent(chart, 'mouseout', arc);
       expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(arc.options.borderWidth).toBe(2);
@@ -407,7 +404,7 @@ describe('Chart.controllers.polarArea', function() {
     const {tooltip} = chart;
     const point = chart.getDatasetMeta(0).data[0];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(tooltip.title).toEqual(['Label 1']);
     expect(tooltip.body).toEqual([{
@@ -418,7 +415,7 @@ describe('Chart.controllers.polarArea', function() {
 
     chart.options.plugins.tooltip = {mode: 'dataset'};
     chart.update();
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(tooltip.title).toEqual(['Dataset 1']);
     expect(tooltip.body).toEqual([{
