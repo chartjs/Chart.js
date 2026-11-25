@@ -48,6 +48,30 @@ describe('Plugin.title', function() {
     expect(title.height).toEqual(34.4);
   });
 
+  [10, {top: 5, bottom: 15}].forEach(function(value) {
+    it('should resolve scriptable padding returning ' + JSON.stringify(value), function() {
+      var padding = jasmine.createSpy('padding').and.returnValue(value);
+      var chart = acquireChart({
+        type: 'line',
+        data: {datasets: []},
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              padding: padding
+            }
+          }
+        }
+      });
+
+      var context = padding.calls.mostRecent().args[0];
+      expect(context.chart).toBe(chart);
+      expect(context.type).toBe('chart');
+      expect(chart.titleBlock._padding.top).toBe(typeof value === 'number' ? value : value.top);
+      expect(chart.titleBlock._padding.bottom).toBe(typeof value === 'number' ? value : value.bottom);
+    });
+  });
+
   it('should update correctly when vertical', function() {
     var chart = {
       options: Chart.helpers.clone(Chart.defaults)
