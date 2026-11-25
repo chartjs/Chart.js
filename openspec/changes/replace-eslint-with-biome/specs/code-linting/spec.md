@@ -5,11 +5,11 @@ How the source of Chart.js is linted and formatted: which files the lint command
 ## ADDED Requirements
 
 ### Requirement: One lint command checks the code tree
-The repository SHALL provide one lint command that checks the library source, the test suite (specs, fixtures, helpers, integration checks and type tests), the documentation scripts and the documentation site's TypeScript, and that also runs the TypeScript type check. It SHALL NOT check Markdown files or the code examples inside them, the React integration example, build output or generated API pages.
+The repository SHALL provide one lint command that checks the library source, the test suite (specs, fixtures, helpers, integration checks and type tests), the documentation scripts, the documentation site's TypeScript and the root build and test configuration files, and that also runs the TypeScript type check. It SHALL NOT check Markdown files or the code examples inside them, the React integration example, build output or generated API pages.
 
 #### Scenario: Library and test code are checked
 - **WHEN** a contributor runs `pnpm lint`
-- **THEN** every JavaScript and TypeScript file of the library source, the test suite, the documentation scripts and the documentation site is checked
+- **THEN** every JavaScript and TypeScript file of the library source, the test suite, the documentation scripts, the documentation site and the root configuration files is checked
 - **AND** the type check runs as before
 
 #### Scenario: Markdown is not linted
@@ -53,11 +53,15 @@ The repository SHALL list the commit that reformatted the tree in a blame-ignore
 - **WHEN** a contributor views blame on GitHub, or runs `git blame` with the repository's ignore-revs file configured, for a line the reformat only re-indented
 - **THEN** the line shows the commit that last changed it before the reformat
 
-### Requirement: Library and test code stay within ES2018 syntax
-The lint command SHALL fail when library, test or documentation-script code uses the syntax or built-ins that the ES2018 guard of `eslint-plugin-es` rejects today, such as optional chaining, nullish coalescing, optional catch binding, BigInt, `globalThis` and newer regular-expression features, including in `RegExp` calls with literal arguments. Code of the documentation site, which is not shipped, SHALL be exempt.
+### Requirement: Library and test code stay within the syntax the build does not lower
+The lint command SHALL fail when library, test or documentation-script code uses the syntax or built-ins that the ES2018 guard of `eslint-plugin-es` rejects today, such as optional chaining, nullish coalescing, optional catch binding, BigInt, `globalThis` and newer regular-expression features, including in `RegExp` calls with literal arguments. It SHALL also fail on later syntax that the build does not lower: numeric separators, private class members, static blocks, logical assignment, `Object.hasOwn` and the regular-expression `d` flag. Code of the documentation site, which is not shipped, SHALL be exempt.
 
 #### Scenario: Optional chaining in library code
 - **WHEN** a library source file uses `a?.[b]`
+- **THEN** `pnpm lint` fails with an ES-version finding
+
+#### Scenario: Later syntax
+- **WHEN** a library source file uses `1_000` or `a ||= b`
 - **THEN** `pnpm lint` fails with an ES-version finding
 
 #### Scenario: Regular expression built at run time

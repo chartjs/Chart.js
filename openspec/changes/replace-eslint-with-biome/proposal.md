@@ -10,7 +10,10 @@ The repository lints with ESLint 8, which reached end of life in October 2024, t
 - **BREAKING (contributors):** inline suppressions become `// biome-ignore <rule>: <reason>`. `eslint-disable` comments stop working: 11 are converted, 32 dead ones are deleted.
 - **BREAKING (contributors):** code examples in Markdown files are no longer linted. `lint-md` goes away.
 - The ES2018 syntax guard stays, as a GritQL plugin in the repository instead of `eslint-plugin-es`, with a self-test so a Biome upgrade cannot silently disable it.
-- About 15 ESLint rules have no Biome equivalent, or only a broader one that is left off (design D6).
+- Four ESLint rules are replaced by their broader Biome counterparts, with about 100 lines of code changed to follow them. About 10 rules have no Biome equivalent and are lost (design D6).
+- Imports are sorted by Biome in a second mechanical commit after the reformat, also kept out of blame.
+- The root config files (`rollup.config.js`, `vitest.config.js`, `karma.conf.cjs`) are linted and formatted for the first time.
+- The guard also rejects ES2021+ syntax that the build does not lower, which ESLint never checked.
 - `eslint`, `eslint-config-chartjs`, `eslint-plugin-es`, `eslint-plugin-html`, `eslint-plugin-markdown` and both `@typescript-eslint` packages leave the dev dependencies; `@biomejs/biome` is added at an exact version.
 
 Nothing under `dist/` and nothing in the published package changes.
