@@ -1,3 +1,4 @@
+// Temporary: makes CI upload coverage for this pull request. Reverted before review.
 export * from './controllers/index.js';
 export * from './core/index.js';
 export * from './elements/index.js';
