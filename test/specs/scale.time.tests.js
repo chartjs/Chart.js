@@ -1372,4 +1372,193 @@ describe('Time scale tests', function() {
 
     expect(typeof callbackValue).toBe('number');
   });
+
+  it('should not create extra ticks for a single timeseries point', function() {
+    var timestamp = moment.utc('2023-01-15T00:00:00').valueOf();
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: [{x: timestamp, y: 4}]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            ticks: {
+              source: 'data'
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return tick.value;
+    })).toEqual([timestamp]);
+
+    var pixel = scale.getPixelForValue(timestamp);
+    expect(isFinite(pixel)).toBe(true);
+    expect(pixel).toBeGreaterThan(scale.left);
+    expect(pixel).toBeLessThan(scale.right);
+  });
+
+  it('should keep timeseries ticks at user bounds outside the data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['2017', '2019'],
+        datasets: [{data: [1, 2]}]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            min: '2012',
+            max: '2025',
+            time: {
+              parser: 'YYYY'
+            },
+            ticks: {
+              source: 'data'
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.x.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([
+      +moment('2012', 'YYYY'),
+      +moment('2017', 'YYYY'),
+      +moment('2019', 'YYYY'),
+      +moment('2025', 'YYYY')
+    ]);
+  });
+
+  it('should keep timeseries ticks at user bounds inside the data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [
+            {x: Date.UTC(2023, 0, 1), y: 1},
+            {x: Date.UTC(2023, 0, 10), y: 2}
+          ]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            min: Date.UTC(2023, 0, 4),
+            max: Date.UTC(2023, 0, 6),
+            ticks: {
+              source: 'data',
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.x.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([
+      Date.UTC(2023, 0, 4),
+      Date.UTC(2023, 0, 6)
+    ]);
+  });
+
+  it('should keep a finite inside pixel for a single timeseries point with bounds ticks', function() {
+    var timestamp = moment.utc('2023-01-15T00:00:00').valueOf();
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: [{x: timestamp, y: 4}]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            bounds: 'ticks',
+            ticks: {
+              source: 'data'
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return tick.value;
+    })).toEqual([timestamp]);
+
+    var pixel = scale.getPixelForValue(timestamp);
+    expect(isFinite(pixel)).toBe(true);
+    expect(pixel).toBeGreaterThan(scale.left);
+    expect(pixel).toBeLessThan(scale.right);
+  });
+
+  it('should keep a finite inside pixel for a single timeseries label with ticks source labels', function() {
+    var label = +moment('2023', 'YYYY');
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['2023'],
+        datasets: [{data: [4]}]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries',
+            bounds: 'ticks',
+            time: {
+              parser: 'YYYY'
+            },
+            ticks: {
+              source: 'labels'
+            }
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([label]);
+
+    var pixel = scale.getPixelForValue(label);
+    expect(isFinite(pixel)).toBe(true);
+    expect(pixel).toBeGreaterThan(scale.left);
+    expect(pixel).toBeLessThan(scale.right);
+  });
+
+  it('should generate min and max ticks for a timeseries scale with no data', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{data: []}]
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'timeseries'
+          }
+        }
+      }
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map(function(tick) {
+      return +tick.value;
+    })).toEqual([scale.min, scale.max]);
+  });
 });
