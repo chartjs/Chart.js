@@ -19,6 +19,7 @@ export interface ResolverCache<
   _storage?: T[number];
   _getTarget(): T[number];
   override<S extends AnyObject>(scope: S): ResolverProxy<(T[number] | S)[], T | R>
+  overridePrefixes<S extends AnyObject>(pref: string[]): ResolverProxy<(T[number] | S)[], T | R>
 }
 
 export type ResolverProxy<
@@ -50,8 +51,8 @@ export interface ContextCache<
   _subProxy: ResolverProxy<T, R>;
   _stack: Set<string>;
   _descriptors: Descriptor
-  setContext(ctx: AnyObject): ContextProxy<T, R>
-  override<S extends AnyObject>(scope: S): ContextProxy<(T[number] | S)[], T | R>
+  setContext(ctx: AnyObject, prefixes: string[]): ContextProxy<T, R>
+  override<S extends AnyObject>(scope: S, prefixes: string[]): ContextProxy<(T[number] | S)[], T | R>
 }
 
 export type ContextProxy<
