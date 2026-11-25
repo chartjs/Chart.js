@@ -46,10 +46,10 @@ Every set of generated ticks SHALL be strictly increasing (before `reverse` is a
 - **WHEN** the data is [-Number.MAX_VALUE, Number.MAX_VALUE]
 - **THEN** there are two ticks, at -Number.MAX_VALUE and Number.MAX_VALUE
 
-#### Scenario: The smallest number
+#### Scenario: A range just under a whole number of steps
 
-- **WHEN** the y axis has `bounds: 'data'` and the data is [0, Number.MIN_VALUE]
-- **THEN** the chart renders
+- **WHEN** the y axis has `bounds: 'data'` and the data is [0, 3200]
+- **THEN** the ticks include 3000 and the last tick is 3200
 
 ### Requirement: Data bounds follow the tick grid
 

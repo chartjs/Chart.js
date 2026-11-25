@@ -11,19 +11,19 @@ Linear and logarithmic axes choose tick values that ignore `stepSize` (#12165, #
 - Tick values on logarithmic axes: the first tick is never below the data minimum and never repeats.
 - Tick labels from the default numeric formatter:
   - a label has the digits needed to tell its tick from its neighbours and to state an off-grid bound, and no floating-point noise;
-  - scientific labels count digits on the significand;
-  - `ticks.precision` also caps the label's fraction digits.
+  - scientific labels count digits on the significand.
 - Which ticks autoskip keeps:
   - removing ticks whose label callback returns `null` takes one pass;
-  - with `sampleSize`, the label callback gets the index and the list of the full tick set;
   - evenly spaced major ticks are recognised also when the first major is the first tick, and the ticks between uneven majors are evenly spaced in whole steps;
   - the number of labels that fit is counted over the part of the axis the ticks cover;
-  - with `grid.offset`, grid lines stay on the boundaries between categories after skipping.
+  - with `grid.offset`, grid lines stay on the boundaries between the generated ticks after skipping or `null` labels.
 - New behaviour (minor release):
+  - `ticks.precision` also caps the label's fraction digits;
+  - the label callback runs once on every generated tick, with its index in the generated set; `sampleSize` only limits label measuring;
   - with `bounds: 'data'`, ticks sit on multiples of the spacing and the data bounds follow `ticks.includeBounds`, as user `min`/`max` do;
-  - a new option keeps the first and last tick when skipping;
+  - a new option, `ticks.autoSkipKeepEnds`, keeps the last tick when skipping;
   - on a linear axis, skipping keeps ticks that are nice multiples of the step, so `0` survives and `stepSize` multiples stay round.
-- **BREAKING** (5.0.0 only): the first and last ticks are kept by default when skipping.
+- **BREAKING** (5.0.0 only): `ticks.autoSkipKeepEnds` is on by default, so the last tick is kept when skipping.
 
 ## Capabilities
 
@@ -39,9 +39,9 @@ None.
 
 ## Impact
 
-- Code: `src/scales/scale.linearbase.js`, `src/scales/scale.logarithmic.js`, `src/core/core.ticks.js`, `src/helpers/helpers.math.ts`, `src/core/core.scale.autoskip.js`, `src/core/core.scale.js`, `src/core/core.scale.defaults.js`, `src/types/index.d.ts`.
-- Docs: `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/linear.md`, `docs/axes/cartesian/index.md`, `docs/axes/styling.md`, the 5.0 migration guide.
+- Code: `src/scales/scale.linearbase.js`, `src/scales/scale.logarithmic.js`, `src/core/core.ticks.js`, `src/helpers/helpers.math.ts`, `src/core/core.scale.autoskip.js`, `src/core/core.scale.js`, `src/core/core.scale.defaults.js`, `src/controllers/controller.bar.js`, `src/types/index.d.ts`.
+- Docs: `docs/axes/_common_ticks.md`, `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/linear.md`, `docs/axes/cartesian/index.md`, `docs/axes/styling.md`, `docs/general/performance.md`, the 5.0 migration guide.
 - Open pull requests taken in, with their authors credited: #12266, #12288, #12225, #12390, #12383 (with changes), #12401, #12287 (with changes). Superseded: #12185, #12237.
-- Image baselines change in the pieces that say so: one logarithmic fixture, the autoskip-major time fixture, bar charts that skip labels with `grid.offset`, and one `bounds: 'data'` fixture.
+- Image baselines change in the pieces that say so: one logarithmic fixture, the autoskip-major time fixture, bar charts that skip labels with `grid.offset`, and one `bounds: 'data'` fixture. Time axes with major ticks draw different ticks after the majors pieces, though no time tick value changes.
 - Radar and polar area charts use the linear rules through `radialLinear`.
-- Out of scope, for their own designs: time-scale tick generation (#11545, #12128, #11582, #11568), tick label placement (crossAlign, padding, rotation, ellipsis, wrapping), and logarithmic tick density and minor ticks (#11215, #5199, #5589, #11774).
+- Out of scope, for their own designs: time-scale tick generation (#11545, #12128, #11582, #11568; also week and weekday alignment between majors), tick label placement (crossAlign, padding, rotation, ellipsis, wrapping), and logarithmic tick density, given values and minor ticks (#11215, #5199, #5589, #10741, #11774). Also out: the formatter's locale default (#10982), `min` above `max` (#10745).

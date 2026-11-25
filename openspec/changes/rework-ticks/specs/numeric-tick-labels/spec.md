@@ -20,7 +20,7 @@ The default numeric formatter SHALL show enough fraction digits that ticks on th
 
 ### Requirement: A label states an off-grid tick exactly
 
-A tick that is not on the step's grid (a user or data bound, or a tick of a `count` grid) SHALL be labelled with the digits of its offset from the grid, read without floating-point noise. A tick within a millionth of a step of the grid SHALL be labelled as on the grid.
+A tick that is not on the step's grid (a user or data bound) SHALL be labelled with one fraction digit more than the grid's, or fewer when its value, read without floating-point noise, needs fewer. A tick within a millionth of a step of the grid, or within the floating-point spacing of its own value, SHALL be labelled as on the grid.
 
 #### Scenario: Bounds with more digits than the step
 
@@ -31,6 +31,11 @@ A tick that is not on the step's grid (a user or data bound, or a tick of a `cou
 
 - **WHEN** a y axis has `max: 12.000000001`
 - **THEN** the last label is "12"
+
+#### Scenario: Large values with a small step
+
+- **WHEN** a y axis has `min: 1700000000` and `max: 1700000001`
+- **THEN** every label has at most one fraction digit
 
 #### Scenario: Data bounds off the grid
 
