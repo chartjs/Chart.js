@@ -154,7 +154,7 @@ function minMaxDecimation(data, start, count, availableWidth) {
 }
 
 function cleanDecimatedDataset(dataset) {
-  if (dataset._decimated) {
+  if (dataset._decimated && !Object.isSealed(dataset)) {
     const data = dataset._data;
     delete dataset._decimated;
     delete dataset._data;
