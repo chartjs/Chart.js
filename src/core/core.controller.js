@@ -293,7 +293,7 @@ class Chart {
 
     callCallback(options.onResize, [this, newSize], this);
 
-    if (this.attached) {
+    if (this.attached && this.canvas) {
       if (mode === 'attach' || !this.chartArea) {
         // A delayed update is preceded by a draw of the current state. There is no such state
         // before the first update or after the chart was detached, so update right away.
@@ -943,6 +943,7 @@ class Chart {
     const {canvas, ctx} = this;
 
     this._stop();
+    this._doResize.cancel();
     this.config.clearCache();
 
     if (canvas) {
