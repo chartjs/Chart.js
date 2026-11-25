@@ -405,6 +405,132 @@ describe('Platform.dom', function() {
     });
   });
 
+  describe('shadow DOM attachment observers', function() {
+    it('should resize a responsive chart when its shadow host is attached, detached and reattached', async function() {
+      var wrapper = document.createElement('div');
+      var host = document.createElement('div');
+      var container = document.createElement('div');
+      var canvas = document.createElement('canvas');
+      container.style.cssText = 'width: 400px; height: 200px; position: relative';
+      container.appendChild(canvas);
+      host.attachShadow({mode: 'closed'}).appendChild(container);
+      wrapper.appendChild(host);
+      var chart = new Chart(canvas, {
+        type: 'line',
+        data: {labels: ['a', 'b'], datasets: [{data: [1, 2]}]},
+        options: {responsive: true, maintainAspectRatio: false, animation: false}
+      });
+      function settle() {
+        return new Promise(function(resolve) {
+          setTimeout(resolve, 100);
+        });
+      }
+      try {
+        expect(chart.attached).toBeFalse();
+        document.body.appendChild(wrapper);
+        await settle();
+        expect(chart.attached).toBeTrue();
+        expect(chart.width).toBe(400);
+        expect(chart.height).toBe(200);
+        wrapper.remove();
+        await settle();
+        expect(chart.attached).toBeFalse();
+        container.style.width = '500px';
+        document.body.appendChild(wrapper);
+        await settle();
+        expect(chart.attached).toBeTrue();
+        expect(chart.width).toBe(500);
+        expect(chart.height).toBe(200);
+      } finally {
+        chart.destroy();
+        wrapper.remove();
+      }
+    });
+
+    function flushMutations() {
+      return new Promise(function(resolve) {
+        setTimeout(resolve, 0);
+      });
+    }
+
+    ['open', 'closed'].forEach(function(mode) {
+      it('should observe attach and detach of a ' + mode + ' shadow host', async function() {
+        var platform = new DomPlatform();
+        var wrapper = document.createElement('div');
+        var host = document.createElement('div');
+        var root = host.attachShadow({mode: mode});
+        var canvas = document.createElement('canvas');
+        var chart = {canvas: canvas};
+        var attached = jasmine.createSpy('attached');
+        var detached = jasmine.createSpy('detached');
+        root.appendChild(canvas);
+        wrapper.appendChild(host);
+        platform.addEventListener(chart, 'attach', attached);
+        platform.addEventListener(chart, 'detach', detached);
+        try {
+          document.body.appendChild(wrapper);
+          await flushMutations();
+          expect(attached).toHaveBeenCalledTimes(1);
+          expect(detached).not.toHaveBeenCalled();
+          attached.calls.reset();
+          wrapper.remove();
+          await flushMutations();
+          expect(attached).not.toHaveBeenCalled();
+          expect(detached).toHaveBeenCalledTimes(1);
+        } finally {
+          platform.removeEventListener(chart, 'attach');
+          platform.removeEventListener(chart, 'detach');
+          wrapper.remove();
+        }
+      });
+    });
+
+    it('should observe nested hosts without reacting to unrelated or transient mutations', async function() {
+      var platform = new DomPlatform();
+      var host = document.createElement('div');
+      var nested = document.createElement('div');
+      var root = host.attachShadow({mode: 'closed'});
+      var canvas = document.createElement('canvas');
+      nested.attachShadow({mode: 'open'}).appendChild(canvas);
+      root.appendChild(nested);
+      var chart = {canvas: canvas};
+      var attached = jasmine.createSpy('attached');
+      var detached = jasmine.createSpy('detached');
+      var unrelated = document.createElement('div');
+      platform.addEventListener(chart, 'attach', attached);
+      platform.addEventListener(chart, 'detach', detached);
+      try {
+        document.body.appendChild(unrelated);
+        await flushMutations();
+        expect(attached).not.toHaveBeenCalled();
+        expect(detached).not.toHaveBeenCalled();
+        document.body.appendChild(host);
+        host.remove();
+        await flushMutations();
+        expect(attached).not.toHaveBeenCalled();
+        expect(detached).toHaveBeenCalledTimes(1);
+        detached.calls.reset();
+        document.body.appendChild(host);
+        await flushMutations();
+        expect(attached).toHaveBeenCalledTimes(1);
+        attached.calls.reset();
+        host.remove();
+        document.body.appendChild(host);
+        await flushMutations();
+        expect(attached).toHaveBeenCalledTimes(1);
+        expect(detached).not.toHaveBeenCalled();
+        host.remove();
+        await flushMutations();
+        expect(detached).toHaveBeenCalledTimes(1);
+      } finally {
+        platform.removeEventListener(chart, 'attach');
+        platform.removeEventListener(chart, 'detach');
+        host.remove();
+        unrelated.remove();
+      }
+    });
+  });
+
   describe('isAttached', function() {
     it('should detect detached when canvas is attached to DOM', function() {
       var platform = new DomPlatform();
