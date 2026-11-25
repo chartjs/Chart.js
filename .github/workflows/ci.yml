@@ -21,9 +21,6 @@ jobs:
       pull-requests: read  # for dorny/paths-filter to read pull requests
     runs-on: ${{ matrix.os }}
 
-    outputs:
-      coveralls: ${{ steps.changes.outputs.src }}
-
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -100,50 +97,14 @@ jobs:
       - name: Build VitePress docs
         if: steps.changes.outputs.docs == 'true'
         run: pnpm run docs:vitepress
-      - name: Coveralls Parallel - Chrome
+      # One report of every test runner's coverage, so that Coveralls posts
+      # the combined total only; a spec moving between runners leaves it as is.
+      - name: Coveralls
         if: |
           steps.changes.outputs.src == 'true' &&
           runner.os != 'Windows'
         uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.github_token }}
-          file: './coverage/chrome/lcov.info'
+          files: ./coverage/chrome/lcov.info ./coverage/firefox/lcov.info ./coverage/vitest/lcov.info
           coverage-reporter-version: v0.6.22
-          flag-name: ${{ matrix.os }}-chrome
-          parallel: true
-      - name: Coveralls Parallel - Firefox
-        if: |
-          steps.changes.outputs.src == 'true' &&
-          runner.os != 'Windows'
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
-        with:
-          github-token: ${{ secrets.github_token }}
-          file: './coverage/firefox/lcov.info'
-          coverage-reporter-version: v0.6.22
-          flag-name: ${{ matrix.os }}-firefox
-          parallel: true
-      - name: Coveralls Parallel - Vitest
-        if: |
-          steps.changes.outputs.src == 'true' &&
-          runner.os != 'Windows'
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
-        with:
-          github-token: ${{ secrets.github_token }}
-          file: './coverage/vitest/lcov.info'
-          coverage-reporter-version: v0.6.22
-          flag-name: ${{ matrix.os }}-vitest
-          parallel: true
-
-  finish:
-    permissions:
-      checks: write  # for coverallsapp/github-action to create new checks
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Finished
-        if: needs.build.outputs.coveralls == 'true'
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
-        with:
-          github-token: ${{ secrets.github_token }}
-          coverage-reporter-version: v0.6.22
-          parallel-finished: true
