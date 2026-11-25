@@ -14,6 +14,12 @@ if (!existsSync(new URL(bundle, import.meta.url))) {
 
 // No coverage: the bundle is minified, and the main suite measures the source.
 export default defineConfig({
+  // Its own dependency cache. Vitest puts each config's pre-bundled
+  // dependencies in <cacheDir>/vitest/<hash of the project name>, the same
+  // folder for both configs here. `pnpm test-ci` starts this suite beside the
+  // main one, and each would replace the other's pre-bundles while its browser
+  // loads them; the tester page then never becomes ready.
+  cacheDir: 'node_modules/.vite/umd',
   plugins: [commonjsFixtures()],
   test: {
     browser: {
