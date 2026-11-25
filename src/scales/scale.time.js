@@ -132,17 +132,23 @@ function determineMajorUnit(unit) {
 }
 
 /**
- * @param {object} ticks
- * @param {number} time
+ * Adds a time to the ascending list of tick timestamps.
+ * @param {number[]} ticks
+ * @param {number} time - not less than the times added before
  * @param {number[]} [timestamps] - if defined, snap to these timestamps
  */
 function addTick(ticks, time, timestamps) {
-  if (!timestamps) {
-    ticks[time] = true;
-  } else if (timestamps.length) {
+  let timestamp = time;
+  if (timestamps) {
+    if (!timestamps.length) {
+      return;
+    }
     const {lo, hi} = _lookup(timestamps, time);
-    const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
-    ticks[timestamp] = true;
+    timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
+  }
+  // The times come in ascending order, so a repeated timestamp is the last one added
+  if (ticks[ticks.length - 1] !== timestamp) {
+    ticks.push(timestamp);
   }
 }
 
@@ -160,7 +166,7 @@ function setMajorTicks(scale, ticks, map, majorUnit) {
   let major, index;
 
   for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
-    index = map[major];
+    index = map.get(major);
     if (index >= 0) {
       ticks[index].major = true;
     }
@@ -175,25 +181,25 @@ function setMajorTicks(scale, ticks, map, majorUnit) {
  * @return {object[]}
  */
 function ticksFromTimestamps(scale, values, majorUnit) {
-  const ticks = [];
-  /** @type {Object<number,object>} */
-  const map = {};
   const ilen = values.length;
-  let i, value;
+  const ticks = new Array(ilen);
+  let i;
 
   for (i = 0; i < ilen; ++i) {
-    value = values[i];
-    map[value] = i;
-
-    ticks.push({
-      value,
-      major: false
-    });
+    ticks[i] = {value: values[i], major: false};
+  }
+  if (ilen === 0 || !majorUnit) {
+    return ticks;
   }
 
   // We set the major ticks separately from the above loop because calling startOf for every tick
   // is expensive when there is a large number of ticks
-  return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
+  /** @type {Map<number, number>} */
+  const map = new Map();
+  for (i = 0; i < ilen; ++i) {
+    map.set(values[i], i);
+  }
+  return setMajorTicks(scale, ticks, map, majorUnit);
 }
 
 export default class TimeScale extends Scale {
@@ -444,6 +450,7 @@ export default class TimeScale extends Scale {
 	 * `minor` unit using the given scale time `options`.
 	 * Important: this method can return ticks outside the min and max range, it's the
 	 * responsibility of the calling code to clamp values if needed.
+	 * @return {number[]} the timestamps in ascending order, without duplicates
 	 * @protected
 	 */
   _generate() {
@@ -457,7 +464,7 @@ export default class TimeScale extends Scale {
     const stepSize = valueOrDefault(options.ticks.stepSize, 1);
     const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
     const hasWeekday = isNumber(weekday) || weekday === true;
-    const ticks = {};
+    const ticks = [];
     let first = min;
     let time, count;
 
@@ -483,8 +490,7 @@ export default class TimeScale extends Scale {
       addTick(ticks, time, timestamps);
     }
 
-    // @ts-ignore
-    return Object.keys(ticks).sort(sorter).map(x => +x);
+    return ticks;
   }
 
   /**
@@ -546,11 +552,15 @@ export default class TimeScale extends Scale {
 	 * @param {object[]} ticks
 	 */
   generateTickLabels(ticks) {
+    // Read the callback once: an options read per tick costs an allocation in the resolver
+    const formatter = this.options.ticks.callback;
     let i, ilen, tick;
 
     for (i = 0, ilen = ticks.length; i < ilen; ++i) {
       tick = ticks[i];
-      tick.label = this._tickFormatFunction(tick.value, i, ticks);
+      tick.label = formatter
+        ? call(formatter, [tick.value, i, ticks], this)
+        : this._tickFormatFunction(tick.value, i, ticks);
     }
   }
 

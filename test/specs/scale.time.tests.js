@@ -387,6 +387,24 @@ describe('Time scale tests', function() {
     });
   });
 
+  it('should mark the ticks at the start of the major unit when ticks.major is enabled', function() {
+    var scale = createScale({datasets: [{data: []}]}, {
+      min: '2015-01-01T22:00:00',
+      max: '2015-01-02T02:00:00',
+      time: {
+        unit: 'hour'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        }
+      }
+    });
+
+    expect(scale.ticks.map(t => t.value)).toEqual([22, 23, 24, 25, 26].map(h => moment('2015-01-01T00:00:00').add(h, 'hour').valueOf()));
+    expect(scale.ticks.map(t => t.major)).toEqual([false, false, true, false, false]);
+  });
+
   it('should get the correct label when time is specified as a string', function() {
     var chart = window.acquireChart({
       type: 'line',
