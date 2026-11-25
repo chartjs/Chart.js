@@ -54,7 +54,7 @@ The repository SHALL list the commit that reformatted the tree in a blame-ignore
 - **THEN** the line shows the commit that last changed it before the reformat
 
 ### Requirement: Library and test code stay within the syntax the build does not lower
-The lint command SHALL fail when library, test or documentation-script code uses the syntax or built-ins that the ES2018 guard of `eslint-plugin-es` rejects today, such as optional chaining, nullish coalescing, optional catch binding, BigInt, `globalThis` and newer regular-expression features, including in `RegExp` calls with literal arguments. It SHALL also fail on later syntax that the build does not lower: numeric separators, private class members, static blocks, logical assignment, `Object.hasOwn` and the regular-expression `d` flag. Code of the documentation site, which is not shipped, SHALL be exempt.
+The lint command SHALL fail when library, test or documentation-script code uses the syntax or built-ins that the ES2018 guard of `eslint-plugin-es` rejects today, such as optional chaining, nullish coalescing, optional catch binding, BigInt, `globalThis` and newer regular-expression features, including in `RegExp` calls with literal arguments. It SHALL also fail on later syntax that the build does not lower. Code of the documentation site, which is not shipped, SHALL be exempt.
 
 #### Scenario: Optional chaining in library code
 - **WHEN** a library source file uses `a?.[b]`
