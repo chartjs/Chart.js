@@ -12,8 +12,9 @@ rules:
   max-statements: ["warn", 50]
 
 overrides:
-  # Specs that run under Vitest (vitest.config.js, `globals: true`) and its setup.
-  - files: ['specs/**/*.spec.js', 'setup.js', 'vitest.shared.js']
+  # Specs that run under Vitest (vitest.config.js, `globals: true`) and its
+  # setup, and the smoke suite of the built bundle (vitest.umd.config.js).
+  - files: ['specs/**/*.spec.js', 'setup.js', 'vitest.shared.js', 'umd/**/*.spec.js', 'setup.umd.js']
     env:
       jasmine: false
     globals:
