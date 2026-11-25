@@ -1,0 +1,23 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Chart.js",
+  "entryPoints": ["../../src/types/index.d.ts"],
+  "tsconfig": "../../tsconfig.json",
+  "skipErrorChecking": true,
+  "plugin": [
+    "./node_modules/typedoc-plugin-markdown/dist/index.js",
+    "./node_modules/typedoc-vitepress-theme/dist/index.js"
+  ],
+  "docsRoot": "..",
+  "readme": "none",
+  "excludeExternals": true,
+  "includeVersion": true,
+  "membersWithOwnFile": ["Class", "Interface", "Enum"],
+  "githubPages": false,
+  "useCodeBlocks": true,
+  "sidebar": {
+    "autoConfiguration": true,
+    "format": "vitepress",
+    "pretty": true
+  }
+}

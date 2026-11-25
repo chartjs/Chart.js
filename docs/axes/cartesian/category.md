@@ -4,6 +4,14 @@ If the global configuration is used, labels are drawn from one of the label arra
 
 Specifying any of the settings above defines the x-axis as `type: 'category'` if not defined otherwise. For more fine-grained control of category labels, it is also possible to add `labels` as part of the category axis definition. Doing so does not apply the global defaults.
 
+`data.labels` applies to every category axis that has no `labels` of its own and no `xLabels` or `yLabels` for its orientation. `data.xLabels` applies to every horizontal axis and `data.yLabels` to every vertical one, so they give a horizontal axis different labels from a vertical one. To give a second axis of the same orientation its own labels, set its `labels` option.
+
+## Labels found in the data
+
+When the data holds a value that is not among the labels, such as `{x: 'March', y: 10}`, the axis adds it after the labels it was given, in data order. Each axis keeps the labels it adds to itself. They are not written to `data.labels`, `data.xLabels`, `data.yLabels` or the `labels` option, and other axes do not show them. Read the labels an axis uses with `chart.scales[scaleId].getLabels()`.
+
+The axis builds its labels again on every update, from the label arrays and the current data. After changing the labels or the data, call `chart.update()`.
+
 ## Category Axis Definition
 
 Globally:

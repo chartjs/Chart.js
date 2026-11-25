@@ -33,13 +33,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - name: Use Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26
           cache: pnpm
-      - uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad # v3.0.4
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           filters: |
@@ -55,6 +55,7 @@ jobs:
               - 'karma.conf.cjs'
               - 'vitest*.config.js'
               - 'package.json'
+              - 'pnpm-lock.yaml'
             types:
               - 'package.json'
               - 'tsconfig.json'
@@ -88,6 +89,17 @@ jobs:
         run: |
           pnpm run docs
           pnpm pack
+      # The VitePress site that will replace VuePress: checked until it does,
+      # so that a docs change cannot break it unnoticed.
+      - name: Type-check docs
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm run docs:typecheck
+      - name: Test docs site code
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm --filter chartjs-docs-vitepress test
+      - name: Build VitePress docs
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm run docs:vitepress
       - name: Coveralls Parallel - Chrome
         if: |
           steps.changes.outputs.src == 'true' &&

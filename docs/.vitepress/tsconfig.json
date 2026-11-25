@@ -3,12 +3,18 @@
   // app built by Vite, not part of the published library.
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    // Node runs theme/versions.test.ts without a compiler, which needs the
+    // .ts extension in its imports.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
+    "paths": {
+      "vitepress/dist/client/theme-default/components/*": ["./theme/vitepress-components.d.ts"]
+    },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,

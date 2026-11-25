@@ -20,13 +20,19 @@ The menu SHALL say which documentation is being read and whether it is current, 
 - **WHEN** the documentation being read is of an older version, even one that was the latest when it was built
 - **THEN** the menu is titled "x.y.z (outdated)"
 
+#### Scenario: A prerelease
+- **WHEN** the documentation being read is of a prerelease, published under `/docs/next/`
+- **THEN** the menu is titled "x.y.z-pre (next)" while npm tags that prerelease `next`, and "x.y.z-pre (outdated)" otherwise
+
 ### Requirement: Version menu entries
 
 The menu SHALL offer the development docs, the latest docs, the newest patch of every minor release from 2.6 on, and the release notes of the five latest releases.
 
 #### Scenario: Opening the menu
 - **WHEN** the reader opens the menu
-- **THEN** it lists Development (master), Latest version, one entry per minor release from 2.6 on, and the five latest releases' notes
+- **THEN** it lists Development (master), Latest version, one documentation entry per minor release from 2.6 on, and the notes of the five latest releases
+- **AND** a documentation entry carries the npm tag of its version when npm has one, such as "4.6.2 (latest)"
+- **AND** prereleases have no documentation entry, being published under `/docs/next/`, but the release notes include a prerelease newer than every release of its version
 
 #### Scenario: Picking a version
 - **WHEN** the reader picks another version
