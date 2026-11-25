@@ -1531,6 +1531,21 @@ describe('Chart.controllers.bar', function() {
             expect(meta.data[1].width).toBeCloseToPixel(10);
           }
         });
+
+        it('should correctly set bar width if minBarThickness is specified', function() {
+          var chart = this.chart;
+          var i, ilen, meta;
+
+          chart.data.datasets[0].minBarThickness = 1000;
+          chart.data.datasets[1].minBarThickness = 1000;
+          chart.update();
+
+          for (i = 0, ilen = chart.data.datasets.length; i < ilen; ++i) {
+            meta = chart.getDatasetMeta(i);
+            expect(meta.data[0].width).toBeCloseToPixel(1000);
+            expect(meta.data[1].width).toBeCloseToPixel(1000);
+          }
+        });
       });
     });
   });
