@@ -1,5 +1,5 @@
 import {getHoverColor} from '../helpers/helpers.color.js';
-import {isObject, merge, valueOrDefault} from '../helpers/helpers.core.js';
+import {_merger, isObject, merge, valueOrDefault} from '../helpers/helpers.core.js';
 import {applyAnimationsDefaults} from './core.animations.defaults.js';
 import {applyLayoutsDefaults} from './core.layouts.defaults.js';
 import {applyScaleDefaults} from './core.scale.defaults.js';
@@ -7,28 +7,73 @@ import {applyScaleDefaults} from './core.scale.defaults.js';
 export const overrides = Object.create(null);
 export const descriptors = Object.create(null);
 
+// Rejected even where they are own properties: `prototype` is own on a
+// function or class stored in the defaults, and the other two lead to a
+// prototype on any node.
+const UNSAFE_KEYS = ['__proto__', 'prototype', 'constructor'];
+
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
+/**
+ * A key may name an own property of the node or one it does not have yet, never
+ * one it inherits: the walk would leave the defaults through it.
+ * @param {*} node The node the key is read from, undefined when it does not exist yet
+ * @param {string} key
+ * @param {string} path The path to report
+ */
+function assertOwnOrNew(node, key, path) {
+  // `in` throws on a primitive, such as the string a path `color.length` reads
+  // `length` from; Object() wraps it.
+  if (UNSAFE_KEYS.includes(key) || (node && !hasOwn(node, key) && key in Object(node))) {
+    throw new Error(`Invalid defaults scope: ${path}`);
+  }
+}
+
+/**
+ * Checks every key of a path before anything is created, so that a rejected
+ * path leaves no empty scope behind.
+ * @param {object} node
+ * @param {string[]} keys
+ * @param {string} path
+ */
+function assertPath(node, keys, path) {
+  for (const key of keys) {
+    assertOwnOrNew(node, key, path);
+    node = node && node[key];
+  }
+}
+
+const splitScope = (scope) => (scope ? scope.split('.') : []);
+
 /**
  * @param {object} node
  * @param {string} key
  * @return {object}
  */
 function getScope(node, key) {
-  if (!key) {
-    return node;
-  }
-  const keys = key.split('.');
-  for (let i = 0, n = keys.length; i < n; ++i) {
-    const k = keys[i];
+  const keys = splitScope(key);
+  assertPath(node, keys, key);
+  for (const k of keys) {
     node = node[k] || (node[k] = Object.create(null));
   }
   return node;
 }
 
+/**
+ * Merges like `merge()`, but skips a key that the target inherits and does not
+ * own, so that the values cannot replace a method of the defaults.
+ */
+function skipInherited(key, target, source, options) {
+  if (hasOwn(target, key) || !(key in target)) {
+    _merger(key, target, source, options);
+  }
+}
+
 function set(root, scope, values) {
   if (typeof scope === 'string') {
-    return merge(getScope(root, scope), values);
+    return merge(getScope(root, scope), values, {merger: skipInherited});
   }
-  return merge(getScope(root, ''), scope);
+  return merge(getScope(root, ''), scope, {merger: skipInherited});
 }
 
 /**
@@ -128,9 +173,17 @@ export class Defaults {
 	 * @param {string} targetName The target name in the target scope the property should be routed to.
 	 */
   route(scope, name, targetScope, targetName) {
+    // The properties defined below cannot be removed, so check every name first.
+    const privateName = '_' + name;
+    const paths = [
+      splitScope(scope).concat(name),
+      splitScope(scope).concat(privateName),
+      splitScope(targetScope).concat(targetName)
+    ];
+    paths.forEach((keys) => assertPath(this, keys, keys.join('.')));
+
     const scopeObject = getScope(this, scope);
     const targetScopeObject = getScope(this, targetScope);
-    const privateName = '_' + name;
 
     Object.defineProperties(scopeObject, {
       // A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)
