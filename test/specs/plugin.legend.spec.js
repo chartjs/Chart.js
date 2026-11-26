@@ -1178,6 +1178,7 @@ describe('Legend block tests', function() {
         const count = laidOut ? 30 : 2;
         return Array.from({length: count}, (_, i) => ({text: 'item' + i, fillStyle: 'red'}));
       };
+      const fillText = vi.spyOn(CanvasRenderingContext2D.prototype, 'fillText');
 
       let chart;
       expect(function() {
@@ -1215,9 +1216,12 @@ describe('Legend block tests', function() {
       }).not.toThrow();
       expect(chart.legend.legendHitBoxes.length).toBe(2);
       expect(chart.legend.legendItems.length).toBe(30);
+
+      // Only the items that have a hit box are drawn.
+      const drawn = fillText.mock.calls.map(args => args[0]).filter(text => text.startsWith('item'));
+      expect(drawn).toEqual(['item0', 'item1']);
     });
   });
-
 
   describe('config update', function() {
     it('should update the options', function() {
@@ -1477,7 +1481,7 @@ describe('Legend block tests', function() {
       };
 
       try {
-        acquireChart({
+        var chart = acquireChart({
           type: 'bar',
           data: {
             labels: ['a', 'b'],
@@ -1512,6 +1516,10 @@ describe('Legend block tests', function() {
         expect(isNaN(drawn[0].x)).toBe(false);
         expect(drawn[1].text).toBe('Beta');
         expect(isNaN(drawn[1].x)).toBe(false);
+        // Beta stays on Alpha's row and inside the legend.
+        expect(drawn[1].y).toBe(drawn[0].y);
+        expect(drawn[1].x).toBeGreaterThan(drawn[0].x);
+        expect(drawn[1].x).toBeLessThanOrEqual(chart.legend.right);
       } finally {
         CanvasRenderingContext2D.prototype.measureText = origMeasureText;
         CanvasRenderingContext2D.prototype.fillText = origFillText;
@@ -1519,4 +1527,3 @@ describe('Legend block tests', function() {
     });
   });
 });
-
