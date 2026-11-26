@@ -158,6 +158,112 @@ describe('Chart.Config', function() {
       }
     });
 
+    it('should take the axis of a position in the defaults of the type', function() {
+      class LeftScale extends Chart.LinearScale {
+        static id = 'leftByDefault';
+        static defaults = {position: 'left'};
+      }
+      Chart.register(LeftScale);
+
+      try {
+        const chart = window.acquireChart({
+          type: 'line',
+          options: {
+            scales: {
+              foo: {type: 'leftByDefault'}
+            }
+          }
+        });
+
+        expect(chart.scales.foo.axis).toBe('y');
+      } finally {
+        Chart.unregister(LeftScale);
+      }
+    });
+
+    it('should take the radial axis of an rAxisID binding also for a type that is not radial', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3], rAxisID: 'foo'}]
+        },
+        options: {
+          scales: {
+            foo: {type: 'linear'}
+          }
+        }
+      });
+
+      expect(chart.options.scales.foo.axis).toBe('r');
+    });
+
+    it('should read the first letter of the id in either case', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          scales: {
+            Xfoo: {},
+            Yvalue: {}
+          }
+        }
+      });
+
+      expect(chart.scales.Xfoo.axis).toBe('x');
+      expect(chart.scales.Yvalue.axis).toBe('y');
+    });
+
+    it('should let axis decide before position', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          scales: {
+            foo: {axis: 'x', position: 'left'}
+          }
+        }
+      });
+
+      expect(chart.options.scales.foo.axis).toBe('x');
+    });
+
+    it('should decide the axis of a scale added after construction from its binding', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3], yAxisID: 'ramazan2'}]
+        }
+      });
+
+      chart.options.scales.ramazan2 = {type: 'linear'};
+      chart.update();
+
+      expect(chart.scales.ramazan2.axis).toBe('y');
+      expect(pointsAreFinite(chart, 0, 'y')).toBe(true);
+    });
+
+    it('should fail when an unbound scale added after construction is decided by nothing', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}]
+        }
+      });
+
+      chart.options.scales.rFoo = {type: 'linear'};
+
+      expect(() => chart.update()).toThrow(new Error(noAxisMessage('rFoo')));
+    });
+
     it('should fail with the documented message when nothing decides the axis', function() {
       function createChart() {
         return window.acquireChart({
