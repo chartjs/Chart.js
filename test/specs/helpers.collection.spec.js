@@ -10,6 +10,12 @@ describe('helpers.collection', function() {
     expect(_lookup(data, 9)).toEqual({lo: 2, hi: 3});
   });
 
+  it('Should do binary search with a custom compare', function() {
+    const data = [{v: 0}, {v: 2}, {v: 6}, {v: 9}];
+    expect(_lookup(data, 3, (index) => data[index].v < 3)).toEqual({lo: 1, hi: 2});
+    expect(_lookup(data, 9, (index) => data[index].v < 9)).toEqual({lo: 2, hi: 3});
+  });
+
   it('Should do binary search by key', function() {
     const data = [{x: 0}, {x: 2}, {x: 6}, {x: 9}];
     expect(_lookupByKey(data, 'x', 0)).toEqual({lo: 0, hi: 1});
