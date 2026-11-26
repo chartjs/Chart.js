@@ -434,6 +434,13 @@ describe('Chart', function() {
       expect(onClick.mock.calls[0][0].type).toBe('mouseup');
     });
 
+    it('should call onClick once on a right-click', async function() {
+      const {chart, onClick} = createChart(['contextmenu', 'mouseup', 'mousemove']);
+      await triggerMouseEvent(chart, 'contextmenu', chart.getDatasetMeta(0).data[1]);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(onClick.mock.calls[0][0].type).toBe('contextmenu');
+    });
+
     it('should not call onClick again when the chart updates after a press', async function() {
       const {chart, onClick} = createChart(['click', 'mouseup', 'mousedown', 'mousemove']);
       await pressPoint(chart);
