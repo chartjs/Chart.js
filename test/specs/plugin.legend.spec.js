@@ -1169,6 +1169,55 @@ describe('Legend block tests', function() {
     }
   });
 
+  ['top', 'right'].forEach(function(position) {
+    it('should draw a ' + position + ' legend whose generateLabels returns more items after the layout', function() {
+      // fit() runs during the layout and sees 2 items. afterUpdate builds the
+      // labels again and gets 30, so most of the drawn items have no hit box.
+      let laidOut = false;
+      const generateLabels = function() {
+        const count = laidOut ? 30 : 2;
+        return Array.from({length: count}, (_, i) => ({text: 'item' + i, fillStyle: 'red'}));
+      };
+
+      let chart;
+      expect(function() {
+        chart = acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['A'],
+            datasets: [{data: [1]}]
+          },
+          plugins: [{
+            id: 'growLabels',
+            beforeLayout() {
+              laidOut = false;
+            },
+            afterLayout() {
+              laidOut = true;
+            }
+          }],
+          options: {
+            responsive: false,
+            animation: false,
+            plugins: {
+              legend: {
+                position: position,
+                labels: {generateLabels: generateLabels}
+              }
+            }
+          }
+        }, {
+          canvas: {
+            width: 256,
+            height: 180
+          }
+        });
+      }).not.toThrow();
+      expect(chart.legend.legendHitBoxes.length).toBe(2);
+      expect(chart.legend.legendItems.length).toBe(30);
+    });
+  });
+
 
   describe('config update', function() {
     it('should update the options', function() {
