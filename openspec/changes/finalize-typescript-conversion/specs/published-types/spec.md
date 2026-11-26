@@ -46,6 +46,15 @@ The package SHALL let another package extend the chart type, scale type, plugin 
 - **WHEN** a package adds a chart type to `ChartTypeRegistry`
 - **THEN** `new Chart(ctx, {type: '<that type>', data})` type-checks
 
+### Requirement: Plugins and chart types can add update modes
+
+The package SHALL let another package add update modes by interface merging through `declare module 'chart.js'`, and every API that takes an update mode SHALL accept an added mode.
+
+#### Scenario: A plugin adds a mode
+
+- **WHEN** a plugin declares `interface UpdateModeRegistry { myMode: unknown }` in `declare module 'chart.js'`
+- **THEN** `chart.update('myMode')` type-checks, and `chart.update('notAMode')` is a type error
+
 ### Requirement: The declarations compile on the oldest supported TypeScript
 
 The published declarations SHALL compile with no errors on TypeScript 4.7.4 and on the newest TypeScript release, with `skipLibCheck` off, under both `moduleResolution: node` and `moduleResolution: nodenext`.
