@@ -8,19 +8,29 @@ import {isPatternOrGradient} from './helpers.color.js';
  * @typedef {{start: number, end: number, loop: boolean, style?: any}} Segment
  */
 
+const angleFns = {
+  between: _angleBetween,
+  compare: _angleDiff,
+  normalize: _normalizeAngle,
+};
+
+const valueFns = {
+  between: _isBetween,
+  compare: (a, b) => a - b,
+  normalize: x => x
+};
+
 function propertyFn(property) {
-  if (property === 'angle') {
-    return {
-      between: _angleBetween,
-      compare: _angleDiff,
-      normalize: _normalizeAngle,
-    };
-  }
-  return {
-    between: _isBetween,
-    compare: (a, b) => a - b,
-    normalize: x => x
-  };
+  return property === 'angle' ? angleFns : valueFns;
+}
+
+// Module-level, not closures in `_boundSegment`: a double captured by a closure is boxed on every write
+function shouldStart({between, compare}, inside, startBound, prevValue, value) {
+  return inside || (between(startBound, prevValue, value) && compare(startBound, prevValue) !== 0);
+}
+
+function shouldStop({between, compare}, inside, endBound, prevValue, value) {
+  return !inside || compare(endBound, value) === 0 || between(endBound, prevValue, value);
 }
 
 function normalizeSegment({start, end, count, loop, style}) {
@@ -81,18 +91,14 @@ export function _boundSegment(segment, points, bounds) {
 
   const {property, start: startBound, end: endBound} = bounds;
   const count = points.length;
-  const {compare, between, normalize} = propertyFn(property);
+  const fns = propertyFn(property);
+  const {compare, between, normalize} = fns;
   const {start, end, loop, style} = getSegment(segment, points, bounds);
 
   const result = [];
   let inside = false;
   let subStart = null;
   let value, point, prevValue;
-
-  const startIsBefore = () => between(startBound, prevValue, value) && compare(startBound, prevValue) !== 0;
-  const endIsBefore = () => compare(endBound, value) === 0 || between(endBound, prevValue, value);
-  const shouldStart = () => inside || startIsBefore();
-  const shouldStop = () => !inside || endIsBefore();
 
   for (let i = start, prev = start; i <= end; ++i) {
     point = points[i % count];
@@ -109,11 +115,11 @@ export function _boundSegment(segment, points, bounds) {
 
     inside = between(value, startBound, endBound);
 
-    if (subStart === null && shouldStart()) {
+    if (subStart === null && shouldStart(fns, inside, startBound, prevValue, value)) {
       subStart = compare(value, startBound) === 0 ? i : prev;
     }
 
-    if (subStart !== null && shouldStop()) {
+    if (subStart !== null && shouldStop(fns, inside, endBound, prevValue, value)) {
       result.push(normalizeSegment({start: subStart, end: i, loop, count, style}));
       subStart = null;
     }
