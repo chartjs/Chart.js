@@ -3,6 +3,7 @@ import {toPadding} from '../helpers/helpers.options.js';
 
 /**
  * @typedef { import('./core.controller.js').default } Chart
+ * @typedef { import('../types/layout.js').LayoutPosition } LayoutPosition
  */
 
 const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
@@ -261,8 +262,8 @@ function placeBoxes(boxes, chartArea, params, stacks) {
 /**
  * @interface LayoutItem
  * @typedef {object} LayoutItem
- * @prop {string} position - The position of the item in the chart layout. Possible values are
- * 'left', 'top', 'right', 'bottom', and 'chartArea'
+ * @prop {LayoutPosition} position - The position of the item in the chart layout: 'left', 'top',
+ * 'right', 'bottom', 'center', 'chartArea', or an object that places the item at a value of a scale
  * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
  * @prop {boolean} fullSize - if true, and the item is horizontal, then push vertical boxes down
  * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
