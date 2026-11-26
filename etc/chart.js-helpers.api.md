@@ -2164,8 +2164,8 @@ export function isArray<T = unknown>(value: unknown): value is T[];
 // @public (undocumented)
 export function _isBetween(value: number, start: number, end: number, epsilon?: number): boolean;
 
-// @public (undocumented)
-export function _isClickEvent(e: ChartEvent): boolean;
+// @public
+export function _isClickEvent(e: ChartEvent, events?: string[]): boolean;
 
 // @public (undocumented)
 export function _isDomSupported(): boolean;
