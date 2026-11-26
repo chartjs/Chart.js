@@ -697,6 +697,39 @@ describe('Chart.helpers.config', function() {
       });
     });
 
+    it('should not expose the array through objects in an array', function() {
+      const defaults = {
+        array: [{a: 'default'}]
+      };
+      const options = {
+        array: [{a: 1}, {a: 2}]
+      };
+      const resolver = _createResolver([options, defaults]);
+      const opts = _attachContext(resolver, {});
+
+      expect(Object.keys(opts.array[0])).toEqual(['a']);
+      expect(JSON.stringify(opts.array)).toEqual('[{"a":1},{"a":2}]');
+      expect(opts.array[0][1]).toBeUndefined();
+      expect(opts.array[0].length).toBeUndefined();
+    });
+
+    it('should not list the indexes of an array as keys of its items in plugin options', function() {
+      const options = {
+        ranges: [{prop: 1}, {prop: 2}]
+      };
+      // The descriptor defaults that plugin options are resolved with
+      const opts = _attachContext(_createResolver([options]), {}, undefined, {
+        scriptable: false,
+        indexable: false,
+        allKeys: true
+      });
+
+      expect(Object.keys(opts.ranges[0])).toEqual(['prop']);
+      expect(Object.keys(opts.ranges[1])).toEqual(['prop']);
+      expect(opts.ranges[1].prop).toBe(2);
+      expect(JSON.stringify(opts.ranges)).toEqual('[{"prop":1},{"prop":2}]');
+    });
+
     it('should call _fallback with proper value from array when descriptor is object', function() {
       const spy = vi.fn();
       const descriptors = {
