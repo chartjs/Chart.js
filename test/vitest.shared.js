@@ -3,8 +3,8 @@
 // CommonJS image fixtures.
 import {playwright} from '@vitest/browser-playwright';
 
-// Explicitly disable hardware acceleration to make image diff more stable,
-// with the same flags karma.conf.cjs uses.
+// Explicitly disable hardware acceleration to make image diff more stable, and
+// keep the page from being throttled while it runs in the background.
 // https://github.com/chartjs/Chart.js/pull/5629
 // Since FF 110 https://github.com/chartjs/Chart.js/issues/11164
 //
@@ -25,12 +25,12 @@ export const browserProvider = playwright({
   }
 });
 
-// Karma ran the specs in a full browser window; Vitest's default is a phone
-// sized 414x896 frame, which is narrower than some charts the specs create.
+// A desktop-sized page: Vitest's default is a phone sized 414x896 frame, which
+// is narrower than some charts the specs create.
 export const viewport = {width: 1024, height: 768};
 
 // The image fixtures in test/fixtures are CommonJS (`module.exports = {...}`),
-// the form Karma evaluated and the one fixtures in open pull requests use.
+// the form the existing ones and those in open pull requests use.
 // Vite serves source files as ES modules unchanged, so wrap each one to give
 // it a default export.
 const fixtureFile = /\/test\/fixtures\/.+\.js$/;

@@ -1,3 +1,5 @@
+import {readdirSync} from 'node:fs';
+import {sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createSaveFixtureImage} from 'chartjs-test-utils/node';
 import {defineConfig} from 'vitest/config';
@@ -7,8 +9,20 @@ import {browserProvider, commonjsFixtures, viewport} from './test/vitest.shared.
 // differ, rendered by Chromium. Without the command a fixture never writes.
 const updating = process.env.UPDATE_FIXTURES === '1';
 
-// Specs named `*.spec.js` run here; `*.tests.js` still run under Karma
-// (karma.conf.cjs) until they are converted.
+// Specs are named `*.spec.js`. A `*.tests.js` file is a Jasmine spec from
+// before the move to Vitest; no runner picks it up, so stop instead of letting
+// it pass unnoticed.
+const specsDir = fileURLToPath(new URL('./test/specs', import.meta.url));
+const unconverted = readdirSync(specsDir, {recursive: true})
+  .filter((file) => file.endsWith('.tests.js'))
+  .map((file) => `test/specs/${file.split(sep).join('/')}`);
+
+if (unconverted.length) {
+  throw new Error(
+    `Rename and convert these Jasmine specs to Vitest (*.spec.js), see "Converting a Jasmine spec" in docs/developers/contributing.md:\n  ${unconverted.join('\n  ')}`
+  );
+}
+
 export default defineConfig({
   plugins: [commonjsFixtures()],
   resolve: {
@@ -47,8 +61,8 @@ export default defineConfig({
       viewport
     },
     // Istanbul, not v8: v8 coverage is refused once a non-Chromium browser is
-    // configured. Its own directory, because Vitest cleans it and Karma writes
-    // coverage/chrome and coverage/firefox in the same run.
+    // configured. The Coveralls step in .github/workflows/ci.yml uploads
+    // coverage/vitest/lcov.info.
     coverage: {
       provider: 'istanbul',
       include: ['src/**'],
@@ -57,15 +71,15 @@ export default defineConfig({
       reporter: ['lcov', 'html', 'text-summary'],
       reportsDirectory: 'coverage/vitest'
     },
-    // Karma ran every spec in one page, one after the other; animation and
-    // resize specs need a page that is not throttled.
+    // One spec file at a time: animation and resize specs need a page that is
+    // not throttled.
     fileParallelism: false,
     globals: true,
     include: ['test/specs/**/*.spec.js'],
-    // Jasmine removed spies after each spec.
+    // Spies never leak from one test into the next.
     restoreMocks: true,
-    // Jasmine ran in random order; the seed is printed and can be replayed
-    // with --sequence.seed=<seed>.
+    // Random order, so that specs cannot depend on each other; the seed is
+    // printed and can be replayed with --sequence.seed=<seed>.
     sequence: {shuffle: true},
     setupFiles: ['test/setup.js']
   }

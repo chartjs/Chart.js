@@ -1,6 +1,3 @@
-env:
-  jasmine: true
-
 globals:
   acquireChart: true
   afterEvent: true
@@ -15,8 +12,6 @@ overrides:
   # Specs that run under Vitest (vitest.config.js, `globals: true`) and its
   # setup, and the smoke suite of the built bundle (vitest.umd.config.js).
   - files: ['specs/**/*.spec.js', 'setup.js', 'vitest.shared.js', 'umd/**/*.spec.js', 'setup.umd.js']
-    env:
-      jasmine: false
     globals:
       afterAll: readonly
       afterEach: readonly
@@ -38,5 +33,4 @@ overrides:
   # The classic web worker of the smoke suite (importScripts, postMessage).
   - files: ['umd/worker.js']
     env:
-      jasmine: false
       worker: true

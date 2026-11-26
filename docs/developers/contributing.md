@@ -22,32 +22,63 @@ Firstly, we need to ensure development dependencies are installed. With Node.js 
 > pnpm exec playwright install chromium firefox
 ```
 
-This will install the local development dependencies for Chart.js, and once, the browsers the Vitest specs run in.
+This will install the local development dependencies for Chart.js, and once, the browsers the specs run in.
 
 The following commands are now available from the repository root:
 
 ```bash
 > pnpm run build             // build dist files in ./dist
 > pnpm run autobuild         // build and watch for source changes
-> pnpm run dev               // run the Karma specs in Chrome and watch for source and test changes
+> pnpm run dev               // run the specs in Chromium and watch for source and test changes
 > pnpm run dev:ff            // the same in Firefox
-> pnpm run dev:vitest        // run the Vitest specs in Chromium and watch for source and test changes
 > pnpm run lint              // perform code linting (ESLint, tsc)
 > pnpm test                  // perform code linting and run all tests with coverage
-> pnpm run test-ci-karma     // run the Karma specs once, in Chrome and Firefox
-> pnpm run test-ci-vitest    // run the Vitest specs once, in Chromium and Firefox
+> pnpm run test-ci-vitest    // run the specs once, in Chromium and Firefox
 > pnpm run test-ci-umd       // run the smoke suite against dist/chart.umd.min.js, in Chromium and Firefox
 ```
 
-The test suite is moving from Karma and Jasmine to [Vitest](https://vitest.dev/) browser mode. Until that is done, both run, and the name of a spec file decides which one: `test/specs/*.tests.js` runs under Karma, `test/specs/*.spec.js` under Vitest. Vitest specs run against the source in `src/` with no build step, and use Vitest's API (`vi.spyOn`, `expect.objectContaining`, ...) instead of Jasmine's.
+The specs, `test/specs/*.spec.js`, run in [Vitest](https://vitest.dev/) browser mode, in Chromium and Firefox through Playwright. They run against the source in `src/` with no build step and use Vitest's API (`vi.spyOn`, `expect.objectContaining`, ...). The suite no longer offers local Safari or Edge runs, and watch mode no longer stops at the first failing spec; pass `--bail=1` to stop a run after the first failure.
 
 A small smoke suite in `test/umd` checks the built bundle instead of the source: that `dist/chart.umd.min.js` loads, has the whole `Chart` namespace, renders a few of the image fixtures and creates a chart in a web worker (`test/umd/worker.js`). Its config is `vitest.umd.config.js`. It, and the packages in `test/integration`, use the files in `dist`, so run `pnpm run build` before `pnpm test` or `pnpm run test-ci`, and again after changing the source; without a build the smoke suite stops and says so.
 
-`pnpm run dev`, `pnpm run dev:ff`, `pnpm run dev:vitest`, `pnpm run test-ci-karma` and `pnpm run test-ci-vitest` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugin` will start Karma in watch mode for `test/specs/**/*plugin*.tests.js`, and `pnpm run dev:vitest plugin` will do the same with Vitest for the `*.spec.js` files whose path contains `plugin`. `pnpm test` takes no such string.
+`pnpm run dev`, `pnpm run dev:ff` and `pnpm run test-ci-vitest` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugin` will start watch mode for the `*.spec.js` files whose path contains `plugin`. `pnpm test` takes no such string.
 
-All image-based tests run under Vitest from the one file `test/specs/fixtures.spec.js`, so a file name does not select them. Filter by test name with `-t` instead. Each fixture test is named after its path under `test/fixtures` without the extension (`scale.time/ticks-round`), in a group named after its top-level directory. `-t` takes a regular expression and runs every test whose full name contains a match, so `-t scale.time` runs `scale.timeseries` too. Include the slash to select one directory: `pnpm run dev:vitest fixtures -t "scale\.time/"` runs the fixtures in `test/fixtures/scale.time` and its subdirectories, and `-t "controller\.bar/stacking/"` only those in `test/fixtures/controller.bar/stacking`. End with `$` to select one fixture: `-t "scale\.time/ticks-round$"`.
+All image-based tests run from the one file `test/specs/fixtures.spec.js`, so a file name does not select them. Filter by test name with `-t` instead. Each fixture test is named after its path under `test/fixtures` without the extension (`scale.time/ticks-round`), in a group named after its top-level directory. `-t` takes a regular expression and runs every test whose full name contains a match, so `-t scale.time` runs `scale.timeseries` too. Include the slash to select one directory: `pnpm run dev fixtures -t "scale\.time/"` runs the fixtures in `test/fixtures/scale.time` and its subdirectories, and `-t "controller\.bar/stacking/"` only those in `test/fixtures/controller.bar/stacking`. End with `$` to select one fixture: `-t "scale\.time/ticks-round$"`.
 
 Vitest runs the tests in a random order and prints the seed it used (`Running tests with seed "..."`). To repeat an order, pass the seed: `pnpm run test-ci-vitest --sequence.seed=<seed>`.
+
+### Converting a Jasmine spec
+
+The specs used to run under Karma and Jasmine and were named `test/specs/*.tests.js`. A branch that still has such a file fails every test command, which names the file. Rename it with `git mv test/specs/x.tests.js test/specs/x.spec.js` and replace the Jasmine idioms as in the table below. The globals `Chart`, `moment`, `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize`, `createMockContext` and `triggerMouseEvent` still exist, so a converted spec needs no imports.
+
+| Jasmine | Vitest |
+| --- | --- |
+| `describe('auto', jasmine.fixture.specs('x'))` | delete the line: `test/specs/fixtures.spec.js` runs every fixture |
+| `jasmine.triggerMouseEvent(` | `triggerMouseEvent(` |
+| `spyOn(o, 'm')` | `vi.spyOn(o, 'm').mockImplementation(() => {})` |
+| `spyOn(o, 'm').and.callThrough()` | `vi.spyOn(o, 'm')` |
+| `jasmine.createSpy(...)` | `vi.fn()` |
+| `jasmine.createSpy(...).and.returnValue(v)` | `vi.fn(() => v)` |
+| `.calls.count()` / `.calls.argsFor(i)` / `.calls.first().args` / `.calls.all()` / `.calls.reset()` | `.mock.calls.length` / `.mock.calls[i]` / `.mock.calls[0]` / `.mock.calls` / `.mockClear()` |
+| `.calls.mostRecent().args` | `.mock.lastCall` |
+| `.calls.first().object` | `.mock.contexts[0]` |
+| `.calls.all()[i].object` | `.mock.contexts[i]` |
+| `jasmine.objectContaining` / `jasmine.any` | `expect.objectContaining` / `expect.any` |
+| `toBeTrue()` / `toBeFalse()` | `toBe(true)` / `toBe(false)` |
+| `expect(x).withContext(m)` | `expect(x, m)` |
+| `expect(x).withContext(i)` with a number `i` | ``expect(x, `${i}`)`` |
+| `function(done)` | an `async` test awaiting a Promise; `done.fail(m)` rejects |
+| `fail(m)` | `expect.unreachable(m)` |
+| `fail(m)` in a callback that must not run | a flag the callback sets, and `expect(flag, m).toBe(false)` after the wait (a throw from an observer or timer callback is not attributed to the test) |
+| `pending()` | `ctx.skip()` |
+| `this.x` in hooks and tests | a `let` in the enclosing `describe` |
+| `jasmine.addMatchers({...})` | `expect.extend({...})` in that spec |
+| `jasmine.clock().withMock(fn)` | `vi.useFakeTimers({toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']})`, then the body in `try { ... } finally { vi.useRealTimers(); }` (Vitest's default would also fake `requestAnimationFrame` and stall the animations) |
+| `jasmine.clock().tick(n)` | `vi.advanceTimersByTime(n)` |
+| `toBe(0)` / `toEqual(0)` on a value that can be -0 | `toBeCloseTo(0)` (Vitest's `toBe` and `toEqual` use `Object.is`) |
+| `toBeGreaterThan(m)` / `toBeLessThan(m)` and the other comparison matchers given a non-number such as a moment | pass `m.valueOf()` (Vitest requires a number or bigint) |
+
+`toEqual` stays `toEqual`. A spy records the `this` it was called with as passed, so a call with `this` of `undefined` records `undefined`, not `window`.
 
 ### Documentation
 
@@ -76,7 +107,7 @@ Only `pnpm run fixtures:update` writes images; every other run compares, and a f
 
 Tests should pass in both browsers. In general, we've hidden all text in image tests since it's quite difficult to get them to pass between different browsers. As a result, it is recommended to hide all scales in image-based tests. It is also recommended to disable animations. If tests still do not pass, adjust `tolerance` (the accepted ratio of differing pixels) and/or `threshold` (how different a pixel must be to count) at the beginning of the config file, keeping them **as low as possible**.
 
-When a test fails, the actual, expected and difference images are logged to the browser console, where the Vitest UI (`pnpm run dev:vitest`) shows them. If you'd like to see the images of a test that passes, set `"debug": true` in the config file: the test then always fails and logs them. Remove it before committing.
+When a test fails, the actual, expected and difference images are logged to the browser console, where the Vitest UI (`pnpm run dev`) shows them. If you'd like to see the images of a test that passes, set `"debug": true` in the config file: the test then always fails and logs them. Remove it before committing.
 
 ## Bugs and Issues
 

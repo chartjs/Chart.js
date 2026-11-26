@@ -1,4 +1,5 @@
-// Vitest counterpart of test/index.js, which sets up the specs Karma runs.
+// Setup of the Vitest specs in test/specs (vitest.config.js): the Chart built
+// from source, the date adapter and the globals the specs and fixtures use.
 import {acquireChart, afterEvent, createMockContext, releaseChart, setup, triggerMouseEvent, waitForResize} from 'chartjs-test-utils';
 import moment from 'moment-timezone';
 import Chart from '../src/index.umd.ts';
