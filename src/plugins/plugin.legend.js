@@ -615,7 +615,7 @@ function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
 function calculateItemWidth(legendItem, boxWidth, labelFont, ctx) {
   const legendItemText = legendItem.text;
   const textWidth = isArray(legendItemText)
-    ? legendItemText.reduce((width, line) => Math.max(width, ctx.measureText(line).width), 0)
+    ? Math.max(0, ...legendItemText.map(line => ctx.measureText(line).width))
     : ctx.measureText(legendItemText).width;
   return boxWidth + (labelFont.size / 2) + textWidth;
 }
