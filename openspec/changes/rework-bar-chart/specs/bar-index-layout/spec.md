@@ -66,6 +66,11 @@ When any bar dataset of the same type on the index scales that share a range has
 - **WHEN** `skipNull` is set in the chart options and one of two datasets is null at a category
 - **THEN** the other dataset's bar takes the whole category, as before
 
+#### Scenario: Several entries at one category
+
+- **WHEN** dataset A has `skipNull: true` and data `[{x: 'a', y: 1}]`, and dataset B has data `[{x: 'a', y: null}, {x: 'a', y: 2}]`
+- **THEN** A and B each take one slot at 'a' and their bars do not overlap
+
 ### Requirement: Layout cost
 
 Placing a bar SHALL NOT take time proportional to the number of bars in other datasets.
@@ -74,6 +79,11 @@ Placing a bar SHALL NOT take time proportional to the number of bars in other da
 
 - **WHEN** three datasets of 1000 points each have `skipNull` set
 - **THEN** the chart updates without searching the other datasets' data for each bar
+
+#### Scenario: Many datasets
+
+- **WHEN** a chart has 1000 bar datasets of one point each
+- **THEN** placing a bar does not go through the list of datasets again for each bar
 
 ### Requirement: Minimum bar thickness
 

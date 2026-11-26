@@ -1,6 +1,6 @@
 ## Why
 
-The bar controller works out where each bar goes on the index axis once per dataset, and each bar walks every other dataset again to find its slot. The datasets disagree when they differ: bars overlap, shrink or leave holes (#12262, #10193, #11101), and charts with many points and `skipNull` slow down by the square of their size. On the value axis, which end of a stack a bar is on is guessed from dataset 0 and is not updated when a dataset is hidden. So rounded stacks lose their corners (#11721, #10245), `minBarLength` leaves gaps in stacks (#11515), floating bars are moved by the stack (#12197), and bars cut off by the axis cannot be hovered (#11733).
+The bar controller works out where each bar goes on the index axis once per dataset, and each bar walks every other dataset again to find its slot. The datasets disagree when they differ: bars overlap, shrink or leave holes (#12262, #10193, #11101, #11361), and charts with many datasets, or many points and `skipNull`, slow down by the square of their size (#12000). On the value axis, which end of a stack a bar is on is guessed from dataset 0 and is not updated when a dataset is hidden. So rounded stacks lose their corners (#11721, #10245), `minBarLength` leaves gaps in stacks (#11515), floating bars are moved by the stack (#12197), and bars cut off by the axis cannot be hovered (#11733).
 
 ## What Changes
 

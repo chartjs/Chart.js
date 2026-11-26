@@ -20,8 +20,8 @@
 
 ## 5. P5: The index layout module
 
-- [ ] 5.1 New `test/specs/controller.bar.layout.spec.js`. With 3 datasets × 1000 points and `skipNull`, `meta._parsed.find` is called 0 times; it fails on master (18 000). A spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` the way chartjs-chart-financial does.
-- [ ] 5.2 Open the samples of #11361 and #12000 in a browser. Claim an issue only with a failing input whose cause is in this layout.
+- [ ] 5.1 New `test/specs/controller.bar.layout.spec.js`. With 1000 datasets of one point each, `getMatchingVisibleMetas` and `_getAxis` are called at most a few times per scale in an update; master calls them 2003 and 2000 times. With 3 datasets × 1000 points and `skipNull`, `meta._parsed.find` is called 0 times; it fails on master (18 000). A spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` the way chartjs-chart-financial does.
+- [ ] 5.2 The pull request says `Closes #12000`; its closing comment explains sub-pixel slots and an explicit `barThickness` (design D13).
 - [ ] 5.3 New `src/controllers/controller.bar.layout.ts` with `ScaleLayout`, `BandLayout`, `getScaleLayout` and `getBandLayout` (design D2); move `getAllScaleValues` and `computeMinSampleSize` there, with rework-ticks P16's change if it has merged. Values are keyed by type; add a release-note line for two bar-derived types on one scale. Cache it in `scale._cache.$barLayout` and drop it in `configure()`.
 - [ ] 5.4 `_getStacks`, `_getStackCount`, `_getStackIndex`, `_getRuler` and `_calculateBarIndexPixels` read the layout and return what they returned before, including today's `_getAxis` count. All bar specs and fixtures are unchanged.
 
@@ -38,8 +38,8 @@
 
 ## 8. P8: A null frees its slot when skipNull is on in the band
 
-- [ ] 8.1 Layout specs: A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]` give A and B two equal slots at 'a' (master overlaps them); A `{skipNull: true, [1, 2]}`, B `[null, 3]` keep A full width at index 0, as on master.
-- [ ] 8.2 `groupsAt` drops the groups whose value is null, undefined or NaN when any dataset of the type in the band has `skipNull` (design D6). Update the `skipNull` row in `docs/charts/bar.md` to say so. The `skipNull/*` fixtures are unchanged.
+- [ ] 8.1 Layout specs: A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]` give A and B two equal slots at 'a' (master overlaps them); A `{skipNull: true, [{x: 'a', y: 1}]}` and B `[{x: 'a', y: null}, {x: 'a', y: 2}]` give two slots (master draws both across the category); A `{skipNull: true, [1, 2]}`, B `[null, 3]` keep A full width at index 0, as on master.
+- [ ] 8.2 `groupsAt` drops the groups whose value is null, undefined or NaN when any dataset of the type in the band has `skipNull` (design D6). A dataset with several entries at one value takes a slot when any of them has a value. Update the `skipNull` row in `docs/charts/bar.md` to say so. The `skipNull/*` fixtures are unchanged. The pull request says `Closes #11361`; its comment answers the number-x case (design D13).
 
 ## 9. P9: Zero-length bars draw nothing
 

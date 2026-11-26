@@ -136,7 +136,7 @@ A controller that extends bar with another id keeps its own slot list. chartjs-c
 ### D6. Flex uses the scale's values; a null frees its slot when skipNull is on in the band
 
 - Flex neighbours are the previous and next entries of the scale's `values`.
-- A null, undefined or NaN value frees its dataset's slot at that index value when any dataset of the type in the band has `skipNull`, and every dataset at that value sees the same slots. Chart-wide `skipNull` and `skipNull` on the dataset that should widen (master's reading) both give the same output as today; the overlap of mixed settings goes away. Rejected (review): freeing only the holder's own null, which changes charts where `skipNull` is set on the dataset that should widen.
+- A null, undefined or NaN value frees its dataset's slot at that index value when any dataset of the type in the band has `skipNull`, and every dataset at that value sees the same slots. A dataset that has several entries at one index value takes a slot there when any of them has a value; master looks only at the first entry, so a null first entry hid a slot that a later entry then drew into (#11361). Chart-wide `skipNull` and `skipNull` on the dataset that should widen (master's reading) both give the same output as today; the overlap of mixed settings goes away. Rejected (review): freeing only the holder's own null, which changes charts where `skipNull` is set on the dataset that should widen.
 
 ### D7. Stack ends are a module, computed per stack on first read
 
@@ -206,6 +206,16 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 - **Interactions:** P16 also moves the tooltip anchor of a cut-off bar. P17 states its rule and keeps radar unchanged. P18 is for bars only (D12), because for points it changes ties and close points.
 - **Issue outcomes:** #11254 is answered (won't do), not closed by a fix. #11730 and #11290 are advanced by P13. Ten issues without an outcome got one (Non-Goals and the close list).
 
+### D13. Causes of #11361 and #12000, found without their samples (2026-11-26)
+
+The samples could not be opened, so the causes were found by running master f92cce77 in Node with a stub canvas and fuzzing the layout: 3000 random charts of two or three datasets with `{x, y}` data, shared and unshared x values in any order, with and without `skipNull`, `labels` and null values.
+
+- **#11361.** Without a repeated x value in one dataset, no chart had overlapping bars or a wrongly placed slot. Two inputs give the reported symptoms:
+  - With `skipNull`, `_getStacks` checks another dataset with `meta._parsed.find`, which returns only the first entry at the x value. A: `[{x: 'a', y: 1}]` and B: `[{x: 'a', y: null}, {x: 'a', y: 2}]` put both bars across the whole category. P8's rule (D6) gives them two slots; P8 completes the issue.
+  - A number x on a category axis that is not one of the labels (string labels, or `'564'` in another dataset) is placed at its data index: `findOrAddLabel` in `scale.category.js` falls back to it. `{x: 2010}` at index 0 is drawn under the first label. This is the category scale's parsing, outside this change; the closing comment answers it.
+  - The empty slot beside a lone bar is master's behaviour without `skipNull`, and with `skipNull` when the other value is 0.
+- **#12000.** With no explicit `barThickness`, no input overlapped: 3 to 5 datasets of 300 to 5000 points on category and linear axes, irregular linear x values, and 300 to 3000 datasets of one point each. Every category keeps a slot per dataset, so 3000 datasets make bars 0.03 px wide, which draws as an empty chart. `barThickness: 10` with 300 datasets overlaps 63 of 300 bars, as set. The layout time grows with the square of the dataset count: 72 ms at 300 datasets, 2593 ms at 3000, spent in the per-bar `_getAxis` and `_getStacks` loops over all datasets. With `skipNull` it also grows with the square of the point count (2003 ms for 5 × 5000). P5 computes this once per scale and completes the issue; the sub-pixel slots and the explicit thickness are answered on it.
+
 ## Risks / Trade-offs
 
 - Every piece from P4 on edits `controller.bar.ts`, so P4 to P15, P19 and P20 are built one after another. Only P1 to P3 and P16 to P18 run beside them.
@@ -222,10 +232,10 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 | P2 | refactor: `element.bar.js` in TypeScript | `src/elements/element.bar.js` → `.ts` | none: `tsc`, `pnpm lint-types` and every bar fixture unchanged | ~150 | | | |
 | P3 | docs: bar borders are fills; `borderDash` does not apply | `docs/charts/bar.md` | none (docs) | ~10 | | | #11341 |
 | P4 | refactor: `controller.bar.js` in TypeScript | `src/controllers/controller.bar.js` → `.ts` | none: `tsc`, every bar spec and fixture unchanged | ~350 | P1, P2, #12334, #12331 | | |
-| P5 | refactor: the index layout module; the private methods read it with today's results | `controller.bar.layout.ts` (new), `controller.bar.ts`, `test/specs/controller.bar.layout.spec.js` (new) | 3 datasets × 1000 points with `skipNull`: `meta._parsed.find` called 18 000 times on master, expect 0; a spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` as financial does; all fixtures unchanged | ~300 | P4; rework-ticks P16 if it is in flight (D10) | | |
+| P5 | perf: the index layout module; the private methods read it with today's results | `controller.bar.layout.ts` (new), `controller.bar.ts`, `test/specs/controller.bar.layout.spec.js` (new) | 1000 datasets of one point each: `getMatchingVisibleMetas` called 2003 times and `_getAxis` 2000 times per update on master, expect at most a few per scale; 3 datasets × 1000 points with `skipNull`: `meta._parsed.find` called 18 000 times on master, expect 0; a spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` as financial does; all fixtures unchanged | ~300 | P4; rework-ticks P16 if it is in flight (D10) | | #12000 |
 | P6 | fix: index scales with the same range share the slots | `controller.bar.layout.ts`, `controller.bar.ts`, layout spec, 3 fixtures | stacked `x`/`x2` (`stack: 'g'`), one bar each: 0.36 × own category, off-centre on master, expect 0.72 ×; overlaid `x` {a, b} + `x2` {c}: the x2 bar twice as wide on master, expect equal; overlaid category `x` [a, b, c] and `x2` [c, b, a], one bar each: two slots per category, each bar at its own label; `stacked-and-multiple-axis` unchanged | ~170 | P5 | | |
 | P7 | fix: flex neighbours from all bars on the scale | `controller.bar.layout.ts`, layout spec | labels A, B, C at 300 px, dataset 0 `[{x:'B', y:5}]`, dataset 1 `[1, 2, 3]`, flex, percentages 1: dataset 0 spans 0-150 px on master, expect 100-150; two items at one category: thickness 0 on master, expect the share | ~80 | P6 | | #10193, #11101 |
-| P8 | fix: a null frees its slot for every dataset when skipNull is on in the band | `controller.bar.layout.ts`, `docs/charts/bar.md`, layout spec | A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]`: A and B overlap at 'a' on master, expect two equal slots for A and B; A `{skipNull: true, [1, 2]}`, B `[null, 3]`: A full width at index 0 (as master); skipNull fixtures unchanged | ~80 | P7 | | |
+| P8 | fix: a null frees its slot for every dataset when skipNull is on in the band | `controller.bar.layout.ts`, `docs/charts/bar.md`, layout spec | A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]`: A and B overlap at 'a' on master, expect two equal slots for A and B; A `{skipNull: true, [{x: 'a', y: 1}]}`, B `[{x: 'a', y: null}, {x: 'a', y: 2}]`: both bars span the whole category on master, expect two slots; A `{skipNull: true, [1, 2]}`, B `[null, 3]`: A full width at index 0 (as master); skipNull fixtures unchanged | ~80 | P7 | | #11361 |
 | P9 | fix: zero-length bars draw nothing | `controller.bar.ts`, `test/specs/controller.bar.value.spec.js` (new) | `barThickness: 10`, `[5, 0]`: `inflateAmount` 0.33 on master, expect 0; same after `toggleDataVisibility(1)` | ~50 | P6 | | #11714 |
 | P10 | fix: stack ends from the visible segments of the bar's type | `controller.bar.stacks.ts` (new), `controller.bar.ts`, value spec | `middle`, radius 12, `[[10, 10], [null, 10]]`: dataset 0 skips `bottom` on master, expect none; default `'start'`, `[[10], [10]]`, `hide(1)`: dataset 0 `enableBorderRadius` false, expect true; `middle`, `hide(1)`: `{top: true}`, expect `{}`; a bar and a line with one `stack` name: the bar keeps its rounded top; #12335's cases | ~270 | P9 | | #11721, #10245 |
 | P11 | fix: short stacked segments chain without gaps | `controller.bar.stacks.ts`, `controller.bar.ts`, value spec | stacked, `minBarLength: 10`, `[100], [0], [30]`: dataset 2 starts 5 px above dataset 1's head on master, expect at it; a value of 1 lengthened at 100 px high and not after growing to 600 px: dataset 1 keeps the stale offset on master; `order` that puts the lengthened segment lower but with the higher index: dataset 1 overlaps dataset 0 on master | ~280 | P10 | | #11515 |
@@ -259,7 +269,8 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 - #11391: `barPercentage` and `categoryPercentage` set the space between grouped bars; no reproduction.
 - #10838: plugin code that swaps elements' values; no bug in Chart.js shown.
 - #11556, #12022, #11367, #5409, #9918: requests outside this change (Non-Goals); left open with a comment saying so.
-- #11361, #12000: see Open Questions.
+- #11361 (after P8): the closing comment also answers the number-x case (D13) and points repeated x values in one dataset to #9080.
+- #12000 (after P5): the closing comment explains sub-pixel slots and an explicit `barThickness` wider than the slot (D13), with `maxBarThickness` and P19's `minBarThickness`.
 
 ## Contracts
 
@@ -275,9 +286,4 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 
 ## Open Questions
 
-None for the user. #11361 and #12000 have no confirmed cause because their samples could not be opened. Their candidates:
-
-- #11361: numbers against string labels in the category scale.
-- #12000: `skipNull` over thousands of points, which P5 removes, or repeated x values (#9080).
-
-The builder of P5 opens both samples first (task 5.2) and claims an issue in P5 or P8 only with a failing input.
+None. The causes of #11361 and #12000 were found from the issue texts (D13).
