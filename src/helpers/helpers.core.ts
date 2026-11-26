@@ -108,6 +108,7 @@ export function callback<T extends (this: TA, ...restArgs: unknown[]) => R, TA, 
   if (fn && typeof fn.call === 'function') {
     return fn.apply(thisArg, args);
   }
+  return undefined;
 }
 
 /**

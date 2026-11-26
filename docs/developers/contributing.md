@@ -31,7 +31,7 @@ The following commands are now available from the repository root:
 > pnpm run autobuild         // build and watch for source changes
 > pnpm run dev               // run the specs in Chromium and watch for source and test changes
 > pnpm run dev:ff            // the same in Firefox
-> pnpm run lint              // perform code linting (ESLint, tsc)
+> pnpm run lint              // perform code linting (ESLint, tsc, and the TypeScript transition flags on src/**/*.ts)
 > pnpm test                  // perform code linting and run all tests with coverage
 > pnpm run test-ci-vitest    // run the specs once, in Chromium and Firefox
 > pnpm run test-ci-umd       // run the smoke suite against dist/chart.umd.min.js, in Chromium and Firefox

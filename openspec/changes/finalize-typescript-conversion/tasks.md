@@ -16,12 +16,12 @@
 
 ## 3. P3: The transition gate
 
-- [ ] 3.1 Show that the check is missing: on master, add `override` to a static in `element.point.ts`, then remove it again; `pnpm lint` passes both ways.
-- [ ] 3.2 Write `scripts/check-ts-flags.js`: the root program with the five flags, failing for any diagnostic in `src/**/*.ts`.
-- [ ] 3.3 Fix the 13 diagnostics: `static override` in `element.point.ts` (2) and `element.arc.ts:377,393,466`; `_mode` ×2 in `helpers.interpolation.ts`; `_w` in `helpers.rtl.ts`; `_target` at `helpers.config.ts:179`; the `drawPoint` fallthroughs at `helpers.canvas.ts:237,257`; explicit returns at `helpers.core.ts:107` and `helpers.math.ts:112`.
-- [ ] 3.4 Show bundle identity apart from the lines of 3.3; the image fixtures pass.
-- [ ] 3.5 Set `useDefineForClassFields: true` in `tsconfig.json`; `tsc --noEmit` stays at 0 errors.
-- [ ] 3.6 Add `lint-ts-flags` to `package.json`, so that `pnpm lint` runs it.
+- [x] 3.1 Show that the check is missing: on master, add `override` to a static in `element.point.ts`, then remove it again; `pnpm lint` passes both ways.
+- [x] 3.2 Write `scripts/check-ts-flags.js`: the root program with the five flags, failing for any diagnostic in `src/**/*.ts`.
+- [x] 3.3 Fix the 13 diagnostics: `static override` in `element.point.ts` (2) and `element.arc.ts:377,393,466`; `_mode` ×2 in `helpers.interpolation.ts`; `_w` in `helpers.rtl.ts`; `_target` at `helpers.config.ts:179`; the `drawPoint` fallthroughs at `helpers.canvas.ts:237,257`; explicit returns at `helpers.core.ts:107` and `helpers.math.ts:112`.
+- [x] 3.4 Show bundle identity apart from the lines of 3.3; the image fixtures pass.
+- [x] 3.5 Set `useDefineForClassFields: true` in `tsconfig.json`; `tsc --noEmit` stays at 0 errors.
+- [x] 3.6 Add `lint-ts-flags` to `package.json`, so that `pnpm lint` runs it.
 
 ## 4. P4: Lint parity for TypeScript
 
