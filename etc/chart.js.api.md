@@ -2875,9 +2875,9 @@ export interface LegendOptions<TType extends ChartType> {
     };
     maxHeight: number;
     maxWidth: number;
-    onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
-    onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
-    onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+    onClick(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
+    onHover(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
+    onLeave(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
     position: LayoutPosition;
     reverse: boolean;
     rtl: boolean;
@@ -3178,6 +3178,9 @@ interface MinMaxDecimationOptions extends BaseDecimationOptions {
     // (undocumented)
     algorithm: DecimationAlgorithm.minmax | 'min-max';
 }
+
+// @public (undocumented)
+type NoInferType<T> = [T][T extends any ? 0 : never];
 
 // @public (undocumented)
 export type Overrides = {
