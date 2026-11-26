@@ -163,7 +163,7 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 
 ### D8. Floating bars take no room in a stack
 
-`updateStacks` stores `controller._stackValue(item, vAxis)`, a private hook whose default is `item[vAxis]`. The bar returns `NaN` for floating items; core's `applyStack` already skips non-finite values. `updateRangeFromParsed` uses only `[min, max]` for floating items. Today's offset is by the far ends of earlier segments, which has no coherent use. Rejected: a `floatingBarMode` option (#12197). *Pending the user's answer.*
+`updateStacks` stores `controller._stackValue(item, vAxis)`, a private hook whose default is `item[vAxis]`. The bar returns `NaN` for floating items; core's `applyStack` already skips non-finite values. `updateRangeFromParsed` uses only `[min, max]` for floating items. Today's offset is by the far ends of earlier segments, which has no coherent use. Rejected: a `floatingBarMode` option (#12197).
 
 ### D9. Open pull requests
 
@@ -182,6 +182,19 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 - rework-ticks (open design, PR #12492) P16 changes `computeMinSampleSize`. If it lands before P5, P5 moves its change; otherwise rework-ticks P16 edits the function in `controller.bar.layout.ts`. Its bar-on-time fixture guards P5 as well.
 - rework-legend P18 adds a protected hook "is this data item left out of bounds" (bar: `!getDataVisibility(i) || meta.data[i]?.hidden`) and edits `controller.bar.js`. If it lands before P4, P4 converts it; otherwise it is written in TypeScript. P14 reads that hook for hidden items and waits for it.
 
+### D12. The user's answers (2026-11-26)
+
+- **Floating bars in a stack** are drawn at their own values (D8, P13). The alternatives were a `floatingBarMode` option or keeping today's offset.
+- **Bars entirely outside the value range** are not drawn. `minBarLength` is the visible length (P14). The #10157 clamp goes.
+- **Zero-length unstacked bars** that `minBarLength` lengthens are centred on their value. Stacked segments never are (P15).
+- **`index` mode** without `axis` follows `indexAxis` when it is `'x'` or `'y'` (P17). For `nearest` there is a docs line only.
+- **The top-drawn rule** applies to bars only, through the bar element's hook. Points keep the nearest-distance rule and ties (P18).
+- **New options:** `minBarThickness` (P19, adopting #11898) and `barAlign: 'center' | 'start' | 'end'` as a dataset option (P20) are both built.
+- **Open PRs:** #12263 and #11898 are adopted with credit. #12222 and #12335 are closed as superseded, with credit (D9).
+- **Held files:** pieces rebase over open PRs that edit other sections of `index.d.ts` and `core.datasetController.js`, and wait only on PRs in the same section (D10).
+- **Multi-axis and types:** the band rule (D4) and per-type slot lists (D5) are confirmed.
+- **Private fields:** `_top`, `_bottom`, `_visualValues`, `_getAxis` and `_getAxisCount` are removed, with release-note lines.
+
 ### D11. What the plan review changed
 
 - **Index layout (D2):** values, pixels and the smallest gap stay per scale. Only the slots are shared by a band, because overlaid scales can have other labels.
@@ -190,7 +203,7 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 - **Order of the value-axis pieces:** the chaining fix (P11) and the core cleanup (P12) come before the floating-bar change (P13), so they can ship as patches.
 - **Waits:** P3 no longer waits on #11898, which made a cycle. P5 is ordered against rework-ticks P16, and P14 against rework-legend P18's hidden-item hook.
 - **P11's failing inputs** are now ones that fail on master. The earlier ones passed there.
-- **Interactions:** P16 also moves the tooltip anchor of a cut-off bar. P17 states its rule and keeps radar unchanged. P18 is recommended for bars only, because for points it changes ties and close points.
+- **Interactions:** P16 also moves the tooltip anchor of a cut-off bar. P17 states its rule and keeps radar unchanged. P18 is for bars only (D12), because for points it changes ties and close points.
 - **Issue outcomes:** #11254 is answered (won't do), not closed by a fix. #11730 and #11290 are advanced by P13. Ten issues without an outcome got one (Non-Goals and the close list).
 
 ## Risks / Trade-offs
@@ -217,14 +230,14 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 | P10 | fix: stack ends from the visible segments of the bar's type | `controller.bar.stacks.ts` (new), `controller.bar.ts`, value spec | `middle`, radius 12, `[[10, 10], [null, 10]]`: dataset 0 skips `bottom` on master, expect none; default `'start'`, `[[10], [10]]`, `hide(1)`: dataset 0 `enableBorderRadius` false, expect true; `middle`, `hide(1)`: `{top: true}`, expect `{}`; a bar and a line with one `stack` name: the bar keeps its rounded top; #12335's cases | ~270 | P9 | | #11721, #10245 |
 | P11 | fix: short stacked segments chain without gaps | `controller.bar.stacks.ts`, `controller.bar.ts`, value spec | stacked, `minBarLength: 10`, `[100], [0], [30]`: dataset 2 starts 5 px above dataset 1's head on master, expect at it; a value of 1 lengthened at 100 px high and not after growing to 600 px: dataset 1 keeps the stale offset on master; `order` that puts the lengthened segment lower but with the higher index: dataset 1 overlaps dataset 0 on master | ~280 | P10 | | #11515 |
 | P12 | refactor: `_top`, `_bottom` and `_visualValues` leave core | `src/core/core.datasetController.js`, `test/specs/core.datasetController.spec.js` | none (refactor); the `_stacks` specs updated; a line stacked on a bar lengthened by `minBarLength` sits on the data value (release note) | ~80 | P11, #12499 | | |
-| P13 | feat: floating bars keep their values in a stack | `src/core/core.datasetController.js`, `controller.bar.ts`, `controller.bar.stacks.ts`, `docs/charts/bar.md`, value spec | stacked `[[[0, 5]], [[5, 9]]]`: dataset 1 at 10-14 and y max 14 on master, expect 5-9, max ≈ 9; `[[[0, 5]], [3]]`: dataset 1 starts at 5, expect 0 | ~180 | P12; D8's question | #11730, #11290 | #12197 |
+| P13 | feat: floating bars keep their values in a stack | `src/core/core.datasetController.js`, `controller.bar.ts`, `controller.bar.stacks.ts`, `docs/charts/bar.md`, value spec | stacked `[[[0, 5]], [[5, 9]]]`: dataset 1 at 10-14 and y max 14 on master, expect 5-9, max ≈ 9; `[[[0, 5]], [3]]`: dataset 1 starts at 5, expect 0 | ~180 | P12 | #11730, #11290 | #12197 |
 | P14 | feat: `minBarLength` is the visible length | `controller.bar.ts`, `docs/charts/bar.md`, value spec | `y.min: 10`, `[10, 50]`, `minBarLength: 5` (#7174's case without setting `base`): 0 px on master, expect 5; y 10-20, `[[5, 5]]`, `minBarLength: 6`: 6 px at the bottom edge on master, expect none in the area; `toggleDataVisibility(1)`: height 5 on master, expect 0; the 10 minBarLength fixtures unchanged | ~220 | P13, rework-legend P18 | #11667 | #10487, #7174 |
 | P15 | feat: zero-length bars centre on their value | `controller.bar.ts`, value spec | y 0-10, `[[5, 5]]`, `minBarLength: 10`: base at px(5), head 10 px above on master, expect ±5 | ~60 | P14 | | #11667 |
 | P16 | fix: bars cut off by the chart area are found and pointed at through their visible part | `src/core/core.interaction.js`, `element.bar.ts` (private `_getAreaCenter`, `tooltipPosition`), `docs/configuration/interactions.md`, `test/specs/core.interaction.spec.js` | `y.min: 1`, `[1.5, 10]`, nearest, `intersect: false`, `axis: 'x'`: bar 1 on master, expect bar 0, with the tooltip anchored inside the chart area; `y.max: 50`, `[100, 20]`, index, intersect, inside bar 0: `[]` on master, expect bar 0; the point spec "out-of-range datapoints are not shown in tooltip" still passes | ~170 | P2, #12499 | | #11733 |
 | P17 | feat: `index` mode follows `indexAxis` | `src/core/core.interaction.js`, `src/types/index.d.ts` (the `axis` comment), `docs/configuration/interactions.md`, interaction spec | `indexAxis: 'y'`, `[10, 2]`, index, `intersect: false`, pointer in row 0 at px(2): index 1 on master, expect 0; a radar chart in `index` mode unchanged | ~60 | P16 | | #10312 |
-| P18 | feat: the bar drawn on top wins | `src/core/core.interaction.js`, interaction spec | `indexAxis: 'y'`, `x.stacked: false`, `[5]`, `[9]`, `[10]` with one stack name, pointer at 6: dataset 2 on master, expect dataset 1; two scatter datasets with equal points: both items returned (as master) | ~90 | P17; Open Question 5 | | #11646 |
-| P19 | feat: `minBarThickness` (adopts #11898) | `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec | #11898's spec: `minBarThickness: 1000` gives width 1000 for grouped and non-grouped bars; `maxBarThickness` wins | ~70 | P15, P8; Open Question 7 | | |
-| P20 | feat: `barAlign` places bars on their value | `controller.bar.layout.ts`, `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec, a fixture | time axis, 5-minute data, `offset: false`, `barAlign: 'start'`: bar centred on master, expect its left edge at the value | ~150 | P19; Open Question 7 | | #9748 |
+| P18 | feat: the bar drawn on top wins | `src/core/core.interaction.js`, interaction spec | `indexAxis: 'y'`, `x.stacked: false`, `[5]`, `[9]`, `[10]` with one stack name, pointer at 6: dataset 2 on master, expect dataset 1; two scatter datasets with equal points: both items returned (as master) | ~90 | P17 | | #11646 |
+| P19 | feat: `minBarThickness` (adopts #11898) | `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec | #11898's spec: `minBarThickness: 1000` gives width 1000 for grouped and non-grouped bars; `maxBarThickness` wins | ~70 | P15, P8 | | |
+| P20 | feat: `barAlign` places bars on their value | `controller.bar.layout.ts`, `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec, a fixture | time axis, 5-minute data, `offset: false`, `barAlign: 'start'`: bar centred on master, expect its left edge at the value | ~150 | P19 | | #9748 |
 
 **Parallel:** P1, P2 and P3 at once; P16 to P18 beside the controller chain once P2 and #12499 have merged. Everything else is ordered by `controller.bar.ts`.
 
@@ -262,13 +275,9 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 
 ## Open Questions
 
-1. **Floating bars in a stack (P13).** (a) Always at their own values. (b) A `floatingBarMode` option. (c) Keep today's offset. Recommended: (a).
-2. **Bars outside the value range (P14).** Stop drawing them at the edge, or keep the #10157 clamp? Recommended: stop.
-3. **Zero-length bars (P15).** Centre them on their value (never inside a stack), or keep growing them in the sign direction? Recommended: centre.
-4. **`index` mode and `indexAxis` (P17).** This changes horizontal charts that use `index` without `axis`. Recommended: yes, `index` only, with a docs line for `nearest`.
-5. **The item drawn on top wins (P18).** (a) For all element types: changes default tooltips on line and scatter charts (ties, close points; review). (b) For bars only, through the bar element's hook. (c) Docs only. Recommended: (b).
-6. **The band rule (D4)** and **slot lists per type (D5)**: confirm.
-7. **New options.** Build `minBarThickness` (P19, adopting #11898) and `barAlign` (P20, #9748) in this change, or leave them for later? Recommended: both, with the name `barAlign: 'center' | 'start' | 'end'` as a dataset option.
-8. **Removed private fields (P12, D3):** `_top`, `_bottom`, `_visualValues`, `_getAxis` and `_getAxisCount`, with release-note lines. Recommended: yes.
-9. **Open PRs (D9).** Recommended: adopt #12263 and #11898, close #12222 and #12335 as superseded.
-10. **#11361 and #12000** have no confirmed cause: their samples could not be opened. Candidates: #11361, numbers against string labels in the category scale; #12000, `skipNull` over thousands of points (P5 removes the walks) or repeated x values (#9080). Recommended: open both samples before P5, and claim them in P5 or P8 only with a failing input.
+None for the user. #11361 and #12000 have no confirmed cause because their samples could not be opened. Their candidates:
+
+- #11361: numbers against string labels in the category scale.
+- #12000: `skipNull` over thousands of points, which P5 removes, or repeated x values (#9080).
+
+The builder of P5 opens both samples first (task 5.2) and claims an issue in P5 or P8 only with a failing input.

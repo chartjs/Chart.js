@@ -93,7 +93,7 @@
 ## 18. P18: The bar drawn on top wins
 
 - [ ] 18.1 Interaction specs: the #11646 input (fails on master); two scatter datasets with equal points still return both items.
-- [ ] 18.2 With `intersect: true`, when several bars contain the pointer, pick the one drawn on top (the scope follows Open Question 5). Release-note line. The pull request says `Closes #11646`.
+- [ ] 18.2 With `intersect: true`, when several bars contain the pointer, pick the one drawn on top (bars only: design D12). Release-note line. The pull request says `Closes #11646`.
 
 ## 19. P19: minBarThickness (adopts #11898)
 
