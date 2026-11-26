@@ -75,33 +75,33 @@ describe('splice array notifications', function() {
     unlistenArrayEvents(data, listener);
   });
 
-  it('clamps the delete count to the remaining length', function() {
-    const data = [1, 2, 3];
-    const listener = {_onDataSplice: vi.fn()};
-    listenArrayEvents(data, listener);
+  describe.each(['native', 'replaced'])('%s splice', function(implementation) {
+    it.each([
+      {name: 'undefined start', args: [undefined, 0, 4], effective: [0, 0, 4]},
+      {name: 'negative start', args: [-1, 0, 4], effective: [2, 0, 4]},
+      {name: 'negative count', args: [1, -1], effective: [1, 0]},
+      {name: 'unbounded count', args: [1, Infinity], effective: [1, 2]},
+      {name: 'explicitly undefined count', args: [1, undefined], effective: [1, 0]},
+      {name: 'omitted count', args: [1], effective: [1, 2]},
+    ])('normalizes $name', function({args, effective}) {
+      const data = [1, 2, 3];
+      const expected = data.slice();
+      const removed = expected.splice(...args);
+      const base = implementation === 'replaced' ? vi.fn(Array.prototype.splice) : Array.prototype.splice;
+      if (implementation === 'replaced') {
+        data.splice = base;
+      }
+      const listener = {_onDataSplice: vi.fn()};
+      listenArrayEvents(data, listener);
 
-    expect(data.splice(-1, Infinity, 4)).toEqual([3]);
-    expect(listener._onDataSplice).toHaveBeenCalledWith(2, 1, 4);
-    expect(data).toEqual([1, 2, 4]);
+      expect(data.splice(...args)).toEqual(removed);
+      expect(data).toEqual(expected);
+      expect(listener._onDataSplice).toHaveBeenCalledWith(...effective);
+      if (implementation === 'replaced') {
+        expect(base).toHaveBeenCalledWith(...effective);
+      }
 
-    unlistenArrayEvents(data, listener);
-  });
-
-  it('passes the same normalized arguments to a custom splice and its listeners', function() {
-    const data = [1, 2, 3];
-    const splice = vi.fn(function(...args) {
-      expect(typeof args[0]).toBe('number');
-      return Array.prototype.splice.apply(this, args);
+      unlistenArrayEvents(data, listener);
     });
-    data.splice = splice;
-    const listener = {_onDataSplice: vi.fn()};
-    listenArrayEvents(data, listener);
-
-    expect(data.splice(-1, 0, 4)).toEqual([]);
-    expect(splice).toHaveBeenCalledWith(2, 0, 4);
-    expect(listener._onDataSplice).toHaveBeenCalledWith(2, 0, 4);
-    expect(data).toEqual([1, 2, 4, 3]);
-
-    unlistenArrayEvents(data, listener);
   });
 });
