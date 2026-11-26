@@ -1,6 +1,6 @@
 import Element from '../core/core.element.js';
 import {_angleBetween, getAngleFromPoint, TAU, HALF_PI, valueOrDefault} from '../helpers/index.js';
-import {PI, _angleDiff, _normalizeAngle, _isBetween, _limitValue} from '../helpers/helpers.math.js';
+import {PI, _normalizeAngle, _isBetween, _limitValue} from '../helpers/helpers.math.js';
 import {_readValueToProps} from '../helpers/helpers.options.js';
 import type {ArcOptions, Point} from '../types/index.js';
 
@@ -374,7 +374,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
 
   static id = 'arc';
 
-  static defaults = {
+  static override defaults = {
     borderAlign: 'center',
     borderColor: '#fff',
     borderDash: [],
@@ -390,7 +390,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     selfJoin: false,
   };
 
-  static defaultRoutes = {
+  static override defaultRoutes = {
     backgroundColor: 'backgroundColor'
   };
 
@@ -463,7 +463,7 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     };
   }
 
-  tooltipPosition(useFinalPosition: boolean) {
+  override tooltipPosition(useFinalPosition: boolean) {
     return this.getCenterPoint(useFinalPosition);
   }
 

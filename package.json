@@ -69,6 +69,7 @@
         "fixtures:update": "cross-env UPDATE_FIXTURES=1 vitest run --browser.headless test/specs/fixtures.spec.js",
         "lint-js": "eslint \"src/**/*.{js,ts}\" \"test/**/*.js\" \"docs/**/*.js\" --cache",
         "lint-md": "eslint \"**/*.md\" --cache",
+        "lint-ts-flags": "node scripts/check-ts-flags.js",
         "lint-types": "pnpm build && node test/types/autogen.js && tsc -p test/types",
         "lint": "concurrently \"pnpm:lint-*\"",
         "test": "pnpm lint && pnpm test-ci",

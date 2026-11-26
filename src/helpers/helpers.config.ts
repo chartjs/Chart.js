@@ -176,7 +176,7 @@ export function _attachContext<
     /**
      * A trap for the in operator.
      */
-    has(target, prop) {
+    has(_target, prop) {
       return Reflect.has(proxy, prop);
     },
 
