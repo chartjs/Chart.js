@@ -51,6 +51,12 @@ describe('helpers.segments', function() {
       expect(_boundSegment({start: 0, end: 4, loop: false}, points2, {property: 'angle', start: 5.8, end: 0.4})).toEqual([{start: 0, end: 3, loop: false, style: undefined}]);
     });
 
+    it('should start the segment at a point on an angle bound a full turn away', function() {
+      const points2 = [{angle: 0}, {angle: 0.4}, {angle: 0.8}, {angle: 1.2}];
+      const bounds = {property: 'angle', start: 0.4 + Math.PI * 2, end: 1 + Math.PI * 2};
+      expect(_boundSegment({start: 0, end: 3, loop: false}, points2, bounds)).toEqual([{start: 1, end: 3, loop: false, style: undefined}]);
+    });
+
     it('should find multiple segments', function() {
       const points2 = [{x: 0, y: 100}, {x: 1, y: 50}, {x: 2, y: 70}, {x: 4, y: 80}, {x: 5, y: -100}];
       expect(_boundSegment({start: 0, end: 4, loop: false}, points2, {property: 'y', start: 60, end: 60})).toEqual([
