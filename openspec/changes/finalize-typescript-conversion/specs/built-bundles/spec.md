@@ -6,7 +6,7 @@ What the built JavaScript bundles contain and what their source maps point at.
 
 ### Requirement: Converting a module to TypeScript does not change the bundles
 
-Converting a module from JavaScript to TypeScript SHALL leave the code of the ESM, CJS, UMD and helpers bundles unchanged, except for explicit `return undefined` or `return;` statements, restructured switch fallthroughs and an `_` prefix on unused parameters, which behave as before. Comments and whitespace in the unminified ESM and CJS bundles are not code. Every file name under `dist/` that the previous build had SHALL still exist.
+Converting a module from JavaScript to TypeScript SHALL leave the code of the ESM, CJS, UMD and helpers bundles unchanged, except for explicit `return undefined` or `return;` statements, restructured switch fallthroughs and an `_` prefix on unused parameters, which behave as before. Comments and whitespace in the unminified ESM and CJS bundles and their chunks are not code. Every file name under `dist/` that the previous build had SHALL still exist.
 
 #### Scenario: Construction sets the same own properties
 
