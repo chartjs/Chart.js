@@ -12,8 +12,8 @@ Options are resolved in layers (the chart's options, the chart type's overrides,
 - A bar dataset's `base` can be an array or a function, as its documentation says (#12334).
 - Scale options that a chart does not set follow `Chart.defaults` at every update, and follow a changed chart or dataset type (minor release).
 - The chart's `options.font` is the base font of every text in that chart (minor release).
-- The dataset that binds a scale decides its axis before the first letter of the scale's id (minor release).
-- `Chart.defaults.set`, `get`, `describe`, `override` and `route` throw for a path that has a segment `__proto__`, `prototype` or `constructor` (#12268).
+- The dataset that binds a scale decides its axis before the first letter of the scale's id, also when the dataset arrives after the chart was created, and the first letter counts only when the scale's type is of that kind (minor release).
+- `Chart.defaults.set`, `get`, `describe`, `override` and `route` throw for a path that has a segment `__proto__`, `prototype` or `constructor`, or one that names an inherited property (#12268).
 - Documentation: hover options for plugin authors, which hover options of a line dataset reach its points (#10381), and which type defaults a scale receives (#11786).
 - No change is **BREAKING**. The behaviour changes a user can notice are listed in the release notes of their pieces: scale options following defaults and type changes, the stored scale options listing only what the chart set, the root font applying, the axis of a bound scale, and nested `hover…` keys taking effect.
 
@@ -39,6 +39,7 @@ None. The existing specs (`category-scale-*`) are not touched.
 - Code:
   - `src/helpers/helpers.config.ts`, `src/helpers/helpers.config.types.ts`;
   - `src/core/core.config.js`, `src/core/core.defaults.js`;
+  - `src/helpers/helpers.core.ts` (a helper that tests for a radial scale), used by `src/plugins/plugin.filler`;
   - `src/controllers/controller.bar.js`;
   - one-line edits where fonts are read: `src/core/core.scale.js`, `src/scales/scale.radialLinear.js`, `src/plugins/plugin.title.js`, `src/plugins/plugin.legend.js`.
 - API: `setContext` on an options object takes an optional second argument. No option is added, renamed or removed.

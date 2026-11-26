@@ -1,7 +1,7 @@
 ## 1. P1: Defaults paths cannot reach prototypes (#12268)
 
-- [ ] 1.1 Add specs that fail on master: `Chart.defaults.set('plugins.__proto__', {p: 1})` throws and `({}).p` is undefined; the same for `set('__proto__', …)`, `get`, `describe`, `override`, `route`, a `constructor.prototype` path and a route name `__proto__`; `set('myconstructor.a', …)` still works.
-- [ ] 1.2 Ask the author to add them and to check the name `route` defines; rebase onto master after #12499.
+- [ ] 1.1 Add specs that fail on master: `Chart.defaults.set('plugins.__proto__', {p: 1})` throws and `({}).p` is undefined; the same for `set('__proto__', …)`, `get`, `describe`, `override`, `route`, a `constructor.prototype` path and a route name `__proto__`; `set('toString.x', {p: 1})`, `set('valueOf.x', {p: 1})` and `set('set.x', {p: 1})` throw and leave `Object.prototype.toString`, `Object.prototype.valueOf` and `Chart.defaults.set` without `x`; `set('myconstructor.a', …)` still works.
+- [ ] 1.2 Ask the author to add them, to make the walk follow own properties only (a segment that names an inherited property throws the same error), and to check the name `route` defines; rebase onto master after #12499.
 - [ ] 1.3 The pull request says `Closes #12265` and has a release-note line: the five methods throw for such paths.
 
 ## 2. P2: An options array is not a scope of its items (#12388)
@@ -40,17 +40,18 @@
 
 ## 7. P7: The dataset binding decides the axis
 
-- [ ] 7.1 Add `test/specs/core.config.spec.js` with specs that fail on master: `yAxisID: 'ramazan'` gives axis `y` and finite point pixels, also when the dataset is pushed after the chart was created with no datasets; `xAxisID: 'yFoo'` gives `x`; a radar scale `foo` of type `radialLinear` bound by `rAxisID` is the radial axis; a scale `foo` with no `axis`, `position`, `type` or binding throws the documented message.
-- [ ] 7.2 Add specs that pass on master: `axis` and `position` win; unbound `y2` and `xTop` follow the first letter; rebinding a dataset from `yAxisID` to `xAxisID` keeps the scale vertical.
-- [ ] 7.3 Change the order in `determineAxis` and its one call in `mergeScaleConfig`; add `rAxisID` to the binding lookup; decide a first-letter axis again at update until a dataset names the id.
-- [ ] 7.3a Add a spec for the output that changes: with `scales: {ramazan: {}, y: {}}`, a dataset on `ramazan` and one without `yAxisID`, both are on `ramazan`.
-- [ ] 7.4 Update `docs/axes/cartesian/_common.md` and `docs/axes/index.md`.
-- [ ] 7.5 The pull request says `Closes #11640` and has a release-note line: a scale bound by a dataset takes that axis, and a dataset without an axis id uses the first scale of its axis, which can now be that scale.
+- [ ] 7.1 Add `test/specs/core.config.spec.js` with specs that fail on master: `yAxisID: 'ramazan'` gives axis `y` and finite point pixels; `xAxisID: 'yFoo'` gives `x`; a radar scale `foo` of type `radialLinear` bound by `rAxisID` is the radial axis; an unbound `ramazan: {type: 'linear'}` throws the documented message; an unbound `xFoo: {type: 'radialLinear'}` is the radial axis; a scale `foo` with no `axis`, `position`, `type` or binding throws the documented message.
+- [ ] 7.2 Add specs that pass on master: `axis` and `position` win, also over the type; unbound `y2`, `xTop` and `r2` without a `type` follow the first letter; `ramazan: {type: 'linear'}` bound as `yAxisID` is a y axis; a first letter with a type that is not registered when the chart is constructed decides as before; rebinding a dataset from `yAxisID` to `xAxisID` keeps the scale vertical; a chart created before its data keeps the first-letter axis (P16 changes this one).
+- [ ] 7.3 Add `_isRadialScale(scale)` to `src/helpers/helpers.core.ts`: true when the object has a `getPointPositionForValue` method. Spec it with a radial scale, a linear scale, and a class written from scratch that has the method. Use it for the two inline tests in the filler plugin.
+- [ ] 7.4 Change the order in `determineAxis`; its call in `mergeScaleConfig` passes the binding and the class registered for the chart's `type` of the scale, when there is one. The two calls in `core.controller.js` keep reading the stored `axis`. Add `rAxisID` to the binding lookup.
+- [ ] 7.5 Add a spec for the output that changes: with `scales: {ramazan: {}, y: {}}`, a dataset on `ramazan` and one without `yAxisID`, both are on `ramazan`.
+- [ ] 7.6 Update `docs/axes/cartesian/_common.md` and `docs/axes/index.md`.
+- [ ] 7.7 The pull request says `Closes #11640` and has release-note lines: a scale bound by a dataset takes that axis, and a dataset without an axis id uses the first scale of its axis, which can now be that scale; a scale whose id only starts with `r`, `x` or `y` and whose `type` is of the other kind needs `axis` or `position`.
 
 ## 8. P8: Refactor the scale merge into stored and derived parts
 
 - [ ] 8.1 Add guard specs that pass on master: the resolved scale options, min, max and one point pixel after create and after two updates, for line, bar, horizontal bar, stacked, scatter, bubble, radar, polar area, doughnut, mixed in both orders, multi-axis, an implied second axis, logarithmic, linear x, unbound extra axes, and a time scale.
-- [ ] 8.2 Compute the stored entry (user values, `axis`) and the derived object (`{scales: {[id]: …}}`) separately, then merge the derived object into the stored entry as today. Record per entry object (a `WeakMap`) whether a dataset implied it, and carry P7's provisional mark there.
+- [ ] 8.2 Compute the stored entry (user values, `axis`) and the derived object (`{scales: {[id]: …}}`) separately, then merge the derived object into the stored entry as today. Record per entry object (a `WeakMap`) whether a dataset implied it.
 - [ ] 8.3 The suite and the image fixtures pass unchanged. The pull request says `Part of #11096` and `Part of #11910` in a sentence.
 
 ## 9. P9: Scale defaults are a scope
@@ -70,8 +71,8 @@
 
 ## 11. P11: options.font is the chart's base font
 
-- [ ] 11.1 Add `test/specs/options.font.spec.js` with specs that fail on master: with `options.font.size: 30` the font set on the canvas for tick labels, scale title, legend labels and title, chart title, subtitle and the tooltip's title, body and footer is 30 px; `tooltip.options.bodyFont.size` is 30 and the title is bold; radial point labels are 10 px in the chart's family; a text's own font wins; `Chart.defaults.plugins.tooltip.bodyFont.size = 20` gives a 20 px body beside a 30 px title; a radar's `getTickLimit()` is that of 30 px labels; a second chart without `options.font` stays 12 px; a function as `options.font` changes no text.
-- [ ] 11.2 `Config` computes the chart font once per update (the chart's `options.font` when it is an object, over the chart type's, over `Chart.defaults.font`). Pass it as the fallback of `toFont` in `core.scale.js` (also where `chart.options.font` is read today), `scale.radialLinear.js` (also `getTickBackdropHeight`, which reads `defaults.font.size`), `plugin.title.js` and the legend plugin (five calls today; one place after rework-legend P9).
+- [ ] 11.1 Add `test/specs/options.font.spec.js` with specs that fail on master: with `options.font.size: 30` the font set on the canvas for tick labels, scale title, legend labels and title, chart title, subtitle and the tooltip's title, body and footer is 30 px; `tooltip.options.bodyFont.size` is 30 and the title is bold; radial point labels are 10 px in the chart's family; a text's own font wins; `Chart.defaults.plugins.tooltip.bodyFont.size = 20` gives a 20 px body beside a 30 px title; a radar's `getTickLimit()` is that of 30 px labels; a second chart without `options.font` stays 12 px; a radar whose scale has another id than `r` keeps point labels at 10 px; after `Chart.defaults.font.size` changes, a resize without an update draws every text at the old size.
+- [ ] 11.2 The chart font is taken once per update, as a plain object, from `chart.options.font` as it resolves then. Pass it as the fallback of `toFont` in `core.scale.js` (also where `chart.options.font` is read today), `scale.radialLinear.js` (also `getTickBackdropHeight`, which reads `defaults.font.size`), `plugin.title.js` and the legend plugin (five calls today; one place after rework-legend P9).
 - [ ] 11.3 When the chart sets a root `font`, build a second derived object: for every route that targets the root `font`, the route's local value over the chart font. Add it to the scopes of plugin options only, after the chart type's overrides and before the defaults.
 - [ ] 11.4 Run the whole suite and the image fixtures: no fixture without `options.font` changes.
 - [ ] 11.5 Update `docs/general/fonts.md` (the order, and `toFont(opts.font, chart.options.font)` for plugin authors), `docs/general/options.md` and the comment on `font` in `src/types/index.d.ts`.
@@ -92,7 +93,7 @@
 
 ## 14. P14: Docs: hover options of line and radar datasets
 
-- [ ] 14.1 In `docs/charts/line.md` and `docs/charts/radar.md`, say that the dataset's `hover*` options apply to its points unless the matching `pointHover*` option is set.
+- [ ] 14.1 In `docs/charts/line.md` and `docs/charts/radar.md`, say that the dataset's `hover*` options apply to its points unless the matching `pointHover*` option is set, also when the dataset sets the plain `point*` option (`hoverBorderWidth` wins over `pointBorderWidth`).
 - [ ] 14.2 The pull request says `Part of #10381` in a sentence; the issue stays open for 5.0.
 
 ## 15. P15: Docs: type defaults of a scale
@@ -100,3 +101,12 @@
 - [ ] 15.1 In `docs/charts/mixed.md` and `docs/general/options.md`, say which type defaults a scale receives: a scale given in `options.scales` takes the chart type's, a scale only a dataset implies takes the dataset types'.
 - [ ] 15.2 In `docs/general/options.md`, say that a chart type's defaults exist after its controller is registered.
 - [ ] 15.3 The pull request says `Closes #11176` and `Closes #11786`.
+
+
+## 16. P16: A first-letter axis is decided again until a dataset binds the scale
+
+- [ ] 16.1 Add specs that fail on master and after P9: a chart created with `scales: {ramazan: {}}` and no datasets, then a dataset with `yAxisID: 'ramazan'` and an update, has axis `y`, `scale.options.position === 'left'` and the same `chartArea.left` as the same chart bound at creation; `scales: {xFoo: {}}` bound later as `yAxisID` is a linear y axis on the left with finite point pixels.
+- [ ] 16.2 Add specs that pass before and after: a `position` the chart gave decides and stays; a scale a dataset bound keeps its axis when the dataset is rebound or removed; an unbound `y2` stays vertical over updates.
+- [ ] 16.3 Extend P8's per-entry record: how the axis was decided, whether the chart gave a position when the entry was first read, and the default position of the axis decided then. At `Config.update()`, for an entry whose axis came from the first letter: drop a stored position that is core's, decide the axis again in the order of P7, and keep the result as final once a dataset names the id.
+- [ ] 16.4 Run P8's guard specs, the whole suite and the image fixtures.
+- [ ] 16.5 Release-note line: a scale that a dataset binds after the chart was created takes that dataset's axis at the next update.
