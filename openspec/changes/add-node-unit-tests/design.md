@@ -68,12 +68,14 @@ These read or decide where a spec runs:
 4. **`test/setup.node.js` sets up the Node project.** It does the following:
    - registers `expect.extend(matchers)` from `chartjs-test-utils`;
    - sets `globalThis.Chart` from `../src/index.umd.ts` and disables the colors plugin;
+   - sets `globalThis.createMockContext` from `chartjs-test-utils`, which needs no DOM (checked: `createMockContext().fillRect(0, 0, 1, 1)` records the call in Node);
    - defines `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize` and `triggerMouseEvent` as functions that throw `<name> needs a browser: take <file> off unitSpecs in vitest.config.js`.
 
    It does not define `window`, because `_isDomSupported` (`src/helpers/helpers.dom.ts`) and `src/index.umd.ts` read its presence as a browser. It loads no moment or date adapter, because no listed spec uses them. `test/specs/vitest.setup.node.spec.js` is on the list and pins the setup:
    - `typeof window === 'undefined'`;
    - `Chart` comes from source, with class fields as own properties;
    - both matchers are registered;
+   - `createMockContext` records calls;
    - colors are off;
    - `restoreMocks` applies;
    - `acquireChart` throws the hint.
@@ -84,6 +86,15 @@ These read or decide where a spec runs:
    - `test-ci-vitest` is unchanged: one run over all projects and one merged lcov.
 6. **The partly passing specs stay in the browsers.** Splitting the DOM tests out of `helpers.color`, `core.ticks`, `core.animations` and the others would move about 20 tests into new files. Some of those files are held by open pull requests ([#12383](https://github.com/chartjs/Chart.js/pull/12383), [#12332](https://github.com/chartjs/Chart.js/pull/12332), [#11173](https://github.com/chartjs/Chart.js/pull/11173)). The docs say how to put a spec on the list when it becomes DOM-free.
 7. **Words.** The Vitest projects are `unit` (Node) and `browser` (Chromium, Firefox). The docs say "unit specs" and "browser specs". "Integration" keeps meaning the consumer packages in `test/integration`.
+
+8. **Plan review (architecture, complexity, scope) found no defect.** Two notes changed the design:
+   - `createMockContext` was neither provided nor stubbed in Node. It works without a DOM, so the Node setup provides it (Decision 4) instead of leaving it as a bare `ReferenceError`.
+   - The docs task now also extends the sentence at `contributing.md:52`, which lists the commands the `.tests.js` guard stops, to the stale-entry guard.
+
+9. **The user's answers (2026-11-26).**
+   - The Windows CI job runs the unit specs: P3 is in.
+   - Unit specs run only in Node (Decision 2).
+   - The names are `unit` and `browser`, with the scripts `test-unit` and `dev:unit` (Decision 7).
 
 ## Risks / Trade-offs
 
@@ -100,7 +111,7 @@ Commit types `test:` and `ci:` release nothing. No issue is open for this work, 
 |---|---|---|---|---|---|---|---|
 | P1 | `test: run the DOM-free specs in Node`: two projects, `unitSpecs` (14 specs and the pin spec), the stale-entry guard, the Node setup and its pin spec, the scripts, the lint override, and the contributing docs | `vitest.config.js`, `test/setup.node.js` (new), `test/specs/vitest.setup.node.spec.js` (new), `package.json` (scripts only), `test/.eslintrc.yml`, `docs/developers/contributing.md` | `pnpm exec vitest run --project unit` exits 1 on master with `No projects matched the filter "unit"`; with P1 it runs 15 files in Node and the pin spec passes | ~150 | | | |
 | P2 | `test: run core.helpers and helpers.curve in Node` | `test/specs/core.helpers.spec.js`, `test/specs/helpers.curve.spec.js` (`window.Chart.helpers` → `Chart.helpers`), `vitest.config.js` (2 entries) | `pnpm test-unit core.helpers` finds no file | ~4 | P1 (the list; both change `vitest.config.js`) | | |
-| P3 | `ci: run the unit specs on Windows` | `.github/workflows/ci.yml` (a step `pnpm run test-unit` with `if: runner.os == 'Windows'` and the src/test filter) | the Windows job runs no test; a failure that only shows on Windows goes unseen | ~8 | P1 (`test-unit`); Open Question 1 | | |
+| P3 | `ci: run the unit specs on Windows` | `.github/workflows/ci.yml` (a step `pnpm run test-unit` with `if: runner.os == 'Windows'` and the src/test filter) | the Windows job runs no test; a failure that only shows on Windows goes unseen | ~8 | P1 (`test-unit`) | | |
 
 P2 and P3 can be built in parallel after P1. No open pull request holds a file of any piece: `vitest.config.js`, `package.json`, `test/.eslintrc.yml`, `docs/developers/contributing.md`, `.github/workflows/ci.yml` and the two specs appear in none of the 70 open pull requests.
 
@@ -112,4 +123,4 @@ P2 and P3 can be built in parallel after P1. No open pull request holds a file o
 
 ## Open Questions
 
-1. **P3:** run the unit specs on the Windows CI job? Recommended: yes. It costs a few seconds, and Windows runs no tests today.
+None.
