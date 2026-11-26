@@ -893,6 +893,39 @@ describe('Legend block tests', function() {
     });
   }
 
+  it('should update the hit boxes of a right legend whose generateLabels returns fewer items after the layout', function() {
+    // fit() runs during the layout and sees 3 items. afterUpdate builds the
+    // labels again and gets 1, so two hit boxes have no item.
+    let laidOut = false;
+    const generateLabels = function() {
+      const count = laidOut ? 1 : 3;
+      return Array.from({length: count}, (_, i) => ({text: 'item' + i, fillStyle: 'red'}));
+    };
+
+    let chart;
+    expect(function() {
+      chart = window.acquireChart({
+        type: 'line',
+        data: {datasets: [{data: []}]},
+        plugins: [{
+          id: 'shrinkLabels',
+          beforeLayout() {
+            laidOut = false;
+          },
+          afterLayout() {
+            laidOut = true;
+          }
+        }],
+        options: {
+          animation: false,
+          plugins: {legend: {position: 'right', labels: {generateLabels}}}
+        }
+      });
+    }).not.toThrow();
+    expect(chart.legend.legendHitBoxes.length).toBe(3);
+    expect(chart.legend.legendItems.length).toBe(1);
+  });
+
   it('should pick up the first item when the property is an array', function() {
     var chart = window.acquireChart({
       type: 'bar',

@@ -270,7 +270,9 @@ export class Legend extends Element {
         }
         hitbox.top = top;
         const x = hitbox.left + this.left + padding;
-        const textAlign = this.legendItems[i].textAlign || labels.textAlign;
+        // The labels are built again after fit(), so there can be fewer items than hit boxes.
+        const item = this.legendItems[i];
+        const textAlign = (item && item.textAlign) || labels.textAlign;
         const aligned = getAlignedHitBox(x, hitbox.width, boxWidth, fontSize, textAlign, this._columnRight(x, hitbox.col));
         hitbox.width = aligned.width;
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
