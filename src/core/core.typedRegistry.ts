@@ -1,29 +1,31 @@
 import {merge} from '../helpers/index.js';
 import defaults, {overrides} from './core.defaults.js';
 
-/**
- * @typedef {{id: string, defaults: any, overrides?: any, defaultRoutes: any}} IChartComponent
- */
+type IChartComponent = {id: string, defaults: any, overrides?: any, defaultRoutes: any};
 
 export default class TypedRegistry {
-  constructor(type, scope, override) {
+  declare type: any;
+  declare scope: any;
+  declare override: any;
+  declare items: any;
+
+  constructor(type: any, scope: string, override?: boolean) {
     this.type = type;
     this.scope = scope;
     this.override = override;
     this.items = Object.create(null);
   }
 
-  isForType(type) {
+  isForType(type: any): boolean {
     return Object.prototype.isPrototypeOf.call(this.type.prototype, type.prototype);
   }
 
   /**
-	 * @param {IChartComponent} item
-	 * @returns {string} The scope where items defaults were registered to.
+	 * @returns The scope where items defaults were registered to.
 	 */
-  register(item) {
+  register(item: IChartComponent): string {
     const proto = Object.getPrototypeOf(item);
-    let parentScope;
+    let parentScope: string;
 
     if (isIChartComponent(proto)) {
       // Make sure the parent is registered and note the scope where its defaults are.
@@ -52,18 +54,11 @@ export default class TypedRegistry {
     return scope;
   }
 
-  /**
-	 * @param {string} id
-	 * @returns {object?}
-	 */
-  get(id) {
+  get(id: string): object | null {
     return this.items[id];
   }
 
-  /**
-	 * @param {IChartComponent} item
-	 */
-  unregister(item) {
+  unregister(item: IChartComponent): void {
     const items = this.items;
     const id = item.id;
     const scope = this.scope;
@@ -81,7 +76,7 @@ export default class TypedRegistry {
   }
 }
 
-function registerDefaults(item, scope, parentScope) {
+function registerDefaults(item: any, scope: string, parentScope?: string) {
   // Inherit the parent's defaults and keep existing defaults
   const itemDefaults = merge(Object.create(null), [
     parentScope ? defaults.get(parentScope) : {},
@@ -100,7 +95,7 @@ function registerDefaults(item, scope, parentScope) {
   }
 }
 
-function routeDefaults(scope, routes) {
+function routeDefaults(scope: string, routes: Record<string, string>) {
   Object.keys(routes).forEach(property => {
     const propertyParts = property.split('.');
     const sourceName = propertyParts.pop();
@@ -112,6 +107,6 @@ function routeDefaults(scope, routes) {
   });
 }
 
-function isIChartComponent(proto) {
+function isIChartComponent(proto: any): proto is IChartComponent {
   return 'id' in proto && 'defaults' in proto;
 }

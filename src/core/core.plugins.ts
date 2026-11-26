@@ -1,23 +1,20 @@
 import registry from './core.registry.js';
 import {callback as callCallback, isNullOrUndef, valueOrDefault} from '../helpers/helpers.core.js';
+import type Chart from './core.controller.js';
+import type Config from './core.config.js';
 
-/**
- * @typedef { import('./core.controller.js').default } Chart
- * @typedef { import('../types/index.js').ChartEvent } ChartEvent
- * @typedef { import('../plugins/plugin.tooltip.js').default } Tooltip
- */
-
-/**
- * @callback filterCallback
- * @param {{plugin: object, options: object}} value
- * @param {number} [index]
- * @param {array} [array]
- * @param {object} [thisArg]
- * @return {boolean}
- */
-
+export type filterCallback = (
+  value: {plugin: object, options: object},
+  index?: number,
+  array?: any[],
+  thisArg?: object
+) => boolean;
 
 export default class PluginService {
+  declare _init: {plugin: any; options: any}[];
+  declare _cache: {plugin: any; options: any}[];
+  declare _oldCache: {plugin: any; options: any}[];
+
   constructor() {
     this._init = undefined;
   }
@@ -26,20 +23,20 @@ export default class PluginService {
 	 * Calls enabled plugins for `chart` on the specified hook and with the given args.
 	 * This method immediately returns as soon as a plugin explicitly returns false. The
 	 * returned value can be used, for instance, to interrupt the current action.
-	 * @param {Chart} chart - The chart instance for which plugins should be called.
-	 * @param {string} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
-	 * @param {object} [args] - Extra arguments to apply to the hook call.
-   * @param {filterCallback} [filter] - Filtering function for limiting which plugins are notified
-	 * @returns {boolean} false if any of the plugins return false, else returns true.
+	 * @param chart - The chart instance for which plugins should be called.
+	 * @param hook - The name of the plugin method to call (e.g. 'beforeUpdate').
+	 * @param [args] - Extra arguments to apply to the hook call.
+   * @param [filter] - Filtering function for limiting which plugins are notified
+	 * @returns false if any of the plugins return false, else returns true.
 	 */
-  notify(chart, hook, args, filter) {
+  notify(chart: Chart, hook: string, args?: object, filter?: filterCallback): boolean {
     if (hook === 'beforeInit') {
       this._init = this._createDescriptors(chart, true);
       this._notify(this._init, chart, 'install');
     }
 
     if (this._init === undefined) { // Do not trigger events before install
-      return;
+      return undefined;
     }
 
     const descriptors = filter ? this._descriptors(chart).filter(filter) : this._descriptors(chart);
@@ -54,9 +51,9 @@ export default class PluginService {
   }
 
   /**
-	 * @private
+	 * @internal
 	 */
-  _notify(descriptors, chart, hook, args) {
+  _notify(descriptors: {plugin: any; options: any}[], chart: Chart, hook: string, args?: any): boolean {
     args = args || {};
     for (const descriptor of descriptors) {
       const plugin = descriptor.plugin;
@@ -83,10 +80,9 @@ export default class PluginService {
   }
 
   /**
-	 * @param {Chart} chart
-	 * @private
+	 * @internal
 	 */
-  _descriptors(chart) {
+  _descriptors(chart: Chart) {
     if (this._cache) {
       return this._cache;
     }
@@ -98,7 +94,7 @@ export default class PluginService {
     return descriptors;
   }
 
-  _createDescriptors(chart, all) {
+  _createDescriptors(chart: Chart, all?: boolean): {plugin: any; options: any}[] {
     const config = chart && chart.config;
     const options = valueOrDefault(config.options && config.options.plugins, {});
     const plugins = allPlugins(config);
@@ -107,10 +103,9 @@ export default class PluginService {
   }
 
   /**
-	 * @param {Chart} chart
-	 * @private
+	 * @internal
 	 */
-  _notifyStateChanges(chart) {
+  _notifyStateChanges(chart: Chart) {
     const previousDescriptors = this._oldCache || [];
     const descriptors = this._cache;
     const diff = (a, b) => a.filter(x => !b.some(y => x.plugin.id === y.plugin.id));
@@ -119,10 +114,7 @@ export default class PluginService {
   }
 }
 
-/**
- * @param {import('./core.config.js').default} config
- */
-function allPlugins(config) {
+function allPlugins(config: Config) {
   const localIds = {};
   const plugins = [];
   const keys = Object.keys(registry.plugins.items);
@@ -143,7 +135,7 @@ function allPlugins(config) {
   return {plugins, localIds};
 }
 
-function getOpts(options, all) {
+function getOpts(options, all: boolean) {
   if (!all && options === false) {
     return null;
   }
@@ -153,8 +145,8 @@ function getOpts(options, all) {
   return options;
 }
 
-function createDescriptors(chart, {plugins, localIds}, options, all) {
-  const result = [];
+function createDescriptors(chart: Chart, {plugins, localIds}, options, all: boolean) {
+  const result: {plugin: any; options: any}[] = [];
   const context = chart.getContext();
 
   for (const plugin of plugins) {
@@ -172,7 +164,7 @@ function createDescriptors(chart, {plugins, localIds}, options, all) {
   return result;
 }
 
-function pluginOpts(config, {plugin, local}, opts, context) {
+function pluginOpts(config: Config, {plugin, local}, opts, context) {
   const keys = config.pluginScopeKeys(plugin);
   const scopes = config.getOptionScopes(opts, keys);
   if (local && plugin.defaults) {

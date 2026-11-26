@@ -63,11 +63,11 @@
 
 ## 9. P9: Convert the registries and the plugin service to TypeScript
 
-- [ ] 9.1 Rename the modules to `.ts`. Show the gate's errors for the registries and the plugin service before the fix.
-- [ ] 9.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 9.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 9.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 9.5 Run the whole test suite; no fixture changes.
+- [x] 9.1 Rename the modules to `.ts`. Show the gate's errors for the registries and the plugin service before the fix.
+- [x] 9.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 9.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 9.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 9.5 Run the whole test suite; no fixture changes.
 
 ## 10. P10: Convert Animation to TypeScript
 
