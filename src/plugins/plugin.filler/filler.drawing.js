@@ -1,4 +1,4 @@
-import {clipArea, unclipArea, getDatasetClipArea} from '../../helpers/index.js';
+import {clipArea, unclipArea, getDatasetClipArea, _isRadialScale} from '../../helpers/index.js';
 import {_findSegmentEnd, _getBounds, _segments} from './filler.segment.js';
 import {_getTarget} from './filler.target.js';
 
@@ -25,7 +25,7 @@ export function _drawfill(ctx, source, area) {
 function clipToIndexBounds(area, iScale) {
   // Radial scales (e.g. radar charts) aren't cartesian: min/max pixels
   // don't correspond to a left/right or top/bottom bound.
-  if (!iScale || iScale.getPointPositionForValue) {
+  if (!iScale || _isRadialScale(iScale)) {
     return area;
   }
   const p1 = iScale.getPixelForValue(iScale.min);

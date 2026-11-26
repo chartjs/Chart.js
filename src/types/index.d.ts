@@ -3290,7 +3290,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   stackWeight?: number;
 
   /**
-   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. If not set, this is inferred from the first character of the ID which should be 'x', 'y' or 'r'.
+   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. If not set, it is decided by `position`, then by the first dataset that names the scale in `xAxisID`, `yAxisID` or `rAxisID`, then by the first character of the ID when the scale's type allows it, then by the defaults of the type.
    */
   axis: 'x' | 'y' | 'r';
 

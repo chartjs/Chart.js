@@ -129,6 +129,35 @@ describe('Chart.Config', function() {
       }
     });
 
+    it('should take the axis that the defaults of a type that is not radial declare', function() {
+      class DeclaredYScale extends Chart.LinearScale {
+        static id = 'declaredY';
+        static defaults = {axis: 'y'};
+      }
+      class DeclaredXScale extends Chart.LinearScale {
+        static id = 'declaredX';
+        static defaults = {axis: 'x'};
+      }
+      Chart.register(DeclaredYScale, DeclaredXScale);
+
+      try {
+        const chart = window.acquireChart({
+          type: 'line',
+          options: {
+            scales: {
+              ramazan: {type: 'declaredY'},
+              rFoo: {type: 'declaredX'}
+            }
+          }
+        });
+
+        expect(chart.scales.ramazan.axis).toBe('y');
+        expect(chart.scales.rFoo.axis).toBe('x');
+      } finally {
+        Chart.unregister(DeclaredYScale, DeclaredXScale);
+      }
+    });
+
     it('should fail with the documented message when nothing decides the axis', function() {
       function createChart() {
         return window.acquireChart({
