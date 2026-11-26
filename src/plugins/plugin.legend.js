@@ -7,6 +7,7 @@ import {
   callback as call,
   clipArea,
   getRtlAdapter,
+  isArray,
   overrideTextDirection,
   restoreTextDirection,
   toFont,
@@ -37,6 +38,15 @@ const getBoxSize = (labelOpts, fontSize) => {
 };
 
 const itemsEqual = (a, b) => a !== null && b !== null && a.datasetIndex === b.datasetIndex && a.index === b.index;
+
+function getAlignedHitBox(x, width, boxWidth, fontSize, textAlign, right) {
+  const textWidth = width - boxWidth - fontSize / 2;
+  const textX = _textX(textAlign, x + boxWidth + fontSize / 2, right, false);
+  const textLeft = textX - (textAlign === 'center' ? textWidth / 2 : textAlign === 'right' ? textWidth : 0);
+  const left = Math.min(x, textLeft);
+  // Cover both the symbol and the aligned text in LTR coordinates.
+  return {left, width: Math.max(x + boxWidth, textLeft + textWidth) - left};
+}
 
 export class Legend extends Element {
 
@@ -147,7 +157,7 @@ export class Legend extends Element {
       height = this._fitRows(titleHeight, fontSize, boxWidth, itemHeight) + 10;
     } else {
       height = this.maxHeight; // fill all the height
-      width = this._fitCols(titleHeight, labelFont, boxWidth, itemHeight) + 10;
+      width = Math.max(this._fitCols(titleHeight, labelFont, boxWidth, itemHeight), this._computeTitleWidth()) + 10;
     }
 
     this.width = Math.min(width, options.maxWidth || this.maxWidth);
@@ -232,7 +242,8 @@ export class Legend extends Element {
       return;
     }
     const titleHeight = this._computeTitleHeight();
-    const {legendHitBoxes: hitboxes, options: {align, labels: {padding}, rtl}} = this;
+    const {legendHitBoxes: hitboxes, options: {align, labels, rtl}} = this;
+    const {padding} = labels;
     const rtlHelper = getRtlAdapter(rtl, this.left, this.width);
     if (this.isHorizontal()) {
       let row = 0;
@@ -247,19 +258,39 @@ export class Legend extends Element {
         left += hitbox.width + padding;
       }
     } else {
+      const fontSize = toFont(labels.font).size;
+      const {boxWidth} = getBoxSize(labels, fontSize);
       let col = 0;
       let top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
-      for (const hitbox of hitboxes) {
+      for (let i = 0; i < hitboxes.length; i++) {
+        const hitbox = hitboxes[i];
         if (hitbox.col !== col) {
           col = hitbox.col;
           top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
         }
         hitbox.top = top;
-        hitbox.left += this.left + padding;
-        hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(hitbox.left), hitbox.width);
+        const x = hitbox.left + this.left + padding;
+        // The labels are built again after fit(), so there can be fewer items than hit boxes.
+        const item = this.legendItems[i];
+        const textAlign = (item && item.textAlign) || labels.textAlign;
+        const aligned = getAlignedHitBox(x, hitbox.width, boxWidth, fontSize, textAlign, this._columnRight(x, hitbox.col));
+        hitbox.width = aligned.width;
+        hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
         top += hitbox.height + padding;
       }
     }
+  }
+
+  /**
+   * End of a vertical legend column's text area: the next column's left edge
+   * minus padding, or the legend's right edge for the last column.
+   * @param {number} x - the left edge of the column
+   * @param {number} col - the index of the column
+   * @private
+   */
+  _columnRight(x, col) {
+    const {columnSizes} = this;
+    return col < columnSizes.length - 1 ? x + columnSizes[col].width : this.right;
   }
 
   isHorizontal() {
@@ -281,7 +312,7 @@ export class Legend extends Element {
 	 * @private
 	 */
   _draw() {
-    const {options: opts, columnSizes, lineWidths, ctx} = this;
+    const {options: opts, columnSizes, lineWidths, ctx, legendHitBoxes: hitboxes} = this;
     const {align, labels: labelOpts} = opts;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
@@ -392,6 +423,13 @@ export class Legend extends Element {
 
     const lineHeight = itemHeight + padding;
     this.legendItems.forEach((legendItem, i) => {
+      // Draw each item in the row or column that fit() gave it. An item
+      // without a hit box was added after fit(), so there is no room for it.
+      const hitbox = hitboxes[i];
+      if (!hitbox) {
+        return;
+      }
+
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
@@ -404,14 +442,14 @@ export class Legend extends Element {
       rtlHelper.setWidth(this.width);
 
       if (isHorizontal) {
-        if (i > 0 && x + width + padding > this.right) {
+        if (hitbox.row !== cursor.line) {
           y = cursor.y += lineHeight;
-          cursor.line++;
+          cursor.line = hitbox.row;
           x = cursor.x = _alignStartEnd(align, this.left + padding, this.right - lineWidths[cursor.line]);
         }
-      } else if (i > 0 && y + lineHeight > this.bottom) {
+      } else if (hitbox.col !== cursor.line) {
         x = cursor.x = x + columnSizes[cursor.line].width + padding;
-        cursor.line++;
+        cursor.line = hitbox.col;
         y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[cursor.line].height);
       }
 
@@ -419,7 +457,7 @@ export class Legend extends Element {
 
       drawLegendBox(realX, y, legendItem);
 
-      x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : this.right, opts.rtl);
+      x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : this._columnRight(x, cursor.line), opts.rtl);
 
       // Fill the actual label
       fillText(rtlHelper.x(x), y, legendItem);
@@ -474,8 +512,8 @@ export class Legend extends Element {
     }
 
     // Now that we know the left edge of the inner legend box, compute the correct
-    // X coordinate from the title alignment
-    const x = _alignStartEnd(position, left, left + maxWidth);
+    // X coordinate from the title alignment, accounting for horizontal padding
+    const x = _alignStartEnd(position, left + titlePadding.left, left + maxWidth - titlePadding.right);
 
     // Canvas setup
     ctx.textAlign = rtlHelper.textAlign(_toLeftRightCenter(position));
@@ -495,6 +533,25 @@ export class Legend extends Element {
     const titleFont = toFont(titleOpts.font);
     const titlePadding = toPadding(titleOpts.padding);
     return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
+  }
+
+  /**
+   * @private
+   */
+  _computeTitleWidth() {
+    const {ctx, options: {title}} = this;
+    if (!title.display) {
+      return 0;
+    }
+    ctx.save();
+    ctx.font = toFont(title.font).string;
+    const lines = isArray(title.text) ? title.text : [title.text];
+    let width = 0;
+    for (const line of lines) {
+      width = Math.max(width, ctx.measureText(line).width);
+    }
+    ctx.restore();
+    return width + toPadding(title.padding).width;
   }
 
   /**

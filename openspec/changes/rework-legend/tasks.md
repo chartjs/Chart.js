@@ -1,8 +1,8 @@
 ## 1. P1: Drawing follows the hit boxes (#12346)
 
-- [ ] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
-- [ ] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
-- [ ] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
+- [x] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
+- [x] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
+- [x] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
 - [ ] 1.4 The pull request says `Closes #12345` and `Closes #12196`. Close #12205 as superseded, with a link.
 
 ## 2. P2: The title's width counts (#12330)
@@ -12,15 +12,15 @@
 
 ## 3. P3: The title's padding moves it (#12187)
 
-- [ ] 3.1 Add specs for `position: 'start'` with `padding.left`, `'end'` with `padding.right`, and `'center'` with unequal left and right padding, in a top and a right legend. Each fails on master.
-- [ ] 3.2 Rebase onto P2. The title's x includes the padding. The pull request says `Closes #12066` and that #11280 is answered by the legend `padding` (P16).
+- [x] 3.1 Add specs for `position: 'start'` with `padding.left`, `'end'` with `padding.right`, and `'center'` with unequal left and right padding, in a top and a left legend. Each fails on master.
+- [x] 3.2 Rebase onto P2. The title's x includes the padding. The pull request says `Closes #12066` and that #11280 is answered by the legend `padding` (P16).
 
 ## 4. P4: Hit boxes cover aligned text (#12316)
 
-- [ ] 4.1 #12316's 12 specs fail on master.
-- [ ] 4.2 Add a two-column spec with `textAlign: 'right'`: clicking item 7's symbol and text returns item 7, and each column's text ends at its own column's right edge. It fails on #12316 as it stands.
-- [ ] 4.3 Bound the text area by the next column's left edge minus `labels.padding`, and the last column by the legend's right edge. Do this in the hit box and in drawing.
-- [ ] 4.4 Every single-column legend fixture is unchanged. The pull request says `Closes #12067`.
+- [x] 4.1 #12316's 9 specs fail on master: 8 left/right center/right cases and the per-item alignment.
+- [x] 4.2 Add a two-column spec with `textAlign: 'right'`: clicking item 8's symbol and text returns item 8, and each column's text ends at its own column's right edge. It fails on #12316 as it stands.
+- [x] 4.3 Bound the text area by the next column's left edge minus `labels.padding`, and the last column by the legend's right edge. Do this in the hit box and in drawing.
+- [x] 4.4 Every single-column legend fixture is unchanged. The pull request says `Closes #12067`.
 
 ## 5. P5: Only arrays are multi-line labels
 

@@ -1,5 +1,6 @@
 module.exports = {
   threshold: 0.05,
+  tolerance: 0.0012,
   config: {
     type: 'doughnut',
     data: {

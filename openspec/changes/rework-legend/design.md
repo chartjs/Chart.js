@@ -113,7 +113,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
    The hit box grows to cover aligned text (P4). That is the fix for #12067, not a change of meaning.
 3. **The open PRs go first, before the refactor.** The user asked for that. Each is small and has a test that fails on master, so each is a releasable fix on its own. The refactor then keeps their tests green, and those tests guard it.
    - #12346 already makes draw follow the hit box's row or column in both orientations. That also fixes #12196, so #12205 (the same lines) is superseded, and its test moves into P1 with credit.
-   - #12346's fallback for an item without a hit box stays. A count that changes between fit and draw must not throw in a patch release.
+   - An item without a hit box is not drawn. That replaces #12346's fallback. Master's size comparison as a fallback still throws for a vertical legend: past the last column, `columnSizes[cursor.line]` is undefined. A count that changes between fit and draw must not throw in a patch release.
    - #12316 as it stands makes column-0 hit boxes 197 px wide in a two-column legend, so clicking an item in column 1 can return an item of column 0. Its author bounds the text area by the next column's left edge minus padding before it lands (P4).
    - If an author does not answer within two weeks, the piece is built by a maintainer on top of the PR, with credit.
 4. **Refactor and behaviour stay apart.** P9 changes no output.
@@ -189,7 +189,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 ### What the review changed
 
 - The separate `_layout` became private fields on the hit boxes. The title layout piece was dropped, because its test passed on master (complexity review).
-- P1 keeps #12346's fallback for a count that changes between fit and draw (root-cause review).
+- P1 does not draw an item without a hit box, so a count that changes between fit and draw does not throw (root-cause review).
 - P5 covers all three places that test for multi-line labels, and its spec checks every position is finite (root-cause review).
 - P6 passes `events` to the replay decision too (architecture review).
 - P13's flag is set before the "changed" test (architecture and rule-readers reviews).
@@ -212,10 +212,10 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes |
 |---|---|---|---|---|---|---|---|
-| P1 | #12346: drawing follows each hit box's row or column, falling back for an item without one; #12205's test moves in with credit | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | #12346's spec (master draws Beta at NaN); #12205's spec (master throws "reading 'height'"); a `generateLabels` whose count changes between calls draws without throwing | ~70 | the author's changes (drop the `1e-6`) | | #12345, #12196 |
+| P1 | #12346: drawing follows each hit box's row or column, an item without one is not drawn; #12205's test moves in with credit | `src/plugins/plugin.legend.js`, `test/specs/plugin.legend.tests.js` | #12346's spec (master draws Beta at NaN); #12205's spec (master throws "reading 'height'"); a `generateLabels` whose count changes between calls draws without throwing | ~70 | the author's changes (drop the `1e-6`) | | #12345, #12196 |
 | P2 | #12330: the title's width counts in a vertical legend | same | #12330's spec (master: legend 74 px, title 184 px) | ~70 | P1 (same lines region) | | #11850 |
 | P3 | #12187: the title's left and right padding move it | same | new specs for `'start'`, `'center'` and `'end'`, horizontal and vertical (master: x=0 with `padding.left: 50`) | ~50 | P2 (so the padding also widens a vertical legend); the author's tests | | #12066 |
-| P4 | #12316: hit boxes cover aligned text; each column's text area ends at the next column | same | #12316's 12 left/right center/right specs; a new two-column spec (clicking item 7 returns item 7) | ~110 | P1 (same lines); the author's column fix | | #12067 |
+| P4 | #12316: hit boxes cover aligned text; each column's text area ends at the next column | same | #12316's 9 specs (8 left/right center/right cases and the per-item alignment); a new two-column spec (clicking item 8 returns item 8) | ~110 | P1 (same lines); the author's column fix | | #12067 |
 | P5 | Only arrays are multi-line labels, in width, height and the draw cursor | same | pie with labels `[2010, 2011]` on the right: renders, and every hit box's and item's position is finite (master throws); a numeric label mixed with an array label | ~35 | P1 | | #11594 |
 | P6 | One press runs `onClick` once (legend and chart) | `src/helpers/helpers.core.ts`, `src/plugins/plugin.legend.js` (event lines only), `src/core/core.controller.js`, `src/types/index.d.ts` (the `onClick` doc line), `docs/configuration/interactions.md`, `docs/configuration/legend.md`, `test/specs/plugin.legend.tests.js`, `test/specs/core.controller.tests.js` | events `['click', 'mouseup']`: count 1 (master 2); `['mouseup']` only: count 1; the chart's `onClick` count 1; click then `update()`: still 1 | ~100 | P5 (same file); #12391 (same file, 4.6.3); #12438 (other lines of helpers.core.ts, 4.6.3) | | #11538 |
 | P7 | The legend callbacks do not infer the chart type | `src/types/index.d.ts`, `test/types/plugins/plugin.legend/*.ts` | `pnpm lint-types` on the #10442 snippet; a #11666 snippet (passes on master, kept as a guard; the PR says it was not reproduced) | ~50 | P6 (same file); the 4.6.3 type PRs on `index.d.ts` (#12349, #12342, #12317, #12313, #12250, #12221) | | #10442, #11666 |

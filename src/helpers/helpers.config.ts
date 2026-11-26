@@ -62,8 +62,10 @@ export function _createResolver<
      * A trap for getting property values.
      */
     get(target, prop: string) {
-      return _cached(target, prop,
-        () => _resolveWithPrefixes(prop, prefixes, scopes, target));
+      if (_isCached(target, prop)) {
+        return target[prop];
+      }
+      return _cache(target, prop, _resolveWithPrefixes(prop, prefixes, scopes, target));
     },
 
     /**
@@ -148,8 +150,10 @@ export function _attachContext<
      * A trap for getting property values.
      */
     get(target, prop: string, receiver) {
-      return _cached(target, prop,
-        () => _resolveWithContext(target, prop, receiver));
+      if (_isCached(target, prop)) {
+        return target[prop];
+      }
+      return _cache(target, prop, _resolveWithContext(target, prop, receiver));
     },
 
     /**
@@ -215,17 +219,13 @@ const readKey = (prefix: string, name: string) => prefix ? prefix + _capitalize(
 const needsSubResolver = (prop: string, value: unknown) => isObject(value) && prop !== 'adapters' &&
   (Object.getPrototypeOf(value) === null || value.constructor === Object);
 
-function _cached(
-  target: AnyObject,
-  prop: string,
-  resolve: () => unknown
-) {
-  if (Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor') {
-    return target[prop];
-  }
+// The get traps check the cache before resolving: a closure passed to a shared helper
+// would be allocated on every read, also when the value is already cached.
+function _isCached(target: AnyObject, prop: string) {
+  return Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor';
+}
 
-  const value = resolve();
-  // cache the resolved value
+function _cache(target: AnyObject, prop: string, value: unknown) {
   target[prop] = value;
   return value;
 }

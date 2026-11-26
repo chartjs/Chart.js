@@ -1,8 +1,8 @@
-// Vitest counterpart of test/index.js, which sets up the specs Karma runs.
+// Setup of the Vitest specs in test/specs (vitest.config.js): the Chart built
+// from source, the date adapter and the globals the specs and fixtures use.
 import {acquireChart, afterEvent, createMockContext, releaseChart, setup, triggerMouseEvent, waitForResize} from 'chartjs-test-utils';
 import moment from 'moment-timezone';
 import Chart from '../src/index.umd.ts';
-import {registerables} from '../src/index.ts';
 // Registers the date adapter on the source modules: vitest.config.js aliases
 // 'chart.js' to src/index.ts.
 import 'chartjs-adapter-moment';
@@ -10,10 +10,6 @@ import 'chartjs-adapter-moment';
 // force ratio=1 for tests on high-res/retina devices
 // fixes https://github.com/chartjs/Chart.js/issues/4515
 window.devicePixelRatio = 1;
-
-// src/index.umd.ts passes module namespaces to Chart.register(), which registers
-// nothing from them unbundled because isObject() rejects '[object Module]'.
-Chart.register(...registerables.flatMap((namespace) => Object.values(namespace)));
 
 // Keep the scriptable default instead of the fixed 1 that setup() would set:
 // specs change window.devicePixelRatio and expect the chart to follow it.
