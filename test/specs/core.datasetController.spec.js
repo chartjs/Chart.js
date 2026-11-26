@@ -1531,6 +1531,82 @@ describe('Chart.DatasetController', function() {
       animationsExpectations(controller._resolveAnimations(0, 'default', false), {y: {duration: 100}});
       animationsExpectations(controller._resolveAnimations(2, 'default', false), {y: {duration: 102}});
     });
+
+    it('should resolve the animations of each element when the animations are scriptable', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3]
+          }]
+        },
+        options: {
+          animation: {
+            duration: 300
+          },
+          animations: (ctx) => ({y: {duration: 100 + ctx.dataIndex}})
+        }
+      });
+      const controller = chart.getDatasetMeta(0).controller;
+
+      animationsExpectations(controller._resolveAnimations(0, 'default', false), {y: {duration: 100}});
+      animationsExpectations(controller._resolveAnimations(2, 'default', false), {y: {duration: 102}});
+    });
+
+    it('should resolve the animations of each element when the properties are scriptable', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3]
+          }]
+        },
+        options: {
+          animation: {
+            duration: 300
+          },
+          animations: {
+            numbers: {
+              properties: (ctx) => (ctx.dataIndex ? ['y'] : ['x'])
+            }
+          }
+        }
+      });
+      const controller = chart.getDatasetMeta(0).controller;
+
+      const anims0 = controller._resolveAnimations(0, 'default', false);
+      const anims2 = controller._resolveAnimations(2, 'default', false);
+      expect(anims0._properties.has('x')).toBe(true);
+      expect(anims0._properties.has('y')).toBe(false);
+      expect(anims2._properties.has('x')).toBe(false);
+      expect(anims2._properties.has('y')).toBe(true);
+    });
+
+    it('should resolve the animations of each element when an option is an indexable array', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3]
+          }]
+        },
+        options: {
+          animation: {
+            duration: 300
+          },
+          animations: {
+            y: {
+              _indexable: true,
+              duration: [100, 200, 300]
+            }
+          }
+        }
+      });
+      const controller = chart.getDatasetMeta(0).controller;
+
+      animationsExpectations(controller._resolveAnimations(0, 'default', false), {y: {duration: 100}});
+      animationsExpectations(controller._resolveAnimations(2, 'default', false), {y: {duration: 300}});
+    });
   });
 
   describe('getContext', function() {

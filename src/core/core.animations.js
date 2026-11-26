@@ -143,7 +143,8 @@ function readsContext(descriptors, prop, value) {
 /**
  * Whether the `animations` of a resolver would resolve differently with an element's context.
  * Checks the options that `Animations.configure` reads, with the descriptors
- * that a resolver with a context would use for them.
+ * that a resolver with a context would use for them. Not `needContext` of the config:
+ * it counts any function in an object, so callbacks like `onComplete` would stop the sharing.
  * @param {object} resolver - options resolver without a context
  * @returns {boolean}
  * @private
