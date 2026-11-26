@@ -1126,6 +1126,102 @@ describe('Legend block tests', function() {
     expect(chart.legend.options.title.color).toBe('green');
   });
 
+  it('should not crash when defaults font changes before a render', function() {
+    const defaultFont = Object.assign({}, Chart.defaults.font);
+    const labels = Array.from({length: 8}, (_, i) => `L${i}`);
+    const datasets = labels.map((_, i) => ({
+      label: `dataset${i}`,
+      data: [i + 1]
+    }));
+
+    const chart = acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['A'],
+        datasets
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right'
+          }
+        }
+      }
+    }, {
+      canvas: {
+        width: 256,
+        height: 180
+      }
+    });
+
+    try {
+      Object.assign(Chart.defaults.font, {
+        size: 42
+      });
+
+      expect(function() {
+        chart.render();
+      }).not.toThrow();
+    } finally {
+      Object.assign(Chart.defaults.font, defaultFont);
+    }
+  });
+
+  ['top', 'right'].forEach(function(position) {
+    it('should draw a ' + position + ' legend whose generateLabels returns more items after the layout', function() {
+      // fit() runs during the layout and sees 2 items. afterUpdate builds the
+      // labels again and gets 30, so most of the drawn items have no hit box.
+      let laidOut = false;
+      const generateLabels = function() {
+        const count = laidOut ? 30 : 2;
+        return Array.from({length: count}, (_, i) => ({text: 'item' + i, fillStyle: 'red'}));
+      };
+      const fillText = vi.spyOn(CanvasRenderingContext2D.prototype, 'fillText');
+
+      let chart;
+      expect(function() {
+        chart = acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['A'],
+            datasets: [{data: [1]}]
+          },
+          plugins: [{
+            id: 'growLabels',
+            beforeLayout() {
+              laidOut = false;
+            },
+            afterLayout() {
+              laidOut = true;
+            }
+          }],
+          options: {
+            responsive: false,
+            animation: false,
+            plugins: {
+              legend: {
+                position: position,
+                labels: {generateLabels: generateLabels}
+              }
+            }
+          }
+        }, {
+          canvas: {
+            width: 256,
+            height: 180
+          }
+        });
+      }).not.toThrow();
+      expect(chart.legend.legendHitBoxes.length).toBe(2);
+      expect(chart.legend.legendItems.length).toBe(30);
+
+      // Only the items that have a hit box are drawn.
+      const drawn = fillText.mock.calls.map(args => args[0]).filter(text => text.startsWith('item'));
+      expect(drawn).toEqual(['item0', 'item1']);
+    });
+  });
 
   describe('config update', function() {
     it('should update the options', function() {
@@ -1366,6 +1462,68 @@ describe('Legend block tests', function() {
 
       await triggerMouseEvent(chart, 'click', el);
       expect(clickItem).toBe(chart.legend.legendItems[0]);
+    });
+
+    it('should draw the last item when horizontal legend has align end and label widths cause floating point rounding', function() {
+      var origMeasureText = CanvasRenderingContext2D.prototype.measureText;
+      var origFillText = CanvasRenderingContext2D.prototype.fillText;
+      var drawn = [];
+      var widths = {Alpha: 40.2, Beta: 30.2};
+
+      CanvasRenderingContext2D.prototype.measureText = function(text) {
+        return text in widths ? {width: widths[text]} : origMeasureText.call(this, text);
+      };
+      CanvasRenderingContext2D.prototype.fillText = function(text, x, y) {
+        if (text in widths) {
+          drawn.push({text: text, x: x, y: y});
+        }
+        return origFillText.apply(this, arguments);
+      };
+
+      try {
+        var chart = acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['a', 'b'],
+            datasets: [
+              {label: 'Alpha', data: [1, 2]},
+              {label: 'Beta', data: [2, 1]},
+            ]
+          },
+          options: {
+            responsive: false,
+            animation: false,
+            plugins: {
+              legend: {
+                align: 'end',
+                labels: {
+                  boxWidth: 12,
+                  padding: 10,
+                  font: {size: 12}
+                }
+              }
+            }
+          }
+        }, {
+          canvas: {
+            width: 600,
+            height: 200
+          }
+        });
+
+        expect(drawn.length).toBe(2);
+        expect(drawn[0].text).toBe('Alpha');
+        expect(isNaN(drawn[0].x)).toBe(false);
+        expect(drawn[1].text).toBe('Beta');
+        expect(isNaN(drawn[1].x)).toBe(false);
+        // Beta stays on Alpha's row and inside the legend.
+        expect(drawn[1].y).toBe(drawn[0].y);
+        expect(drawn[1].x).toBeGreaterThan(drawn[0].x);
+        expect(drawn[1].x).toBeLessThanOrEqual(chart.legend.right);
+      } finally {
+        CanvasRenderingContext2D.prototype.measureText = origMeasureText;
+        CanvasRenderingContext2D.prototype.fillText = origFillText;
+      }
     });
   });
 });

@@ -282,7 +282,7 @@ export class Legend extends Element {
 	 * @private
 	 */
   _draw() {
-    const {options: opts, columnSizes, lineWidths, ctx} = this;
+    const {options: opts, columnSizes, lineWidths, ctx, legendHitBoxes: hitboxes} = this;
     const {align, labels: labelOpts} = opts;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
@@ -393,6 +393,13 @@ export class Legend extends Element {
 
     const lineHeight = itemHeight + padding;
     this.legendItems.forEach((legendItem, i) => {
+      // Draw each item in the row or column that fit() gave it. An item
+      // without a hit box was added after fit(), so there is no room for it.
+      const hitbox = hitboxes[i];
+      if (!hitbox) {
+        return;
+      }
+
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
@@ -405,14 +412,14 @@ export class Legend extends Element {
       rtlHelper.setWidth(this.width);
 
       if (isHorizontal) {
-        if (i > 0 && x + width + padding > this.right) {
+        if (hitbox.row !== cursor.line) {
           y = cursor.y += lineHeight;
-          cursor.line++;
+          cursor.line = hitbox.row;
           x = cursor.x = _alignStartEnd(align, this.left + padding, this.right - lineWidths[cursor.line]);
         }
-      } else if (i > 0 && y + lineHeight > this.bottom) {
+      } else if (hitbox.col !== cursor.line) {
         x = cursor.x = x + columnSizes[cursor.line].width + padding;
-        cursor.line++;
+        cursor.line = hitbox.col;
         y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[cursor.line].height);
       }
 

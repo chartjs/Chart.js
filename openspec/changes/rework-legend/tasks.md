@@ -1,8 +1,8 @@
 ## 1. P1: Drawing follows the hit boxes (#12346)
 
-- [ ] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
-- [ ] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
-- [ ] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
+- [x] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
+- [x] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
+- [x] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
 - [ ] 1.4 The pull request says `Closes #12345` and `Closes #12196`. Close #12205 as superseded, with a link.
 
 ## 2. P2: The title's width counts (#12330)
