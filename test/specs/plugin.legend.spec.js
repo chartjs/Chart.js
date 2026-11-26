@@ -774,6 +774,81 @@ describe('Legend block tests', function() {
     });
   });
 
+  describe('labels that are not strings', function() {
+    // Draws a pie chart and returns its hit boxes and the text the legend drew.
+    function drawPie(labels, position) {
+      const fillText = vi.spyOn(CanvasRenderingContext2D.prototype, 'fillText');
+      const chart = window.acquireChart({
+        type: 'pie',
+        data: {
+          labels,
+          datasets: [{data: labels.map(() => 1)}]
+        },
+        options: {
+          animation: false,
+          plugins: {
+            legend: {position}
+          }
+        }
+      });
+      const drawn = fillText.mock.calls.map(([text, x, y]) => ({text: String(text), x, y}));
+      fillText.mockRestore();
+      const hitBoxes = chart.legend.legendHitBoxes.map(({left, top, width, height}) => ({left, top, width, height}));
+      const labelOpts = chart.legend.options.labels;
+      const lineHeight = Chart.helpers.toFont(labelOpts.font).lineHeight;
+      return {hitBoxes, drawn, lineHeight, padding: labelOpts.padding};
+    }
+
+    function expectFinite(values) {
+      values.forEach(function(value) {
+        expect(Number.isFinite(value)).toBe(true);
+      });
+    }
+
+    ['left', 'right'].forEach(function(position) {
+      it('should lay out and draw numeric labels in a ' + position + ' legend', function() {
+        let result;
+        expect(function() {
+          result = drawPie([2010, 2011], position);
+        }).not.toThrow();
+
+        expect(result.hitBoxes.length).toBe(2);
+        result.hitBoxes.forEach(function(hitBox) {
+          expectFinite([hitBox.left, hitBox.top, hitBox.width, hitBox.height]);
+        });
+        expect(result.drawn.map(({text}) => text)).toEqual(['2010', '2011']);
+        result.drawn.forEach(function({x, y}) {
+          expectFinite([x, y]);
+        });
+
+        // A number takes the same room as the same text given as a string.
+        expect(result).toEqual(drawPie(['2010', '2011'], position));
+      });
+
+      it('should show a numeric label as one line next to a multi-line label in a ' + position + ' legend', function() {
+        // The second line of the array is its widest.
+        const result = drawPie([['A', 'WWWWWWWW'], 2010, 'C'], position);
+        const asStrings = drawPie([['A', 'WWWWWWWW'], '2010', 'C'], position);
+        const widestOnly = drawPie(['WWWWWWWW', 2010, 'C'], position);
+
+        expect(result.drawn.map(({text}) => text)).toEqual(['A', 'WWWWWWWW', '2010', 'C']);
+        expect(result).toEqual(asStrings);
+        // The array is as wide as its widest line.
+        expect(result.hitBoxes[0].width).toBe(widestOnly.hitBoxes[0].width);
+        expect(result.hitBoxes[0].width).toBeGreaterThan(result.hitBoxes[2].width);
+        // The array is two lines tall, the number one line, like the string.
+        const {hitBoxes, drawn, lineHeight, padding} = result;
+        expect(hitBoxes[0].height).toBeCloseTo(2 * lineHeight, 10);
+        expect(hitBoxes[0].height).toBeGreaterThan(hitBoxes[1].height);
+        expect(hitBoxes[1].height).toBe(hitBoxes[2].height);
+        // The number is drawn below both lines of the array and the padding.
+        const [lineA, lineB, number] = drawn;
+        expect(lineB.y).toBeCloseTo(lineA.y + lineHeight, 10);
+        expect(number.y).toBeCloseTo(lineA.y + 2 * lineHeight + padding, 10);
+      });
+    });
+  });
+
   it('should draw items with a custom boxHeight', function() {
     var chart = window.acquireChart(
       {

@@ -464,11 +464,8 @@ export class Legend extends Element {
 
       if (isHorizontal) {
         cursor.x += width + padding;
-      } else if (typeof legendItem.text !== 'string') {
-        const fontLineHeight = labelFont.lineHeight;
-        cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight) + padding;
       } else {
-        cursor.y += lineHeight;
+        cursor.y += calculateItemHeight(itemHeight, legendItem, labelFont.lineHeight) + padding;
       }
     });
 
@@ -617,23 +614,18 @@ function calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight) {
 
 function calculateItemWidth(legendItem, boxWidth, labelFont, ctx) {
   const legendItemText = legendItem.text;
-  const textWidth = legendItemText && typeof legendItemText !== 'string'
-    ? legendItemText.reduce((width, line) => Math.max(width, ctx.measureText(line).width), 0)
+  const textWidth = isArray(legendItemText)
+    ? Math.max(0, ...legendItemText.map(line => ctx.measureText(line).width))
     : ctx.measureText(legendItemText).width;
   return boxWidth + (labelFont.size / 2) + textWidth;
 }
 
+/**
+ * Height of an item's label: one line for anything but an array, which has one line per element.
+ */
 function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
-  let itemHeight = _itemHeight;
-  if (typeof legendItem.text !== 'string') {
-    itemHeight = calculateLegendItemHeight(legendItem, fontLineHeight);
-  }
-  return itemHeight;
-}
-
-function calculateLegendItemHeight(legendItem, fontLineHeight) {
-  const labelHeight = legendItem.text ? legendItem.text.length : 0;
-  return fontLineHeight * labelHeight;
+  const text = legendItem.text;
+  return isArray(text) ? fontLineHeight * text.length : _itemHeight;
 }
 
 function isListened(type, opts) {

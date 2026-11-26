@@ -24,8 +24,8 @@
 
 ## 5. P5: Only arrays are multi-line labels
 
-- [ ] 5.1 Specs: a pie chart with labels `[2010, 2011]` and the legend on the right renders, and every hit box's `top`, `height` and drawn `y` is finite (fails on master); a numeric label next to an array label.
-- [ ] 5.2 Use one `isArray` test for multi-line labels in `calculateItemHeight`, `calculateLegendItemHeight`, the width and the draw cursor; any other label is one line. The pull request says `Closes #11594`.
+- [x] 5.1 Specs: a pie chart with labels `[2010, 2011]` and the legend on the right renders, and every hit box's `top`, `height` and drawn `y` is finite (fails on master); a numeric label next to an array label.
+- [x] 5.2 Use one `isArray` test for multi-line labels in `calculateItemHeight`, `calculateLegendItemHeight`, the width and the draw cursor; any other label is one line. The pull request says `Closes #11594`.
 
 ## 6. P6: One press runs onClick once
 
