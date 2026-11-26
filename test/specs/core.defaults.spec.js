@@ -59,10 +59,12 @@ describe('Chart.defaults', function() {
         Reflect.deleteProperty(object, '__proto__');
         Reflect.deleteProperty(object, 'constructor');
       }
-      for (const key of ['rtscope', 'myconstructor', 'describe']) {
+      for (const key of ['rtscope', 'newscope', 'newtarget', 'myconstructor', 'describe']) {
         Reflect.deleteProperty(Chart.defaults, key);
       }
+      Reflect.deleteProperty(Chart.defaults.font, 'toString');
       Chart.defaults.color = '#666';
+      Chart.defaults.font.size = 12;
     });
 
     it('should throw for __proto__ as the first segment', function() {
@@ -129,6 +131,26 @@ describe('Chart.defaults', function() {
       expect(Object.getOwnPropertyNames(Chart.defaults.rtscope)).toEqual([]);
     });
 
+    it('should throw from route for the private name it defines', function() {
+      Chart.defaults.rtscope = {};
+      // The value is kept under '_' + name, here '__proto__'.
+      expect(() => Chart.defaults.route('rtscope', '_proto__', '', 'color')).toThrow(invalid);
+      expect(Object.getOwnPropertyNames(Chart.defaults.rtscope)).toEqual([]);
+    });
+
+    it('should create no scope for a rejected path', function() {
+      expect(() => Chart.defaults.set('newscope.constructor', {p: 1})).toThrow(invalid);
+      expect(() => Chart.defaults.route('newscope', '__proto__', 'newtarget', 'color')).toThrow(invalid);
+      expect(() => Chart.defaults.route('newscope', 'x', 'newtarget', '__proto__')).toThrow(invalid);
+      expect(hasOwn(Chart.defaults, 'newscope')).toBe(false);
+      expect(hasOwn(Chart.defaults, 'newtarget')).toBe(false);
+    });
+
+    it('should read a path through a value that is not an object', function() {
+      expect(Chart.defaults.get('color.length')).toBe(4);
+      expect(() => Chart.defaults.get('color.toString')).toThrow(invalid);
+    });
+
     it('should throw from route for the name it targets', function() {
       Chart.defaults.rtscope = {};
       expect(() => Chart.defaults.route('rtscope', 'x', '', '__proto__')).toThrow(invalid);
@@ -141,6 +163,12 @@ describe('Chart.defaults', function() {
       expect(typeof Chart.defaults.describe).toBe('function');
       expect(hasOwn(Chart.defaults, 'describe')).toBe(false);
       expect(Chart.defaults.color).toBe('red');
+    });
+
+    it('should skip an inherited key of nested values', function() {
+      Chart.defaults.set({font: {toString: 'x', size: 13}});
+      expect(hasOwn(Chart.defaults.font, 'toString')).toBe(false);
+      expect(Chart.defaults.font.size).toBe(13);
     });
 
     it('should accept a path that only contains one of the names', function() {
