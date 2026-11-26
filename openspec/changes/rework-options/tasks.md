@@ -67,7 +67,7 @@
 ## 10. P10: Refactor: Defaults records its routes
 
 - [x] 10.1 Add a spec: the record holds the route of `plugins.tooltip.titleFont` to `font`; its local value is `{weight: 'bold'}`, and `{size: 20}` after `Chart.defaults.plugins.tooltip.titleFont = {size: 20}`.
-- [x] 10.2 `route` tags its getter with scope, name, target scope and target name, and `getRoutes(scope)` gives them with a reader of the local value (D17).
+- [x] 10.2 `route` tags its getter with scope, name, target scope and target name, and `getRoutes(scope)` gives them with a reader of the local value (D19).
 - [x] 10.3 The pull request says `Part of #10375` in a sentence.
 
 ## 11. P11: options.font is the chart's base font

@@ -271,7 +271,7 @@ The work was designed a second time from the same ask and the same decisions, by
 - **Not taken, decided before (D14):** one rule for the type defaults of a scale (#11786 stays documented); #12334 as it is.
 - **Checked and unchanged:** the second design held that a stale second argument after `setContext` is reachable through a line's `segment` options. On master a `segment` function reading a sibling gets the segment's context (border widths 1 and 2 for the first two segments), as the second review found. Its font design, a `font` default on every text resolved through the option layers with the tooltip's routes replaced by a fallback, needs no route record and no `toFont` edits, but `Chart.defaults.plugins.tooltip.bodyFont.size` would read `undefined` instead of 12, a function as the root font would be ignored, and every tick would resolve its font through the options (24 ms to 30 ms for 3000 ticks on a stub canvas). D9 stays.
 
-### D17. What building P10 changed
+### D19. What building P10 changed
 
 - **No module-level record of routes (D9, P10):** `route` tags its getter with the route, and `getRoutes(scope)` finds the tagged getters on the live scope object. A record kept beside `overrides` would keep the routes of a plugin that was unregistered, and hold them twice after it is registered again; a scope that was removed or replaced has no routes here.
 
