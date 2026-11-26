@@ -1,6 +1,4 @@
 describe('Chart.controllers.doughnut', function() {
-  describe('auto', jasmine.fixture.specs('controller.doughnut'));
-
   it('should be registered as dataset controller', function() {
     expect(typeof Chart.controllers.doughnut).toBe('function');
     expect(typeof Chart.controllers.pie).toBe('function');
@@ -118,7 +116,7 @@ describe('Chart.controllers.doughnut', function() {
       expect(meta.data[i].circumference).toBeCloseTo(expected.c, 8);
       expect(meta.data[i].startAngle).toBeCloseToPixel(Math.PI * -0.5);
       expect(meta.data[i].endAngle).toBeCloseToPixel(Math.PI * -0.5);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].options).toEqual(expect.objectContaining({
         backgroundColor: 'rgb(255, 0, 0)',
         borderColor: 'rgb(0, 0, 255)',
         borderWidth: 2
@@ -140,7 +138,7 @@ describe('Chart.controllers.doughnut', function() {
       expect(meta.data[i].circumference).toBeCloseTo(expected.c, 8);
       expect(meta.data[i].startAngle).toBeCloseTo(expected.s, 8);
       expect(meta.data[i].endAngle).toBeCloseTo(expected.e, 8);
-      expect(meta.data[i].options).toEqual(jasmine.objectContaining({
+      expect(meta.data[i].options).toEqual(expect.objectContaining({
         backgroundColor: 'rgb(255, 0, 0)',
         borderColor: 'rgb(0, 0, 255)',
         borderWidth: 2
@@ -272,17 +270,17 @@ describe('Chart.controllers.doughnut', function() {
 
     var meta = chart.getDatasetMeta(0);
 
-    spyOn(meta.data[0], 'draw');
-    spyOn(meta.data[1], 'draw');
-    spyOn(meta.data[2], 'draw');
-    spyOn(meta.data[3], 'draw');
+    vi.spyOn(meta.data[0], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[1], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[2], 'draw').mockImplementation(() => {});
+    vi.spyOn(meta.data[3], 'draw').mockImplementation(() => {});
 
     chart.update();
 
-    expect(meta.data[0].draw.calls.count()).toBe(1);
-    expect(meta.data[1].draw.calls.count()).toBe(1);
-    expect(meta.data[2].draw.calls.count()).toBe(1);
-    expect(meta.data[3].draw.calls.count()).toBe(1);
+    expect(meta.data[0].draw.mock.calls.length).toBe(1);
+    expect(meta.data[1].draw.mock.calls.length).toBe(1);
+    expect(meta.data[2].draw.mock.calls.length).toBe(1);
+    expect(meta.data[3].draw.mock.calls.length).toBe(1);
   });
 
   it ('should calculate radiuses based on the border widths of the visible outermost dataset', function() {
@@ -331,8 +329,10 @@ describe('Chart.controllers.doughnut', function() {
   });
 
   describe('Interactions', function() {
+    let chart;
+
     beforeEach(function() {
-      this.chart = window.acquireChart({
+      chart = window.acquireChart({
         type: 'doughnut',
         data: {
           labels: ['label1', 'label2', 'label3', 'label4'],
@@ -354,22 +354,20 @@ describe('Chart.controllers.doughnut', function() {
     });
 
     it ('should handle default hover styles', async function() {
-      var chart = this.chart;
       var arc = chart.getDatasetMeta(0).data[0];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+      await triggerMouseEvent(chart, 'mousemove', arc);
       expect(arc.options.backgroundColor).toBe('#3187DD');
       expect(arc.options.borderColor).toBe('#175A9D');
       expect(arc.options.borderWidth).toBe(2);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+      await triggerMouseEvent(chart, 'mouseout', arc);
       expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(arc.options.borderWidth).toBe(2);
     });
 
     it ('should handle hover styles defined via dataset properties', async function() {
-      var chart = this.chart;
       var arc = chart.getDatasetMeta(0).data[0];
 
       Chart.helpers.merge(chart.data.datasets[0], {
@@ -380,19 +378,18 @@ describe('Chart.controllers.doughnut', function() {
 
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+      await triggerMouseEvent(chart, 'mousemove', arc);
       expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
       expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
       expect(arc.options.borderWidth).toBe(8.4);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+      await triggerMouseEvent(chart, 'mouseout', arc);
       expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(arc.options.borderWidth).toBe(2);
     });
 
     it ('should handle hover styles defined via element options', async function() {
-      var chart = this.chart;
       var arc = chart.getDatasetMeta(0).data[0];
 
       Chart.helpers.merge(chart.options.elements.arc, {
@@ -403,12 +400,12 @@ describe('Chart.controllers.doughnut', function() {
 
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', arc);
+      await triggerMouseEvent(chart, 'mousemove', arc);
       expect(arc.options.backgroundColor).toBe('rgb(200, 100, 150)');
       expect(arc.options.borderColor).toBe('rgb(150, 50, 100)');
       expect(arc.options.borderWidth).toBe(8.4);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', arc);
+      await triggerMouseEvent(chart, 'mouseout', arc);
       expect(arc.options.backgroundColor).toBe('rgb(100, 150, 200)');
       expect(arc.options.borderColor).toBe('rgb(50, 100, 150)');
       expect(arc.options.borderWidth).toBe(2);
@@ -436,7 +433,7 @@ describe('Chart.controllers.doughnut', function() {
     const {tooltip} = chart;
     const point = chart.getDatasetMeta(0).data[0];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(tooltip.title).toEqual(['Label 1']);
     expect(tooltip.body).toEqual([{
@@ -447,7 +444,7 @@ describe('Chart.controllers.doughnut', function() {
 
     chart.options.plugins.tooltip = {mode: 'dataset'};
     chart.update();
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(tooltip.title).toEqual(['Dataset 1']);
     expect(tooltip.body).toEqual([{
