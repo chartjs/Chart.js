@@ -1481,6 +1481,49 @@ describe('Chart.DatasetController', function() {
       });
     });
 
+    it('should share the animations between elements when the animations are disabled', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3]
+          }]
+        },
+        options: {
+          animation: {duration: 300},
+          animations: false
+        }
+      });
+      const controller = chart.getDatasetMeta(0).controller;
+
+      const anims0 = controller._resolveAnimations(0, 'default', false);
+      expect(controller._resolveAnimations(2, 'default', false)).toBe(anims0);
+      expect(anims0._properties.size).toEqual(0);
+    });
+
+    it('should share the animations between elements when an animation is disabled', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3]
+          }]
+        },
+        options: {
+          animation: {duration: 300},
+          animations: {
+            numbers: false
+          }
+        }
+      });
+      const controller = chart.getDatasetMeta(0).controller;
+
+      const anims0 = controller._resolveAnimations(0, 'default', false);
+      expect(controller._resolveAnimations(2, 'default', false)).toBe(anims0);
+      expect(anims0._properties.has('y')).toBe(false);
+      expect(anims0._properties.has('borderColor')).toBe(true);
+    });
+
     it('should resolve the animations of each element when an option is scriptable', function() {
       const chart = acquireChart({
         type: 'line',
