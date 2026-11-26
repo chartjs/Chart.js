@@ -3,7 +3,7 @@
 - [x] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
 - [x] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
 - [x] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
-- [ ] 1.4 The pull request says `Closes #12345` and `Closes #12196`. Close #12205 as superseded, with a link.
+- [x] 1.4 The pull request says `Closes #12345` and `Closes #12196`. Close #12205 as superseded, with a link.
 
 ## 2. P2: The title's width counts (#12330)
 
@@ -29,13 +29,13 @@
 
 ## 6. P6: One press runs onClick once
 
-- [ ] 6.1 Specs:
+- [x] 6.1 Specs:
   - `events: ['click', 'mouseup', 'mousedown', 'mousemove']`, press and release on a legend item: legend `onClick` runs once (master twice);
   - `events: ['mouseup']`: it runs once;
   - the same two cases for the chart's `onClick` on a data element;
   - a click followed by `chart.update()`: the chart's `onClick` has run once in total.
-- [ ] 6.2 `_isClickEvent(e, events)`: with `events` given, `mouseup` counts only when `events` lacks `click`. The legend passes `this.options.events || chart.options.events`, and the chart's `onClick` passes its `events`. The chart passes its `events` to the replay decision too, so a `mouseup` kept as the last event is not replayed as a click.
-- [ ] 6.3 Docs: interactions.md (onClick events), legend.md and the `onClick` doc comment in `index.d.ts`. The pull request says `Closes #11538`.
+- [x] 6.2 `_isClickEvent(e, events)`: with `events` given, `mouseup` counts only when `events` lacks `click`. The legend passes `this.options.events || chart.options.events`, and the chart's `onClick` passes its `events`. The chart passes its `events` to the replay decision too, so a `mouseup` kept as the last event is not replayed as a click.
+- [x] 6.3 Docs: interactions.md (onClick events), legend.md and the `onClick` doc comment in `index.d.ts`. The pull request says `Closes #11538`.
 
 ## 7. P7: The legend callbacks do not infer the chart type
 

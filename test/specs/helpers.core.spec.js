@@ -512,4 +512,26 @@ describe('Chart.helpers.core', function() {
       expect(helpers.setsEqual(a, c)).toBe(true);
     });
   });
+
+  describe('_isClickEvent', function() {
+    it('should count a mouseup only when click is not listened to', function() {
+      const mouseup = {type: 'mouseup'};
+      expect(helpers._isClickEvent(mouseup)).toBe(true);
+      expect(helpers._isClickEvent(mouseup, ['mouseup'])).toBe(true);
+      expect(helpers._isClickEvent(mouseup, ['click', 'mouseup'])).toBe(false);
+    });
+
+    it('should always count click and contextmenu', function() {
+      for (const type of ['click', 'contextmenu']) {
+        expect(helpers._isClickEvent({type})).toBe(true);
+        expect(helpers._isClickEvent({type}, ['click', 'mouseup'])).toBe(true);
+        expect(helpers._isClickEvent({type}, ['mouseup'])).toBe(true);
+      }
+    });
+
+    it('should not count other events', function() {
+      expect(helpers._isClickEvent({type: 'mousedown'})).toBe(false);
+      expect(helpers._isClickEvent({type: 'mousemove'}, ['mousemove'])).toBe(false);
+    });
+  });
 });

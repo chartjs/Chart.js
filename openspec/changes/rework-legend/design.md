@@ -186,6 +186,10 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 21. **#11825 rebases onto P19 and P9, and drops its copies of the #11280 and #11824 fixes.** Overflow (#10893, #11397, #12129) is designed next, for 4.8.
 22. **Collapsed hidden bars that hover can still find are a follow-up issue**, not part of P12.
 
+### Decided by the user (2026-11-26)
+
+24. **A right-click never runs the legend's `onClick`.** The legend calls `_isClickEvent(e, events)` for the `mouseup` rule of decision 5, and leaves out `contextmenu`, as it did before P6. The chart's `onClick` still runs on `contextmenu`.
+
 ### What the review changed
 
 - The separate `_layout` became private fields on the hit boxes. The title layout piece was dropped, because its test passed on master (complexity review).

@@ -1733,7 +1733,8 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   /**
-   * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
+   * Called if the event is of type 'click' or 'contextmenu', or 'mouseup' (also from 'touchend' and 'pointerup')
+   * when `events` does not include 'click'. Passed the event, an array of active elements, and the chart.
    */
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
@@ -2459,7 +2460,9 @@ export interface LegendOptions<TType extends ChartType> {
    */
   reverse: boolean;
   /**
-   * A callback that is called when a click event is registered on a label item.
+   * A callback that is called when a 'click' event is registered on a label item, or a 'mouseup'
+   * (also from 'touchend' and 'pointerup') when the legend's events do not include 'click'.
+   * A right-click ('contextmenu') does not call it.
    */
   onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**

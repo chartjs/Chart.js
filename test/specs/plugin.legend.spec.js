@@ -1665,6 +1665,66 @@ describe('Legend block tests', function() {
       expect(leaveItem).toBe(chart.legend.legendItems[0]);
     });
 
+    describe('one press', function() {
+      // Presses and releases the mouse on the first legend item. Only the
+      // events the chart listens to are sent, since only those are handled.
+      async function pressFirstItem(chart) {
+        const hb = chart.legend.legendHitBoxes[0];
+        const point = {x: hb.left + hb.width / 2, y: hb.top + hb.height / 2};
+        for (const type of ['mousedown', 'mouseup', 'click']) {
+          if (chart.options.events.includes(type)) {
+            await triggerMouseEvent(chart, type, point);
+          }
+        }
+      }
+
+      function countLegendClicks(events, legendEvents) {
+        const onClick = vi.fn();
+        const chart = acquireChart({
+          type: 'line',
+          data: {
+            labels: ['A', 'B'],
+            datasets: [{data: [1, 2]}]
+          },
+          options: {
+            events,
+            plugins: {
+              legend: {events: legendEvents, onClick}
+            }
+          }
+        });
+        return {chart, onClick};
+      }
+
+      it('should call onClick once when the chart listens to both click and mouseup', async function() {
+        const {chart, onClick} = countLegendClicks(['click', 'mouseup', 'mousedown', 'mousemove']);
+        await pressFirstItem(chart);
+        expect(onClick).toHaveBeenCalledTimes(1);
+        expect(onClick.mock.calls[0][0].type).toBe('click');
+      });
+
+      it('should call onClick once on mouseup when the chart does not listen to click', async function() {
+        const {chart, onClick} = countLegendClicks(['mouseup', 'mousemove']);
+        await pressFirstItem(chart);
+        expect(onClick).toHaveBeenCalledTimes(1);
+        expect(onClick.mock.calls[0][0].type).toBe('mouseup');
+      });
+
+      it('should not call onClick on a right-click', async function() {
+        const {chart, onClick} = countLegendClicks(['contextmenu', 'mouseup', 'mousemove']);
+        const hb = chart.legend.legendHitBoxes[0];
+        await triggerMouseEvent(chart, 'contextmenu', {x: hb.left + hb.width / 2, y: hb.top + hb.height / 2});
+        expect(onClick).not.toHaveBeenCalled();
+      });
+
+      it('should call onClick on mouseup when only the legend events leave out click', async function() {
+        const {chart, onClick} = countLegendClicks(['click', 'mouseup', 'mousemove'], ['mouseup']);
+        await pressFirstItem(chart);
+        expect(onClick).toHaveBeenCalledTimes(1);
+        expect(onClick.mock.calls[0][0].type).toBe('mouseup');
+      });
+    });
+
     it('should call onLeave when the mouse leaves the canvas', async function() {
       var hoverItem = null;
       var leaveItem = null;
