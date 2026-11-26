@@ -1450,6 +1450,44 @@ describe('Chart.DatasetController', function() {
     });
   });
 
+  describe('parse', function() {
+    it('should not treat data with a null index value as sorted', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: -5, y: 1}, {x: null, y: 2}, {x: 3, y: 3}]
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'linear'}
+          }
+        }
+      });
+
+      expect(chart.getDatasetMeta(0)._sorted).toBe(false);
+    });
+
+    it('should treat data in order as sorted', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: -5, y: 1}, {x: 0, y: 2}, {x: 3, y: 3}]
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'linear'}
+          }
+        }
+      });
+
+      expect(chart.getDatasetMeta(0)._sorted).toBe(true);
+    });
+  });
+
   describe('getContext', function() {
     it('should reflect updated data', function() {
       var chart = acquireChart({
