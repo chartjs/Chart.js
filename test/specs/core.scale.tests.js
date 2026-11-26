@@ -656,6 +656,48 @@ describe('Core.scale', function() {
 
   });
 
+  describe('draw', function() {
+    it('should dispatch to the overridable draw stages', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [1, 2]}]
+        },
+        options: {
+          scales: {
+            y: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'y title'
+              }
+            }
+          }
+        }
+      });
+
+      var scale = chart.scales.y;
+      var calls = [];
+
+      ['drawBackground', 'drawGrid', 'drawBorder', 'drawTitle', 'drawLabels'].forEach(function(stage) {
+        spyOn(scale, stage).and.callFake(function() {
+          calls.push([stage, arguments.length]);
+        });
+      });
+
+      scale.draw(chart.chartArea);
+
+      expect(calls).toEqual([
+        ['drawBackground', 0],
+        ['drawGrid', 1],
+        ['drawBorder', 0],
+        ['drawTitle', 0],
+        ['drawLabels', 1]
+      ]);
+    });
+  });
+
   describe('min and max', function() {
     it('should be limited to visible data', function() {
       var chart = window.acquireChart({
