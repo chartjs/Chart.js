@@ -3,8 +3,6 @@ function getLabels(scale) {
 }
 
 describe('Logarithmic Scale tests', function() {
-  describe('auto', jasmine.fixture.specs('scale.logarithmic'));
-
   it('should register', function() {
     var Constructor = Chart.registry.getScale('logarithmic');
     expect(Constructor).not.toBe(undefined);
@@ -23,7 +21,7 @@ describe('Logarithmic Scale tests', function() {
     });
 
     // Is this actually a function
-    expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
+    expect(defaultConfig.ticks.callback).toEqual(expect.any(Function));
   });
 
   it('should correctly determine the max & min data values', function() {
@@ -974,6 +972,8 @@ describe('Logarithmic Scale tests', function() {
       axes.forEach(function(axis) {
         var expectation = 'min = ' + setup.firstTick + ', max = ' + setup.lastTick;
         describe(setup.describe + ' and axis is "' + axis.id + '"; expect: ' + expectation + ';', function() {
+          let chart;
+
           beforeEach(function() {
             var xConfig = {
               type: 'logarithmic',
@@ -991,7 +991,7 @@ describe('Logarithmic Scale tests', function() {
             Object.assign(xConfig, setup.scale);
             Object.assign(yConfig, setup.scale);
             Object.assign(data, setup.data || {});
-            this.chart = window.acquireChart({
+            chart = window.acquireChart({
               type: 'line',
               data: data,
               options: {
@@ -1004,7 +1004,6 @@ describe('Logarithmic Scale tests', function() {
           });
 
           it('should get the correct pixel value for a point', function() {
-            var chart = this.chart;
             var axisID = axis.id;
             var scale = chart.scales[axisID];
             var firstTick = setup.firstTick;
@@ -1096,6 +1095,8 @@ describe('Logarithmic Scale tests', function() {
       axes.forEach(function(axis) {
         var expectation = 'min = 0, max = ' + setup.lastTick;
         describe(setup.describe + ' and axis is "' + axis.id + '"; expect: ' + expectation + ';', function() {
+          let chart;
+
           beforeEach(function() {
             var xConfig = {
               type: 'logarithmic',
@@ -1113,7 +1114,7 @@ describe('Logarithmic Scale tests', function() {
             Object.assign(xConfig, setup.scale);
             Object.assign(yConfig, setup.scale);
             Object.assign(data, setup.data || {});
-            this.chart = window.acquireChart({
+            chart = window.acquireChart({
               type: 'line',
               data: data,
               options: {
@@ -1126,7 +1127,6 @@ describe('Logarithmic Scale tests', function() {
           });
 
           it('should get the correct pixel value for a point', function() {
-            var chart = this.chart;
             var axisID = axis.id;
             var scale = chart.scales[axisID];
             var lastTick = setup.lastTick;

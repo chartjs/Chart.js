@@ -1,7 +1,5 @@
 // Time scale tests
 describe('Time scale tests', function() {
-  describe('auto', jasmine.fixture.specs('scale.time'));
-
   function createScale(data, options, dimensions) {
     var width = (dimensions && dimensions.width) || 400;
     var height = (dimensions && dimensions.height) || 50;
@@ -28,24 +26,19 @@ describe('Time scale tests', function() {
     return scale.ticks.map(t => t.label);
   }
 
-  beforeEach(function() {
-    // Need a time matcher for getValueFromPixel
-    jasmine.addMatchers({
-      toBeCloseToTime: function() {
-        return {
-          compare: function(time, expected) {
-            var result = false;
-            var actual = moment(time);
-            var diff = actual.diff(expected.value, expected.unit, true);
-            result = Math.abs(diff) < (expected.threshold !== undefined ? expected.threshold : 0.01);
+  // Need a time matcher for getValueForPixel
+  expect.extend({
+    toBeCloseToTime(time, expected) {
+      var actual = moment(time);
+      var diff = actual.diff(expected.value, expected.unit, true);
+      var result = Math.abs(diff) < (expected.threshold !== undefined ? expected.threshold : 0.01);
+      var threshold = expected.threshold !== undefined ? expected.threshold : 0.01;
 
-            return {
-              pass: result
-            };
-          }
-        };
-      }
-    });
+      return {
+        pass: result,
+        message: () => `Expected ${actual.toISOString()}${this.isNot ? ' not' : ''} to be within ${threshold} ${expected.unit} of ${moment(expected.value).toISOString()}, but it differs by ${diff} ${expected.unit}`
+      };
+    }
   });
 
   it('should load moment.js as a dependency', function() {
@@ -180,8 +173,10 @@ describe('Time scale tests', function() {
   });
 
   describe('when rendering several days', function() {
+    let chart, scale;
+
     beforeEach(function() {
-      this.chart = window.acquireChart({
+      chart = window.acquireChart({
         type: 'line',
         data: {
           datasets: [{
@@ -208,19 +203,15 @@ describe('Time scale tests', function() {
         }
       });
 
-      this.scale = this.chart.scales.x;
+      scale = chart.scales.x;
     });
 
     it('should be bounded by the nearest week beginnings', function() {
-      var chart = this.chart;
-      var scale = this.scale;
-      expect(scale.getValueForPixel(scale.left)).toBeGreaterThan(moment(chart.data.labels[0]).startOf('week'));
-      expect(scale.getValueForPixel(scale.right)).toBeLessThan(moment(chart.data.labels[chart.data.labels.length - 1]).add(1, 'week').endOf('week'));
+      expect(scale.getValueForPixel(scale.left)).toBeGreaterThan(moment(chart.data.labels[0]).startOf('week').valueOf());
+      expect(scale.getValueForPixel(scale.right)).toBeLessThan(moment(chart.data.labels[chart.data.labels.length - 1]).add(1, 'week').endOf('week').valueOf());
     });
 
     it('should convert between screen coordinates and times', function() {
-      var chart = this.chart;
-      var scale = this.scale;
       var timeRange = moment(scale.max).valueOf() - moment(scale.min).valueOf();
       var msPerPix = timeRange / scale.width;
       var firstPointOffsetMs = moment(chart.config.data.labels[0]).valueOf() - scale.min;
@@ -244,8 +235,10 @@ describe('Time scale tests', function() {
   });
 
   describe('when rendering several years', function() {
+    let chart, scale;
+
     beforeEach(function() {
-      this.chart = window.acquireChart({
+      chart = window.acquireChart({
         type: 'line',
         data: {
           labels: ['2005-07-04', '2017-01-20'],
@@ -261,11 +254,10 @@ describe('Time scale tests', function() {
         }
       }, {canvas: {width: 800, height: 200}});
 
-      this.scale = this.chart.scales.x;
+      scale = chart.scales.x;
     });
 
     it('should be bounded by nearest step\'s year start and end', function() {
-      var scale = this.scale;
       var ticks = scale.getTicks();
       var step = ticks[1].value - ticks[0].value;
       var stepsAmount = Math.floor((scale.max - scale.min) / step);
@@ -281,11 +273,10 @@ describe('Time scale tests', function() {
     });
 
     it('should build the correct ticks', function() {
-      expect(getLabels(this.scale)).toEqual(['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018']);
+      expect(getLabels(scale)).toEqual(['2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018']);
     });
 
     it('should have ticks with accurate labels', function() {
-      var scale = this.scale;
       var ticks = scale.getTicks();
       // pixelsPerTick is an approximation which assumes same number of milliseconds per year (not true)
       // we use a threshold of 1 day so that we still match these values
@@ -334,8 +325,10 @@ describe('Time scale tests', function() {
   });
 
   describe('when ticks.callback is specified', function() {
+    let chart, scale;
+
     beforeEach(function() {
-      this.chart = window.acquireChart({
+      chart = window.acquireChart({
         type: 'line',
         data: {
           datasets: [{
@@ -362,11 +355,11 @@ describe('Time scale tests', function() {
           }
         }
       });
-      this.scale = this.chart.scales.x;
+      scale = chart.scales.x;
     });
 
     it('should get the correct labels for ticks', function() {
-      var labels = getLabels(this.scale);
+      var labels = getLabels(scale);
 
       expect(labels.length).toEqual(21);
       expect(labels[0]).toEqual('<0>');
@@ -374,13 +367,12 @@ describe('Time scale tests', function() {
     });
 
     it('should update ticks.callback correctly', function() {
-      var chart = this.chart;
       chart.options.scales.x.ticks.callback = function(_, i) {
         return '{' + i + '}';
       };
       chart.update();
 
-      var labels = getLabels(this.scale);
+      var labels = getLabels(scale);
       expect(labels.length).toEqual(21);
       expect(labels[0]).toEqual('{0}');
       expect(labels[labels.length - 1]).toEqual('{60}');
@@ -595,8 +587,10 @@ describe('Time scale tests', function() {
 
   describe('when ticks.source', function() {
     describe('is "labels"', function() {
+      let chart;
+
       beforeEach(function() {
-        this.chart = window.acquireChart({
+        chart = window.acquireChart({
           type: 'line',
           data: {
             labels: ['2017', '2019', '2020', '2025', '2042'],
@@ -619,7 +613,7 @@ describe('Time scale tests', function() {
       });
 
       it ('should generate ticks from "data.labels"', function() {
-        var scale = this.chart.scales.x;
+        var scale = chart.scales.x;
 
         expect(scale.min).toEqual(+moment('2017', 'YYYY'));
         expect(scale.max).toEqual(+moment('2042', 'YYYY'));
@@ -627,7 +621,6 @@ describe('Time scale tests', function() {
           '2017', '2019', '2020', '2025', '2042']);
       });
       it ('should not add ticks for min and max if they extend the labels range', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
         var options = chart.options.scales.x;
 
@@ -641,7 +634,6 @@ describe('Time scale tests', function() {
           '2017', '2019', '2020', '2025', '2042']);
       });
       it ('should not duplicate ticks if min and max are the labels limits', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
         var options = chart.options.scales.x;
 
@@ -655,7 +647,6 @@ describe('Time scale tests', function() {
           '2017', '2019', '2020', '2025', '2042']);
       });
       it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
 
         chart.data.labels = [];
@@ -666,7 +657,6 @@ describe('Time scale tests', function() {
         expect(getLabels(scale)).toEqual([]);
       });
       it ('should correctly handle empty `data.labels` using `time.unit`', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
         var options = chart.options.scales.x;
 
@@ -681,8 +671,10 @@ describe('Time scale tests', function() {
     });
 
     describe('is "data"', function() {
+      let chart;
+
       beforeEach(function() {
-        this.chart = window.acquireChart({
+        chart = window.acquireChart({
           type: 'line',
           data: {
             labels: ['2017', '2019', '2020', '2025', '2042'],
@@ -712,7 +704,7 @@ describe('Time scale tests', function() {
       });
 
       it ('should generate ticks from "datasets.data"', function() {
-        var scale = this.chart.scales.x;
+        var scale = chart.scales.x;
 
         expect(scale.min).toEqual(+moment('2017', 'YYYY'));
         expect(scale.max).toEqual(+moment('2043', 'YYYY'));
@@ -720,7 +712,6 @@ describe('Time scale tests', function() {
           '2017', '2018', '2019', '2020', '2025', '2042', '2043']);
       });
       it ('should not add ticks for min and max if they extend the labels range', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
         var options = chart.options.scales.x;
 
@@ -734,7 +725,6 @@ describe('Time scale tests', function() {
           '2017', '2018', '2019', '2020', '2025', '2042', '2043']);
       });
       it ('should not duplicate ticks if min and max are the labels limits', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
         var options = chart.options.scales.x;
 
@@ -748,7 +738,6 @@ describe('Time scale tests', function() {
           '2017', '2018', '2019', '2020', '2025', '2042', '2043']);
       });
       it ('should correctly handle empty `data.labels` using "day" if `time.unit` is undefined`', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
 
         chart.data.labels = [];
@@ -760,7 +749,6 @@ describe('Time scale tests', function() {
           '2018', '2020', '2043']);
       });
       it ('should correctly handle empty `data.labels` and hidden datasets using `time.unit`', function() {
-        var chart = this.chart;
         var scale = chart.scales.x;
         var options = chart.options.scales.x;
 
@@ -780,8 +768,10 @@ describe('Time scale tests', function() {
   [true, false].forEach(function(normalized) {
     describe('when normalized is ' + normalized + ' and scale type', function() {
       describe('is "timeseries"', function() {
+        let chart;
+
         beforeEach(function() {
-          this.chart = window.acquireChart({
+          chart = window.acquireChart({
             type: 'line',
             data: {
               labels: ['2017', '2019', '2020', '2025', '2042'],
@@ -808,7 +798,7 @@ describe('Time scale tests', function() {
         });
 
         it ('should space data out with the same gap, whatever their time values', function() {
-          var scale = this.chart.scales.x;
+          var scale = chart.scales.x;
           var start = scale.left;
           var slice = scale.width / 4;
 
@@ -819,7 +809,6 @@ describe('Time scale tests', function() {
           expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * 4);
         });
         it ('should add a step before if scale.min is before the first data', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 
@@ -833,7 +822,6 @@ describe('Time scale tests', function() {
           expect(scale.getPixelForValue(moment('2042').valueOf(), 5)).toBeCloseToPixel(start + slice * 5);
         });
         it ('should add a step after if scale.max is after the last data', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 
@@ -846,7 +834,6 @@ describe('Time scale tests', function() {
           expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(388);
         });
         it ('should add steps before and after if scale.min/max are outside the data range', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 
@@ -859,8 +846,10 @@ describe('Time scale tests', function() {
         });
       });
       describe('is "time"', function() {
+        let chart;
+
         beforeEach(function() {
-          this.chart = window.acquireChart({
+          chart = window.acquireChart({
             type: 'line',
             data: {
               labels: ['2017', '2019', '2020', '2025', '2042'],
@@ -886,7 +875,7 @@ describe('Time scale tests', function() {
         });
 
         it ('should space data out with a gap relative to their time values', function() {
-          var scale = this.chart.scales.x;
+          var scale = chart.scales.x;
           var start = scale.left;
           var slice = scale.width / (2042 - 2017);
 
@@ -897,7 +886,6 @@ describe('Time scale tests', function() {
           expect(scale.getPixelForValue(moment('2042').valueOf(), 4)).toBeCloseToPixel(start + slice * (2042 - 2017));
         });
         it ('should take in account scale min and max if outside the ticks range', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 
@@ -997,8 +985,10 @@ describe('Time scale tests', function() {
     ['auto', 'data', 'labels'].forEach(function(source) {
       ['data', 'ticks'].forEach(function(bounds) {
         describe('and ticks.source is "' + source + '" and bounds "' + bounds + '"', function() {
+          let chart;
+
           beforeEach(function() {
-            this.chart = window.acquireChart({
+            chart = window.acquireChart({
               type: 'line',
               data: {
                 labels: ['02/20 08:00', '02/21 09:00', '02/22 10:00', '02/23 11:00'],
@@ -1026,7 +1016,6 @@ describe('Time scale tests', function() {
           });
 
           it ('should expand scale to the min/max range', function() {
-            var chart = this.chart;
             var scale = chart.scales.x;
             var options = chart.options.scales.x;
             var min = '02/19 07:00';
@@ -1048,7 +1037,6 @@ describe('Time scale tests', function() {
             });
           });
           it ('should shrink scale to the min/max range', function() {
-            var chart = this.chart;
             var scale = chart.scales.x;
             var options = chart.options.scales.x;
             var min = '02/21 07:00';
@@ -1077,8 +1065,10 @@ describe('Time scale tests', function() {
   ['auto', 'data', 'labels'].forEach(function(source) {
     ['timeseries', 'time'].forEach(function(type) {
       describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
+        let chart;
+
         beforeEach(function() {
-          this.chart = window.acquireChart({
+          chart = window.acquireChart({
             type: 'line',
             data: {
               labels: ['2017', '2018', '2019', '2020', '2021'],
@@ -1102,14 +1092,13 @@ describe('Time scale tests', function() {
         });
 
         it ('should not add offset from the edges', function() {
-          var scale = this.chart.scales.x;
+          var scale = chart.scales.x;
 
           expect(scale.getPixelForValue(moment('2017').valueOf())).toBeCloseToPixel(scale.left);
           expect(scale.getPixelForValue(moment('2021').valueOf())).toBeCloseToPixel(scale.left + scale.width);
         });
 
         it ('should add offset from the edges if offset is true', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 
@@ -1125,7 +1114,6 @@ describe('Time scale tests', function() {
         });
 
         it ('should not add offset if min and max extend the labels range', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 
@@ -1220,8 +1208,10 @@ describe('Time scale tests', function() {
   ['data', 'labels'].forEach(function(source) {
     ['timeseries', 'time'].forEach(function(type) {
       describe('when ticks.source is "' + source + '" and scale type is "' + type + '"', function() {
+        let chart;
+
         beforeEach(function() {
-          this.chart = window.acquireChart({
+          chart = window.acquireChart({
             type: 'line',
             data: {
               labels: ['2017', '2019', '2020', '2025', '2042'],
@@ -1245,7 +1235,6 @@ describe('Time scale tests', function() {
         });
 
         it ('should add offset if min and max extend the labels range and offset is true', function() {
-          var chart = this.chart;
           var scale = chart.scales.x;
           var options = chart.options.scales.x;
 

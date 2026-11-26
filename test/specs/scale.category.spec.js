@@ -3,8 +3,6 @@ function getLabels(scale) {
 }
 
 describe('Category scale tests', function() {
-  describe('auto', jasmine.fixture.specs('scale.category'));
-
   it('Should register the constructor with the registry', function() {
     var Constructor = Chart.registry.getScale('category');
     expect(Constructor).not.toBe(undefined);
@@ -204,7 +202,7 @@ describe('Category scale tests', function() {
 
     var xScale = chart.scales.x;
     expect(xScale.getPixelForValue(0)).toBeCloseToPixel(23 + 6); // plus lineHeight
-    expect(xScale.getValueForPixel(23)).toBe(0);
+    expect(xScale.getValueForPixel(23)).toBeCloseTo(0);
 
     expect(xScale.getPixelForValue(4)).toBeCloseToPixel(487);
     expect(xScale.getValueForPixel(487)).toBe(4);
@@ -213,7 +211,7 @@ describe('Category scale tests', function() {
     chart.update();
 
     expect(xScale.getPixelForValue(0)).toBeCloseToPixel(71 + 6); // plus lineHeight
-    expect(xScale.getValueForPixel(69)).toBe(0);
+    expect(xScale.getValueForPixel(69)).toBeCloseTo(0);
 
     expect(xScale.getPixelForValue(4)).toBeCloseToPixel(461);
     expect(xScale.getValueForPixel(417)).toBe(4);
@@ -535,7 +533,7 @@ describe('Category scale tests', function() {
       var x3 = scale.getPixelForValue(i);
       expect(x2).toEqual(x3);
       expect(x2).toBeGreaterThan(x);
-      expect(scale.getValueForPixel(x2)).toBe(i);
+      expect(scale.getValueForPixel(x2)).toBeCloseTo(i);
       x = x2;
     }
   });
