@@ -93,6 +93,28 @@ describe('Chart namespace of the UMD bundle', () => {
   });
 });
 
+describe('UMD bundle in a web worker', () => {
+  it('supports choosing the BasicPlatform in a web worker', async() => {
+    const canvas = document.createElement('canvas');
+    const offscreenCanvas = canvas.transferControlToOffscreen();
+    const worker = new Worker(new URL('./worker.js', import.meta.url));
+
+    try {
+      const {type, errorMessage} = await new Promise((resolve, reject) => {
+        worker.onmessage = (event) => resolve(event.data);
+        // importScripts throws when the bundle does not load, before the
+        // worker can post a message.
+        worker.onerror = (event) => reject(new Error(`worker failed: ${event.message}`));
+        worker.postMessage({canvas: offscreenCanvas}, [offscreenCanvas]);
+      });
+      expect(errorMessage).toBeUndefined();
+      expect(type).toBe('success');
+    } finally {
+      worker.terminate();
+    }
+  });
+});
+
 // One fixture per controller, one filler, one legend and one that drives the
 // chart with mouse events. None uses a time scale: that needs the date adapter,
 // which the bundle does not include. Each pattern matches the fixture's config

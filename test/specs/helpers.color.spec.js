@@ -29,22 +29,23 @@ describe('Background hover color helper', function() {
 });
 
 describe('color and getHoverColor helpers', function() {
-  it('should return a CanvasPattern when called with a CanvasPattern', function(done) {
+  it('should return a CanvasPattern when called with a CanvasPattern', async function() {
     var dots = new Image();
+    var loaded = new Promise((resolve) => {
+      dots.onload = resolve;
+    });
     dots.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAD1BMVEUAAAD///////////////+PQt5oAAAABXRSTlMAHlFhZsfk/BEAAAAqSURBVHgBY2BgZGJmYmSAAUYWEIDzmcBcJhiXGcxlRpPFrhdmMiqgvX0AcGIBEUAo6UAAAAAASUVORK5CYII=';
-    dots.onload = function() {
-      var chartContext = document.createElement('canvas').getContext('2d');
-      var patternCanvas = document.createElement('canvas');
-      var patternContext = patternCanvas.getContext('2d');
-      var pattern = patternContext.createPattern(dots, 'repeat');
-      patternContext.fillStyle = pattern;
-      var chartPattern = chartContext.createPattern(patternCanvas, 'repeat');
+    await loaded;
 
-      expect(color(chartPattern) instanceof CanvasPattern).toBe(true);
-      expect(getHoverColor(chartPattern) instanceof CanvasPattern).toBe(true);
+    var chartContext = document.createElement('canvas').getContext('2d');
+    var patternCanvas = document.createElement('canvas');
+    var patternContext = patternCanvas.getContext('2d');
+    var pattern = patternContext.createPattern(dots, 'repeat');
+    patternContext.fillStyle = pattern;
+    var chartPattern = chartContext.createPattern(patternCanvas, 'repeat');
 
-      done();
-    };
+    expect(color(chartPattern) instanceof CanvasPattern).toBe(true);
+    expect(getHoverColor(chartPattern) instanceof CanvasPattern).toBe(true);
   });
 
   it('should return a CanvasGradient when called with a CanvasGradient', function() {

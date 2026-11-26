@@ -63,6 +63,12 @@ Notes from building P2:
 - `controller.line/point-style-offscreen-canvas` failed in both browsers with `chartjs-test-utils` 1.1.1, whose image matcher accepted only a `CanvasRenderingContext2D`, not the `OffscreenCanvasRenderingContext2D` of a chart on an `OffscreenCanvas`. `chartjs-test-utils` 1.1.2 (https://github.com/chartjs/chartjs-test-utils/pull/45) accepts it, and the fixture passes against its existing reference image in both browsers.
 - D11's premise, that 1.x compares with pixelmatch 8 blending against white as pixelmatch 5 did, holds only for the blending. Pixelmatch 8 also measures colour difference in OKLab instead of YIQ, so each fixture's `threshold`, tuned for pixelmatch 5, now admits a different difference. On the same Vitest render, `controller.doughnut/doughnut-circumference-over-2pi` differs by 0 pixels under pixelmatch 5 and by 1306 (0.5%) under pixelmatch 8; `controller.doughnut/single-slice-opacity` and `scale.linear/min-max-skip/no-collision` go from 0.09% to just over their 0.1% tolerance in Firefox. The maintainers kept pixelmatch 8 and update references as needed: `doughnut-circumference-over-2pi.png` is regenerated from Chromium, and the two Firefox-only fixtures, whose Chromium render already matches, get a `tolerance` of 0.0012 instead of the default 0.001.
 
+Notes from building P9:
+
+- The web-worker test moved to the smoke suite needs two files beyond the row. `test/.eslintrc.yml` gains an override with the `worker` environment for `test/umd/worker.js`, which calls `importScripts` and `postMessage`. The smoke-suite paragraph of `docs/developers/contributing.md` now says the suite creates a chart in a web worker.
+- The moved test drops the `pending()` guard for a missing `transferControlToOffscreen`: both browsers of D14 have it. It rejects on the worker's `error` event, since a bundle that does not load throws in the worker before it can post a message.
+- After the move nothing loads `test/BasicChartWebWorker.js`; the file and its `karma.conf.cjs` entry go with Karma in P12.
+
 ### D1. Both runners side by side; free files first, in large pieces
 Decided by the maintainers. Spec files no open pull request touches are converted first, grouped by area into large pieces, because a conversion edits only 2-3% of a file's lines and is mechanical. Files that open pull requests touch follow straight after (D13).
 *Alternatives:* a compatibility layer that runs the specs unedited (keeps Jasmine vocabulary indefinitely); one conversion of everything at once (conflicts with about 65 open pull requests).

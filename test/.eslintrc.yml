@@ -35,3 +35,8 @@ overrides:
   - files: ['fixtures/**/*.js']
     globals:
       triggerMouseEvent: readonly
+  # The classic web worker of the smoke suite (importScripts, postMessage).
+  - files: ['umd/worker.js']
+    env:
+      jasmine: false
+      worker: true
