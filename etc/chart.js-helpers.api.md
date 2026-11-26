@@ -289,7 +289,7 @@ class BasePlatform {
 export function _bezierCurveTo(ctx: CanvasRenderingContext2D, previous: SplinePoint, target: SplinePoint, flip?: boolean): void;
 
 // @public (undocumented)
-export function _bezierInterpolation(p1: SplinePoint, p2: SplinePoint, t: number, mode?: any): {
+export function _bezierInterpolation(p1: SplinePoint, p2: SplinePoint, t: number, _mode?: any): {
     x: number;
     y: number;
 };
@@ -2848,7 +2848,7 @@ interface PointHoverOptions extends CommonHoverOptions {
 }
 
 // @public (undocumented)
-export function _pointInLine(p1: Point, p2: Point, t: number, mode?: any): {
+export function _pointInLine(p1: Point, p2: Point, t: number, _mode?: any): {
     x: number;
     y: number;
 };
