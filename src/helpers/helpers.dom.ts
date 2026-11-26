@@ -42,15 +42,17 @@ function parseMaxStyle(styleValue: string | number, node: HTMLElement, parentPro
   return valueInPixels;
 }
 
+// A canvas in a detached document or in a removed iframe has no window, so no style applies to it.
+const noStyle = {} as CSSStyleDeclaration;
+
 const getComputedStyle = (element: HTMLElement): CSSStyleDeclaration => {
-  const doc = element.ownerDocument;
-  const win = doc && doc.defaultView;
-  return (win && win.getComputedStyle(element, null)) || ({} as CSSStyleDeclaration);
+  const view = element.ownerDocument.defaultView;
+  return view ? view.getComputedStyle(element, null) : noStyle;
 };
 
 export function getStyle(el: HTMLElement, property: string): string {
   const style = getComputedStyle(el);
-  return (style.getPropertyValue && style.getPropertyValue(property)) || '';
+  return style === noStyle ? '' : style.getPropertyValue(property);
 }
 
 const positions = ['top', 'right', 'bottom', 'left'];
