@@ -497,8 +497,8 @@ export class BasePlatform {
 
 // @public
 class BasePlatform_2 {
-    acquireContext(canvas: HTMLCanvasElement, aspectRatio?: number): void;
-    addEventListener(chart: Chart_7, type: string, listener: Function): void;
+    acquireContext(_canvas: HTMLCanvasElement, _aspectRatio?: number): CanvasRenderingContext2D | null;
+    addEventListener(_chart: Chart_3, _type: string, _listener: Function): void;
     // (undocumented)
     getDevicePixelRatio(): number;
     getMaximumSize(element: HTMLCanvasElement, width?: number, height?: number, aspectRatio?: number): {
@@ -506,10 +506,10 @@ class BasePlatform_2 {
         height: number;
     };
     // (undocumented)
-    isAttached(canvas: HTMLCanvasElement): boolean;
-    releaseContext(context: CanvasRenderingContext2D): boolean;
-    removeEventListener(chart: Chart_7, type: string, listener: Function): void;
-    updateConfig(config: Config): void;
+    isAttached(_canvas: HTMLCanvasElement): boolean;
+    releaseContext(_context: CanvasRenderingContext2D): boolean;
+    removeEventListener(_chart: Chart_3, _type: string, _listener: Function): void;
+    updateConfig(_config: Config): void;
 }
 
 // @public (undocumented)
@@ -1049,9 +1049,6 @@ type Chart_6 = Chart_3;
 
 // @public (undocumented)
 type Chart_7 = Chart_3;
-
-// @public (undocumented)
-type Chart_8 = Chart_3;
 
 // @public (undocumented)
 export interface ChartArea {
@@ -2394,9 +2391,7 @@ export class DomPlatform extends BasePlatform {}
 // @public
 class DomPlatform_2 extends BasePlatform_2 {
     // (undocumented)
-    acquireContext(canvas: HTMLCanvasElement, aspectRatio?: number): CanvasRenderingContext2D | null;
-    // (undocumented)
-    removeEventListener(chart: Chart_8, type: string): void;
+    removeEventListener(chart: Chart_7, type: string): void;
 }
 
 // @public (undocumented)

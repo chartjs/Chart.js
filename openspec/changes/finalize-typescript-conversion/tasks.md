@@ -55,11 +55,11 @@
 
 ## 8. P8: Convert BasePlatform to TypeScript
 
-- [ ] 8.1 Rename the modules to `.ts`. Show the gate's errors for BasePlatform before the fix.
-- [ ] 8.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 8.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 8.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 8.5 Run the whole test suite; no fixture changes.
+- [x] 8.1 Rename the modules to `.ts`. Show the gate's errors for BasePlatform before the fix.
+- [x] 8.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 8.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 8.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 8.5 Run the whole test suite; no fixture changes.
 
 ## 9. P9: Convert the registries and the plugin service to TypeScript
 
