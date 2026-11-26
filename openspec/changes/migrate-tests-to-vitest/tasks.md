@@ -81,9 +81,9 @@
 ## 11. P11: Specs open pull requests touch, scales
 
 - [ ] 11.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
-- [ ] 11.2 Record both test counts
-- [ ] 11.3 Rename and convert `scale.{category,linear,logarithmic,time}`, including the `toBeCloseToTime` matcher
-- [ ] 11.4 Confirm the counts
+- [x] 11.2 Record both test counts
+- [x] 11.3 Rename and convert `scale.{category,linear,logarithmic,time}`, including the `toBeCloseToTime` matcher
+- [x] 11.4 Confirm the counts
 
 ## 12. P12: Remove Karma
 

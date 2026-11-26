@@ -3,8 +3,6 @@ function getLabels(scale) {
 }
 
 describe('Linear Scale', function() {
-  describe('auto', jasmine.fixture.specs('scale.linear'));
-
   it('Should register the constructor with the registry', function() {
     var Constructor = Chart.registry.getScale('linear');
     expect(Constructor).not.toBe(undefined);
@@ -14,7 +12,7 @@ describe('Linear Scale', function() {
   it('Should have the correct default config', function() {
     var defaultConfig = Chart.defaults.scales.linear;
 
-    expect(defaultConfig.ticks.callback).toEqual(jasmine.any(Function));
+    expect(defaultConfig.ticks.callback).toEqual(expect.any(Function));
   });
 
   it('Should correctly determine the max & min data values', function() {

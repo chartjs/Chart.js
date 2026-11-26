@@ -109,6 +109,8 @@ No `jasmine` compatibility object. Vitest runs with `globals: true`, and `test/s
 | `pending()` | `ctx.skip()` |
 | `this.x` in hooks and tests | a `let` in the enclosing `describe` |
 | `jasmine.addMatchers({...})` | `expect.extend({...})` in that spec |
+| `toBe(0)` / `toEqual(0)` on a value that can be -0 | `toBeCloseTo(0)` (Jasmine's `toBe` is `===`; Vitest's `toBe` and `toEqual` use `Object.is`) |
+| `toBeGreaterThan(m)` / `toBeLessThan(m)` and the other comparison matchers given a non-number such as a moment | pass `m.valueOf()` (Jasmine coerces with `>` / `<`; Vitest requires a number or bigint) |
 
 Config that keeps Jasmine's implicit behaviour: `restoreMocks: true` (Jasmine removes spies after each spec), `fileParallelism: false` (Karma ran one page serially; animation and resize specs need unthrottled frames), an explicit `browser.viewport` (Vitest's default is 414x896; Karma ran in a full window), and shuffled test order with the seed printed, as Jasmine does today.
 
