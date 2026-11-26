@@ -1,10 +1,7 @@
-// Test the rectangle element
 const tooltipPlugin = Chart.registry.getPlugin('tooltip');
 const Tooltip = tooltipPlugin._element;
 
 describe('Plugin.Tooltip', function() {
-  describe('auto', jasmine.fixture.specs('plugin.tooltip'));
-
   describe('config', function() {
     it('should not include the dataset label in the body string if not defined', function() {
       var data = {
@@ -78,7 +75,7 @@ describe('Plugin.Tooltip', function() {
       var tooltip = chart.tooltip;
       var defaults = Chart.defaults;
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: chart.chartArea.top + 10});
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: chart.chartArea.top + 10});
 
       expect(tooltip.options.padding).toEqualOptions({
         left: 6,
@@ -137,7 +134,7 @@ describe('Plugin.Tooltip', function() {
         displayColors: true
       });
 
-      expect(tooltip).toEqual(jasmine.objectContaining({
+      expect(tooltip).toEqual(expect.objectContaining({
         opacity: 1,
 
         // Text
@@ -206,11 +203,11 @@ describe('Plugin.Tooltip', function() {
       var meta = chart.getDatasetMeta(0);
       var point = meta.data[1];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: 0});
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: 0});
       // Check and see if tooltip was displayed
       var tooltip = chart.tooltip;
 
-      expect(tooltip).toEqual(jasmine.objectContaining({
+      expect(tooltip).toEqual(expect.objectContaining({
         opacity: 0,
       }));
     });
@@ -247,7 +244,7 @@ describe('Plugin.Tooltip', function() {
     var meta = chart.getDatasetMeta(0);
     var point = meta.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
     var defaults = Chart.defaults;
@@ -256,7 +253,7 @@ describe('Plugin.Tooltip', function() {
     expect(tooltip.xAlign).toEqual('left');
     expect(tooltip.yAlign).toEqual('center');
 
-    expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.bodyFont).toEqual(expect.objectContaining({
       family: defaults.font.family,
       style: defaults.font.style,
       size: defaults.font.size,
@@ -267,7 +264,7 @@ describe('Plugin.Tooltip', function() {
       bodySpacing: 2,
     });
 
-    expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.titleFont).toEqual(expect.objectContaining({
       family: defaults.font.family,
       weight: 'bold',
       size: defaults.font.size,
@@ -400,7 +397,7 @@ describe('Plugin.Tooltip', function() {
     var meta = chart.getDatasetMeta(0);
     var point = meta.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
     var defaults = Chart.defaults;
@@ -409,7 +406,7 @@ describe('Plugin.Tooltip', function() {
     expect(tooltip.xAlign).toEqual('left');
     expect(tooltip.yAlign).toEqual('center');
 
-    expect(tooltip.options.bodyFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.bodyFont).toEqual(expect.objectContaining({
       family: defaults.font.family,
       style: defaults.font.style,
       size: defaults.font.size,
@@ -420,7 +417,7 @@ describe('Plugin.Tooltip', function() {
       bodySpacing: 2,
     });
 
-    expect(tooltip.options.titleFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.titleFont).toEqual(expect.objectContaining({
       family: defaults.font.family,
       weight: 'bold',
       size: defaults.font.size,
@@ -431,7 +428,7 @@ describe('Plugin.Tooltip', function() {
       titleMarginBottom: 6,
     });
 
-    expect(tooltip.options.footerFont).toEqual(jasmine.objectContaining({
+    expect(tooltip.options.footerFont).toEqual(expect.objectContaining({
       family: defaults.font.family,
       weight: 'bold',
       size: defaults.font.size,
@@ -452,7 +449,7 @@ describe('Plugin.Tooltip', function() {
       multiKeyBackground: '#fff',
     });
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqual(expect.objectContaining({
       opacity: 1,
 
       // Text
@@ -530,7 +527,7 @@ describe('Plugin.Tooltip', function() {
     const meta = chart.getDatasetMeta(0);
     const point = meta.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
     expect(chart.tooltip.body[0].before).toEqual(['2,20']);
   });
 
@@ -567,12 +564,12 @@ describe('Plugin.Tooltip', function() {
     var meta0 = chart.getDatasetMeta(0);
     var point0 = meta0.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point0);
+    await triggerMouseEvent(chart, 'mousemove', point0);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
     var defaults = Chart.defaults;
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqual(expect.objectContaining({
       // Positioning
       xAlign: 'left',
       yAlign: 'center',
@@ -643,12 +640,12 @@ describe('Plugin.Tooltip', function() {
     var meta0 = chart.getDatasetMeta(0);
     var point0 = meta0.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point0);
+    await triggerMouseEvent(chart, 'mousemove', point0);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
     var defaults = Chart.defaults;
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqual(expect.objectContaining({
       // Positioning
       xAlign: 'left',
       yAlign: 'center',
@@ -720,12 +717,12 @@ describe('Plugin.Tooltip', function() {
     var meta0 = chart.getDatasetMeta(0);
     var point0 = meta0.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point0);
+    await triggerMouseEvent(chart, 'mousemove', point0);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
     var defaults = Chart.defaults;
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqual(expect.objectContaining({
       // Positioning
       xAlign: 'left',
       yAlign: 'center',
@@ -800,12 +797,12 @@ describe('Plugin.Tooltip', function() {
     var meta0 = chart.getDatasetMeta(0);
     var point0 = meta0.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point0);
+    await triggerMouseEvent(chart, 'mousemove', point0);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
     var defaults = Chart.defaults;
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqual(expect.objectContaining({
       // Positioning
       xAlign: 'left',
       yAlign: 'center',
@@ -862,7 +859,7 @@ describe('Plugin.Tooltip', function() {
     var meta0 = chart.getDatasetMeta(0);
     var point0 = meta0.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point0);
+    await triggerMouseEvent(chart, 'mousemove', point0);
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
 
@@ -905,7 +902,7 @@ describe('Plugin.Tooltip', function() {
       var datasetIndex = 0;
       var point = chart.getDatasetMeta(datasetIndex).data[pointIndex];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       // Check and see if tooltip was displayed
       var tooltip = chart.tooltip;
 
@@ -961,17 +958,17 @@ describe('Plugin.Tooltip', function() {
     var firstPoint = meta.data[1];
 
     var tooltip = chart.tooltip;
-    spyOn(tooltip, 'update').and.callThrough();
+    vi.spyOn(tooltip, 'update');
 
     // First dispatch change event, should update tooltip
-    await jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+    await triggerMouseEvent(chart, 'mousemove', firstPoint);
     expect(tooltip.update).toHaveBeenCalledWith(true, undefined);
 
     // Reset calls
-    tooltip.update.calls.reset();
+    tooltip.update.mockClear();
 
     // Second dispatch change event (same event), should not update tooltip
-    await jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+    await triggerMouseEvent(chart, 'mousemove', firstPoint);
     expect(tooltip.update).not.toHaveBeenCalled();
   });
 
@@ -1024,18 +1021,18 @@ describe('Plugin.Tooltip', function() {
     const secondPoint = meta2.data[1];
 
     const tooltip = chart.tooltip;
-    spyOn(tooltip, 'update');
+    vi.spyOn(tooltip, 'update').mockImplementation(() => {});
 
     // First dispatch change event, should update tooltip
-    await jasmine.triggerMouseEvent(chart, 'mousemove', firstPoint);
+    await triggerMouseEvent(chart, 'mousemove', firstPoint);
     expect(tooltip.update).toHaveBeenCalledWith(true, undefined);
 
     // Reset calls
-    tooltip.update.calls.reset();
+    tooltip.update.mockClear();
 
     // Second dispatch change event (same event), should update tooltip
     // because position mode is 'nearest'
-    await jasmine.triggerMouseEvent(chart, 'mousemove', secondPoint);
+    await triggerMouseEvent(chart, 'mousemove', secondPoint);
     expect(tooltip.update).toHaveBeenCalledWith(true, undefined);
   });
 
@@ -1046,7 +1043,7 @@ describe('Plugin.Tooltip', function() {
         return {x: 0, y: 0};
       };
 
-      spyOn(tooltipPlugin.positioners, 'test').and.callThrough();
+      vi.spyOn(tooltipPlugin.positioners, 'test');
 
       var chart = window.acquireChart({
         type: 'line',
@@ -1081,12 +1078,12 @@ describe('Plugin.Tooltip', function() {
       var point = meta.data[pointIndex];
       var fn = tooltipPlugin.positioners.test;
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
-      expect(fn.calls.count()).toBe(2);
-      expect(fn.calls.first().args[0] instanceof Array).toBe(true);
-      expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'x')).toBe(true);
-      expect(Object.prototype.hasOwnProperty.call(fn.calls.first().args[1], 'y')).toBe(true);
-      expect(fn.calls.first().object instanceof Tooltip).toBe(true);
+      await triggerMouseEvent(chart, 'mousemove', point);
+      expect(fn.mock.calls.length).toBe(2);
+      expect(fn.mock.calls[0][0] instanceof Array).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(fn.mock.calls[0][1], 'x')).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(fn.mock.calls[0][1], 'y')).toBe(true);
+      expect(fn.mock.contexts[0] instanceof Tooltip).toBe(true);
     });
 
     it('Should ignore same x position when calculating average position with index interaction on stacked bar', async function() {
@@ -1128,7 +1125,7 @@ describe('Plugin.Tooltip', function() {
       var datasetIndex = 0;
       var meta = chart.getDatasetMeta(datasetIndex);
       var point = meta.data[pointIndex];
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
 
       var tooltipModel = chart.tooltip;
       const activeElements = tooltipModel.getActiveElements();
@@ -1198,8 +1195,8 @@ describe('Plugin.Tooltip', function() {
         chart.config.data.labels[slice] = chart.config.data.labels[slice] + 'XX';
         chart.update();
 
-        await jasmine.triggerMouseEvent(chart, 'mouseout', point);
-        await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+        await triggerMouseEvent(chart, 'mouseout', point);
+        await triggerMouseEvent(chart, 'mousemove', point);
         var tooltip = chart.tooltip;
         expect(tooltip.dataPoints.length).toBe(1);
         expect(tooltip.x).toBeGreaterThanOrEqual(0);
@@ -1293,7 +1290,7 @@ describe('Plugin.Tooltip', function() {
     var meta = chart.getDatasetMeta(0);
     var point = meta.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     // Check and see if tooltip was displayed
     var tooltip = chart.tooltip;
@@ -1663,7 +1660,7 @@ describe('Plugin.Tooltip', function() {
       const point0 = meta.data[0];
       const point1 = meta.data[1];
 
-      await jasmine.triggerMouseEvent(chart, 'pointerdown', {x: point0.x, y: point0.y});
+      await triggerMouseEvent(chart, 'pointerdown', {x: point0.x, y: point0.y});
       expect(chart.tooltip.opacity).toBe(1);
       expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0}]);
 
@@ -1700,13 +1697,13 @@ describe('Plugin.Tooltip', function() {
 
       var point = chart.getDatasetMeta(0).data[0];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
       expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
+      await triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([]);
     });
 
@@ -1735,9 +1732,9 @@ describe('Plugin.Tooltip', function() {
 
       var meta = chart.getDatasetMeta(0);
       var point = meta.data[1];
-      var expectedPoint = jasmine.objectContaining({datasetIndex: 0, index: 1});
+      var expectedPoint = expect.objectContaining({datasetIndex: 0, index: 1});
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
 
       expect(chart.tooltip.getActiveElements()).toEqual([expectedPoint]);
 
@@ -1780,17 +1777,17 @@ describe('Plugin.Tooltip', function() {
 
     const meta = chart.getDatasetMeta(0);
     const point = meta.data[1];
-    const expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
+    const expectedPoints = [expect.objectContaining({datasetIndex: 0, index: 1}), expect.objectContaining({datasetIndex: 1, index: 1})];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
-    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
+    await triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
 
     expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
 
     chart.data.datasets = [dataset1];
     chart.update();
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
+    await triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
 
     expect(chart.tooltip.getActiveElements()).toEqual([expectedPoints[0]]);
   });
@@ -1818,14 +1815,14 @@ describe('Plugin.Tooltip', function() {
 
     const point = chart.getDatasetMeta(0).data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
     expect(chart.tooltip.getActiveElements().length).toBe(1);
 
     // Detaching the canvas stops the chart, which destroys the dataset metas,
     // while the dataset itself is still in the data.
     chart._stop();
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
+    await triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
     expect(chart.tooltip.getActiveElements()).toEqual([]);
   });
 
@@ -1856,10 +1853,10 @@ describe('Plugin.Tooltip', function() {
 
     const meta = chart.getDatasetMeta(0);
     const point = meta.data[1];
-    const expectedPoints = [jasmine.objectContaining({datasetIndex: 0, index: 1}), jasmine.objectContaining({datasetIndex: 1, index: 1})];
+    const expectedPoints = [expect.objectContaining({datasetIndex: 0, index: 1}), expect.objectContaining({datasetIndex: 1, index: 1})];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
-    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
+    await triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
 
     expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
 
@@ -1867,7 +1864,7 @@ describe('Plugin.Tooltip', function() {
     chart.data.datasets = [dataset1];
     chart.update();
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
+    await triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
 
     expect(chart.tooltip.getActiveElements()).toEqual([]);
   });
@@ -1897,9 +1894,9 @@ describe('Plugin.Tooltip', function() {
       const meta = chart.getDatasetMeta(0);
       const point = meta.data[1];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       expect(chart.tooltip.opacity).toEqual(0);
-      await jasmine.triggerMouseEvent(chart, 'click', point);
+      await triggerMouseEvent(chart, 'click', point);
       expect(chart.tooltip.opacity).toEqual(1);
     });
   });
@@ -1973,9 +1970,9 @@ describe('Plugin.Tooltip', function() {
     const {tooltip} = chart;
     const point = chart.getDatasetMeta(0).data[0];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
-    expect(tooltip).toEqual(jasmine.objectContaining({
+    expect(tooltip).toEqual(expect.objectContaining({
       opacity: 1,
 
       // Text
