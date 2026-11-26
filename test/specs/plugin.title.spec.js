@@ -1,10 +1,6 @@
-// Test the rectangle element
-
 var Title = Chart.registry.getPlugin('title')._element;
 
 describe('Plugin.title', function() {
-  describe('auto', jasmine.fixture.specs('plugin.title'));
-
   it('Should have the correct default config', function() {
     expect(Chart.defaults.plugins.title).toEqual({
       align: 'center',
@@ -50,7 +46,7 @@ describe('Plugin.title', function() {
 
   [10, {top: 5, bottom: 15}].forEach(function(value) {
     it('should resolve scriptable padding returning ' + JSON.stringify(value), function() {
-      var padding = jasmine.createSpy('padding').and.returnValue(value);
+      var padding = vi.fn(() => value);
       var chart = acquireChart({
         type: 'line',
         data: {datasets: []},
@@ -64,7 +60,7 @@ describe('Plugin.title', function() {
         }
       });
 
-      var context = padding.calls.mostRecent().args[0];
+      var context = padding.mock.lastCall[0];
       expect(context.chart).toBe(chart);
       expect(context.type).toBe('chart');
       expect(chart.titleBlock._padding.top).toBe(typeof value === 'number' ? value : value.top);

@@ -8,11 +8,9 @@ describe('Plugin.filler', function() {
     });
   }
 
-  describe('auto', jasmine.fixture.specs('plugin.filler'));
-
   describe('dataset.fill', function() {
     it('Should show a warning when trying to use the filler plugin in the dataset when it\'s not registered', function() {
-      spyOn(console, 'warn');
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
       Chart.unregister(Chart.Filler);
       window.acquireChart({
         type: 'line',
@@ -29,8 +27,7 @@ describe('Plugin.filler', function() {
     });
 
     it('Should show a warning when trying to use the filler plugin in the root options when it\'s not registered', function() {
-      // jasmine.createSpy('warn');
-      spyOn(console, 'warn');
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
       Chart.unregister(Chart.Filler);
       window.acquireChart({
         type: 'line',

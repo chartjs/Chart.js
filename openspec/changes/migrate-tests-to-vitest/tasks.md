@@ -74,9 +74,9 @@
 ## 10. P10: Specs open pull requests touch, plugins
 
 - [ ] 10.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
-- [ ] 10.2 Record both test counts
-- [ ] 10.3 Rename and convert `plugin.{decimation,filler,legend,title,tooltip}`
-- [ ] 10.4 Confirm the counts
+- [x] 10.2 Record both test counts
+- [x] 10.3 Rename and convert `plugin.{decimation,filler,legend,title,tooltip}`
+- [x] 10.4 Confirm the counts
 
 ## 11. P11: Specs open pull requests touch, scales
 

@@ -89,7 +89,9 @@ No `jasmine` compatibility object. Vitest runs with `globals: true`, and `test/s
 | `spyOn(o, 'm')` | `vi.spyOn(o, 'm').mockImplementation(() => {})` |
 | `spyOn(o, 'm').and.callThrough()` | `vi.spyOn(o, 'm')` |
 | `jasmine.createSpy(...)` | `vi.fn()` |
+| `jasmine.createSpy(...).and.returnValue(v)` | `vi.fn(() => v)` |
 | `.calls.count()` / `.calls.argsFor(i)` / `.calls.first().args` / `.calls.all()` / `.calls.reset()` | `.mock.calls.length` / `.mock.calls[i]` / `.mock.calls[0]` / `.mock.calls` / `.mockClear()` |
+| `.calls.mostRecent().args` | `.mock.lastCall` |
 | `.calls.first().object` | `.mock.contexts[0]` |
 | `.calls.all()[i].object` | `.mock.contexts[i]` |
 | `jasmine.objectContaining` / `jasmine.any` | `expect.objectContaining` / `expect.any` |
