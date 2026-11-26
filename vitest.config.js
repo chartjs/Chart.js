@@ -46,6 +46,7 @@ export default defineConfig({
     // of pre-bundling. When node_modules lies outside the project root (a git
     // worktree sharing another checkout's install), Vite refuses to serve it
     // and coverage fails while the tests pass.
+    //
     // moment: the excluded adapter imports it, so it would be served on its
     // own while moment-timezone's pre-bundle carries another copy. The adapter
     // would then format dates in the machine's time zone instead of the

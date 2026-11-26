@@ -49,7 +49,7 @@ Vitest runs the tests in a random order and prints the seed it used (`Running te
 
 ### Converting a Jasmine spec
 
-The specs used to run under Karma and Jasmine and were named `test/specs/*.tests.js`. A branch that still has such a file fails every test command, which names the file. Rename it with `git mv test/specs/x.tests.js test/specs/x.spec.js` and replace the Jasmine idioms as in the table below. The globals `Chart`, `moment`, `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize`, `createMockContext` and `triggerMouseEvent` still exist, so a converted spec needs no imports.
+The specs used to run under Karma and Jasmine and were named `test/specs/*.tests.js`. If a branch still has such a file, the main Vitest config (`vitest.config.js`) refuses to start and names the file, so `pnpm test`, `pnpm run test-ci`, `pnpm run test-ci-vitest`, `pnpm run dev`, `pnpm run dev:ff` and `pnpm run fixtures:update` fail. Rename it with `git mv test/specs/x.tests.js test/specs/x.spec.js` and replace the Jasmine idioms as in the table below. The globals `Chart`, `moment`, `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize`, `createMockContext` and `triggerMouseEvent` still exist, so a converted spec needs no imports.
 
 | Jasmine | Vitest |
 | --- | --- |

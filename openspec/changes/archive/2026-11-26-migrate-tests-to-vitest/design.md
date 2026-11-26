@@ -159,7 +159,7 @@ Decided by the maintainers, after review of this design asked for a more aggress
 Decided by the maintainers. The same browsers CI uses today. WebKit can be tried as a follow-up with image fixtures excluded, because its text rendering will not match the reference images.
 
 ### D15. No rebase-recipe comments on open pull requests
-Decided by the user on 2026-11-26. The per-pull-request comments with the rebase recipe that D13 first planned are dropped, and none were posted. A pull request that still adds or edits a `*.tests.js` file finds the recipe through the test command, which fails and names the file, and the conversion table in `docs/developers/contributing.md`.
+Decided by the user on 2026-11-26. The per-pull-request comments with the rebase recipe that D13 first planned are dropped, and none were posted. A pull request that still adds or edits a `*.tests.js` file finds the recipe through the main Vitest config, which refuses to start and names the file (so `pnpm test` and `pnpm test-ci` fail), and the conversion table in `docs/developers/contributing.md`.
 
 ## Risks / Trade-offs
 

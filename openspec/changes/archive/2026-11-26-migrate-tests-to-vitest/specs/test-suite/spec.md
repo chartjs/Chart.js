@@ -18,7 +18,7 @@ The repository SHALL run every spec file under `test/specs` under Vitest, and th
 
 #### Scenario: Unconverted spec
 - **WHEN** a file named `*.tests.js` exists under `test/specs`
-- **THEN** the test command fails before running any test and names the file
+- **THEN** the main Vitest suite refuses to start and names the file, so `pnpm test` and `pnpm test-ci` fail
 
 ### Requirement: Specs run against source
 The Vitest suite SHALL exercise the code under `src/` directly, without a build step.
