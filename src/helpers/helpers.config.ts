@@ -113,7 +113,7 @@ export function _createResolver<
  * Returns an Proxy for resolving option values with context.
  * @param proxy - The Proxy returned by `_createResolver`
  * @param context - Context object for scriptable/indexable options
- * @param subProxy - The proxy provided for scriptable options
+ * @param subProxy - The proxy, with context, provided for scriptable options
  * @param descriptorDefaults - Defaults for descriptors
  * @private
  */
@@ -123,7 +123,7 @@ export function _attachContext<
 >(
   proxy: ResolverProxy<T, R>,
   context: AnyObject,
-  subProxy?: ResolverProxy<T, R>,
+  subProxy?: ContextProxy<T, R>,
   descriptorDefaults?: DescriptorDefaults
 ) {
   const cache: ContextCache<T, R> = {
@@ -133,8 +133,10 @@ export function _attachContext<
     _subProxy: subProxy,
     _stack: new Set(),
     _descriptors: _descriptors(proxy, descriptorDefaults),
-    setContext: (ctx: AnyObject) => _attachContext(proxy, ctx, subProxy, descriptorDefaults),
-    override: (scope: AnyObject) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
+    // The second proxy follows the new context and the override, so a scriptable option
+    // reads the options it is resolved with
+    setContext: (ctx: AnyObject) => _attachContext(proxy, ctx, subProxy && subProxy.setContext(ctx), descriptorDefaults),
+    override: (scope: AnyObject) => _attachContext(proxy.override(scope), context, subProxy && subProxy.override(scope), descriptorDefaults)
   };
   return new Proxy(cache, {
     /**
@@ -286,11 +288,16 @@ function _resolveArray(
     // Array of objects, return array or resolvers
     const arr = value;
     const scopes = _proxy._scopes.filter(s => s !== arr);
+    // Each item gets its own item of the second proxy, so a scriptable option in it
+    // reads that item's options. Without one, it reads the proxy that called it.
+    const subItems = _subProxy && _subProxy[prop];
     value = [];
-    for (const item of arr) {
+    arr.forEach((item, i) => {
       const resolver = createSubResolver(scopes, _proxy, prop, item);
-      value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop], descriptors));
-    }
+      // The second proxy resolves an array of objects to an array of context proxies
+      const subItem = isArray(subItems) && isObject(subItems[i]) ? subItems[i] as ContextProxy : undefined;
+      value.push(_attachContext(resolver, _context, subItem, descriptors));
+    });
   }
   return value;
 }

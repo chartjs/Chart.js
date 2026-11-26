@@ -11,10 +11,10 @@
 
 ## 3. P3: A scriptable's second argument follows context and plain override
 
-- [ ] 3.0 Commit type `refactor`: nothing in core reaches this before P4, so it releases nothing.
-- [ ] 3.1 Add specs that fail on master: options with a second proxy, `a: (ctx, opts) => ctx.n + ':' + opts.b`, `b: ctx => ctx.n`, after `setContext({n: 2})` give `2:2`; a scriptable under `override({type: 'label'})` reads `opts.type === 'label'`; `b: (ctx, opts) => Array.isArray(opts)` in an item of an options array gives `false`.
-- [ ] 3.2 `setContext` gives the second proxy the new context; `override` applies a plain object to it; an item of an array gets its own item of the second proxy.
-- [ ] 3.3 Run the whole suite; no fixture changes.
+- [x] 3.0 Commit type `refactor`: nothing in core reaches this before P4, so it releases nothing.
+- [x] 3.1 Add specs that fail on master: options with a second proxy, `a: (ctx, opts) => ctx.n + ':' + opts.b`, `b: ctx => ctx.n`, after `setContext({n: 2})` give `2:2`; a scriptable under `override({type: 'label'})` reads `opts.type === 'label'`; `b: (ctx, opts) => Array.isArray(opts)` in an item of an options array gives `false`.
+- [x] 3.2 `setContext` gives the second proxy the new context; `override` applies a plain object to it; an item of an array gets its own item of the second proxy.
+- [x] 3.3 Run the whole suite; no fixture changes.
 
 ## 4. P4: Prefixes for nested options (#11105)
 
