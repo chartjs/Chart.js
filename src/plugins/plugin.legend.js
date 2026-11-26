@@ -4,6 +4,7 @@ import layouts from '../core/core.layouts.js';
 import {addRoundedRectPath, drawPointLegend, renderText} from '../helpers/helpers.canvas.js';
 import {
   _isBetween,
+  _isClickEvent,
   callback as call,
   clipArea,
   getRtlAdapter,
@@ -581,7 +582,7 @@ export class Legend extends Element {
 	 */
   handleEvent(e) {
     const opts = this.options;
-    if (!isListened(e.type, opts)) {
+    if (!isListened(e, opts, this.chart)) {
       return;
     }
 
@@ -628,14 +629,15 @@ function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
   return isArray(text) ? fontLineHeight * text.length : _itemHeight;
 }
 
-function isListened(type, opts) {
+function isListened(e, opts, chart) {
+  const type = e.type;
   if ((type === 'mousemove' || type === 'mouseout') && (opts.onHover || opts.onLeave)) {
     return true;
   }
-  if (opts.onClick && (type === 'click' || type === 'mouseup')) {
-    return true;
-  }
-  return false;
+  // A right-click does not run the legend's onClick. The legend listens to its
+  // own events, or else the chart's, as in the chart's plugin event filter.
+  const events = opts.events || chart.options.events;
+  return Boolean(opts.onClick) && type !== 'contextmenu' && _isClickEvent(e, events);
 }
 
 export default {

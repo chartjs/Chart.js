@@ -1710,6 +1710,13 @@ describe('Legend block tests', function() {
         expect(onClick.mock.calls[0][0].type).toBe('mouseup');
       });
 
+      it('should not call onClick on a right-click', async function() {
+        const {chart, onClick} = countLegendClicks(['contextmenu', 'mouseup', 'mousemove']);
+        const hb = chart.legend.legendHitBoxes[0];
+        await triggerMouseEvent(chart, 'contextmenu', {x: hb.left + hb.width / 2, y: hb.top + hb.height / 2});
+        expect(onClick).not.toHaveBeenCalled();
+      });
+
       it('should call onClick on mouseup when only the legend events leave out click', async function() {
         const {chart, onClick} = countLegendClicks(['click', 'mouseup', 'mousemove'], ['mouseup']);
         await pressFirstItem(chart);

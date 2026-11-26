@@ -1216,7 +1216,7 @@ class Chart {
     // - it would be expensive.
     const useFinalPosition = replay;
     const active = this._getActiveElements(e, lastActive, inChartArea, useFinalPosition);
-    const isClick = _isClickEvent(e);
+    const isClick = _isClickEvent(e, options.events);
     const lastEvent = determineLastEvent(e, this._lastEvent, inChartArea, isClick);
 
     if (inChartArea) {

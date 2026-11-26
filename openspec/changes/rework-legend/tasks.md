@@ -29,13 +29,13 @@
 
 ## 6. P6: One press runs onClick once
 
-- [ ] 6.1 Specs:
+- [x] 6.1 Specs:
   - `events: ['click', 'mouseup', 'mousedown', 'mousemove']`, press and release on a legend item: legend `onClick` runs once (master twice);
   - `events: ['mouseup']`: it runs once;
   - the same two cases for the chart's `onClick` on a data element;
   - a click followed by `chart.update()`: the chart's `onClick` has run once in total.
-- [ ] 6.2 `_isClickEvent(e, events)`: with `events` given, `mouseup` counts only when `events` lacks `click`. The legend passes `this.options.events || chart.options.events`, and the chart's `onClick` passes its `events`. The chart passes its `events` to the replay decision too, so a `mouseup` kept as the last event is not replayed as a click.
-- [ ] 6.3 Docs: interactions.md (onClick events), legend.md and the `onClick` doc comment in `index.d.ts`. The pull request says `Closes #11538`.
+- [x] 6.2 `_isClickEvent(e, events)`: with `events` given, `mouseup` counts only when `events` lacks `click`. The legend passes `this.options.events || chart.options.events`, and the chart's `onClick` passes its `events`. The chart passes its `events` to the replay decision too, so a `mouseup` kept as the last event is not replayed as a click.
+- [x] 6.3 Docs: interactions.md (onClick events), legend.md and the `onClick` doc comment in `index.d.ts`. The pull request says `Closes #11538`.
 
 ## 7. P7: The legend callbacks do not infer the chart type
 

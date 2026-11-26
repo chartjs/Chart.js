@@ -14,7 +14,7 @@ Namespace: `options.plugins.legend`, the global options for the chart legend is 
 | `maxHeight` | `number` | | Maximum height of the legend, in pixels
 | `maxWidth` | `number` | | Maximum width of the legend, in pixels
 | `fullSize` | `boolean` | `true` | Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
+| `onClick` | `function` | | A callback that is called when a `'click'` event is registered on a label item, or a `'mouseup'` (also from `'touchend'` and `'pointerup'`) when the legend's events do not include `'click'`. A right-click (`'contextmenu'`) does not call it. Arguments: `[event, legendItem, legend]`.
 | `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.
 | `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item, or when the pointer leaves the canvas ('mouseout') while a label item is hovered. Arguments: `[event, legendItem, legend]`.
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
