@@ -166,15 +166,17 @@ The refactor that separates "what the chart gave" from "what is derived" is a pi
 
 ### D8. The dataset binding decides the axis before the id's first letter
 
-Order: exact id, `axis`, a `position` the chart gave, the first dataset that names the id (`xAxisID`, `yAxisID` or `rAxisID`), the first letter when the scale's type allows it, `r` when the scale's type is radial. An id that nothing decides throws the documented message also without a `type`.
+Order: exact id, `axis`, a `position` the chart gave, the first dataset that names the id (`xAxisID`, `yAxisID` or `rAxisID`), the first letter when the scale's type allows it, `axis` or `position` in the defaults of the scale's type (`defaults.scales[type]`), `r` when the scale's type is radial. An id that nothing decides throws the documented message also without a `type`.
 
 The scale's type limits the first letter, because a scale of the wrong kind does not work on the axis (Context): a first letter `r` counts only when the chart gave the scale no `type` or a radial one, and a first letter `x` or `y` only when it gave none or one that is not radial. An unbound `ramazan: {type: 'linear'}` is then decided by nothing and throws the documented message, where today it is a scale laid over the plot; `xFoo: {type: 'radialLinear'}` is the radial axis. The type never overrules `axis`, `position`, a binding or an exact id.
+
+The type's defaults decide as on master, where they are the last argument of `determineAxis`: a custom type registered with `defaults: {axis: 'x'}` gives its axis to an id that nothing before decides (`test/specs/core.scale.spec.js` relies on it). They are read from `defaults.scales[type]`, which `registerDefaults` fills with the parent class's defaults and which a user can change at run time, not from the class. A type with defaults but no registered class still reads them. No built-in type declares an axis or a position that gives one (`radialLinear` declares `position: 'chartArea'`). An axis from the type's defaults is final, as `axis` and `position` are, not provisional like a first letter.
 
 One helper answers whether a scale is radial, `_isRadialScale(scale)` in `src/helpers/helpers.core.ts`, not documented: true when the object has a `getPointPositionForValue` method. It takes a scale or the prototype of a scale class, so a radial scale written from scratch counts and nothing has to extend `RadialLinearScale`. It is the test the filler plugin makes inline in two places today; those use the helper too. The axis decision looks the class up in the registry by the type's name. A type that is not registered when the axis is decided limits nothing, and the first letter decides as today: the axis is decided when the chart is constructed, the class is first needed at the first update, and a chart on a canvas outside the document is not updated until it is attached, so a scale type may be registered in between.
 
 - *Test for `RadialLinearScale` in the class's ancestors*: a radial scale that does not extend it would count as cartesian.
 - *Test all three methods the controllers call*: stricter, but a custom scale made for the radar chart alone would count as cartesian, and a missing method already fails with a clear error in the controller that calls it.
-- *Let the type's defaults declare an axis* (the first draft's last step): no built-in type declares one and nothing asked for it.
+- *Drop the type's defaults from the order*: it breaks custom scale types that declare their axis in their defaults, which works on master.
 
 An axis that came from the id's first letter is provisional: it is decided again at every update until a dataset names the id. Otherwise the usual order of work, create the chart with its scales, load the data, update, would still give `ramazan` the axis `r`, because no dataset names it when the axis is first decided. Every other axis stays as decided, as today: rebinding a dataset on an existing scale does not turn the scale, and a scale whose dataset is removed stays where it was.
 
@@ -213,7 +215,7 @@ With rework-legend: its P19 renames the legend plugin's file and its P9 resolves
 
 ### D11. Contributors' pull requests are pieces
 
-#12268, #12388, #11105 and #12334 are built by rebasing and changing the author's branch, not by a second pull request. When an author does not answer, the piece is rebuilt with `Co-authored-by`.
+#12268, #12388, #11105 and #12334 are built by rebasing and changing the author's branch, not by a second pull request. #12268, #12388 and #12334 allow maintainer edits: the maintainers make the changes on the author's branch, keep the author's commit and comment what changed, without asking the author first (D18). #11105 does not allow them and stays with its author; when the author does not answer, the piece is rebuilt with `Co-authored-by`.
 
 ### D12. Releases
 
@@ -251,7 +253,7 @@ Before the design: one design for the option fixes that need no major version, a
 The design was reviewed again from the same five angles after it was approved, before any piece was built. Each point was checked on master at 3164f57a.
 
 - **A position core wrote defeated the provisional axis (D8).** Deciding a first-letter axis again moved out of P7 into a new piece, P16, after P9, with the rule that a position the chart did not give neither decides the axis nor survives a new decision. P7 keeps the order, `rAxisID`, the type rule and the error message, and still completes #11640, whose chart binds the scale when it is created.
-- **The scale's type limits the first letter (D8)**, decided by the maintainer on 26 November: a cartesian type does not work on the radial axis, nor the reverse. One helper tests for a radial scale by the method the filler plugin already tests for, so nothing has to extend the built-in radial scale. The last step of the order, an `axis` declared by the type's defaults, is replaced by "`r` when the type is radial".
+- **The scale's type limits the first letter (D8)**, decided by the maintainer on 26 November: a cartesian type does not work on the radial axis, nor the reverse. One helper tests for a radial scale by the method the filler plugin already tests for, so nothing has to extend the built-in radial scale. "`r` when the type is radial" is added as the last step of the order, after the type's defaults (D17).
 - **Defaults paths (D10):** the three rejected names left the cause, a walk that follows inherited properties. The walk now stays on own properties.
 - **Chart font (D9):** the reason given for a font computed apart from `chart.options.font`, that a function would reach readers incomplete, was false. The copy stays for the reason that holds, one font between updates, and is taken from `chart.options.font`, so a function as root font is honoured and not ignored.
 - **Function layers (D5):** "plugin options are not scriptable" was wrong for title, subtitle, legend and tooltip. The rule did not change, the sentence did.
@@ -270,6 +272,16 @@ The work was designed a second time from the same ask and the same decisions, by
 - **Not taken, by the maintainer's decision:** a piece that removes the empty scale of an axis another scale serves (Non-Goals).
 - **Not taken, decided before (D14):** one rule for the type defaults of a scale (#11786 stays documented); #12334 as it is.
 - **Checked and unchanged:** the second design held that a stale second argument after `setContext` is reachable through a line's `segment` options. On master a `segment` function reading a sibling gets the segment's context (border widths 1 and 2 for the first two segments), as the second review found. Its font design, a `font` default on every text resolved through the option layers with the tooltip's routes replaced by a fallback, needs no route record and no `toFont` edits, but `Chart.defaults.plugins.tooltip.bodyFont.size` would read `undefined` instead of 12, a function as the root font would be ignored, and every tick would resolve its font through the options (24 ms to 30 ms for 3000 ticks on a stub canvas). D9 stays.
+
+### D17. What building P7 changed (26 November 2026)
+
+- **The type's defaults stay in the axis order (D8).** D15 replaced them with "`r` when the type is radial" on the grounds that no built-in type declares an axis, but `determineAxis` reads `defaults.scales[type]` on master and a custom type registered with `defaults: {axis: 'x'}` gets that axis, which `test/specs/core.scale.spec.js` checks. They now come after the type-limited first letter and before "`r` when the type is radial". They are read from `defaults.scales[type]`, as on master, and the radial test and the limit use the registered class. An unbound `rFoo` of a custom type that is not radial and declares `axis: 'x'` is an x axis, where master gives `r`.
+- **An axis from the type's defaults is final (P16's contract):** like `axis` and `position`, it is not decided again at an update.
+- `determineAxis(id, scaleOptions, boundAxis)` reads the type from the scale's options, so the limit and the defaults step live in it, and the two calls in `core.controller.js` still return the stored `axis`.
+
+### D18. The maintainer's decisions (26 November 2026)
+
+- **Contributors' pull requests that allow maintainer edits (D11):** P1 (#12268), P2 (#12388) and P6 (#12334) are built by the maintainers on the authors' branches, with the author's commit kept and a comment that says what changed, instead of asking the authors first. This replaces "Ask the author" in tasks 1.2 and 6.2. P4 (#11105) does not allow maintainer edits and stays with its author.
 
 ### D19. What building P10 changed
 
@@ -317,7 +329,7 @@ Shared files order the rest: `helpers.config.ts` (P2, P3, P4, P5, P12), `core.co
 - **P4 → P5, P12:** a resolver has `_prefixes: string[]`; every sub-resolver is created with its parent's. `setContext(ctx, prefixes?)` is the only public way to change them.
 - **P5 → P13:** a string passed to `override` names a block, read from the layers of that options object only; an object is a plain override.
 - **P7 → P8, P9, P16:** `determineAxis` gives the order of D8; the binding lookup reads `xAxisID`, `yAxisID` and `rAxisID`; `_isRadialScale(scaleOrPrototype)` says whether a scale is radial.
-- **P8, P9 → P16:** `Config` has a record per stored entry, and a stored entry holds no defaults. P16 adds to the record how the axis was decided, whether the chart gave a position when the entry was first read, and the default position of the axis decided then.
+- **P8, P9 → P16:** `Config` has a record per stored entry, and a stored entry holds no defaults. P16 adds to the record how the axis was decided, whether the chart gave a position when the entry was first read, and the default position of the axis decided then. Only an axis from the id's first letter is provisional; one from the type's defaults is final, like `axis` and `position`.
 - **P8 → P9:** `Config` holds, per chart, the stored scale entries (user values plus `axis`, `id`, `position`), the per-entry record of which entries are implied (P16 extends it), and a derived object `{scales: {[id]: …}}` rebuilt on every `Config.update()`. It is always a clone: a write through an options proxy never reaches the global defaults.
 - **P9 → P11:** `Config` rebuilds its derived objects at every `Config.update()`. The scales one is a scope of the chart's options, after the chart's options and before the chart type's overrides. P11 adds a second one for routed fonts, a scope of plugin options only, after the chart type's overrides and before the defaults.
 - **P10 → P11:** `getRoutes(scope)` in `core.defaults.js` reads the live defaults and gives each route of that scope as scope, name, target scope, target name and `local()`. The route is the tagged getter itself; there is no separate record. `local()` returns the stored value, not a copy: build `Object.assign({}, chartFont, local())` and do not write into it. Only whole-object assignment is seen; `Chart.defaults.set('plugins.tooltip', {titleFont: …})` is lost, as on master.
