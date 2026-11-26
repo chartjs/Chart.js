@@ -77,6 +77,39 @@ describe('Legend block tests', function() {
     });
   });
 
+  describe('title padding', function() {
+    function titleX(position, legendPosition) {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: [], datasets: [{label: 'a', data: []}, {label: 'b', data: []}]},
+        options: {plugins: {legend: {
+          position: legendPosition,
+          title: {display: true, text: 'TITLE', position, padding: {left: 50, right: 10}}
+        }}}
+      });
+      const spy = vi.spyOn(chart.ctx, 'fillText');
+      chart.legend.drawTitle();
+      const l = chart.legend;
+      const inner = l.isHorizontal() ? Math.max(...l.lineWidths) : l.width;
+      const left = l.isHorizontal() ? l.left + (l.width - inner) / 2 : l.left;
+      return {x: spy.mock.calls.find(a => a[0] === 'TITLE')[1], left, inner};
+    }
+    ['top', 'left'].forEach(legendPosition => {
+      it(`offsets start by padding.left, legend ${legendPosition}`, function() {
+        const r = titleX('start', legendPosition);
+        expect(r.x).toBeCloseTo(r.left + 50, 3);
+      });
+      it(`offsets end by padding.right, legend ${legendPosition}`, function() {
+        const r = titleX('end', legendPosition);
+        expect(r.x).toBeCloseTo(r.left + r.inner - 10, 3);
+      });
+      it(`shifts center by (left - right) / 2, legend ${legendPosition}`, function() {
+        const r = titleX('center', legendPosition);
+        expect(r.x).toBeCloseTo(r.left + r.inner / 2 + (50 - 10) / 2, 3);
+      });
+    });
+  });
+
   it('should have the correct default config', function() {
     expect(Chart.defaults.plugins.legend).toEqual({
       display: true,

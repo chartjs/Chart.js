@@ -12,8 +12,8 @@
 
 ## 3. P3: The title's padding moves it (#12187)
 
-- [ ] 3.1 Add specs for `position: 'start'` with `padding.left`, `'end'` with `padding.right`, and `'center'` with unequal left and right padding, in a top and a right legend. Each fails on master.
-- [ ] 3.2 Rebase onto P2. The title's x includes the padding. The pull request says `Closes #12066` and that #11280 is answered by the legend `padding` (P16).
+- [x] 3.1 Add specs for `position: 'start'` with `padding.left`, `'end'` with `padding.right`, and `'center'` with unequal left and right padding, in a top and a left legend. Each fails on master.
+- [x] 3.2 Rebase onto P2. The title's x includes the padding. The pull request says `Closes #12066` and that #11280 is answered by the legend `padding` (P16).
 
 ## 4. P4: Hit boxes cover aligned text (#12316)
 
