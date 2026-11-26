@@ -1,7 +1,7 @@
 ## 1. P1: Defaults paths cannot reach prototypes (#12268)
 
-- [ ] 1.1 Add specs that fail on master: `Chart.defaults.set('plugins.__proto__', {p: 1})` throws and `({}).p` is undefined; the same for `set('__proto__', …)`, `get`, `describe`, `override`, `route`, a `constructor.prototype` path and a route name `__proto__`; `set('toString.x', {p: 1})`, `set('valueOf.x', {p: 1})` and `set('set.x', {p: 1})` throw and leave `Object.prototype.toString`, `Object.prototype.valueOf` and `Chart.defaults.set` without `x`; `set('myconstructor.a', …)` still works.
-- [ ] 1.2 Ask the author to add them, to make the walk follow own properties only (a segment that names an inherited property throws the same error), and to check the name `route` defines; rebase onto master after #12499.
+- [ ] 1.1 Add specs that fail on master: `Chart.defaults.set('plugins.__proto__', {p: 1})` throws and `({}).p` is undefined; the same for `set('__proto__', …)`, `get`, `describe`, `override`, `route`, a `constructor.prototype` path and a route name `__proto__`; `set('toString.x', {p: 1})`, `set('valueOf.x', {p: 1})` and `set('set.x', {p: 1})` throw and leave `Object.prototype.toString`, `Object.prototype.valueOf` and `Chart.defaults.set` without `x`; `route('rt', 'x', '', '__proto__')` throws; after `set({describe: {a: 1}, color: 'red'})`, `Chart.defaults.describe` is a function and `color` is `'red'`; `set('myconstructor.a', …)` still works.
+- [ ] 1.2 Ask the author to add them, to make the walk follow own properties only (a segment that names an inherited property throws the same error), to check the name `route` defines and its target name, and to skip a key of the given values that the target inherits and does not own; rebase onto master after #12499.
 - [ ] 1.3 The pull request says `Closes #12265` and has a release-note line: the five methods throw for such paths.
 
 ## 2. P2: An options array is not a scope of its items (#12388)
@@ -12,8 +12,8 @@
 ## 3. P3: A scriptable's second argument follows context and plain override
 
 - [ ] 3.0 Commit type `refactor`: nothing in core reaches this before P4, so it releases nothing.
-- [ ] 3.1 Add specs that fail on master: options with a second proxy, `a: (ctx, opts) => ctx.n + ':' + opts.b`, `b: ctx => ctx.n`, after `setContext({n: 2})` give `2:2`; a scriptable under `override({type: 'label'})` reads `opts.type === 'label'`.
-- [ ] 3.2 `setContext` gives the second proxy the new context; `override` applies a plain object to it.
+- [ ] 3.1 Add specs that fail on master: options with a second proxy, `a: (ctx, opts) => ctx.n + ':' + opts.b`, `b: ctx => ctx.n`, after `setContext({n: 2})` give `2:2`; a scriptable under `override({type: 'label'})` reads `opts.type === 'label'`; `b: (ctx, opts) => Array.isArray(opts)` in an item of an options array gives `false`.
+- [ ] 3.2 `setContext` gives the second proxy the new context; `override` applies a plain object to it; an item of an array gets its own item of the second proxy.
 - [ ] 3.3 Run the whole suite; no fixture changes.
 
 ## 4. P4: Prefixes for nested options (#11105)
@@ -24,11 +24,12 @@
 - [ ] 4.4 A type test: `setContext(ctx)` and `override(scope)` with one argument compile.
 - [ ] 4.5 The pull request says `Closes #11104` and has a release-note line: nested keys named `hover<Key>` or `<elementType><Key>` now take effect.
 
-## 5. P5: A block of options applies with one override
+## 5. P5: A block of options applies by its key with one override
 
-- [ ] 5.1 Add specs that fail on master: a function in a block that reads its own option gives `'black+dark'` (master throws "Recursion detected"); the block's functions get a context set after the override; a block on an item of an options array; a hovered sub-element overridden with `{type: 'label'}` reads `opts.type === 'label'`.
-- [ ] 5.2 Add specs that pass on master and must keep passing: a plain-object override; the tooltip's callbacks override.
-- [ ] 5.3 `override` on options recognises an options object as a block: its resolver becomes the top layer and scriptables get the options without it.
+- [ ] 5.1 Add specs that fail on master: a function in a block that reads its own option gives `'black+dark'` (master throws "Recursion detected"); the block's functions get a context set after the override; a block on an item of an options array; a hovered sub-element overridden with `{type: 'label'}` reads `opts.type === 'label'`; `opts.override('hover')` applies the block (master: no change); a block in the chart's options lies over one in the plugin's defaults; `Object.keys(opts.override(undefined))` does not throw.
+- [ ] 5.1a Add a spec on a chart: a plugin with `additionalOptionScopes: ['']` and defaults `box: {mode: 'own', hover: {color: 'b'}}` reads `mode === 'own'` from `box.override('hover')`.
+- [ ] 5.2 Add specs that pass on master and must keep passing: an object override; the tooltip's callbacks override.
+- [ ] 5.3 `override` takes a string as the key of a block: the objects the options' own layers hold under it become the top layers, in layer order, and scriptables get the options without them. The root scopes and fallbacks are not read. A key without a block, `null` and `undefined` return the same options. The types take `string | null | undefined` beside an object.
 - [ ] 5.4 Release-note line: a function in a block reads the un-hovered options.
 
 ## 6. P6: Bar base per bar (#12334)
@@ -71,7 +72,7 @@
 
 ## 11. P11: options.font is the chart's base font
 
-- [ ] 11.1 Add `test/specs/options.font.spec.js` with specs that fail on master: with `options.font.size: 30` the font set on the canvas for tick labels, scale title, legend labels and title, chart title, subtitle and the tooltip's title, body and footer is 30 px; `tooltip.options.bodyFont.size` is 30 and the title is bold; radial point labels are 10 px in the chart's family; a text's own font wins; `Chart.defaults.plugins.tooltip.bodyFont.size = 20` gives a 20 px body beside a 30 px title; a radar's `getTickLimit()` is that of 30 px labels; a second chart without `options.font` stays 12 px; a radar whose scale has another id than `r` keeps point labels at 10 px; after `Chart.defaults.font.size` changes, a resize without an update draws every text at the old size.
+- [ ] 11.1 Add `test/specs/options.font.spec.js` with specs that fail on master: with `options.font.size: 30` the font set on the canvas for tick labels, scale title, legend labels and title, chart title, subtitle and the tooltip's title, body and footer is 30 px; `tooltip.options.bodyFont.size` is 30 and the title is bold; radial point labels are 10 px in the chart's family; a text's own font wins; `Chart.defaults.plugins.tooltip.bodyFont = {size: 20}` gives a 20 px body beside a 30 px title; a radar's `getTickLimit()` is that of 30 px labels; a second chart without `options.font` stays 12 px; a radar whose scale has another id than `r` keeps point labels at 10 px; after `Chart.defaults.font.size` changes, a resize without an update draws every text at the old size.
 - [ ] 11.2 The chart font is taken once per update, as a plain object, from `chart.options.font` as it resolves then. Pass it as the fallback of `toFont` in `core.scale.js` (also where `chart.options.font` is read today), `scale.radialLinear.js` (also `getTickBackdropHeight`, which reads `defaults.font.size`), `plugin.title.js` and the legend plugin (five calls today; one place after rework-legend P9).
 - [ ] 11.3 When the chart sets a root `font`, build a second derived object: for every route that targets the root `font`, the route's local value over the chart font. Add it to the scopes of plugin options only, after the chart type's overrides and before the defaults.
 - [ ] 11.4 Run the whole suite and the image fixtures: no fixture without `options.font` changes.
@@ -88,7 +89,7 @@
 
 ## 13. P13: Docs: hover options for plugin authors
 
-- [ ] 13.1 Add a section to `docs/developers/plugins.md`: `options.setContext(ctx, ['hover', ''])` for `hoverColor` keys; `options.override(options.hover)` for a block; what the second argument of a scriptable reads; how object options merge; keep a block inside the plugin's own options; set the element prefix and the hover prefixes in two calls to get core's layering; texts a plugin draws follow the chart font when it calls `toFont(opts.font, chart.options.font)`.
+- [ ] 13.1 Add a section to `docs/developers/plugins.md`: `options.setContext(ctx, ['hover', ''])` for `hoverColor` keys; `options.override('hover')` for a block, applied by its key and not read as `options.hover`; what the second argument of a scriptable reads; how object options merge; set the element prefix and the hover prefixes in two calls to get core's layering; texts a plugin draws follow the chart font when it calls `toFont(opts.font, chart.options.font)`.
 - [ ] 13.2 Link it from `docs/general/options.md`.
 
 ## 14. P14: Docs: hover options of line and radar datasets
