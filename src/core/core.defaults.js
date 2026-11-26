@@ -15,6 +15,11 @@ const UNSAFE_KEYS = ['__proto__', 'prototype', 'constructor'];
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
 /**
+ * @typedef {{scope: string, name: string, targetScope: string, targetName: string}} DefaultsRoute
+ * @typedef {(() => *) & {route?: DefaultsRoute}} RoutedGetter The getter `route` defines, tagged with its route
+ */
+
+/**
  * A key may name an own property of the node or one it does not have yet, never
  * one it inherits: the walk would leave the defaults through it.
  * @param {*} node The node the key is read from, undefined when it does not exist yet
@@ -185,6 +190,18 @@ export class Defaults {
     const scopeObject = getScope(this, scope);
     const targetScopeObject = getScope(this, targetScope);
 
+    /** @type {RoutedGetter} */
+    const get = function() {
+      const local = this[privateName];
+      const target = targetScopeObject[targetName];
+      if (isObject(local)) {
+        return Object.assign({}, target, local);
+      }
+      return valueOrDefault(local, target);
+    };
+    // The getter carries the route, so `getRoutes` finds it on the live scope.
+    get.route = Object.freeze({scope, name, targetScope, targetName});
+
     Object.defineProperties(scopeObject, {
       // A private property is defined to hold the actual value, when this property is set in its scope (set in the setter)
       [privateName]: {
@@ -194,14 +211,7 @@ export class Defaults {
       // The actual property is defined as getter/setter so we can do the routing when value is not locally set.
       [name]: {
         enumerable: true,
-        get() {
-          const local = this[privateName];
-          const target = targetScopeObject[targetName];
-          if (isObject(local)) {
-            return Object.assign({}, target, local);
-          }
-          return valueOrDefault(local, target);
-        },
+        get,
         set(value) {
           this[privateName] = value;
         }
@@ -215,7 +225,7 @@ export class Defaults {
 }
 
 // singleton instance
-export default /* #__PURE__ */ new Defaults({
+const defaults = /* #__PURE__ */ new Defaults({
   _scriptable: (name) => !name.startsWith('on'),
   _indexable: (name) => name !== 'events',
   hover: {
@@ -226,3 +236,34 @@ export default /* #__PURE__ */ new Defaults({
     _indexable: false,
   }
 }, [applyAnimationsDefaults, applyLayoutsDefaults, applyScaleDefaults]);
+
+export default defaults;
+
+/**
+ * The routes `route` defined on a scope of the defaults, read from the live
+ * scope object, so a scope that was removed or replaced has none. `local`
+ * returns the value set for the routed option itself, without its target: the
+ * stored value, not a copy.
+ * @param {string} scope
+ * @return {Array<DefaultsRoute & {local: () => *}>}
+ * @private
+ */
+export function getRoutes(scope) {
+  let node = defaults;
+  for (const key of splitScope(scope)) {
+    // Own properties only, and never create a scope.
+    node = isObject(node) && hasOwn(node, key) ? node[key] : undefined;
+  }
+  if (!isObject(node)) {
+    return [];
+  }
+  const scopeObject = node;
+  const routes = [];
+  for (const descriptor of Object.values(Object.getOwnPropertyDescriptors(scopeObject))) {
+    const route = descriptor.get && /** @type {RoutedGetter} */ (descriptor.get).route;
+    if (route) {
+      routes.push({...route, local: () => scopeObject['_' + route.name]});
+    }
+  }
+  return routes;
+}

@@ -1,4 +1,4 @@
-import {descriptors, overrides} from '../../src/core/core.defaults.js';
+import {descriptors, getRoutes, overrides} from '../../src/core/core.defaults.js';
 
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -37,6 +37,56 @@ describe('Chart.defaults', function() {
       expect(Chart.defaults.testscope.test2).toEqual(true);
 
       delete Chart.defaults.testscope;
+    });
+
+    describe('getRoutes', function() {
+      const tooltipFonts = ['bodyFont', 'footerFont', 'titleFont'];
+      const routedNames = (scope) => getRoutes(scope).map((route) => route.name).sort();
+
+      it('Should give a route with its local value', function() {
+        const route = getRoutes('plugins.tooltip').find((r) => r.name === 'titleFont');
+        expect(route).toEqual(expect.objectContaining({
+          scope: 'plugins.tooltip', name: 'titleFont', targetScope: '', targetName: 'font'
+        }));
+        expect(route.local()).toEqual({weight: 'bold'});
+
+        const titleFont = route.local();
+        Chart.defaults.plugins.tooltip.titleFont = {size: 20};
+        try {
+          expect(route.local()).toEqual({size: 20});
+        } finally {
+          Chart.defaults.plugins.tooltip.titleFont = titleFont;
+        }
+      });
+
+      it('Should give no routes for an unregistered plugin, and each route once after registering again', function() {
+        const tooltip = Chart.registry.getPlugin('tooltip');
+        expect(routedNames('plugins.tooltip')).toEqual(tooltipFonts);
+        Chart.unregister(tooltip);
+        try {
+          expect(getRoutes('plugins.tooltip')).toEqual([]);
+          expect(hasOwn(Chart.defaults.plugins, 'tooltip')).toBe(false);
+        } finally {
+          Chart.register(tooltip);
+        }
+        expect(routedNames('plugins.tooltip')).toEqual(tooltipFonts);
+      });
+
+      it('Should give no routes for a scope that was replaced', function() {
+        const tooltipDefaults = Chart.defaults.plugins.tooltip;
+        Chart.defaults.plugins.tooltip = {titleFont: {size: 20}};
+        try {
+          expect(getRoutes('plugins.tooltip')).toEqual([]);
+        } finally {
+          Chart.defaults.plugins.tooltip = tooltipDefaults;
+        }
+      });
+
+      it('Should give no routes for a missing scope, and create none', function() {
+        expect(getRoutes('nosuchscope.inner')).toEqual([]);
+        expect(hasOwn(Chart.defaults, 'nosuchscope')).toBe(false);
+        expect(getRoutes('plugins.toString')).toEqual([]);
+      });
     });
   });
 
