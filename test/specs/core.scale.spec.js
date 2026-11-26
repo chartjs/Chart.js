@@ -3,8 +3,6 @@ function getLabels(scale) {
 }
 
 describe('Core.scale', function() {
-  describe('auto', jasmine.fixture.specs('core.scale'));
-
   it('should provide default scale label options', function() {
     expect(Chart.defaults.scale.title).toEqual({
       color: Chart.defaults.color,

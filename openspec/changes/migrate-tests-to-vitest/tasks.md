@@ -58,10 +58,10 @@
 
 ## 8. P8: Specs open pull requests touch, core
 
-- [ ] 8.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
-- [ ] 8.2 Record both test counts
-- [ ] 8.3 Rename and convert `core.{animation,animations,controller,scale,ticks}`, including the `done` tests and `this` state
-- [ ] 8.4 Confirm the counts
+- [x] 8.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
+- [x] 8.2 Record both test counts
+- [x] 8.3 Rename and convert `core.{animation,animations,controller,scale,ticks}`, including the `done` tests and `this` state
+- [x] 8.4 Confirm the counts
 
 ## 9. P9: Specs open pull requests touch, helpers and platform
 
