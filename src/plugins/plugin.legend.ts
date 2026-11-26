@@ -179,7 +179,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
   }
 
   buildLabels() {
-    const labelOpts = this.options.labels || {} as LegendLabelOptions;
+    const labelOpts = this.options.labels;
     let legendItems: LegendItem[] = call(labelOpts.generateLabels, [this.chart], this) || [];
 
     if (labelOpts.filter) {
