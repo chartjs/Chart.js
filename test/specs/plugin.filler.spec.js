@@ -293,4 +293,31 @@ describe('Plugin.filler', function() {
       ]);
     });
   });
+
+  describe('stack fill', function() {
+    it('should fill to the stepped line below', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [
+            {data: [0, 10], stepped: true},
+            {data: [10, 10], stepped: true, fill: 'stack', backgroundColor: 'rgb(255, 0, 0)'},
+          ]
+        },
+        options: {
+          animation: false,
+          layout: {padding: 0},
+          elements: {line: {borderWidth: 0}, point: {radius: 0}},
+          scales: {x: {display: false}, y: {display: false, stacked: true, min: 0, max: 20}}
+        }
+      });
+
+      const x = Math.round(chart.scales.x.getPixelForValue(0.75));
+      const y = Math.round(chart.scales.y.getPixelForValue(2));
+      const [r, g, b, a] = chart.ctx.getImageData(x, y, 1, 1).data;
+
+      expect([r, g, b, a]).toEqual([255, 0, 0, 255]);
+    });
+  });
 });
