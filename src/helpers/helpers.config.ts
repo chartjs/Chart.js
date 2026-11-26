@@ -280,7 +280,7 @@ function _resolveArray(
   target: ContextCache,
   isIndexable: (key: string) => boolean
 ) {
-  const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
+  const {_proxy, _context, _descriptors: descriptors} = target;
 
   if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
     return value[_context.index % value.length];
@@ -288,16 +288,13 @@ function _resolveArray(
     // Array of objects, return array or resolvers
     const arr = value;
     const scopes = _proxy._scopes.filter(s => s !== arr);
-    // Each item gets its own item of the second proxy, so a scriptable option in it
-    // reads that item's options. Without one, it reads the proxy that called it.
-    const subItems = _subProxy && _subProxy[prop];
     value = [];
-    arr.forEach((item, i) => {
+    for (const item of arr) {
       const resolver = createSubResolver(scopes, _proxy, prop, item);
-      // The second proxy resolves an array of objects to an array of context proxies
-      const subItem = isArray(subItems) && isObject(subItems[i]) ? subItems[i] as ContextProxy : undefined;
-      value.push(_attachContext(resolver, _context, subItem, descriptors));
-    });
+      // No second proxy: a scriptable option in an item reads the item's own options,
+      // not the array of the second proxy
+      value.push(_attachContext(resolver, _context, undefined, descriptors));
+    }
   }
   return value;
 }
