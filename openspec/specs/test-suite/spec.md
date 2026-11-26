@@ -1,24 +1,26 @@
+# test-suite Specification
+
 ## Purpose
 
 How the browser test suite of Chart.js is run: which runner executes a spec, what the specs run against, how image fixtures are found, compared and updated, and what CI reports.
 
-## ADDED Requirements
+## Requirements
 
-### Requirement: Every spec runs under exactly one runner during the migration
-While both runners exist, the repository SHALL run each spec file under exactly one of Karma and Vitest, decided by the spec file's name suffix, and the combined test command SHALL fail when any runner fails.
+### Requirement: Every spec runs under Vitest
+The repository SHALL run every spec file under `test/specs` under Vitest, and the combined test command SHALL fail when any of its suites fails.
 
 #### Scenario: Combined run
-- **WHEN** a contributor runs `pnpm test-ci` during the migration
-- **THEN** the Karma suite, the Vitest suite, the integration packages and, once it exists, the built-bundle smoke suite all run
+- **WHEN** a contributor runs `pnpm test-ci`
+- **THEN** the Vitest suite, the built-bundle smoke suite and the integration packages all run
 - **AND** the command fails if any of them fails
 
-#### Scenario: Unconverted spec
-- **WHEN** a spec file has the unconverted suffix
-- **THEN** it runs under Karma and not under Vitest
+#### Scenario: Spec file
+- **WHEN** a file named `*.spec.js` exists under `test/specs`
+- **THEN** it runs under Vitest
 
-#### Scenario: Converted spec
-- **WHEN** a spec file has the converted suffix
-- **THEN** it runs under Vitest and not under Karma
+#### Scenario: Unconverted spec
+- **WHEN** a file named `*.tests.js` exists under `test/specs`
+- **THEN** the main Vitest suite refuses to start and names the file, so `pnpm test` and `pnpm test-ci` fail
 
 ### Requirement: Specs run against source
 The Vitest suite SHALL exercise the code under `src/` directly, without a build step.
@@ -36,7 +38,7 @@ The Vitest suite SHALL exercise the code under `src/` directly, without a build 
 - **THEN** only spec files whose path contains that string run
 
 ### Requirement: Specs run in Chromium and Firefox
-The Vitest suite MUST run every converted spec and every image fixture in both Chromium and Firefox in CI.
+The Vitest suite MUST run every spec and every image fixture in both Chromium and Firefox in CI.
 
 #### Scenario: Failure in one browser
 - **WHEN** a spec or fixture fails in either browser in CI
@@ -92,16 +94,12 @@ The test command SHALL fail when the minified UMD bundle does not load, lacks pa
 - **WHEN** the smoke suite runs and the bundle has not been built
 - **THEN** it fails with a message telling the contributor to build first
 
-### Requirement: Coverage reaches Coveralls from every runner
-CI SHALL upload coverage from every runner that executed specs against source. The built-bundle smoke suite runs against the minified bundle and reports no coverage.
+### Requirement: Coverage reaches Coveralls
+CI SHALL upload the coverage of the Vitest suite, which runs the specs against source, to Coveralls. The built-bundle smoke suite runs against the minified bundle and reports no coverage.
 
-#### Scenario: Spec moves between runners
-- **WHEN** CI runs on a change that moves a spec from Karma to Vitest
-- **THEN** Coveralls receives coverage from both runners and the lines that spec covers are still reported as covered
-
-#### Scenario: After Karma is removed
-- **WHEN** CI runs after Karma has been removed
-- **THEN** it uploads one coverage report
+#### Scenario: Source change
+- **WHEN** CI runs on a change to `src/`
+- **THEN** it uploads one coverage report, the Vitest suite's merged over Chromium and Firefox
 
 ### Requirement: Karma and Jasmine are gone at the end
 After the migration the repository SHALL install and use no Karma or Jasmine package.
@@ -111,13 +109,9 @@ After the migration the repository SHALL install and use no Karma or Jasmine pac
 - **THEN** no `karma*`, `jasmine*` or `rollup-plugin-istanbul` package is installed
 - **AND** `pnpm test`, `pnpm test-ci` and `pnpm run dev` work
 
-#### Scenario: Leftover unconverted spec
-- **WHEN** a spec file with the unconverted suffix exists after Karma is removed
-- **THEN** the test command fails and names the file
-
 ### Requirement: Test code is linted
-The lint command SHALL cover converted specs, the Vitest setup and the smoke suite.
+The lint command SHALL cover the specs, the Vitest setup and the smoke suite.
 
 #### Scenario: Lint
 - **WHEN** `pnpm run lint` runs
-- **THEN** converted specs, the setup file and the smoke spec are linted
+- **THEN** the specs, the setup file and the smoke spec are linted

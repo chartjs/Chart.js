@@ -51,21 +51,21 @@
 
 ## 7. P7: Specs open pull requests touch, controllers
 
-- [ ] 7.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
+- [x] 7.1 List the open pull requests that touch the files of this piece (design D13; no comments, D15)
 - [x] 7.2 Record both test counts
 - [x] 7.3 Rename and convert `controller.{bar,doughnut,line,scatter}`
 - [x] 7.4 Confirm the counts
 
 ## 8. P8: Specs open pull requests touch, core
 
-- [x] 8.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
+- [x] 8.1 List the open pull requests that touch the files of this piece (design D13; no comments, D15)
 - [x] 8.2 Record both test counts
 - [x] 8.3 Rename and convert `core.{animation,animations,controller,scale,ticks}`, including the `done` tests and `this` state
 - [x] 8.4 Confirm the counts
 
 ## 9. P9: Specs open pull requests touch, helpers and platform
 
-- [ ] 9.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
+- [x] 9.1 List the open pull requests that touch the files of this piece (design D13; no comments, D15)
 - [x] 9.2 Record both test counts
 - [x] 9.3 Rename and convert `helpers.{color,config,dom,math}` and `platform.{basic,dom}`
 - [x] 9.4 Move the web-worker test to the smoke suite with its own worker file
@@ -73,23 +73,23 @@
 
 ## 10. P10: Specs open pull requests touch, plugins
 
-- [ ] 10.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
+- [x] 10.1 List the open pull requests that touch the files of this piece (design D13; no comments, D15)
 - [x] 10.2 Record both test counts
 - [x] 10.3 Rename and convert `plugin.{decimation,filler,legend,title,tooltip}`
 - [x] 10.4 Confirm the counts
 
 ## 11. P11: Specs open pull requests touch, scales
 
-- [ ] 11.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
+- [x] 11.1 List the open pull requests that touch the files of this piece (design D13; no comments, D15)
 - [x] 11.2 Record both test counts
 - [x] 11.3 Rename and convert `scale.{category,linear,logarithmic,time}`, including the `toBeCloseToTime` matcher
 - [x] 11.4 Confirm the counts
 
 ## 12. P12: Remove Karma
 
-- [ ] 12.1 Convert any `*.tests.js` file added since P11; add the startup guard that fails when a `*.tests.js` spec exists, see it fail with a stray file and pass without
-- [ ] 12.2 Delete `karma.conf.cjs`, `test/index.js`, `test/seed-reporter.cjs`, `test/BasicChartWebWorker.js`
-- [ ] 12.3 Remove the Karma-only dev dependencies and the alias; make `dev` and `dev:ff` the Vitest commands; remove `test-ci-karma` and `dev:vitest`
-- [ ] 12.4 CI: remove xvfb, the macOS branch and the per-browser Coveralls uploads
-- [ ] 12.5 Lint config and contributing docs without Karma and Jasmine; add the conversion table for pull request authors; say that the Safari and Edge launchers are gone
-- [ ] 12.6 Confirm `git grep -i -E 'karma|jasmine'` outside the lockfile and `openspec` is empty, and that the lockfile has no `karma`, `jasmine` or `rollup-plugin-istanbul` entry and no `yargs`, `@rollup/plugin-commonjs` or `pixelmatch@5` that only the removed packages needed
+- [x] 12.1 Convert any `*.tests.js` file added since P11; add the startup guard that fails when a `*.tests.js` spec exists, see it fail with a stray file and pass without
+- [x] 12.2 Delete `karma.conf.cjs`, `test/index.js`, `test/seed-reporter.cjs`, `test/BasicChartWebWorker.js`
+- [x] 12.3 Remove the Karma-only dev dependencies and the alias; make `dev` and `dev:ff` the Vitest commands; remove `test-ci-karma` and `dev:vitest`
+- [x] 12.4 CI: remove xvfb, the macOS branch and the per-browser Coveralls uploads
+- [x] 12.5 Lint config and contributing docs without Karma and Jasmine; add the conversion table for pull request authors; say that the Safari and Edge launchers are gone
+- [x] 12.6 Confirm `git grep -i -E 'karma|jasmine'` outside the lockfile and `openspec` matches only the "Converting a Jasmine spec" section of `docs/developers/contributing.md` and the guard's comment and error message in `vitest.config.js`; and that the lockfile has no `karma*`, `jasmine-core`, `rollup-plugin-istanbul`, `@rollup/plugin-commonjs` or `pixelmatch@5` entry (its only `jasmine` match is `jest-jasmine2`, part of jest, which the react-scripts integration package needs; `yargs` stays only for vuepress, jest and concurrently)

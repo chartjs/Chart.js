@@ -52,7 +52,6 @@ jobs:
               - 'package.json'
             test:
               - 'test/**'
-              - 'karma.conf.cjs'
               - 'rollup.config.js'
               - 'vitest*.config.js'
               - 'package.json'
@@ -79,12 +78,7 @@ jobs:
           runner.os != 'Windows'
         run: |
           pnpm run build
-          if [ "${{ runner.os }}" == "macOS" ]; then
-            pnpm run test-ci --browsers chrome,safari
-          else
-            xvfb-run --auto-servernum pnpm run test-ci
-          fi
-        shell: bash
+          pnpm run test-ci
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |
@@ -101,28 +95,6 @@ jobs:
       - name: Build VitePress docs
         if: steps.changes.outputs.docs == 'true'
         run: pnpm run docs:vitepress
-      - name: Coveralls Parallel - Chrome
-        if: |
-          steps.changes.outputs.src == 'true' &&
-          runner.os != 'Windows'
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
-        with:
-          github-token: ${{ secrets.github_token }}
-          file: './coverage/chrome/lcov.info'
-          coverage-reporter-version: v0.6.22
-          flag-name: ${{ matrix.os }}-chrome
-          parallel: true
-      - name: Coveralls Parallel - Firefox
-        if: |
-          steps.changes.outputs.src == 'true' &&
-          runner.os != 'Windows'
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
-        with:
-          github-token: ${{ secrets.github_token }}
-          file: './coverage/firefox/lcov.info'
-          coverage-reporter-version: v0.6.22
-          flag-name: ${{ matrix.os }}-firefox
-          parallel: true
       - name: Coveralls Parallel - Vitest
         if: |
           steps.changes.outputs.src == 'true' &&

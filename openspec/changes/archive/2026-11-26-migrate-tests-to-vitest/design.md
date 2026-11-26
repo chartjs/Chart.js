@@ -152,11 +152,14 @@ Chromium and Firefox through `@vitest/browser-playwright`, with the launch optio
 `dev` and `dev:ff` stay Karma and `dev:vitest` is added; the last piece makes `dev` and `dev:ff` the Vitest commands and removes `dev:vitest`.
 
 ### D13. Held spec files are converted right after the free ones, without waiting
-Decided by the maintainers, after review of this design asked for a more aggressive rule than the first draft's 30-day wait. Open pull requests do not hold a spec file. The files that open pull requests touch (P7-P11) are converted as soon as the free ones (P4-P6) are in, so that Karma can be removed without an open-ended wait. A conversion edits 2-3% of a file's lines and git follows the rename, so a pull request conflicts only where it touches one of those lines. Every open pull request that touches a converted file gets a comment with the rebase recipe (the table in D5). Converting the free files first still matters: it proves the recipe on files nobody else is editing. A new `*.tests.js` file that a pull request adds during the migration runs under Karma until P12, which converts whatever is left.
+Decided by the maintainers, after review of this design asked for a more aggressive rule than the first draft's 30-day wait. Open pull requests do not hold a spec file. The files that open pull requests touch (P7-P11) are converted as soon as the free ones (P4-P6) are in, so that Karma can be removed without an open-ended wait. A conversion edits 2-3% of a file's lines and git follows the rename, so a pull request conflicts only where it touches one of those lines. Open pull requests that touch a converted file get no comment (D15); the rebase recipe is the conversion table in `docs/developers/contributing.md`, which is the table in D5. Converting the free files first still matters: it proves the recipe on files nobody else is editing. A new `*.tests.js` file that a pull request adds during the migration runs under Karma until P12, which converts whatever is left.
 *Alternatives:* wait until a file is free or for a fixed period (the first draft; 74 open pull requests touch test or tooling files, 20 of them not updated in three months, so the wait would mostly be for pull requests that are not moving); wait for every pull request (no end date for removing Karma).
 
 ### D14. Chromium and Firefox only
 Decided by the maintainers. The same browsers CI uses today. WebKit can be tried as a follow-up with image fixtures excluded, because its text rendering will not match the reference images.
+
+### D15. No rebase-recipe comments on open pull requests
+Decided by the user on 2026-11-26. The per-pull-request comments with the rebase recipe that D13 first planned are dropped, and none were posted. A pull request that still adds or edits a `*.tests.js` file finds the recipe through the main Vitest config, which refuses to start and names the file (so `pnpm test` and `pnpm test-ci` fail), and the conversion table in `docs/developers/contributing.md`.
 
 ## Risks / Trade-offs
 
@@ -170,7 +173,7 @@ Decided by the maintainers. The same browsers CI uses today. WebKit can be tried
 - **Coveralls percentage may move slightly** on conversion pull requests, because the two runners instrument differently.
 - **A pull request merged with stale CI** can add Jasmine idioms to an already converted file and break `master` → maintainers re-run CI before merging pull requests that touch `test/specs` during the migration.
 - **Alerts do not fall until the last piece.**
-- **Open pull requests may need a rebase** when P7-P11 convert the files they touch (D13) → each gets a comment with the recipe.
+- **Open pull requests may need a rebase** when P7-P11 convert the files they touch (D13) → the recipe is the conversion table in the contributing docs; no comments are posted (D15).
 - **P2 gates everything after it.** If many reference images fail under Playwright's browsers, P3-P12 wait until the list is settled (D11).
 - **Vitest's shuffled order and seed output are unverified** → P1 checks that the seed is printed and can be replayed, because `test/seed-reporter.cjs` goes away in P12.
 
@@ -199,7 +202,7 @@ P3 follows P2, because it reuses the fixture transform and both edit `test/vites
 
 Shared files with open pull requests: `package.json` (#12402, one line in `dependencies`), `.github/workflows/ci.yml` (#12305, #12392: one line each; #12315: already conflicts with `master`), `pnpm-lock.yaml` (regenerated on either side). None of these makes a piece wait; the other pull request rebases. No piece touches `rollup.config.js`.
 
-Open pull requests that touch each piece's files as of 2026-11-22 (listed again when the piece starts, to know where to comment):
+Open pull requests that touch each piece's files as of 2026-11-22 (listed again when the piece starts):
 
 | Piece | Touched by |
 | --- | --- |

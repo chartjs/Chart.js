@@ -398,23 +398,23 @@ describe('Chart', function() {
   describe('when merging scale options', function() {
     beforeEach(function() {
       Chart.helpers.merge(Chart.defaults.scale, {
-        _jasmineCheckA: 'a0',
-        _jasmineCheckB: 'b0',
-        _jasmineCheckC: 'c0'
+        _testCheckA: 'a0',
+        _testCheckB: 'b0',
+        _testCheckC: 'c0'
       });
 
       Chart.helpers.merge(Chart.defaults.scales.logarithmic, {
-        _jasmineCheckB: 'b1',
-        _jasmineCheckC: 'c1',
+        _testCheckB: 'b1',
+        _testCheckC: 'c1',
       });
     });
 
     afterEach(function() {
-      delete Chart.defaults.scale._jasmineCheckA;
-      delete Chart.defaults.scale._jasmineCheckB;
-      delete Chart.defaults.scale._jasmineCheckC;
-      delete Chart.defaults.scales.logarithmic._jasmineCheckB;
-      delete Chart.defaults.scales.logarithmic._jasmineCheckC;
+      delete Chart.defaults.scale._testCheckA;
+      delete Chart.defaults.scale._testCheckB;
+      delete Chart.defaults.scale._testCheckC;
+      delete Chart.defaults.scales.logarithmic._testCheckB;
+      delete Chart.defaults.scales.logarithmic._testCheckC;
     });
 
     it('should default to "category" for x scales and "linear" for y scales', function() {
@@ -444,8 +444,8 @@ describe('Chart', function() {
             foo: {
               axis: 'x',
               type: 'logarithmic',
-              _jasmineCheckC: 'c2',
-              _jasmineCheckD: 'd2'
+              _testCheckC: 'c2',
+              _testCheckD: 'd2'
             }
           }
         }
@@ -457,10 +457,10 @@ describe('Chart', function() {
       expect(chart.scales.foo.options).toEqual(chart.options.scales.foo);
       expect(chart.scales.foo.options).toEqual(
         expect.objectContaining({
-          _jasmineCheckA: 'a0',
-          _jasmineCheckB: 'b1',
-          _jasmineCheckC: 'c2',
-          _jasmineCheckD: 'd2'
+          _testCheckA: 'a0',
+          _testCheckB: 'b1',
+          _testCheckC: 'c2',
+          _testCheckD: 'd2'
         }));
     });
 
@@ -471,13 +471,13 @@ describe('Chart', function() {
           scales: {
             x: {
               type: 'logarithmic',
-              _jasmineCheckC: 'c2',
-              _jasmineCheckD: 'd2'
+              _testCheckC: 'c2',
+              _testCheckD: 'd2'
             },
             y: {
               type: 'time',
-              _jasmineCheckC: 'c2',
-              _jasmineCheckE: 'e2'
+              _testCheckC: 'c2',
+              _testCheckE: 'e2'
             }
           }
         }
@@ -487,20 +487,20 @@ describe('Chart', function() {
       expect(chart.scales.x.options).toEqual(chart.options.scales.x);
       expect(chart.scales.x.options).toEqual(
         expect.objectContaining({
-          _jasmineCheckA: 'a0',
-          _jasmineCheckB: 'b1',
-          _jasmineCheckC: 'c2',
-          _jasmineCheckD: 'd2'
+          _testCheckA: 'a0',
+          _testCheckB: 'b1',
+          _testCheckC: 'c2',
+          _testCheckD: 'd2'
         }));
 
       expect(chart.scales.y.type).toBe('time');
       expect(chart.scales.y.options).toEqual(chart.options.scales.y);
       expect(chart.scales.y.options).toEqual(
         expect.objectContaining({
-          _jasmineCheckA: 'a0',
-          _jasmineCheckB: 'b0',
-          _jasmineCheckC: 'c2',
-          _jasmineCheckE: 'e2'
+          _testCheckA: 'a0',
+          _testCheckB: 'b0',
+          _testCheckC: 'c2',
+          _testCheckE: 'e2'
         }));
     });
 
@@ -508,28 +508,28 @@ describe('Chart', function() {
       var chart = acquireChart({
         type: 'line',
         options: {
-          _jasmineCheck: 42,
+          _testCheck: 42,
           scales: {
             x: {
               type: 'linear',
-              _jasmineCheck: 42,
+              _testCheck: 42,
             },
             y: {
               type: 'category',
-              _jasmineCheck: 42,
+              _testCheck: 42,
             }
           }
         }
       });
 
-      expect(chart.options._jasmineCheck).toBeDefined();
-      expect(chart.scales.x.options._jasmineCheck).toBeDefined();
-      expect(chart.scales.y.options._jasmineCheck).toBeDefined();
+      expect(chart.options._testCheck).toBeDefined();
+      expect(chart.scales.x.options._testCheck).toBeDefined();
+      expect(chart.scales.y.options._testCheck).toBeDefined();
 
-      expect(Chart.overrides.line._jasmineCheck).not.toBeDefined();
-      expect(Chart.defaults._jasmineCheck).not.toBeDefined();
-      expect(Chart.defaults.scales.linear._jasmineCheck).not.toBeDefined();
-      expect(Chart.defaults.scales.category._jasmineCheck).not.toBeDefined();
+      expect(Chart.overrides.line._testCheck).not.toBeDefined();
+      expect(Chart.defaults._testCheck).not.toBeDefined();
+      expect(Chart.defaults.scales.linear._testCheck).not.toBeDefined();
+      expect(Chart.defaults.scales.category._testCheck).not.toBeDefined();
     });
 
     it('should ignore proxy passed as scale options', function() {
