@@ -188,7 +188,7 @@ export interface ArrayListener<T> {
 export function _arrayUnique<T>(items: T[]): T[];
 
 // @public
-export function _attachContext<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T>(proxy: ResolverProxy<T, R>, context: AnyObject, subProxy?: ResolverProxy<T, R>, descriptorDefaults?: DescriptorDefaults): ContextProxy<T, R>;
+export function _attachContext<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T>(proxy: ResolverProxy<T, R>, context: AnyObject, subProxy?: ContextProxy<T, R>, descriptorDefaults?: DescriptorDefaults): ContextProxy<T, R>;
 
 // @public (undocumented)
 interface BackdropOptions {
@@ -1251,7 +1251,7 @@ export interface ContextCache<T extends AnyObject[] = AnyObject[], R extends Any
     // (undocumented)
     _stack: Set<string>;
     // (undocumented)
-    _subProxy: ResolverProxy<T, R>;
+    _subProxy: ContextProxy<T, R>;
 }
 
 // @public (undocumented)
