@@ -129,13 +129,13 @@ describe('Chart.helpers.math', function() {
   });
 
   it('should determine if angle is between boundaries', function() {
-    expect(math._angleBetween(2, 1, 3)).toBeTrue();
-    expect(math._angleBetween(2, 3, 1)).toBeFalse();
-    expect(math._angleBetween(-3.14, 2, 4)).toBeTrue();
-    expect(math._angleBetween(-3.14, 4, 2)).toBeFalse();
-    expect(math._angleBetween(0, -1, 1)).toBeTrue();
-    expect(math._angleBetween(-1, 0, 1)).toBeFalse();
-    expect(math._angleBetween(-15 * Math.PI, 3.1, 3.2)).toBeTrue();
-    expect(math._angleBetween(15 * Math.PI, -3.2, -3.1)).toBeTrue();
+    expect(math._angleBetween(2, 1, 3)).toBe(true);
+    expect(math._angleBetween(2, 3, 1)).toBe(false);
+    expect(math._angleBetween(-3.14, 2, 4)).toBe(true);
+    expect(math._angleBetween(-3.14, 4, 2)).toBe(false);
+    expect(math._angleBetween(0, -1, 1)).toBe(true);
+    expect(math._angleBetween(-1, 0, 1)).toBe(false);
+    expect(math._angleBetween(-15 * Math.PI, 3.1, 3.2)).toBe(true);
+    expect(math._angleBetween(15 * Math.PI, -3.2, -3.1)).toBe(true);
   });
 });

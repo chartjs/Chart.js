@@ -16,30 +16,8 @@ describe('Platform.basic', function() {
     chart.destroy();
   });
 
-
-  it('supports choosing the BasicPlatform in a web worker', function(done) {
-    const canvas = document.createElement('canvas');
-    if (!canvas.transferControlToOffscreen) {
-      pending();
-    }
-    const offscreenCanvas = canvas.transferControlToOffscreen();
-
-    const worker = new Worker('base/test/BasicChartWebWorker.js');
-    worker.onmessage = (event) => {
-      worker.terminate();
-      const {type, errorMessage} = event.data;
-      if (type === 'error') {
-        done.fail(errorMessage);
-      } else if (type === 'success') {
-        expect(type).toEqual('success');
-        done();
-      } else {
-        done.fail('invalid message type sent by worker: ' + type);
-      }
-    };
-
-    worker.postMessage({type: 'initialize', canvas: offscreenCanvas}, [offscreenCanvas]);
-  });
+  // The web worker test is in the smoke suite (test/umd/umd.spec.js): a worker
+  // loads the built bundle, not the source modules this suite imports.
 
   describe('with offscreenCanvas', function() {
     it('supports laying out a simple chart', function() {

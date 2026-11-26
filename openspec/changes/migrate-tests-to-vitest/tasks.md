@@ -66,10 +66,10 @@
 ## 9. P9: Specs open pull requests touch, helpers and platform
 
 - [ ] 9.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
-- [ ] 9.2 Record both test counts
-- [ ] 9.3 Rename and convert `helpers.{color,config,dom,math}` and `platform.{basic,dom}`
-- [ ] 9.4 Move the web-worker test to the smoke suite with its own worker file
-- [ ] 9.5 Confirm the counts
+- [x] 9.2 Record both test counts
+- [x] 9.3 Rename and convert `helpers.{color,config,dom,math}` and `platform.{basic,dom}`
+- [x] 9.4 Move the web-worker test to the smoke suite with its own worker file
+- [x] 9.5 Confirm the counts
 
 ## 10. P10: Specs open pull requests touch, plugins
 

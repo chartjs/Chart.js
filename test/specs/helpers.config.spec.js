@@ -80,21 +80,21 @@ describe('Chart.helpers.config', function() {
 
       const resolver = _createResolver([options, defaults]);
 
-      expect(Object.prototype.hasOwnProperty.call(resolver, 'option2')).toBeTrue();
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'option2')).toBe(true);
 
-      expect(Object.prototype.hasOwnProperty.call(resolver, 'option1')).toBeFalse();
-      expect(Object.prototype.hasOwnProperty.call(resolver, 'getter')).toBeFalse();
-      expect(Object.prototype.hasOwnProperty.call(resolver, 'nonexistent')).toBeFalse();
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'option1')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'getter')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(resolver, 'nonexistent')).toBe(false);
 
       expect(Object.keys(resolver)).toEqual(['option2']);
       expect(Object.getOwnPropertyNames(resolver)).toEqual(['option2', 'option1']);
 
-      expect('option2' in resolver).toBeTrue();
-      expect('option1' in resolver).toBeTrue();
-      expect('getter' in resolver).toBeFalse();
-      expect('nonexistent' in resolver).toBeFalse();
+      expect('option2' in resolver).toBe(true);
+      expect('option1' in resolver).toBe(true);
+      expect('getter' in resolver).toBe(false);
+      expect('nonexistent' in resolver).toBe(false);
 
-      expect(resolver instanceof Options).toBeTrue();
+      expect(resolver instanceof Options).toBe(true);
 
       expect(resolver.getter).toEqual('options getter');
     });
@@ -512,9 +512,9 @@ describe('Chart.helpers.config', function() {
         const options = {};
         const resolver = _createResolver([options, defaults]);
         resolver.value = false;
-        expect(options.value).toBeFalse();
-        expect(defaults.value).toBeTrue();
-        expect(resolver.value).toBeFalse();
+        expect(options.value).toBe(false);
+        expect(defaults.value).toBe(true);
+        expect(resolver.value).toBe(false);
       });
 
       it('should set values of sub-objects to first scope', function() {
@@ -526,9 +526,9 @@ describe('Chart.helpers.config', function() {
         const options = {};
         const resolver = _createResolver([options, defaults]);
         resolver.sub.value = false;
-        expect(options.sub.value).toBeFalse();
-        expect(defaults.sub.value).toBeTrue();
-        expect(resolver.sub.value).toBeFalse();
+        expect(options.sub.value).toBe(false);
+        expect(defaults.sub.value).toBe(true);
+        expect(resolver.sub.value).toBe(false);
       });
 
       it('should throw when setting a value and options is frozen', function() {
@@ -698,7 +698,7 @@ describe('Chart.helpers.config', function() {
     });
 
     it('should call _fallback with proper value from array when descriptor is object', function() {
-      const spy = jasmine.createSpy('fallback');
+      const spy = vi.fn();
       const descriptors = {
         items: {
           _fallback: spy
@@ -715,7 +715,7 @@ describe('Chart.helpers.config', function() {
     });
 
     it('should call _fallback with proper value from array when descriptor and defaults are objects', function() {
-      const spy = jasmine.createSpy('fallback');
+      const spy = vi.fn();
       const descriptors = {
         items: {
           _fallback: spy
@@ -778,40 +778,40 @@ describe('Chart.helpers.config', function() {
       const resolver = _createResolver([options, defaults]);
       const opts = _attachContext(resolver, {index: 1});
 
-      expect(Object.prototype.hasOwnProperty.call(opts, 'option2')).toBeTrue();
+      expect(Object.prototype.hasOwnProperty.call(opts, 'option2')).toBe(true);
 
-      expect(Object.prototype.hasOwnProperty.call(opts, 'option1')).toBeFalse();
-      expect(Object.prototype.hasOwnProperty.call(opts, 'getter')).toBeFalse();
-      expect(Object.prototype.hasOwnProperty.call(opts, 'nonexistent')).toBeFalse();
+      expect(Object.prototype.hasOwnProperty.call(opts, 'option1')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(opts, 'getter')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(opts, 'nonexistent')).toBe(false);
 
       expect(Object.keys(opts)).toEqual(['option2']);
       expect(Object.getOwnPropertyNames(opts)).toEqual(['option2', 'option1']);
 
-      expect('option2' in opts).toBeTrue();
-      expect('option1' in opts).toBeTrue();
-      expect('getter' in opts).toBeFalse();
-      expect('nonexistent' in opts).toBeFalse();
+      expect('option2' in opts).toBe(true);
+      expect('option1' in opts).toBe(true);
+      expect('getter' in opts).toBe(false);
+      expect('nonexistent' in opts).toBe(false);
 
-      expect(opts instanceof Options).toBeTrue();
+      expect(opts instanceof Options).toBe(true);
 
       expect(opts.getter).toEqual('options getter');
 
-      expect('test' in opts).toBeFalse();
+      expect('test' in opts).toBe(false);
       expect(opts.test).toBeUndefined();
 
       opts.test = true;
-      expect('test' in opts).toBeTrue();
-      expect(opts.test).toBeTrue();
+      expect('test' in opts).toBe(true);
+      expect(opts.test).toBe(true);
 
       delete opts.test;
-      expect('test' in opts).toBeFalse();
+      expect('test' in opts).toBe(false);
 
       opts.test = (ctx) => ctx.index;
-      expect('test' in opts).toBeTrue();
+      expect('test' in opts).toBe(true);
       expect(opts.test).toBe(1);
 
       delete opts.test;
-      expect('test' in opts).toBeFalse();
+      expect('test' in opts).toBe(false);
     });
 
     it('should not create proxy for adapters', function() {

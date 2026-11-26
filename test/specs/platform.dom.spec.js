@@ -77,26 +77,27 @@ describe('Platform.dom', function() {
       chart.destroy();
     });
 
-    it('should accept a canvas from an iframe', function(done) {
+    it('should accept a canvas from an iframe', async function() {
       var iframe = document.createElement('iframe');
-      iframe.onload = function() {
-        var doc = iframe.contentDocument;
-        doc.body.innerHTML += '<canvas id="chart"></canvas>';
-        var canvas = doc.getElementById('chart');
-        var chart = new Chart(canvas);
-
-        expect(chart).toBeValidChart();
-        expect(chart.canvas).toBe(canvas);
-        expect(chart.ctx).toBe(canvas.getContext('2d'));
-
-        chart.destroy();
-        canvas.remove();
-        iframe.remove();
-
-        done();
-      };
+      var loaded = new Promise((resolve) => {
+        iframe.onload = resolve;
+      });
 
       document.body.appendChild(iframe);
+      await loaded;
+
+      var doc = iframe.contentDocument;
+      doc.body.innerHTML += '<canvas id="chart"></canvas>';
+      var canvas = doc.getElementById('chart');
+      var chart = new Chart(canvas);
+
+      expect(chart).toBeValidChart();
+      expect(chart.canvas).toBe(canvas);
+      expect(chart.ctx).toBe(canvas.getContext('2d'));
+
+      chart.destroy();
+      canvas.remove();
+      iframe.remove();
     });
   });
 
@@ -271,7 +272,7 @@ describe('Platform.dom', function() {
   });
 
   describe('config.options.responsive: true (maintainAspectRatio: true)', function() {
-    it('should fit parent using aspect ratio to calculate size', function() {
+    it('should fit parent using aspect ratio to calculate size', async function() {
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -286,11 +287,10 @@ describe('Platform.dom', function() {
         }
       });
 
-      waitForResize(chart, () => {
-        expect(chart).toBeChartOfSize({
-          dw: 214, dh: 350,
-          rw: 214, rh: 350,
-        });
+      await new Promise((resolve) => waitForResize(chart, resolve));
+      expect(chart).toBeChartOfSize({
+        dw: 214, dh: 350,
+        rw: 214, rh: 350,
       });
     });
   });
@@ -328,7 +328,7 @@ describe('Platform.dom', function() {
       wrapper.parentNode.removeChild(wrapper);
     });
 
-    it('should restore canvas initial values', function(done) {
+    it('should restore canvas initial values', async function() {
       var wrapper = document.createElement('div');
       var canvas = document.createElement('canvas');
 
@@ -346,24 +346,24 @@ describe('Platform.dom', function() {
         }
       });
 
-      waitForResize(chart, function() {
-        expect(chart).toBeChartOfSize({
-          dw: 475, dh: 450,
-          rw: 475, rh: 450,
-        });
-
-        chart.destroy();
-
-        expect(canvas.getAttribute('width')).toBe('180');
-        expect(canvas.getAttribute('height')).toBe(null);
-        expect(canvas.style.width).toBe('512px');
-        expect(canvas.style.height).toBe('480px');
-        expect(canvas.style.display).toBe('');
-
-        wrapper.parentNode.removeChild(wrapper);
-        done();
-      });
+      var resized = new Promise((resolve) => waitForResize(chart, resolve));
       wrapper.style.width = '475px';
+      await resized;
+
+      expect(chart).toBeChartOfSize({
+        dw: 475, dh: 450,
+        rw: 475, rh: 450,
+      });
+
+      chart.destroy();
+
+      expect(canvas.getAttribute('width')).toBe('180');
+      expect(canvas.getAttribute('height')).toBe(null);
+      expect(canvas.style.width).toBe('512px');
+      expect(canvas.style.height).toBe('480px');
+      expect(canvas.style.display).toBe('');
+
+      wrapper.parentNode.removeChild(wrapper);
     });
   });
 
@@ -389,7 +389,7 @@ describe('Platform.dom', function() {
         plugins: [plugin]
       });
 
-      await jasmine.triggerMouseEvent(chart, 'click', {
+      await triggerMouseEvent(chart, 'click', {
         x: chart.width / 2,
         y: chart.height / 2
       });
