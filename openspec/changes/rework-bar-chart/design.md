@@ -15,7 +15,7 @@ What goes wrong:
 
 - **#12262**: a line on `x2` halves the bars, because `_getAxis` counts it. PR #12263 filters by type.
 - **#10193, #11101**: `computeFlexCategoryTraits` takes `prev` and `next` from `ruler.pixels`, the dataset's own data in data order. A dataset with one value spans the whole scale. Two items at one category give a gap of 0, so the thickness is 0.
-- **Overlaid index axes with unequal stack counts**: the chunk is size / (own stack count × axis count), and the slot is the own stack index plus the axis number. When the scales have different stack counts, the slots disagree. Example: x holds stacks a and b, x2 holds stack c. The x2 bar comes out twice as wide, centred at 0.6 of the category. PR #12222 still assumes equal counts.
+- **Overlaid index axes with unequal stack counts**: the chunk is size / (own stack count × axis count), and the slot is the own stack index plus the axis number. When the scales have different stack counts, the slots disagree. Example: x holds stacks a and b, x2 holds stack c. The x2 bar comes out twice as wide, centred at 0.7 of the category. PR #12222 still assumes equal counts.
 - **skipNull**: it is decided by the dataset being laid out, which drops every other dataset's nulls. With mixed per-dataset `skipNull`, bars overlap. Example: A `{skipNull: true}`, B and C `[null, 1]`; A counts 2 slots and B counts 3.
 - **Cost**: O((datasets × points)²) with `skipNull`.
 
@@ -75,8 +75,9 @@ Other value-axis faults:
 - **Category widths that vary** (#11731), aligning the categories themselves (#5822), and a thickness per bar (#9775). Each is a scale feature or needs its own design.
 - **Hiding data items.** The value axis (rework-legend P18), widening the remaining bars (#11319), and the gap a hidden item leaves in a stack go to a follow-up issue.
 - **Time-scale ticks** (#11545, #10258's offset grid): rework-ticks.
-- **Hit testing.** #10401 is won't-do: the hit area is the drawn shape. After P13 `minBarLength` is the visible length, and after P17 `index` mode follows the index axis.
+- **Hit testing.** #10401 is won't-do: the hit area is the drawn shape. After P14 `minBarLength` is the visible length, and after P17 `index` mode follows the index axis.
 - **#12162** (UMD "before initialization") is not bar code and is not reproduced from source.
+- **Requests that are not this change** (each closed or left open with a comment, see the list after the pieces table): stacking by the value axis inside groups (#11556), superimposed bars (#11998, answered by `grouped: false` and `order`), waterfalls of several stacks (#11323), segmented bars (#12022), swapping bars by animation (#11367), the same row height across charts (#5409), the order of stacked scales (#9918, a scale question), lines following `minBarLength` (#11254, won't do).
 
 ## Decisions
 
@@ -94,64 +95,50 @@ P4 waits for #12334 (rework-options P6) and #12331 to merge. #12263 is adopted a
 
 ### D2. The index layout is a module, cached per scale and type
 
-New `src/controllers/controller.bar.layout.ts` holds pure functions over the metas and the scale. `computeMinSampleSize` and `getAllScaleValues` move there, and the tick loop stays a separate block for rework-ticks P16. It is cached as `scale._cache.$barLayout`, a map from controller type to:
+New `src/controllers/controller.bar.layout.ts` holds pure functions over the metas and the scales. `computeMinSampleSize` and `getAllScaleValues` move there; the tick loop stays a separate block, so rework-ticks P16 ("skip the end gap") can edit it there. The layout has two levels, because index scales that share a pixel range (D4) need not share their values: a category `x2` can have other labels, or be linear.
 
 ```ts
-interface IndexLayout {
-  type: string;
-  values: number[];   // sorted unique index values of the visible datasets of `type` on the band
-  pixels: number[];   // pixel of each value
-  min: number;        // smallest gap among values and ticks
-  groups: (string | undefined)[];                   // stack groups of the grouped visible datasets, in sorted-meta order
-  groupsAt(value: number): (string | undefined)[];  // groups present at a value, for skipNull
+interface ScaleLayout {      // per index scale and controller type: scale._cache.$barLayout.get(type)
+  values: number[];          // sorted unique index values of the visible datasets of the type on this scale
+  pixels: number[];          // pixel of each value, on this scale
+  min: number;               // smallest gap among values and this scale's ticks
+}
+interface BandLayout {       // per band (index scales with the same start and end pixel) and type
+  groups: (string | undefined)[];                    // stack groups of the grouped visible datasets, by scale, then sorted-meta order
+  groupsAt(scale, value: number): (string | undefined)[]; // groups present at a value, for skipNull
   slot(meta, value?: number): {index: number; count: number};
 }
 ```
 
-How the cache is filled and dropped:
-
-- It is built on first read during a dataset update, after layout, so the pixels are final.
-- It is dropped in the scale's `beforeLayout`, as `$bar` is today.
-- It is also dropped in a `BarController.configure()` override, because new controllers are `reset()` before `_updateDatasets` configures the existing ones (`core.controller.js:516-525`, `652-663`).
+- Both are built on first read during a dataset update, after layout, so pixels are final. The band layout is cached on the band's first scale.
+- They are dropped in the scale's `beforeLayout` (as `$bar` is today) and in a `BarController.configure()` override, because new controllers are `reset()` before `_updateDatasets` configures the existing ones (`core.controller.js:516-525`, `652-663`).
 - The width (`categoryPercentage`, `barPercentage`, `barThickness`, `maxBarThickness`, `minBarThickness`) stays per dataset.
+- Values are keyed by type. Master's `$bar` holds the values of whichever type asked first (`controller.bar.js:8-17`), so a second bar-derived type on the same scale (financial candles over volume bars) used the first type's gap. Each type now uses its own values; the release note of P5 says so.
 
-The alternatives were a ruler shared through the chart, which has no lifetime hook, and keeping the per-dataset ruler while fixing each bug in place, which keeps the quadratic walks. Neither was taken.
+Rejected: a ruler shared through the chart (no lifetime hook); keeping the per-dataset ruler and fixing each bug in place (keeps the quadratic walks); one value list per band (wrong when the scales' values differ: review).
 
 ### D3. Private methods kept
 
-These are kept with the same results, reading the layout:
-
-- `_getRuler()` keeps `{min, pixels, start, end, stackCount, scale, grouped, ratio}` and adds `layout`.
-- `_calculateBarIndexPixels(index, ruler)` ignores a third argument (financial passes `options`).
-- `_getStacks`, `_getStackCount` and `_getStackIndex`.
-- `getFirstScaleIdForIndexAxis()` has no underscore, so it stays unchanged.
-
-`_getAxis` and `_getAxisCount` are removed: they are private, were added in 4.5, and have no outside reader. Overriding `_getStacks` no longer changes the layout; no overrider was found.
+- `_getRuler()` keeps `{min, pixels, start, end, stackCount, scale, grouped, ratio}` and adds `layout`; `ratio` is 1 when `barThickness` is set.
+- `_calculateBarIndexPixels(index, ruler)` keeps `{base, head, center, size}` and ignores a third argument (financial passes `options`).
+- `_getStacks`, `_getStackCount`, `_getStackIndex` return what they return today, read from the layout. Overriding them no longer changes the layout; no overrider was found.
+- `getFirstScaleIdForIndexAxis()` has no underscore and stays unchanged.
+- `_getAxis` and `_getAxisCount` are removed: private, added in 4.5, no outside reader.
 
 ### D4. Slots are shared by index scales with the same pixel range (the band rule)
 
-Index scales on one axis share a slot list when their start and end pixels are equal. Within a band:
-
-- scales are ordered by their first dataset;
-- a dataset's slot is the slot counts of the earlier scales plus its own group index;
-- the count is the sum over the band;
-- only visible, grouped datasets of the same type count;
-- `iScale` is taken from the meta, not from `chart.options.indexAxis`.
-
-This covers #12070 (its fixture is unchanged), #12222 (stacked axes have different ranges, so they are laid out apart) and unequal counts. The alternatives were grouping by the scale's `stack` option (PR #12222), which is still wrong with unequal counts, and treating every scale on its own, which reverts #12070.
+Index scales on one axis are a band when their start and end pixels are equal. Within a band, scales are ordered by their first dataset; a dataset's slot is the slot counts of the earlier scales plus its own group index, and the count is the sum over the band. Only visible, grouped datasets of the same type count, and `iScale` comes from the meta, not from `chart.options.indexAxis`. This covers #12070 (its fixture is unchanged), #12222 (stacked axes have different ranges, so they are laid out apart) and unequal counts. Rejected: grouping by the scale's `stack` option (PR #12222), still wrong with unequal counts; every scale on its own, which reverts #12070.
 
 ### D5. Slot lists stay per controller type
 
-A controller that extends bar with another id keeps its own slot list. chartjs-chart-financial's candles overlay volume bars through this. #12001 is this behaviour: its custom type and plain bars overlay, and hiding a plain dataset re-slots only the plain ones. It is answered on the issue, not changed. Sharing slots across every bar-derived type would break the overlays that work today.
+A controller that extends bar with another id keeps its own slot list. chartjs-chart-financial's candles overlay volume bars through this. #12001 is this behaviour and is answered on the issue. Rejected: one slot list for every bar-derived type, which breaks the overlays that work today.
 
-### D6. Flex uses the shared values, skipNull the holder's null
+### D6. Flex uses the scale's values; a null frees its slot when skipNull is on in the band
 
-- Flex neighbours are the previous and next entries of the layout's `values`.
-- With `skipNull`, the dataset whose value is null frees its slot, and every dataset at that value sees the same list.
+- Flex neighbours are the previous and next entries of the scale's `values`.
+- A null, undefined or NaN value frees its dataset's slot at that index value when any dataset of the type in the band has `skipNull`, and every dataset at that value sees the same slots. Chart-wide `skipNull` and `skipNull` on the dataset that should widen (master's reading) both give the same output as today; the overlap of mixed settings goes away. Rejected (review): freeing only the holder's own null, which changes charts where `skipNull` is set on the dataset that should widen.
 
-Chart-wide `skipNull` gives the same output as today. The docs already describe skipNull as per dataset.
-
-### D7. Stack ends are a module, computed per layout
+### D7. Stack ends are a module, computed per stack on first read
 
 New `src/controllers/controller.bar.stacks.ts`:
 
@@ -165,38 +152,54 @@ interface BarStackInfo {
 // vScale._cache.$barStacks: WeakMap<StackEntry, BarStackInfo>
 ```
 
-How it is keyed, built and read:
+- Keyed by the stack object core already shares per stack key and index value (`parsed._stacks[vAxis]`).
+- `first`/`last` are found among the visible datasets of the bar's own type in stacking order (`order`, then index), as master's `getLastIndexInStack` filters by type; zero and non-finite values are no segment. Datasets of other types under the same stack name still count toward the offsets, as today.
+- From P11 the first bar that reads a stack computes every segment's `base` and `head` in stacking order, reading each dataset's own `minBarLength` and `base` through its controller. Datasets update in index order (`core.controller.js:652-663`) while stacks follow `order`, so a pass filled bar by bar cannot see a later-updated segment (review).
+- Dropped in `beforeLayout` and in `configure()`, as the index layout.
+- Readers: `enableBorderRadius` (the bar is the `last` of its side, or floating, or not stacked) and `setBorderSkipped('middle')`: skip the inner edge unless the bar is the `first` of its side and the other side is empty, and the outer edge unless it is the `last`.
+- P12 then removes `_top`, `_bottom` and `_visualValues` from core; core's `applyStack` reads data values again. Lines and scatters stacked with bars under one stack name then sit on the data values, not on a bar lengthened by `minBarLength`; P12's release note says so.
 
-- **Key:** the stack object core already shares per stack key and index value, `parsed._stacks[vAxis]`.
-- **Building:** it is built lazily from `chart._getSortedDatasetMetas(true)` in stacking order. Zero values are left out of `first`/`last`. Datasets of other types under the same stack name count toward the offsets, as today. The pixel pass (P12) fills `base` and `head` in stacking order, so a short segment's length is known before the next one reads it.
-- **Readers:** `enableBorderRadius` (the bar is the `last` of its side, or floating, or not stacked) and `setBorderSkipped('middle')`. The middle rule skips the inner edge unless the bar is the `first` of its side and the other side is empty, and the outer edge unless it is the `last`.
-
-P15 then removes `_top`, `_bottom` and `_visualValues` from core, and core's `applyStack` reads plain values again. The alternative, recomputing `_top`/`_bottom` in core on hide and show (PR #12335's direction), keeps a bar-only field in core and still reads `_bottom` as the wrong end.
+Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's direction), which keeps a bar-only field in core and still reads `_bottom` as the wrong end.
 
 ### D8. Floating bars take no room in a stack
 
-`updateStacks` stores `controller._stackValue(item, vAxis)`, a private hook whose default is `item[vAxis]`. The bar returns `NaN` for floating items, and core's `applyStack` already skips non-finite values. `updateRangeFromParsed` uses only `[min, max]` for floating items. Today's offset is by the far ends of earlier segments, which has no coherent use. The alternative was a `floatingBarMode` option (#12197). *Pending the user's answer (Open Questions).*
+`updateStacks` stores `controller._stackValue(item, vAxis)`, a private hook whose default is `item[vAxis]`. The bar returns `NaN` for floating items; core's `applyStack` already skips non-finite values. `updateRangeFromParsed` uses only `[min, max]` for floating items. Today's offset is by the far ends of earlier segments, which has no coherent use. Rejected: a `floatingBarMode` option (#12197). *Pending the user's answer.*
 
 ### D9. Open pull requests
 
-- **#12263**: adopted as P1 for 4.6.3, with a spec, crediting the author. P6 replaces its code.
-- **#12222**: closed with credit as superseded by P6. Its category-labels half is already on master (`isolate-category-scale-labels`). Its sample becomes P6's fixture.
-- **#12335**: closed with credit as superseded by P10. Its spec cases move in. Its `start === 0` test is wrong when `base` is set, and it still fails after the top dataset is hidden.
-- **#11898**: adopted as P19 with `Co-authored-by`. It waits behind the conversion.
-- **#12334, #12331**: merge before P4.
+- #12263: adopted as P1 for 4.6.3, with a spec and credit. P6 replaces its code.
+- #12222: closed with credit as superseded by P6. Its category-labels half is on master (`isolate-category-scale-labels`). Its sample becomes P6's fixture.
+- #12335: closed with credit as superseded by P10; its spec cases move in. Its `start === 0` test is wrong when `base` is set, and it still fails after the top dataset is hidden.
+- #11898: adopted as P19 with `Co-authored-by`, after the conversion.
+- #12334 and #12331 merge before P4.
 
-### D10. Shared files
+### D10. Shared files and other designs
 
-- **`src/types/index.d.ts`** is held by 14 open PRs in unrelated sections. P19 and P20 wait only on #11898, the one that edits the bar options. They rebase over the others, which do not touch the bar section.
-- **`src/core/core.datasetController.js`** is held by #12332, #12284, #12241, #12176 and #12172. P11 and P15 rebase over them rather than waiting: none touches `updateStacks` or `applyStack`. A builder who finds a conflicting hunk stops and reports it.
-- **New spec files.** New specs go to `test/specs/controller.bar.layout.spec.js` (index axis) and `test/specs/controller.bar.value.spec.js` (value axis). The index-axis and value-axis pieces then do not share a test file. `controller.bar.spec.js` (after #12505) keeps the existing specs.
+- `src/types/index.d.ts` is held by 14 open PRs in unrelated sections. P19 and P20 wait only on #11898, the one that edits the bar options, and rebase over the others.
+- `src/core/core.datasetController.js` is held by #12332, #12284, #12241, #12176 and #12172, none of which touches `updateStacks` or `applyStack`. P12 and P13 rebase over them; a builder who finds a conflicting hunk stops and reports it.
+- `docs/charts/bar.md` is held by #11898, which P19 adopts. Pieces before P19 rebase over it; none waits on it (that wait made a cycle: review).
+- New specs go to `test/specs/controller.bar.layout.spec.js` (index axis) and `test/specs/controller.bar.value.spec.js` (value axis), so the two chains share no test file. `controller.bar.spec.js` (after #12505) keeps the existing specs.
+- rework-ticks (open design, PR #12492) P16 changes `computeMinSampleSize`. If it lands before P5, P5 moves its change; otherwise rework-ticks P16 edits the function in `controller.bar.layout.ts`. Its bar-on-time fixture guards P5 as well.
+- rework-legend P18 adds a protected hook "is this data item left out of bounds" (bar: `!getDataVisibility(i) || meta.data[i]?.hidden`) and edits `controller.bar.js`. If it lands before P4, P4 converts it; otherwise it is written in TypeScript. P14 reads that hook for hidden items and waits for it.
+
+### D11. What the plan review changed
+
+- **Index layout (D2):** values, pixels and the smallest gap stay per scale. Only the slots are shared by a band, because overlaid scales can have other labels.
+- **skipNull (D6):** nulls free slots when any dataset in the band has `skipNull`, not only the holder's. Freeing only the holder's narrowed charts that work on master.
+- **Stack ends (D7):** ends come from the bar's own type. The segment pixels are computed for the whole stack on first read, because datasets update in index order and stacks follow `order`. The stack cache is also dropped in `configure()`.
+- **Order of the value-axis pieces:** the chaining fix (P11) and the core cleanup (P12) come before the floating-bar change (P13), so they can ship as patches.
+- **Waits:** P3 no longer waits on #11898, which made a cycle. P5 is ordered against rework-ticks P16, and P14 against rework-legend P18's hidden-item hook.
+- **P11's failing inputs** are now ones that fail on master. The earlier ones passed there.
+- **Interactions:** P16 also moves the tooltip anchor of a cut-off bar. P17 states its rule and keeps radar unchanged. P18 is recommended for bars only, because for points it changes ties and close points.
+- **Issue outcomes:** #11254 is answered (won't do), not closed by a fix. #11730 and #11290 are advanced by P13. Ten issues without an outcome got one (Non-Goals and the close list).
 
 ## Risks / Trade-offs
 
-- **Every piece from P4 on edits `controller.bar.ts`.** So P4 to P15, P19 and P20 are built one after another. Only P1 to P3, P16 to P18, and P15 after P12 run beside them.
-- **Visible changes.** P11 (floating bars), P13 (bars outside the range no longer drawn at the edge), P14 (zero-length bars centred), P17 (`index` mode on horizontal charts) and P18 (the top item wins) change what users see. Each is a minor release with a release-note line. The existing image fixtures must stay unchanged unless the piece says which one changes and why.
-- **Third-party plugins.** Plugins reading `_top`, `_bottom` or `_visualValues`, or overriding `_getAxis` or `_getStacks` to change the layout, break or lose effect. P15's and P6's release notes say so. Financial's calls are covered by D3 and checked by a spec that calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)`.
-- **Stale layout.** The layout is stale when a plugin cancels `beforeLayout`, as `$bar` is today.
+- Every piece from P4 on edits `controller.bar.ts`, so P4 to P15, P19 and P20 are built one after another. Only P1 to P3 and P16 to P18 run beside them.
+- P13 (floating bars), P14 (bars outside the range no longer drawn at the edge), P15 (zero-length bars centred), P17 (`index` mode on horizontal charts) and P18 (the top bar wins) change what users see; each is a minor release with a release-note line. Existing image fixtures stay unchanged unless the piece names the one that changes and why.
+- Plugins reading `_top`, `_bottom` or `_visualValues`, or overriding `_getAxis` or `_getStacks` to change the layout, break or lose effect. P6's and P12's release notes say so. Financial's calls are covered by D3 and a spec.
+- The layout and stack caches are stale when a plugin cancels `beforeLayout`, as `$bar` is today.
+- `index` mode (P17) reads `chart.options.indexAxis`; a dataset-level `indexAxis` alone does not change it.
 
 ## Pieces
 
@@ -204,70 +207,68 @@ P15 then removes `_top`, `_bottom` and `_visualValues` from core, and core's `ap
 |---|---|---|---|---|---|---|---|
 | P1 | fix: only bar datasets count as index axes (adopts #12263) | `src/controllers/controller.bar.js`, `test/specs/controller.bar.spec.js` | labels a, b, c; bars on `x`, a line on a category `x2`: bar width 0.36 × category on master, expect 0.72 × | ~40 | #12505 | | #12262 |
 | P2 | refactor: `element.bar.js` in TypeScript | `src/elements/element.bar.js` → `.ts` | none: `tsc`, `pnpm lint-types` and every bar fixture unchanged | ~150 | | | |
-| P3 | docs: bar borders are fills; `borderDash` does not apply | `docs/charts/bar.md` | none (docs) | ~10 | #11898 (D9) | | #11341 |
+| P3 | docs: bar borders are fills; `borderDash` does not apply | `docs/charts/bar.md` | none (docs) | ~10 | | | #11341 |
 | P4 | refactor: `controller.bar.js` in TypeScript | `src/controllers/controller.bar.js` → `.ts` | none: `tsc`, every bar spec and fixture unchanged | ~350 | P1, P2, #12334, #12331 | | |
-| P5 | refactor: the index layout module; the private methods read it with today's results | `controller.bar.layout.ts` (new), `controller.bar.ts`, `test/specs/controller.bar.layout.spec.js` (new) | 3 datasets × 1000 points with `skipNull`: `meta._parsed.find` called 18 000 times on master, expect 0; a spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` as financial does; all fixtures unchanged | ~300 | P4 | | |
-| P6 | fix: index scales with the same range share the slots | `controller.bar.layout.ts`, `controller.bar.ts`, layout spec, 2 fixtures | stacked `x`/`x2` (`stack: 'g'`), one bar each: 0.36 × own category, off-centre on master, expect 0.72 ×; overlaid `x` {a, b} + `x2` {c}: the x2 bar twice as wide on master, expect equal; `stacked-and-multiple-axis` unchanged | ~150 | P5 | | |
+| P5 | refactor: the index layout module; the private methods read it with today's results | `controller.bar.layout.ts` (new), `controller.bar.ts`, `test/specs/controller.bar.layout.spec.js` (new) | 3 datasets × 1000 points with `skipNull`: `meta._parsed.find` called 18 000 times on master, expect 0; a spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` as financial does; all fixtures unchanged | ~300 | P4; rework-ticks P16 if it is in flight (D10) | | |
+| P6 | fix: index scales with the same range share the slots | `controller.bar.layout.ts`, `controller.bar.ts`, layout spec, 3 fixtures | stacked `x`/`x2` (`stack: 'g'`), one bar each: 0.36 × own category, off-centre on master, expect 0.72 ×; overlaid `x` {a, b} + `x2` {c}: the x2 bar twice as wide on master, expect equal; overlaid category `x` [a, b, c] and `x2` [c, b, a], one bar each: two slots per category, each bar at its own label; `stacked-and-multiple-axis` unchanged | ~170 | P5 | | |
 | P7 | fix: flex neighbours from all bars on the scale | `controller.bar.layout.ts`, layout spec | labels A, B, C at 300 px, dataset 0 `[{x:'B', y:5}]`, dataset 1 `[1, 2, 3]`, flex, percentages 1: dataset 0 spans 0-150 px on master, expect 100-150; two items at one category: thickness 0 on master, expect the share | ~80 | P6 | | #10193, #11101 |
-| P8 | fix: skipNull frees the slot of the dataset that holds the null | `controller.bar.layout.ts`, `docs/charts/bar.md`, layout spec | A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]`: A and B overlap at 'a' on master, expect 3 equal slots; skipNull fixtures unchanged | ~80 | P7, P3 | | |
+| P8 | fix: a null frees its slot for every dataset when skipNull is on in the band | `controller.bar.layout.ts`, `docs/charts/bar.md`, layout spec | A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]`: A and B overlap at 'a' on master, expect two equal slots for A and B; A `{skipNull: true, [1, 2]}`, B `[null, 3]`: A full width at index 0 (as master); skipNull fixtures unchanged | ~80 | P7 | | |
 | P9 | fix: zero-length bars draw nothing | `controller.bar.ts`, `test/specs/controller.bar.value.spec.js` (new) | `barThickness: 10`, `[5, 0]`: `inflateAmount` 0.33 on master, expect 0; same after `toggleDataVisibility(1)` | ~50 | P6 | | #11714 |
-| P10 | fix: stack ends from the visible segments | `controller.bar.stacks.ts` (new), `controller.bar.ts`, value spec | `middle`, radius 12, `[[10, 10], [null, 10]]`: dataset 0 skips `bottom` on master, expect none; default `'start'`, `[[10], [10]]`, `hide(1)`: dataset 0 `enableBorderRadius` false, expect true; `middle`, `hide(1)`: `{top: true}`, expect `{}`; #12335's cases | ~260 | P9 | | #11721, #10245 |
-| P11 | feat: floating bars keep their values in a stack | `src/core/core.datasetController.js`, `controller.bar.ts`, `controller.bar.stacks.ts`, `docs/charts/bar.md`, value spec | stacked `[[[0, 5]], [[5, 9]]]`: dataset 1 at 10-14 and y max 14 on master, expect 5-9, max ≈ 9; `[[[0, 5]], [3]]`: dataset 1 starts at 5, expect 0 | ~180 | P10, P8 | | #12197, #11730 |
-| P12 | fix: short stacked segments chain without gaps | `controller.bar.stacks.ts`, `controller.bar.ts`, value spec | stacked, `minBarLength: 10`, `[[0], [50]]`: dataset 1's base 5 px from dataset 0's head on master, expect equal; same with swapped `order`; same after a resize from small to large | ~250 | P11 | | #11515 |
-| P13 | feat: `minBarLength` is the visible length | `controller.bar.ts`, `docs/charts/bar.md`, value spec | `y.min: 10`, `[10, 50]`, `minBarLength: 5`: 0 px on master, expect 5; y 10-20, `[[5, 5]]`, `minBarLength: 6`: 6 px at the bottom edge on master, expect none in the area; `toggleDataVisibility(1)`: height 5 on master, expect 0; the 10 minBarLength fixtures unchanged | ~220 | P12 | #11667 | #10487, #7174, #11254 |
-| P14 | feat: zero-length bars centre on their value | `controller.bar.ts`, value spec | y 0-10, `[[5, 5]]`, `minBarLength: 10`: base at px(5), head 10 px above on master, expect ±5 | ~60 | P13 | | #11667 |
-| P15 | refactor: `_top`, `_bottom` and `_visualValues` leave core | `src/core/core.datasetController.js`, `test/specs/core.datasetController.spec.js` | none (refactor); the `_stacks` specs updated | ~80 | P11, P12, #12499 | | |
-| P16 | fix: bars cut off by the chart area are found through their visible part | `src/core/core.interaction.js`, `element.bar.ts` (private `_getAreaCenter`), `test/specs/core.interaction.spec.js` | `y.min: 1`, `[1.5, 10]`, nearest, `intersect: false`, `axis: 'x'`: bar 1 on master, expect bar 0; `y.max: 50`, `[100, 20]`, index, intersect, inside bar 0: `[]` on master, expect bar 0; the point spec "out-of-range datapoints are not shown in tooltip" still passes | ~150 | P2, #12499 | | #11733 |
-| P17 | feat: `index` mode follows `indexAxis` | `src/core/core.interaction.js`, `docs/configuration/interactions.md`, interaction spec | `indexAxis: 'y'`, `[10, 2]`, index, `intersect: false`, pointer in row 0 at px(2): index 1 on master, expect 0 | ~50 | P16 | | #10312 |
-| P18 | feat: the item drawn on top wins | `src/core/core.interaction.js`, interaction spec | `indexAxis: 'y'`, `x.stacked: false`, `[5]`, `[9]`, `[10]` with one stack name, pointer at 6: dataset 2 on master, expect dataset 1; line and scatter interaction specs unchanged | ~80 | P17 | | #11646 |
-| P19 | feat: `minBarThickness` (adopts #11898) | `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec | #11898's spec: `minBarThickness: 1000` gives width 1000 for grouped and non-grouped bars; `maxBarThickness` wins | ~70 | P14, P13, P8 | | |
-| P20 | feat: `barAlign` places bars on their value | `controller.bar.layout.ts`, `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec, a fixture | time axis, 5-minute data, `offset: false`, `barAlign: 'start'`: bar centred on master, expect its left edge at the value | ~150 | P19 | | #9748 |
+| P10 | fix: stack ends from the visible segments of the bar's type | `controller.bar.stacks.ts` (new), `controller.bar.ts`, value spec | `middle`, radius 12, `[[10, 10], [null, 10]]`: dataset 0 skips `bottom` on master, expect none; default `'start'`, `[[10], [10]]`, `hide(1)`: dataset 0 `enableBorderRadius` false, expect true; `middle`, `hide(1)`: `{top: true}`, expect `{}`; a bar and a line with one `stack` name: the bar keeps its rounded top; #12335's cases | ~270 | P9 | | #11721, #10245 |
+| P11 | fix: short stacked segments chain without gaps | `controller.bar.stacks.ts`, `controller.bar.ts`, value spec | stacked, `minBarLength: 10`, `[100], [0], [30]`: dataset 2 starts 5 px above dataset 1's head on master, expect at it; a value of 1 lengthened at 100 px high and not after growing to 600 px: dataset 1 keeps the stale offset on master; `order` that puts the lengthened segment lower but with the higher index: dataset 1 overlaps dataset 0 on master | ~280 | P10 | | #11515 |
+| P12 | refactor: `_top`, `_bottom` and `_visualValues` leave core | `src/core/core.datasetController.js`, `test/specs/core.datasetController.spec.js` | none (refactor); the `_stacks` specs updated; a line stacked on a bar lengthened by `minBarLength` sits on the data value (release note) | ~80 | P11, #12499 | | |
+| P13 | feat: floating bars keep their values in a stack | `src/core/core.datasetController.js`, `controller.bar.ts`, `controller.bar.stacks.ts`, `docs/charts/bar.md`, value spec | stacked `[[[0, 5]], [[5, 9]]]`: dataset 1 at 10-14 and y max 14 on master, expect 5-9, max ≈ 9; `[[[0, 5]], [3]]`: dataset 1 starts at 5, expect 0 | ~180 | P12; D8's question | #11730, #11290 | #12197 |
+| P14 | feat: `minBarLength` is the visible length | `controller.bar.ts`, `docs/charts/bar.md`, value spec | `y.min: 10`, `[10, 50]`, `minBarLength: 5` (#7174's case without setting `base`): 0 px on master, expect 5; y 10-20, `[[5, 5]]`, `minBarLength: 6`: 6 px at the bottom edge on master, expect none in the area; `toggleDataVisibility(1)`: height 5 on master, expect 0; the 10 minBarLength fixtures unchanged | ~220 | P13, rework-legend P18 | #11667 | #10487, #7174 |
+| P15 | feat: zero-length bars centre on their value | `controller.bar.ts`, value spec | y 0-10, `[[5, 5]]`, `minBarLength: 10`: base at px(5), head 10 px above on master, expect ±5 | ~60 | P14 | | #11667 |
+| P16 | fix: bars cut off by the chart area are found and pointed at through their visible part | `src/core/core.interaction.js`, `element.bar.ts` (private `_getAreaCenter`, `tooltipPosition`), `docs/configuration/interactions.md`, `test/specs/core.interaction.spec.js` | `y.min: 1`, `[1.5, 10]`, nearest, `intersect: false`, `axis: 'x'`: bar 1 on master, expect bar 0, with the tooltip anchored inside the chart area; `y.max: 50`, `[100, 20]`, index, intersect, inside bar 0: `[]` on master, expect bar 0; the point spec "out-of-range datapoints are not shown in tooltip" still passes | ~170 | P2, #12499 | | #11733 |
+| P17 | feat: `index` mode follows `indexAxis` | `src/core/core.interaction.js`, `src/types/index.d.ts` (the `axis` comment), `docs/configuration/interactions.md`, interaction spec | `indexAxis: 'y'`, `[10, 2]`, index, `intersect: false`, pointer in row 0 at px(2): index 1 on master, expect 0; a radar chart in `index` mode unchanged | ~60 | P16 | | #10312 |
+| P18 | feat: the bar drawn on top wins | `src/core/core.interaction.js`, interaction spec | `indexAxis: 'y'`, `x.stacked: false`, `[5]`, `[9]`, `[10]` with one stack name, pointer at 6: dataset 2 on master, expect dataset 1; two scatter datasets with equal points: both items returned (as master) | ~90 | P17; Open Question 5 | | #11646 |
+| P19 | feat: `minBarThickness` (adopts #11898) | `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec | #11898's spec: `minBarThickness: 1000` gives width 1000 for grouped and non-grouped bars; `maxBarThickness` wins | ~70 | P15, P8; Open Question 7 | | |
+| P20 | feat: `barAlign` places bars on their value | `controller.bar.layout.ts`, `controller.bar.ts`, `src/types/index.d.ts`, `docs/charts/bar.md`, layout spec, a fixture | time axis, 5-minute data, `offset: false`, `barAlign: 'start'`: bar centred on master, expect its left edge at the value | ~150 | P19; Open Question 7 | | #9748 |
 
-**Parallel:**
+**Parallel:** P1, P2 and P3 at once; P16 to P18 beside the controller chain once P2 and #12499 have merged. Everything else is ordered by `controller.bar.ts`.
 
-- P1, P2 and P3 can be built at once.
-- P16 to P18 run beside the controller chain once P2 and #12499 have merged.
-- P15 runs beside P13 and P14.
-- Everything else is ordered by `controller.bar.ts`.
-
-**Release lines:**
-
-- Patch (4.6.x): P1 to P10, P12, P15, P16.
-- Minor (4.7.0), each with a release-note line: P11, P13, P14, P17, P18, P19, P20.
+**Release lines.** Releases come from master. Patch (4.6.x): P1 to P12, and P16 when it merges before the first minor piece. Minor (4.7.0), each with a release-note line: P13, P14, P15, P17, P18, P19, P20. P13 follows P11 and P12 so that the patch fixes are not held behind a visible change (review).
 
 **Closed with a comment, no piece:**
 
 - #11660: done by #12377.
 - #10360: a scriptable `borderSkipped`.
-- #10401: won't do.
+- #10401: won't do (Non-Goals).
 - #12001: D5.
 - #12162: not bar code; needs a reproduction against 4.6.x.
 - #10258, #11545: rework-ticks.
+- #11254: won't do; lines and the axis use data values (P14 documents it).
+- #11730's legend half: one entry per label is `generateLabels`; closed with that and P13's link after P13.
+- #11290: answered by P13 (floating bars in a stack at their own values); closed after it with the issue's sample checked.
+- #11323: after P13, several waterfalls are floating bars in separate stacks; closed with a sample link.
+- #11998: `grouped: false` with `order` overlays bars from 0; closed with a sample.
+- #11391: `barPercentage` and `categoryPercentage` set the space between grouped bars; no reproduction.
+- #10838: plugin code that swaps elements' values; no bug in Chart.js shown.
+- #11556, #12022, #11367, #5409, #9918: requests outside this change (Non-Goals); left open with a comment saying so.
 - #11361, #12000: see Open Questions.
 
 ## Contracts
 
 - **P4 → all later pieces:** `src/controllers/controller.bar.ts` and `src/elements/element.bar.ts` exist. `BarMeta`, `BarParsed` (`_custom`, `_stacks`) and `BarRuler` are exported from the controller file for its sibling modules.
-- **P5 → P6, P7, P8, P20:** `getIndexLayout(controller): IndexLayout` (D2), cached in `scale._cache.$barLayout` and dropped in `beforeLayout` and `configure()`. `_getRuler()` returns `{min, pixels, start, end, stackCount, scale, grouped, ratio, layout}`. `ratio` is 1 when `barThickness` is set.
-- **P5 → P9:** `updateElements` still calls `_calculateBarValuePixels`, `setBorderSkipped` and `setInflateAmount` for each bar, and `ruler.ratio` keeps its meaning.
-- **P10 → P11, P12, P15:** `getStackInfo(vScale, parsed): BarStackInfo | undefined` (D7), cached in `vScale._cache.$barStacks`. A non-finite stack value is no segment.
-- **P11 → P15:** `DatasetController#_stackValue(item, vAxis): number` (private; default `item[vAxis]`).
-- **P12 → P15:** nothing reads `_visualValues` any more.
-- **P16 → P17, P18:** `getIntersectItems` and `getNearestCartesianItems` use `element._getAreaCenter(chartArea, useFinalPosition)` when the element has it. It returns `{x, y}` or `null`.
+- **P5 → P6, P7, P8, P20:** `getScaleLayout(controller): ScaleLayout` and `getBandLayout(controller): BandLayout` (D2), cached in `scale._cache.$barLayout`, dropped in `beforeLayout` and `configure()`. `_getRuler()` returns `{min, pixels, start, end, stackCount, scale, grouped, ratio, layout}`; `ratio` is 1 when `barThickness` is set.
+- **P5 → P9:** `updateElements` still calls `_calculateBarValuePixels`, `setBorderSkipped` and `setInflateAmount` per bar, and `ruler.ratio` keeps its meaning.
+- **P10 → P11, P12, P13:** `getStackInfo(vScale, parsed): BarStackInfo | undefined` (D7), cached in `vScale._cache.$barStacks`, dropped in `beforeLayout` and `configure()`. A zero or non-finite stack value is no segment.
+- **P11 → P12:** nothing reads `_visualValues`; the first reader of a stack fills every segment's `base` and `head` in stacking order.
+- **P13:** `DatasetController#_stackValue(item, vAxis): number` (private; default `item[vAxis]`).
+- **rework-legend P18 → P14:** the protected "left out of bounds" hook of the bar controller.
+- **P16 → P17, P18:** `getIntersectItems` and `getNearestCartesianItems` use `element._getAreaCenter(chartArea, useFinalPosition)` when the element has it; it returns `{x, y}` or `null`. A bar's `tooltipPosition` returns the same point.
+- **P17:** `index` mode without `axis` uses `chart.options.indexAxis` when it is `'x'` or `'y'`, else `'x'`.
 
 ## Open Questions
 
-1. **Floating bars in a stack (P11).** (a) Always at their own values. (b) A `floatingBarMode` option. (c) Keep today's offset. Recommended: (a).
-2. **Bars outside the value range (P13).** Stop drawing them at the edge, or keep the #10157 clamp? Recommended: stop.
-3. **Zero-length bars (P14).** Centre them on their value (never inside a stack), or keep growing them in the sign direction? Recommended: centre.
-4. **`index` mode and `indexAxis` (P17).** This changes horizontal charts that use `index` without `axis`. Should `nearest` follow too? Recommended: only `index`, plus a docs line for `nearest`.
-5. **The top item wins (P18).** (a) For all element types. (b) For bars only. (c) Docs only. Recommended: (a).
-6. **The band rule (D4)** and **slot lists per type (D5)**: confirm, or prefer grouping by the scale's `stack`, or one list for all bar-derived types.
-7. **skipNull (D6):** the holder's null frees its slot. Recommended: yes.
-8. **Option name for P20:** `barAlign: 'center' | 'start' | 'end'` as a dataset option (recommended), or `categoryAlign`.
-9. **Removed private fields (P15, D3):** `_top`, `_bottom`, `_visualValues`, `_getAxis` and `_getAxisCount`, in a minor release with a note. Recommended: yes.
-10. **Open PRs (D9):** adopt #12263 for 4.6.3; close #12222 and #12335 as superseded; adopt #11898 into P19. Recommended: yes.
-11. **#11361 and #12000** have no confirmed cause: their samples could not be opened. Candidates:
-    - #11361: numbers against string labels in the category scale.
-    - #12000: `skipNull` over thousands of points (P5 removes the walks), or repeated x values (#9080).
-    Recommended: open both samples before P5 is built, and claim them in P5 or P8 only with a failing input.
+1. **Floating bars in a stack (P13).** (a) Always at their own values. (b) A `floatingBarMode` option. (c) Keep today's offset. Recommended: (a).
+2. **Bars outside the value range (P14).** Stop drawing them at the edge, or keep the #10157 clamp? Recommended: stop.
+3. **Zero-length bars (P15).** Centre them on their value (never inside a stack), or keep growing them in the sign direction? Recommended: centre.
+4. **`index` mode and `indexAxis` (P17).** This changes horizontal charts that use `index` without `axis`. Recommended: yes, `index` only, with a docs line for `nearest`.
+5. **The item drawn on top wins (P18).** (a) For all element types: changes default tooltips on line and scatter charts (ties, close points; review). (b) For bars only, through the bar element's hook. (c) Docs only. Recommended: (b).
+6. **The band rule (D4)** and **slot lists per type (D5)**: confirm.
+7. **New options.** Build `minBarThickness` (P19, adopting #11898) and `barAlign` (P20, #9748) in this change, or leave them for later? Recommended: both, with the name `barAlign: 'center' | 'start' | 'end'` as a dataset option.
+8. **Removed private fields (P12, D3):** `_top`, `_bottom`, `_visualValues`, `_getAxis` and `_getAxisCount`, with release-note lines. Recommended: yes.
+9. **Open PRs (D9).** Recommended: adopt #12263 and #11898, close #12222 and #12335 as superseded.
+10. **#11361 and #12000** have no confirmed cause: their samples could not be opened. Candidates: #11361, numbers against string labels in the category scale; #12000, `skipNull` over thousands of points (P5 removes the walks) or repeated x values (#9080). Recommended: open both samples before P5, and claim them in P5 or P8 only with a failing input.

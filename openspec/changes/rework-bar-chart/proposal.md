@@ -9,7 +9,7 @@ The bar controller works out where each bar goes on the index axis once per data
 - Fixes on the index axis:
   - only bar datasets on index scales that share the bars' pixel range count towards the slots (#12262, and the rule for stacked and overlaid index axes);
   - `barThickness: 'flex'` takes its neighbours from all bars on the scale, not the dataset's own data (#10193, #11101);
-  - with `skipNull`, the dataset that holds a null frees its slot, and every dataset at that index sees the same slots.
+  - with `skipNull` on any dataset of the band, a null frees its dataset's slot, and every dataset at that index sees the same slots.
 - The ends of each stack (innermost and outermost segment on each side) are computed once per layout from the visible datasets. They replace the stack's `_top`, `_bottom` and `_visualValues`, which are removed from the stack objects.
 - Fixes on the value axis:
   - a zero-length bar draws nothing, whatever `barThickness` or `inflateAmount` (#11714);
@@ -17,10 +17,10 @@ The bar controller works out where each bar goes on the index axis once per data
   - short stacked segments lengthened by `minBarLength` chain without gaps (#11515).
 - Behaviour changes, released as minors with a release-note line:
   - **BREAKING (visual)** floating bars in a stacked chart are drawn at their own start and end and take no room in the stack (#12197, #11730);
-  - `minBarLength` is the length of the visible part of a bar. A bar entirely outside the value range is no longer drawn at the edge (#10487, #7174, #11254);
+  - `minBarLength` is the length of the visible part of a bar. A bar entirely outside the value range is no longer drawn at the edge (#10487, #7174). Lines and the axis keep using data values (#11254 is answered, not changed);
   - a zero-length unstacked bar lengthened by `minBarLength` is centred on its value (#11667);
   - `index` interaction mode without `axis` follows `indexAxis` (#10312);
-  - with `intersect: true`, the item drawn on top wins when several contain the pointer (#11646).
+  - with `intersect: true`, the bar drawn on top wins when several bars contain the pointer (#11646).
 - Bars whose base or head is outside the chart area can be found by the interaction modes through their visible part (#11733).
 - New options (minor releases): `minBarThickness` (PR #11898, adopted), and `barAlign: 'center' | 'start' | 'end'` to place bars on their value rather than around it (#9748).
 - Docs: bar borders are fills, so `borderDash` does not apply to bars (#11341).
@@ -32,7 +32,7 @@ The bar controller works out where each bar goes on the index axis once per data
 - `bar-index-layout`: where bars of one or more datasets sit and how wide they are on the index axis.
 - `bar-stacking`: where stacked and floating bars sit on the value axis, and which edges and corners of stacked bars are drawn.
 - `bar-min-length`: how `minBarLength` lengthens and places short bars, and how zero-length bars are drawn.
-- `bar-interaction`: which bars the interaction modes find, and which one wins.
+- `bar-interaction`: which bars the interaction modes find, which one wins, and where the tooltip points.
 
 ### Modified Capabilities
 

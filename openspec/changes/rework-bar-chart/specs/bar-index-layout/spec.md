@@ -23,6 +23,11 @@ The bars at an index value SHALL be divided among the visible, grouped bar datas
 - **WHEN** two index axes cover the same range, the first holds stack groups `a` and `b` and the second holds `c`
 - **THEN** each category has three slots of equal width in the order `a`, `b`, `c`, and no bar overlaps another
 
+#### Scenario: Overlaid index axes with different labels
+
+- **WHEN** two category axes cover the same range, `x` with labels a, b, c and `x2` with labels c, b, a, and each has one bar dataset
+- **THEN** each bar sits at its own label on its own axis, in a slot of half the category
+
 #### Scenario: Overlaid index axes with one stack each
 
 - **WHEN** three index axes cover the same range and each holds one stack group
@@ -42,14 +47,19 @@ With `barThickness: 'flex'`, the region of a bar SHALL reach halfway to the prev
 - **WHEN** `barThickness` is `'flex'` and a dataset has two items at the same category
 - **THEN** both bars have the category's width share, not zero
 
-### Requirement: A null frees the slot of the dataset that holds it
+### Requirement: A null frees its slot when skipNull is on
 
-When a dataset has `skipNull` set, it SHALL take no slot at an index value where its value is null, undefined or NaN. All datasets at that index value SHALL see the same slots.
+When any bar dataset of the same type on the index scales that share a range has `skipNull` set, a dataset SHALL take no slot at an index value where its value is null, undefined or NaN. All datasets at that index value SHALL see the same slots.
 
 #### Scenario: Only some datasets skip nulls
 
 - **WHEN** dataset A has `skipNull: true` and data `[1, 1]`, dataset B has data `[1, 1]` and dataset C has data `[null, 1]`
-- **THEN** at the first category the three datasets have three equal slots and no bars overlap
+- **THEN** at the first category A and B have two equal slots and no bars overlap
+
+#### Scenario: skipNull on the dataset that should widen
+
+- **WHEN** dataset A has `skipNull: true` and data `[1, 2]`, and dataset B has data `[null, 3]`
+- **THEN** A's first bar takes the whole category
 
 #### Scenario: skipNull for the whole chart
 

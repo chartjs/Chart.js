@@ -17,10 +17,20 @@ A bar whose length is zero and that `minBarLength` does not lengthen, or whose d
 
 When `minBarLength` lengthens a stacked segment, the next segment on the same side SHALL start where the lengthened one ends, whatever the datasets' `order`, and after any resize.
 
-#### Scenario: A zero under a large value
+#### Scenario: A zero between two values
 
-- **WHEN** a stacked chart has `minBarLength: 10`, dataset 0 `[0]` and dataset 1 `[50]`
-- **THEN** dataset 1's bar starts where dataset 0's bar ends
+- **WHEN** a stacked chart has `minBarLength: 10` and datasets `[100]`, `[0]` and `[30]`
+- **THEN** the third bar starts where the second bar ends
+
+#### Scenario: Dataset order
+
+- **WHEN** `order` puts a segment that `minBarLength` lengthens below a segment with a lower dataset index
+- **THEN** the upper segment starts where the lengthened one ends and they do not overlap
+
+#### Scenario: After a resize
+
+- **WHEN** a stacked segment is lengthened at a small chart size and is long enough after the chart grows
+- **THEN** the next segment starts at the segment's data end
 
 ### Requirement: minBarLength is the visible length
 

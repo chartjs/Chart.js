@@ -13,6 +13,11 @@ A bar whose base or head lies outside the chart area SHALL be found by the inter
 - **WHEN** the value axis has `min: 1`, the data is `[1.5, 10]`, and the interaction is `{mode: 'nearest', intersect: false, axis: 'x'}` with the pointer over the first category near the top of the chart area
 - **THEN** the first bar is found
 
+#### Scenario: Tooltip of a cut-off bar
+
+- **WHEN** a bar is found whose base is below the axis minimum
+- **THEN** the tooltip points at the centre of its visible part, inside the chart area
+
 #### Scenario: Head above the axis maximum
 
 - **WHEN** the value axis has `max: 50`, the data is `[100, 20]`, the interaction mode is `'index'` with `intersect: true`, and the pointer is inside the first bar
@@ -20,18 +25,23 @@ A bar whose base or head lies outside the chart area SHALL be found by the inter
 
 ### Requirement: Index mode follows the index axis
 
-In `index` mode without `axis`, the index SHALL be chosen along the chart's `indexAxis`.
+In `index` mode without `axis`, the index SHALL be chosen along the chart's `indexAxis` when it is `'x'` or `'y'`, and along `'x'` otherwise.
 
 #### Scenario: Horizontal bars
 
 - **WHEN** `indexAxis` is `'y'`, the data is `[10, 2]`, the interaction is `{mode: 'index', intersect: false}`, and the pointer is in the first row at the second bar's length
 - **THEN** the items of the first row are found
 
-### Requirement: The item drawn on top wins
+### Requirement: The bar drawn on top wins
 
-When several items contain the pointer and the interaction is `{mode: 'nearest', intersect: true}`, the item drawn on top SHALL be found.
+When several bars contain the pointer and the interaction is `{mode: 'nearest', intersect: true}`, the bar drawn on top SHALL be found. Points SHALL keep the nearest-distance rule, and items at the same distance SHALL all be found.
 
 #### Scenario: Overlapping bars
 
 - **WHEN** `indexAxis` is `'y'`, the index axis is not stacked, datasets `[5]`, `[9]` and `[10]` share one stack name, and the pointer is at the value 6
 - **THEN** the second dataset's bar is found (it is drawn over the third), not the third, whose centre is nearer
+
+#### Scenario: Points at the same place
+
+- **WHEN** two scatter datasets have a point at the same position and the pointer is on it
+- **THEN** both items are found

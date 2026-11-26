@@ -6,7 +6,7 @@ Where stacked and floating bars sit on the value axis, and which edges and corne
 
 ### Requirement: Stack ends follow the visible segments
 
-For each stack and index value, the innermost and outermost segments on each side of the base SHALL be found among the visible datasets with a non-zero value, whenever the chart updates, including after a dataset is hidden or shown.
+For each stack and index value, the innermost and outermost segments on each side of the base SHALL be found among the visible bar datasets of the same type with a non-zero value, whenever the chart updates, including after a dataset is hidden or shown.
 
 #### Scenario: Rounded corners after hiding the top dataset
 
@@ -17,6 +17,11 @@ For each stack and index value, the innermost and outermost segments on each sid
 
 - **WHEN** bars are stacked with `borderSkipped: 'middle'`, dataset 0 is null at an index and datasets 1 and 2 have values there
 - **THEN** dataset 1's bar keeps its base edge and corners, and dataset 2's bar keeps its far edge and corners
+
+#### Scenario: A line in the same stack
+
+- **WHEN** a bar dataset and a line dataset share a `stack` name and the bars have `borderRadius`
+- **THEN** the bar keeps its rounded far end
 
 ### Requirement: borderSkipped middle skips only edges that touch
 

@@ -10,11 +10,11 @@
 
 ## 3. P3: Bar borders are fills
 
-- [ ] 3.1 In `docs/charts/bar.md`, say that bar borders are drawn as fills, so `borderDash` does not apply to bars. The pull request says `Closes #11341`.
+- [ ] 3.1 Rebase over #11898 if it has moved. In `docs/charts/bar.md`, say that bar borders are drawn as fills, so `borderDash` does not apply to bars. The pull request says `Closes #11341`.
 
 ## 4. P4: The bar controller in TypeScript
 
-- [ ] 4.1 Wait until P1, P2, #12334 and #12331 have merged. Close #12222 and #12335 with credit as superseded by P6 and P10 (design D9).
+- [ ] 4.1 Wait until P1, P2, #12334 and #12331 have merged. If rework-legend P18 has merged, convert its hook too. Close #12222 and #12335 with credit as superseded by P6 and P10 (design D9).
 - [ ] 4.2 `git mv src/controllers/controller.bar.js src/controllers/controller.bar.ts`. Export `BarMeta`, `BarParsed` and `BarRuler` for sibling modules. Drop the unused `center` from `_calculateBarValuePixels`. Make no other change.
 - [ ] 4.3 `tsc`, `pnpm lint-types`, every bar spec and fixture pass unchanged.
 
@@ -22,12 +22,12 @@
 
 - [ ] 5.1 New `test/specs/controller.bar.layout.spec.js`. With 3 datasets × 1000 points and `skipNull`, `meta._parsed.find` is called 0 times; it fails on master (18 000). A spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` the way chartjs-chart-financial does.
 - [ ] 5.2 Open the samples of #11361 and #12000 in a browser. Claim an issue only with a failing input whose cause is in this layout.
-- [ ] 5.3 New `src/controllers/controller.bar.layout.ts` with `IndexLayout` and `getIndexLayout` (design D2); move `getAllScaleValues` and `computeMinSampleSize` there. Cache it in `scale._cache.$barLayout` and drop it in `configure()`.
+- [ ] 5.3 New `src/controllers/controller.bar.layout.ts` with `ScaleLayout`, `BandLayout`, `getScaleLayout` and `getBandLayout` (design D2); move `getAllScaleValues` and `computeMinSampleSize` there, with rework-ticks P16's change if it has merged. Values are keyed by type; add a release-note line for two bar-derived types on one scale. Cache it in `scale._cache.$barLayout` and drop it in `configure()`.
 - [ ] 5.4 `_getStacks`, `_getStackCount`, `_getStackIndex`, `_getRuler` and `_calculateBarIndexPixels` read the layout and return what they returned before, including today's `_getAxis` count. All bar specs and fixtures are unchanged.
 
 ## 6. P6: Index scales with the same range share the slots
 
-- [ ] 6.1 Layout specs: stacked `x`/`x2` with one bar each (0.72 × own category, centred); overlaid `x` {a, b} and `x2` {c} (three equal slots a, b, c). Both fail on master. Add fixtures for both, using #12222's sample for the first.
+- [ ] 6.1 Layout specs: stacked `x`/`x2` with one bar each (0.72 × own category, centred); overlaid `x` {a, b} and `x2` {c} (three equal slots a, b, c); overlaid category `x` [a, b, c] and `x2` [c, b, a] with one bar each (each bar at its own label, two slots). The first two fail on master. Add fixtures for both, using #12222's sample for the first.
 - [ ] 6.2 Implement the band rule (design D4). Remove `_getAxis` and `_getAxisCount`. `stacking/stacked-and-multiple-axis` is unchanged.
 - [ ] 6.3 Add a release-note line: `_getAxis` and `_getAxisCount` are removed.
 
@@ -36,10 +36,10 @@
 - [ ] 7.1 Layout specs: the #10193 input (dataset 0 spans 100-150 px) and the #11101 input (thickness above 0). Both fail on master.
 - [ ] 7.2 Flex reads its neighbours from the layout's `values`. The `bar-thickness-flex*` fixtures are unchanged. The pull request says `Closes #10193` and `Closes #11101`, and that the overlay part of #11101 is #9080.
 
-## 8. P8: skipNull frees the holder's slot
+## 8. P8: A null frees its slot when skipNull is on in the band
 
-- [ ] 8.1 Layout spec: A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]` give three equal slots at 'a'. It fails on master.
-- [ ] 8.2 `groupsAt` drops a group only for datasets that skip their own null. Update the `skipNull` row in `docs/charts/bar.md`. The `skipNull/*` fixtures are unchanged.
+- [ ] 8.1 Layout specs: A `{skipNull: true, [1, 1]}`, B `[1, 1]`, C `[null, 1]` give A and B two equal slots at 'a' (master overlaps them); A `{skipNull: true, [1, 2]}`, B `[null, 3]` keep A full width at index 0, as on master.
+- [ ] 8.2 `groupsAt` drops the groups whose value is null, undefined or NaN when any dataset of the type in the band has `skipNull` (design D6). Update the `skipNull` row in `docs/charts/bar.md` to say so. The `skipNull/*` fixtures are unchanged.
 
 ## 9. P9: Zero-length bars draw nothing
 
@@ -48,51 +48,52 @@
 
 ## 10. P10: Stack ends from the visible segments
 
-- [ ] 10.1 Value specs: the three inputs in the pieces table, and #12335's cases with credit. They fail on master.
-- [ ] 10.2 New `src/controllers/controller.bar.stacks.ts` with `BarStackInfo` and `getStackInfo` (design D7). `enableBorderRadius` and `setBorderSkipped` read it.
+- [ ] 10.1 Value specs: the four inputs in the pieces table, and #12335's cases with credit. They fail on master (the bar-and-line case only if it does; otherwise it guards the type filter).
+- [ ] 10.2 New `src/controllers/controller.bar.stacks.ts` with `BarStackInfo` and `getStackInfo` (design D7): ends among the visible datasets of the bar's type, in stacking order; dropped in `beforeLayout` and `configure()`. `enableBorderRadius` and `setBorderSkipped` read it.
 - [ ] 10.3 The `borderRadius` and `borderSkipped` fixtures are unchanged. The pull request says `Closes #11721` and `Closes #10245`.
 
-## 11. P11: Floating bars keep their values in a stack
+## 11. P11: Short stacked segments chain
 
-- [ ] 11.1 Value specs: `[[[0, 5]], [[5, 9]]]` and `[[[0, 5]], [3]]`, stacked. Both fail on master.
-- [ ] 11.2 Add the `_stackValue` hook in `updateStacks` (design D8). The bar returns `NaN` for floating items. `updateRangeFromParsed` uses `[min, max]`.
-- [ ] 11.3 Document the rule in `docs/charts/bar.md` and add a release-note line. The pull request says `Closes #12197` and `Closes #11730`, and that #11730's legend half is answered by `generateLabels`.
+- [ ] 11.1 Value specs, each failing on master: `minBarLength: 10`, stacked `[100], [0], [30]` (dataset 2 starts at dataset 1's head); a value of 1 lengthened at 100 px and not after a resize to 600 px (no stale offset); an `order` that puts the lengthened segment lower but with the higher index (no overlap).
+- [ ] 11.2 The first reader of a stack computes every segment's `base` and `head` in stacking order, from each dataset's own options; `_calculateBarValuePixels` reads them. Remove the `_visualValues` write. The pull request says `Closes #11515`.
 
-## 12. P12: Short stacked segments chain
+## 12. P12: The stack fields leave core
 
-- [ ] 12.1 Value specs: `minBarLength: 10`, `[[0], [50]]`, stacked. Dataset 1 starts at dataset 0's head with the default and with swapped `order`, and after a resize from small to large. They fail on master.
-- [ ] 12.2 The stack info's pixel pass fills `base` and `head` in stacking order, and `_calculateBarValuePixels` reads them. Remove the `_visualValues` write. The pull request says `Closes #11515`.
+- [ ] 12.1 Remove `_top`, `_bottom` and `_visualValues` from `updateStacks`, `clearStacks` and `applyStack`. Update the `_stacks` specs in `test/specs/core.datasetController.spec.js` (after #12499).
+- [ ] 12.2 Release-note lines: plugins that read these fields; lines stacked with bars under one stack name sit on the data value, not on a bar lengthened by `minBarLength`.
 
-## 13. P13: minBarLength is the visible length
+## 13. P13: Floating bars keep their values in a stack
 
-- [ ] 13.1 Value specs: the three inputs in the pieces table. They fail on master. The 10 `minBarLength/*` fixtures are unchanged.
-- [ ] 13.2 Implement the rule. Use rework-legend P18's hidden-item hook if it has merged, or else `getDataVisibility` and `element.hidden`.
-- [ ] 13.3 Update `minBarLength` in `docs/charts/bar.md`: lines and the axis use data values. Add a release-note line. The pull request says `Closes #10487`, `Closes #7174` and `Closes #11254`, and `Part of #11667`.
+- [ ] 13.1 Value specs: `[[[0, 5]], [[5, 9]]]` and `[[[0, 5]], [3]]`, stacked. Both fail on master. Check #11290's sample against the result.
+- [ ] 13.2 Add the `_stackValue` hook in `updateStacks` (design D8). The bar returns `NaN` for floating items. `updateRangeFromParsed` uses `[min, max]`.
+- [ ] 13.3 Document the rule in `docs/charts/bar.md`, with a release-note line. The pull request says `Closes #12197`, and `Part of #11730` and `Part of #11290`.
 
-## 14. P14: Zero-length bars centre on their value
+## 14. P14: minBarLength is the visible length
 
-- [ ] 14.1 Value spec: y 0-10, `[[5, 5]]`, `minBarLength: 10` reaches ±5 px around px(5). It fails on master.
-- [ ] 14.2 Centre unstacked zero-length bars. Add a release-note line. The pull request says `Closes #11667`.
+- [ ] 14.1 Wait for rework-legend P18 (the hidden-item hook).
+- [ ] 14.2 Value specs: the three inputs in the pieces table. They fail on master. The 10 `minBarLength/*` fixtures are unchanged.
+- [ ] 14.3 Implement the rule; hidden items are those the rework-legend P18 hook leaves out of bounds.
+- [ ] 14.4 Update `minBarLength` in `docs/charts/bar.md`: lines and the axis use data values. Release-note line. The pull request says `Closes #10487` and `Closes #7174`, and `Part of #11667`.
 
-## 15. P15: The stack fields leave core
+## 15. P15: Zero-length bars centre on their value
 
-- [ ] 15.1 Remove `_top`, `_bottom` and `_visualValues` from `updateStacks`, `clearStacks` and `applyStack`. Update the `_stacks` specs in `test/specs/core.datasetController.spec.js` (after #12499).
-- [ ] 15.2 Add a release-note line for plugins that read these fields.
+- [ ] 15.1 Value spec: y 0-10, `[[5, 5]]`, `minBarLength: 10` reaches ±5 px around px(5). It fails on master.
+- [ ] 15.2 Centre unstacked zero-length bars. Release-note line. The pull request says `Closes #11667`.
 
 ## 16. P16: Bars cut off by the chart area are found
 
-- [ ] 16.1 Interaction specs: the two inputs in the pieces table. They fail on master. The point spec "out-of-range datapoints are not shown in tooltip" still passes.
-- [ ] 16.2 Add a private `BarElement#_getAreaCenter`. `getIntersectItems` and `getNearestCartesianItems` use it when present. The pull request says `Closes #11733`.
+- [ ] 16.1 Interaction specs: the two inputs in the pieces table, including where the tooltip is anchored. They fail on master. The point spec "out-of-range datapoints are not shown in tooltip" still passes.
+- [ ] 16.2 Add a private `BarElement#_getAreaCenter`; `getIntersectItems` and `getNearestCartesianItems` use it when present, and the bar's `tooltipPosition` returns the same point. Say in `docs/configuration/interactions.md` that for bars the distance is to the visible part. The pull request says `Closes #11733`.
 
 ## 17. P17: index mode follows indexAxis
 
-- [ ] 17.1 Interaction spec: the input in the pieces table. It fails on master.
-- [ ] 17.2 `index` mode defaults `axis` to the chart's `indexAxis`. Update `docs/configuration/interactions.md`, including the line for `nearest` on horizontal bars. Add a release-note line. The pull request says `Closes #10312`.
+- [ ] 17.1 Interaction specs: the input in the pieces table (fails on master), and a radar chart in `index` mode (unchanged).
+- [ ] 17.2 `index` mode without `axis` uses `chart.options.indexAxis` when it is `'x'` or `'y'`, else `'x'`. Update the `axis` comment in `src/types/index.d.ts` and `docs/configuration/interactions.md`, with a line for `nearest` on horizontal bars. Release-note line. The pull request says `Closes #10312`.
 
-## 18. P18: The item drawn on top wins
+## 18. P18: The bar drawn on top wins
 
-- [ ] 18.1 Interaction spec: the #11646 input in the pieces table. It fails on master. The line and scatter interaction specs pass unchanged.
-- [ ] 18.2 With `intersect: true`, when several items contain the pointer, pick the first in drawing-on-top order. Add a release-note line. The pull request says `Closes #11646`.
+- [ ] 18.1 Interaction specs: the #11646 input (fails on master); two scatter datasets with equal points still return both items.
+- [ ] 18.2 With `intersect: true`, when several bars contain the pointer, pick the one drawn on top (the scope follows Open Question 5). Release-note line. The pull request says `Closes #11646`.
 
 ## 19. P19: minBarThickness (adopts #11898)
 
