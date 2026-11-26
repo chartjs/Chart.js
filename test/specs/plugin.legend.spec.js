@@ -774,6 +774,39 @@ describe('Legend block tests', function() {
     expect(hitBox.height).toBe(40);
   });
 
+  // Draws the chart and returns the legend's symbols and texts in drawing order.
+  function drawLegendItems(chart) {
+    const {ctx, legend} = chart;
+    const symbols = [];
+    const texts = [];
+    const rect = ctx.rect.bind(ctx);
+    vi.spyOn(ctx, 'rect').mockImplementation(function(x, y, width, height) {
+      if (width === legend.options.labels.boxWidth) {
+        symbols.push({left: x, right: x + width, x: x + width / 2, y: y + height / 2});
+      }
+      rect(x, y, width, height);
+    });
+    const fillText = ctx.fillText.bind(ctx);
+    vi.spyOn(ctx, 'fillText').mockImplementation(function(text, x, y, maxWidth) {
+      if (legend.legendItems.some(item => item.text === text)) {
+        const width = ctx.measureText(text).width;
+        const left = x - (ctx.textAlign === 'center' ? width / 2 : ctx.textAlign === 'right' ? width : 0);
+        texts.push({text, left, right: left + width, y});
+      }
+      fillText(text, x, y, maxWidth);
+    });
+
+    chart.draw();
+
+    return {symbols, texts};
+  }
+
+  // The hit box runs from the leftmost to the rightmost edge of what is drawn.
+  function expectHitBoxToCover(hitbox, symbol, text) {
+    expect(hitbox.left).toBeCloseTo(Math.min(symbol.left, text.left), 0);
+    expect(hitbox.left + hitbox.width).toBeCloseTo(Math.max(symbol.right, text.right), 0);
+  }
+
   for (const position of ['left', 'right', 'top', 'bottom']) {
     for (const textAlign of ['left', 'center', 'right']) {
       for (const rtl of [false, true]) {
@@ -787,34 +820,18 @@ describe('Legend block tests', function() {
               plugins: {legend: {position, rtl, labels: {textAlign}}}
             }
           }, {canvas: {width: 600, height: 300}});
-          const {ctx, legend} = chart;
-          const labels = [];
-          const symbols = [];
-          const rect = ctx.rect.bind(ctx);
-          vi.spyOn(ctx, 'rect').mockImplementation(function(x, y, width, height) {
-            if (width === legend.options.labels.boxWidth) {
-              symbols.push({x: x + width / 2, y: y + height / 2});
-            }
-            rect(x, y, width, height);
-          });
-          const fillText = ctx.fillText.bind(ctx);
-          vi.spyOn(ctx, 'fillText').mockImplementation(function(text, x, y, maxWidth) {
-            if (text === 'Short') {
-              const width = ctx.measureText(text).width;
-              const left = x - (ctx.textAlign === 'center' ? width / 2 : ctx.textAlign === 'right' ? width : 0);
-              labels.push({left, right: left + width, y});
-            }
-            fillText(text, x, y, maxWidth);
-          });
+          const {legend} = chart;
+          const {symbols, texts} = drawLegendItems(chart);
 
-          chart.draw();
-
-          expect(labels.length).toBe(1);
-          const {left, right, y} = labels[0];
           expect(symbols.length).toBe(2);
+          expect(texts.length).toBe(2);
+          const {left, right, y} = texts[0];
           expect(legend._getLegendItemAt(symbols[0].x, symbols[0].y)).toBe(legend.legendItems[0]);
           expect(legend._getLegendItemAt(left + 1, y)).toBe(legend.legendItems[0]);
           expect(legend._getLegendItemAt(right - 1, y)).toBe(legend.legendItems[0]);
+          for (let i = 0; i < 2; i++) {
+            expectHitBoxToCover(legend.legendHitBoxes[i], symbols[i], texts[i]);
+          }
         });
       }
     }
@@ -831,8 +848,8 @@ describe('Legend block tests', function() {
             labels: {
               textAlign: 'left',
               generateLabels: () => [
-                {text: 'Short', textAlign: 'right'},
-                {text: 'A much longer dataset label'}
+                {text: 'A much longer dataset label'},
+                {text: 'Short', textAlign: 'right'}
               ]
             }
           }
@@ -840,58 +857,74 @@ describe('Legend block tests', function() {
       }
     });
     const {legend} = chart;
-    const hitbox = legend.legendHitBoxes[0];
-    expect(legend._getLegendItemAt(legend.right - 1, hitbox.top + hitbox.height / 2)).toBe(legend.legendItems[0]);
+    const hitbox = legend.legendHitBoxes[1];
+    expect(legend._getLegendItemAt(legend.right - 1, hitbox.top + hitbox.height / 2)).toBe(legend.legendItems[1]);
   });
 
-  for (const textAlign of ['right', 'center']) {
-    it(`should keep ${textAlign} aligned items of a two-column legend in their own column`, function() {
-      const chart = window.acquireChart({
-        type: 'line',
-        data: {
-          datasets: Array.from({length: 12}, (_, i) => ({label: 'Item ' + i, data: []}))
-        },
-        options: {
-          plugins: {legend: {position: 'right', labels: {textAlign}}}
+  for (const [count, columns] of [[12, 2], [20, 3]]) {
+    for (const textAlign of ['right', 'center']) {
+      it(`should keep ${textAlign} aligned items of a ${columns}-column legend in their own column`, function() {
+        const chart = window.acquireChart({
+          type: 'line',
+          data: {
+            datasets: Array.from({length: count}, (_, i) => ({label: 'Item ' + i, data: []}))
+          },
+          options: {
+            plugins: {legend: {position: 'right', labels: {textAlign}}}
+          }
+        }, {canvas: {width: 1600, height: 200}});
+        const {legend} = chart;
+        const {columnSizes} = legend;
+        const {boxWidth} = legend.options.labels;
+        const halfFontSize = Chart.helpers.toFont(legend.options.labels.font).size / 2;
+        const {symbols, texts} = drawLegendItems(chart);
+        const hitboxes = legend.legendHitBoxes;
+
+        // Items 0-7 fill the first column, item 8 starts the second one.
+        expect(columnSizes.length).toBe(columns);
+        expect(hitboxes[7].col).toBe(0);
+        expect(hitboxes[8].col).toBe(1);
+        expect(symbols.length).toBe(count);
+        expect(texts.length).toBe(count);
+
+        for (let i = 0; i < count; i++) {
+          const col = hitboxes[i].col;
+          const columnLeft = symbols[col * 8].left;
+          // The text area ends at the next column's left edge minus the padding.
+          const textEnd = col < columns - 1 ? columnLeft + columnSizes[col].width : legend.right;
+          const textStart = symbols[i].left + boxWidth + halfFontSize;
+          if (textAlign === 'right') {
+            expect(texts[i].right).toBeCloseTo(textEnd, 0);
+          } else {
+            expect((texts[i].left + texts[i].right) / 2).toBeCloseTo((textStart + textEnd) / 2, 0);
+          }
+          expectHitBoxToCover(hitboxes[i], symbols[i], texts[i]);
         }
-      }, {canvas: {width: 1600, height: 200}});
-      const {ctx, legend} = chart;
-      const symbols = [];
-      const texts = [];
-      const rect = ctx.rect.bind(ctx);
-      vi.spyOn(ctx, 'rect').mockImplementation(function(x, y, width, height) {
-        if (width === legend.options.labels.boxWidth) {
-          symbols.push({left: x, x: x + width / 2, y: y + height / 2});
-        }
-        rect(x, y, width, height);
+        expect(legend._getLegendItemAt(symbols[8].x, symbols[8].y)).toBe(legend.legendItems[8]);
+        expect(legend._getLegendItemAt(texts[8].right - 1, symbols[8].y)).toBe(legend.legendItems[8]);
       });
-      const fillText = ctx.fillText.bind(ctx);
-      vi.spyOn(ctx, 'fillText').mockImplementation(function(text, x, y, maxWidth) {
-        if (text.startsWith('Item ')) {
-          const width = ctx.measureText(text).width;
-          const left = x - (ctx.textAlign === 'center' ? width / 2 : ctx.textAlign === 'right' ? width : 0);
-          texts.push({left, right: left + width});
-        }
-        fillText(text, x, y, maxWidth);
-      });
-
-      chart.draw();
-
-      // Items 0-7 fill the first column, item 8 starts the second one.
-      expect(legend.legendHitBoxes[7].col).toBe(0);
-      expect(legend.legendHitBoxes[8].col).toBe(1);
-      expect(symbols.length).toBe(12);
-      expect(texts.length).toBe(12);
-
-      const column1Left = symbols[8].left;
-      for (let i = 0; i < 8; i++) {
-        expect(texts[i].right).toBeLessThan(column1Left);
-        expect(legend.legendHitBoxes[i].left + legend.legendHitBoxes[i].width).toBeLessThan(column1Left);
-      }
-      expect(legend._getLegendItemAt(symbols[8].x, symbols[8].y)).toBe(legend.legendItems[8]);
-      expect(legend._getLegendItemAt(texts[8].right - 1, symbols[8].y)).toBe(legend.legendItems[8]);
-    });
+    }
   }
+
+  it('should cover right aligned text that is wider than a narrow vertical legend', function() {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{label: 'A much longer dataset label', data: []}]
+      },
+      options: {
+        plugins: {legend: {position: 'right', maxWidth: 80, labels: {textAlign: 'right'}}}
+      }
+    }, {canvas: {width: 600, height: 300}});
+    const {legend} = chart;
+    const {symbols, texts} = drawLegendItems(chart);
+
+    // The text ends at the legend's right edge and starts left of the symbol.
+    expect(legend.width).toBe(80);
+    expect(texts[0].right).toBeCloseTo(legend.right, 0);
+    expect(texts[0].left).toBeLessThan(symbols[0].left);
+    expectHitBoxToCover(legend.legendHitBoxes[0], symbols[0], texts[0]);
+  });
 
   it('should update the hit boxes of a right legend whose generateLabels returns fewer items after the layout', function() {
     // fit() runs during the layout and sees 3 items. afterUpdate builds the
