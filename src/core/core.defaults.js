@@ -15,6 +15,11 @@ const UNSAFE_KEYS = ['__proto__', 'prototype', 'constructor'];
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
 /**
+ * @typedef {{scope: string, name: string, targetScope: string, targetName: string}} DefaultsRoute
+ * @typedef {(() => *) & {route?: DefaultsRoute}} RoutedGetter The getter `route` defines, tagged with its route
+ */
+
+/**
  * A key may name an own property of the node or one it does not have yet, never
  * one it inherits: the walk would leave the defaults through it.
  * @param {*} node The node the key is read from, undefined when it does not exist yet
@@ -185,6 +190,7 @@ export class Defaults {
     const scopeObject = getScope(this, scope);
     const targetScopeObject = getScope(this, targetScope);
 
+    /** @type {RoutedGetter} */
     const get = function() {
       const local = this[privateName];
       const target = targetScopeObject[targetName];
@@ -239,7 +245,7 @@ export default defaults;
  * returns the value set for the routed option itself, without its target: the
  * stored value, not a copy.
  * @param {string} scope
- * @return {{scope: string, name: string, targetScope: string, targetName: string, local: () => *}[]}
+ * @return {Array<DefaultsRoute & {local: () => *}>}
  * @private
  */
 export function getRoutes(scope) {
@@ -252,7 +258,12 @@ export function getRoutes(scope) {
     return [];
   }
   const scopeObject = node;
-  return Object.values(Object.getOwnPropertyDescriptors(scopeObject))
-    .filter((descriptor) => descriptor.get && descriptor.get.route)
-    .map(({get: {route}}) => ({...route, local: () => scopeObject['_' + route.name]}));
+  const routes = [];
+  for (const descriptor of Object.values(Object.getOwnPropertyDescriptors(scopeObject))) {
+    const route = descriptor.get && /** @type {RoutedGetter} */ (descriptor.get).route;
+    if (route) {
+      routes.push({...route, local: () => scopeObject['_' + route.name]});
+    }
+  }
+  return routes;
 }
