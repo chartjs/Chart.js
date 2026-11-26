@@ -31,11 +31,15 @@ The following commands are now available from the repository root:
 > pnpm run autobuild         // build and watch for source changes
 > pnpm run dev               // run the specs in Chromium and watch for source and test changes
 > pnpm run dev:ff            // the same in Firefox
-> pnpm run lint              // perform code linting (ESLint, tsc, and the TypeScript transition flags on src/**/*.ts)
+> pnpm run lint              // lint the code and Markdown (ESLint), check src/**/*.ts with the TypeScript transition flags, then build and check the types (API reports, tsc)
 > pnpm test                  // perform code linting and run all tests with coverage
 > pnpm run test-ci-vitest    // run the specs once, in Chromium and Firefox
 > pnpm run test-ci-umd       // run the smoke suite against dist/chart.umd.min.js, in Chromium and Firefox
+> pnpm run api-report        // compare the built types in ./dist with the API reports in ./etc
+> pnpm api-report --local    // rewrite the API reports in ./etc from the built types
 ```
+
+The files `etc/chart.js.api.md` and `etc/chart.js-helpers.api.md` record the public types of `chart.js` and `chart.js/helpers`, as [API Extractor](https://api-extractor.com/) reads them from the built `dist/types.d.ts` and `dist/helpers/index.d.ts`. `pnpm run lint` (through `lint-types`) builds, then fails when the built types differ from these reports, and API Extractor leaves the report it generated in `node_modules/.cache/api-extractor/` for comparison. When a change is meant to change the published types, run `pnpm run build`, then `pnpm api-report --local`, and commit the rewritten reports with the change. Their diff is part of the pull request: within a major version it should only add, so a removed member or a type that turns into `any` needs a reason.
 
 The specs, `test/specs/*.spec.js`, run in [Vitest](https://vitest.dev/) browser mode, in Chromium and Firefox through Playwright. They run against the source in `src/` with no build step and use Vitest's API (`vi.spyOn`, `expect.objectContaining`, ...). The suite no longer offers local Safari or Edge runs, and watch mode no longer stops at the first failing spec; pass `--bail=1` to stop a run after the first failure.
 

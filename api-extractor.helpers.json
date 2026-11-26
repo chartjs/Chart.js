@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "extends": "./api-extractor.json",
+  "mainEntryPointFilePath": "<projectFolder>/dist/helpers/index.d.ts",
+  "apiReport": {
+    "enabled": true,
+    "reportFileName": "chart.js-helpers",
+    "reportFolder": "<projectFolder>/etc/",
+    "reportTempFolder": "<projectFolder>/node_modules/.cache/api-extractor/",
+    "includeForgottenExports": true
+  }
+}

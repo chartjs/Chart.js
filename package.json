@@ -55,6 +55,7 @@
         "helpers/**"
     ],
     "scripts": {
+        "api-report": "concurrently -P -m 1 -n chart.js,helpers \"api-extractor run {@}\" \"api-extractor run -c api-extractor.helpers.json {@}\" --",
         "autobuild": "rollup -c -w",
         "copyDeclarations": "node -e \"fs.cpSync('./src/types/', './dist/types/', {recursive:true})\"",
         "emitDeclarations": "tsc --emitDeclarationOnly && pnpm copyDeclarations",
@@ -70,7 +71,7 @@
         "lint-js": "eslint \"src/**/*.{js,ts}\" \"test/**/*.js\" \"docs/**/*.js\" --cache",
         "lint-md": "eslint \"**/*.md\" --cache",
         "lint-ts-flags": "node scripts/check-ts-flags.js",
-        "lint-types": "pnpm build && node test/types/autogen.js && tsc -p test/types",
+        "lint-types": "pnpm build && pnpm api-report && node test/types/autogen.js && tsc -p test/types",
         "lint": "concurrently \"pnpm:lint-*\"",
         "test": "pnpm lint && pnpm test-ci",
         "test-ci": "concurrently \"pnpm:test-ci-*\"",
@@ -82,6 +83,7 @@
         "@kurkle/color": "^0.6.6"
     },
     "devDependencies": {
+        "@microsoft/api-extractor": "^7.60.1",
         "@rollup/plugin-inject": "^5.0.5",
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
