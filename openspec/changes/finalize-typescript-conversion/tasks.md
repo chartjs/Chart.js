@@ -9,10 +9,10 @@
 
 ## 2. P2: Compile the published types on TypeScript 4.7.4 and the newest TypeScript
 
-- [ ] 2.1 Pin `typescript` to exactly `4.7.4` in `test/integration/typescript-node` and `typescript-node-next`, set `skipLibCheck: false`, and import `chart.js`, `chart.js/auto` and `chart.js/helpers` with a `PluginOptionsByType` augmentation. In the `node` package, also import a name from `chart.js/dist/types/utils`, `/basic`, `/geometric`, `dist/plugins/plugin.tooltip` and `dist/helpers/helpers.core`.
-- [ ] 2.2 Add `test/integration/typescript-latest` with the same imports under `nodenext` on the newest TypeScript.
-- [ ] 2.3 Show that the 4.7.4 packages fail when a published declaration contains an `accessor` field, then revert that.
-- [ ] 2.4 If any package fails on master, list the errors in the pull request and stop: fixing them becomes its own piece before P5.
+- [x] 2.1 Pin `typescript` to exactly `4.7.4` in `test/integration/typescript-node` and `typescript-node-next`, set `skipLibCheck: false`, and import `chart.js`, `chart.js/auto` and `chart.js/helpers` with a `PluginOptionsByType` augmentation. In the `node` package, also import a name from `chart.js/dist/types/utils`, `/basic`, `/geometric`, `dist/plugins/plugin.tooltip` and `dist/helpers/helpers.core`.
+- [x] 2.2 Add `test/integration/typescript-latest` with the same imports under `nodenext` on the newest TypeScript.
+- [x] 2.3 Show that the 4.7.4 packages fail when a published declaration contains an `accessor` field, then revert that.
+- [x] 2.4 If any package fails on master, list the errors in the pull request and stop: fixing them becomes its own piece before P5.
 
 ## 3. P3: The transition gate
 
