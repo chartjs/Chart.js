@@ -2500,7 +2500,7 @@ export function _lookup<T>(table: T[], value: number, cmp: (value: number) => bo
 };
 
 // @public
-export const _lookupByKey: (table: Record<string, number>[], key: string, value: number, last?: boolean) => {
+export function _lookupByKey(table: Record<string, number>[], key: string, value: number, last?: boolean): {
     lo: number;
     hi: number;
 };
@@ -3177,7 +3177,7 @@ export function restoreTextDirection(ctx: CanvasRenderingContext2D, original?: [
 export function retinaScale(chart: Chart | Chart_2, forceRatio: number, forceStyle?: boolean): boolean | void;
 
 // @public
-export const _rlookupByKey: (table: Record<string, number>[], key: string, value: number) => {
+export function _rlookupByKey(table: Record<string, number>[], key: string, value: number): {
     lo: number;
     hi: number;
 };
