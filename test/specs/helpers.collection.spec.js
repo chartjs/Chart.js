@@ -25,6 +25,19 @@ describe('helpers.collection', function() {
     expect(_lookupByKey(data, 'x', 9)).toEqual({lo: 2, hi: 3});
   });
 
+  it('Should find the first of equal values by key without last', () => {
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 25}, {x: 25}, {x: 28}], 'x', 25)).toEqual({lo: 1, hi: 2});
+    expect(_lookupByKey([{x: 0}, {x: 2}, {x: 25}, {x: 25}, {x: 25}, {x: 28}, {x: 29}], 'x', 25, false)).toEqual({lo: 1, hi: 2});
+  });
+
+  it('Should do binary search on tables with fewer than two entries', () => {
+    expect(_lookup([], 1)).toEqual({lo: 0, hi: -1});
+    expect(_lookup([5], 1)).toEqual({lo: 0, hi: 0});
+    expect(_lookupByKey([], 'x', 1)).toEqual({lo: 0, hi: -1});
+    expect(_lookupByKey([{x: 5}], 'x', 1, true)).toEqual({lo: 0, hi: 0});
+    expect(_rlookupByKey([{x: 5}], 'x', 1)).toEqual({lo: 0, hi: 0});
+  });
+
   it('Should do binary search by key with last', () => {
     expect(_lookupByKey([{x: 0}, {x: 2}, {x: 6}, {x: 9}], 'x', 25, true)).toEqual({lo: 2, hi: 3});
     expect(_lookupByKey([{x: 0}, {x: 2}, {x: 9}, {x: 9}], 'x', 25, true)).toEqual({lo: 2, hi: 3});
