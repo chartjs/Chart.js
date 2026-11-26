@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "mainEntryPointFilePath": "<projectFolder>/dist/types.d.ts",
+  "newlineKind": "lf",
+  "compiler": {
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "ES2018",
+        "lib": ["ES2018", "DOM"],
+        "types": ["offscreencanvas"],
+        "strict": false,
+        "skipLibCheck": true
+      },
+      "files": ["<projectFolder>/dist/types.d.ts", "<projectFolder>/dist/helpers/index.d.ts"]
+    }
+  },
+  "apiReport": {
+    "enabled": true,
+    "reportFileName": "chart.js",
+    "reportFolder": "<projectFolder>/etc/",
+    "reportTempFolder": "<projectFolder>/node_modules/.cache/api-extractor/",
+    "includeForgottenExports": true
+  },
+  "docModel": {
+    "enabled": false
+  },
+  "dtsRollup": {
+    "enabled": false
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "messages": {
+    "compilerMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      }
+    },
+    "extractorMessageReporting": {
+      "default": {
+        "logLevel": "warning",
+        "addToApiReportFile": false
+      },
+      "ae-forgotten-export": {
+        "logLevel": "none",
+        "addToApiReportFile": false
+      },
+      "ae-missing-release-tag": {
+        "logLevel": "none",
+        "addToApiReportFile": false
+      },
+      "ae-unresolved-link": {
+        "logLevel": "none",
+        "addToApiReportFile": false
+      }
+    },
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "none",
+        "addToApiReportFile": false
+      }
+    }
+  }
+}

@@ -1,11 +1,12 @@
 ## 1. P1: Record the public type API
 
-- [ ] 1.1 Show that the check is missing: on master, change `readonly id: string` at `src/types/index.d.ts:535` to `number`; `pnpm lint-types` passes. Revert the change.
-- [ ] 1.2 Add `@microsoft/api-extractor` and two configs: entry `dist/types.d.ts` and entry `dist/helpers/index.d.ts`, with `newlineKind: lf` and forgotten exports recorded in the report rather than reported as errors.
-- [ ] 1.3 Run it on master. If it cannot analyse the `export *` ambiguity in `src/types.ts`, use rollup-plugin-dts with a normalised diff instead, and say so in the pull request.
-- [ ] 1.4 Add `api-report` (`--local` writes the reports, plain mode fails on a difference) and call it from `lint-types` after the build. Do not name it `lint-*`: `pnpm lint` runs those in parallel before the build.
-- [ ] 1.5 Commit `etc/chart.js.api.md` and `etc/chart.js-helpers.api.md`. Repeat 1.1 and show that `pnpm lint-types` now fails.
-- [ ] 1.6 Generate the reports at tag `v4.6.2` as well, and show that master's differ from them only by additions.
+- [x] 1.1 Show that the check is missing: on master, change `readonly id: string` at `src/types/index.d.ts:535` to `number`; `pnpm lint-types` passes. Revert the change.
+- [x] 1.2 Add `@microsoft/api-extractor` and two configs: entry `dist/types.d.ts` and entry `dist/helpers/index.d.ts`, with `newlineKind: lf` and forgotten exports recorded in the report rather than reported as errors.
+- [x] 1.3 Run it on master. If it cannot analyse the `export *` ambiguity in `src/types.ts`, use rollup-plugin-dts with a normalised diff instead, and say so in the pull request.
+- [x] 1.4 Add `api-report` (`--local` writes the reports, plain mode fails on a difference) and call it from `lint-types` after the build. Do not name it `lint-*`: `pnpm lint` runs those in parallel before the build.
+- [x] 1.5 Commit `etc/chart.js.api.md` and `etc/chart.js-helpers.api.md`. Repeat 1.1 and show that `pnpm lint-types` now fails.
+- [x] 1.6 Generate the reports at tag `v4.6.2` as well, and show that master's differ from them only by additions.
+  Master differs from 4.6.2 by more than additions (the Decimation plugin's `destroy` became `stop`, the title's `padding` became scriptable, and two underscore members changed); the reports record master as it is, and the P1 pull request lists the changes.
 
 ## 2. P2: Compile the published types on TypeScript 4.7.4 and the newest TypeScript
 
