@@ -1,4 +1,4 @@
-import {readdirSync} from 'node:fs';
+import {existsSync, readdirSync} from 'node:fs';
 import {sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createSaveFixtureImage} from 'chartjs-test-utils/node';
@@ -21,6 +21,36 @@ if (unconverted.length) {
   throw new Error(
     `Rename and convert these Jasmine specs to Vitest (*.spec.js), see "Converting a Jasmine spec" in docs/developers/contributing.md:\n  ${unconverted.join('\n  ')}`
   );
+}
+
+// The unit specs: they need no DOM and run in Node (the `unit` project, with
+// test/setup.node.js) instead of the browsers. Every other spec runs in the
+// `browser` project. See "Unit specs and browser specs" in
+// docs/developers/contributing.md.
+const unitSpecs = [
+  'test/specs/core.animation.spec.js',
+  'test/specs/core.defaults.spec.js',
+  'test/specs/core.element.spec.js',
+  'test/specs/core.registry.spec.js',
+  'test/specs/element.bar.spec.js',
+  'test/specs/global.namespace.spec.js',
+  'test/specs/helpers.collection.spec.js',
+  'test/specs/helpers.config.spec.js',
+  'test/specs/helpers.core.spec.js',
+  'test/specs/helpers.easing.spec.js',
+  'test/specs/helpers.interpolation.spec.js',
+  'test/specs/helpers.math.spec.js',
+  'test/specs/helpers.options.spec.js',
+  'test/specs/helpers.segment.spec.js',
+  'test/specs/vitest.setup.node.spec.js'
+];
+
+// An entry that names no file would leave the spec it meant in the browsers,
+// or nowhere; stop instead.
+const stale = unitSpecs.filter((file) => !existsSync(fileURLToPath(new URL(file, import.meta.url))));
+
+if (stale.length) {
+  throw new Error(`These unitSpecs entries in vitest.config.js name no file:\n  ${stale.join('\n  ')}`);
 }
 
 export default defineConfig({
@@ -53,14 +83,9 @@ export default defineConfig({
     // default zone test/setup.js sets; pre-bundling it shares one instance.
     include: ['@vitest/coverage-istanbul/browser', 'moment']
   },
+  // What both projects share. One run of all of them (`pnpm run test-ci-vitest`)
+  // writes one coverage report, merged over Node, Chromium and Firefox.
   test: {
-    browser: {
-      enabled: true,
-      instances: updating ? [{browser: 'chromium'}] : [{browser: 'chromium'}, {browser: 'firefox'}],
-      commands: updating ? {saveFixtureImage: createSaveFixtureImage()} : {},
-      provider: browserProvider,
-      viewport
-    },
     // Istanbul, not v8: v8 coverage is refused once a non-Chromium browser is
     // configured. The Coveralls step in .github/workflows/ci.yml uploads
     // coverage/vitest/lcov.info.
@@ -72,16 +97,46 @@ export default defineConfig({
       reporter: ['lcov', 'html', 'text-summary'],
       reportsDirectory: 'coverage/vitest'
     },
-    // One spec file at a time: animation and resize specs need a page that is
-    // not throttled.
-    fileParallelism: false,
     globals: true,
-    include: ['test/specs/**/*.spec.js'],
     // Spies never leak from one test into the next.
     restoreMocks: true,
     // Random order, so that specs cannot depend on each other; the seed is
     // printed and can be replayed with --sequence.seed=<seed>.
     sequence: {shuffle: true},
-    setupFiles: ['test/setup.js']
+    projects: [
+      {
+        // `extends: true` also carries the alias, `oxc` and the plugins above,
+        // so the specs compile as they do in the browsers.
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: unitSpecs,
+          setupFiles: ['test/setup.node.js']
+        }
+      },
+      {
+        extends: true,
+        test: {
+          name: 'browser',
+          include: ['test/specs/**/*.spec.js'],
+          exclude: unitSpecs,
+          setupFiles: ['test/setup.js'],
+          // One spec file at a time: animation and resize specs need a page
+          // that is not throttled.
+          fileParallelism: false,
+          browser: {
+            enabled: true,
+            // Named, so that `--project chromium` selects one browser.
+            instances: updating
+              ? [{browser: 'chromium', name: 'chromium'}]
+              : [{browser: 'chromium', name: 'chromium'}, {browser: 'firefox', name: 'firefox'}],
+            commands: updating ? {saveFixtureImage: createSaveFixtureImage()} : {},
+            provider: browserProvider,
+            viewport
+          }
+        }
+      }
+    ]
   }
 });
