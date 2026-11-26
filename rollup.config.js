@@ -39,7 +39,9 @@ const plugins = (minify) =>
         }
       })
       : cleanup({
-        comments: ['some', /__PURE__/]
+        comments: ['some', /__PURE__/],
+        // Own array: the plugin strips the dots in place, which would break resolve's `extensions`.
+        extensions: ['js', 'ts']
       })
   ];
 
