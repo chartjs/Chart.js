@@ -1,7 +1,7 @@
+import type Chart from '../core/core.controller.js';
+import type Config from '../core/core.config.js';
 
-/**
- * @typedef { import('../core/core.controller.js').default } Chart
- */
+export type {Chart};
 
 /**
  * Abstract class that allows abstracting platform dependencies away from the chart.
@@ -10,53 +10,58 @@ export default class BasePlatform {
   /**
 	 * Called at chart construction time, returns a context2d instance implementing
 	 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
-	 * @param {HTMLCanvasElement} canvas - The canvas from which to acquire context (platform specific)
-	 * @param {number} [aspectRatio] - The chart options
+	 * @param canvas - The canvas from which to acquire context (platform specific)
+	 * @param aspectRatio - The chart options
 	 */
-  acquireContext(canvas, aspectRatio) {} // eslint-disable-line no-unused-vars
+  acquireContext(_canvas: HTMLCanvasElement, _aspectRatio?: number): CanvasRenderingContext2D | null {
+    return undefined;
+  }
 
   /**
 	 * Called at chart destruction time, releases any resources associated to the context
 	 * previously returned by the acquireContext() method.
-	 * @param {CanvasRenderingContext2D} context - The context2d instance
-	 * @returns {boolean} true if the method succeeded, else false
+	 * @param context - The context2d instance
+	 * @returns true if the method succeeded, else false
 	 */
-  releaseContext(context) { // eslint-disable-line no-unused-vars
+  releaseContext(_context: CanvasRenderingContext2D): boolean {
     return false;
   }
 
   /**
 	 * Registers the specified listener on the given chart.
-	 * @param {Chart} chart - Chart from which to listen for event
-	 * @param {string} type - The ({@link ChartEvent}) type to listen for
-	 * @param {function} listener - Receives a notification (an object that implements
+	 * @param chart - Chart from which to listen for event
+	 * @param type - The ({@link ChartEvent}) type to listen for
+	 * @param listener - Receives a notification (an object that implements
 	 * the {@link ChartEvent} interface) when an event of the specified type occurs.
 	 */
-  addEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
+  // The listeners take different arguments per event type, so `Function` is kept from the JSDoc.
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  addEventListener(_chart: Chart, _type: string, _listener: Function): void {}
 
   /**
 	 * Removes the specified listener previously registered with addEventListener.
-	 * @param {Chart} chart - Chart from which to remove the listener
-	 * @param {string} type - The ({@link ChartEvent}) type to remove
-	 * @param {function} listener - The listener function to remove from the event target.
+	 * @param chart - Chart from which to remove the listener
+	 * @param type - The ({@link ChartEvent}) type to remove
+	 * @param listener - The listener function to remove from the event target.
 	 */
-  removeEventListener(chart, type, listener) {} // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  removeEventListener(_chart: Chart, _type: string, _listener: Function): void {}
 
   /**
-	 * @returns {number} the current devicePixelRatio of the device this platform is connected to.
+	 * @returns the current devicePixelRatio of the device this platform is connected to.
 	 */
-  getDevicePixelRatio() {
+  getDevicePixelRatio(): number {
     return 1;
   }
 
   /**
 	 * Returns the maximum size in pixels of given canvas element.
-	 * @param {HTMLCanvasElement} element
-	 * @param {number} [width] - content width of parent element
-	 * @param {number} [height] - content height of parent element
-	 * @param {number} [aspectRatio] - aspect ratio to maintain
+	 * @param element
+	 * @param width - content width of parent element
+	 * @param height - content height of parent element
+	 * @param aspectRatio - aspect ratio to maintain
 	 */
-  getMaximumSize(element, width, height, aspectRatio) {
+  getMaximumSize(element: HTMLCanvasElement, width?: number, height?: number, aspectRatio?: number): {width: number, height: number} {
     width = Math.max(0, width || element.width);
     height = height || element.height;
     return {
@@ -66,18 +71,18 @@ export default class BasePlatform {
   }
 
   /**
-	 * @param {HTMLCanvasElement} canvas
-	 * @returns {boolean} true if the canvas is attached to the platform, false if not.
+	 * @param canvas
+	 * @returns true if the canvas is attached to the platform, false if not.
 	 */
-  isAttached(canvas) { // eslint-disable-line no-unused-vars
+  isAttached(_canvas: HTMLCanvasElement): boolean {
     return true;
   }
 
   /**
    * Updates config with platform specific requirements
-   * @param {import('../core/core.config.js').default} config
+   * @param config
    */
-  updateConfig(config) { // eslint-disable-line no-unused-vars
+  updateConfig(_config: Config): void {
     // no-op
   }
 }
