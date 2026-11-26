@@ -794,7 +794,9 @@ describe('Legend block tests', function() {
       const drawn = fillText.mock.calls.map(([text, x, y]) => ({text: String(text), x, y}));
       fillText.mockRestore();
       const hitBoxes = chart.legend.legendHitBoxes.map(({left, top, width, height}) => ({left, top, width, height}));
-      return {hitBoxes, drawn};
+      const labelOpts = chart.legend.options.labels;
+      const lineHeight = Chart.helpers.toFont(labelOpts.font).lineHeight;
+      return {hitBoxes, drawn, lineHeight, padding: labelOpts.padding};
     }
 
     function expectFinite(values) {
@@ -830,8 +832,14 @@ describe('Legend block tests', function() {
         expect(result.drawn.map(({text}) => text)).toEqual(['A', 'B', '2010', 'C']);
         expect(result).toEqual(asStrings);
         // The array is two lines tall, the number one line, like the string.
-        expect(result.hitBoxes[0].height).toBeGreaterThan(result.hitBoxes[1].height);
-        expect(result.hitBoxes[1].height).toBe(result.hitBoxes[2].height);
+        const {hitBoxes, drawn, lineHeight, padding} = result;
+        expect(hitBoxes[0].height).toBeCloseTo(2 * lineHeight, 10);
+        expect(hitBoxes[0].height).toBeGreaterThan(hitBoxes[1].height);
+        expect(hitBoxes[1].height).toBe(hitBoxes[2].height);
+        // The number is drawn below both lines of the array and the padding.
+        const [lineA, lineB, number] = drawn;
+        expect(lineB.y).toBeCloseTo(lineA.y + lineHeight, 10);
+        expect(number.y).toBeCloseTo(lineA.y + 2 * lineHeight + padding, 10);
       });
     });
   });
