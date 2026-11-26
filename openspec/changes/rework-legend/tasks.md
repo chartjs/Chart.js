@@ -17,10 +17,10 @@
 
 ## 4. P4: Hit boxes cover aligned text (#12316)
 
-- [ ] 4.1 #12316's 12 specs fail on master.
-- [ ] 4.2 Add a two-column spec with `textAlign: 'right'`: clicking item 7's symbol and text returns item 7, and each column's text ends at its own column's right edge. It fails on #12316 as it stands.
-- [ ] 4.3 Bound the text area by the next column's left edge minus `labels.padding`, and the last column by the legend's right edge. Do this in the hit box and in drawing.
-- [ ] 4.4 Every single-column legend fixture is unchanged. The pull request says `Closes #12067`.
+- [x] 4.1 #12316's 9 specs fail on master: 8 left/right center/right cases and the per-item alignment.
+- [x] 4.2 Add a two-column spec with `textAlign: 'right'`: clicking item 8's symbol and text returns item 8, and each column's text ends at its own column's right edge. It fails on #12316 as it stands.
+- [x] 4.3 Bound the text area by the next column's left edge minus `labels.padding`, and the last column by the legend's right edge. Do this in the hit box and in drawing.
+- [x] 4.4 Every single-column legend fixture is unchanged. The pull request says `Closes #12067`.
 
 ## 5. P5: Only arrays are multi-line labels
 
