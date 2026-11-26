@@ -52,14 +52,16 @@ describe('Chart.defaults', function() {
       for (const object of [Object.prototype, proto, Chart.defaults]) {
         Reflect.deleteProperty(object, 'p');
       }
-      for (const fn of [Object.prototype.toString, Object.prototype.valueOf, proto.set]) {
+      for (const fn of [Object.prototype.toString, Object.prototype.valueOf, proto.set, Array.prototype.push]) {
         Reflect.deleteProperty(fn, 'x');
       }
+      Reflect.deleteProperty(Chart.defaults.elements, 'x');
       for (const object of [descriptors, overrides]) {
         Reflect.deleteProperty(object, '__proto__');
         Reflect.deleteProperty(object, 'constructor');
       }
-      for (const key of ['rtscope', 'newscope', 'newtarget', 'myconstructor', 'describe']) {
+      const added = ['rtscope', 'newscope', 'newtarget', 'nullscope', 'testfn', 'myconstructor', 'describe', 'set'];
+      for (const key of added) {
         Reflect.deleteProperty(Chart.defaults, key);
       }
       Reflect.deleteProperty(Chart.defaults.font, 'toString');
@@ -169,6 +171,38 @@ describe('Chart.defaults', function() {
       Chart.defaults.set({font: {toString: 'x', size: 13}});
       expect(hasOwn(Chart.defaults.font, 'toString')).toBe(false);
       expect(Chart.defaults.font.size).toBe(13);
+    });
+
+    it('should skip an inherited key of the values given with a scope', function() {
+      Chart.defaults.set('', {set: 1});
+      expect(typeof Chart.defaults.set).toBe('function');
+      expect(hasOwn(Chart.defaults, 'set')).toBe(false);
+      Chart.defaults.set('font', {toString: 1});
+      expect(hasOwn(Chart.defaults.font, 'toString')).toBe(false);
+    });
+
+    it('should check each key against the node it is read from', function() {
+      // `push` is inherited by the array, not by the root.
+      expect(() => Chart.defaults.get('events.push')).toThrow(invalid);
+      expect(() => Chart.defaults.set('events.push', {x: 1})).toThrow(invalid);
+      expect(Array.prototype.push.x).toBeUndefined();
+
+      // The same below a scope without a prototype.
+      Chart.defaults.set('nullscope', {});
+      Chart.defaults.nullscope.list = [];
+      expect(() => Chart.defaults.set('nullscope.list.push.x', {y: 1})).toThrow(invalid);
+      expect(Array.prototype.push.x).toBeUndefined();
+    });
+
+    it('should throw for the prototype of a function in the defaults', function() {
+      Chart.defaults.testfn = function() {};
+      expect(() => Chart.defaults.set('testfn.prototype.x', {y: 1})).toThrow(invalid);
+      expect(Chart.defaults.testfn.prototype.x).toBeUndefined();
+    });
+
+    it('should check the target name of a route against the target scope', function() {
+      expect(() => Chart.defaults.route('elements.x', 'a', 'events', 'push')).toThrow(invalid);
+      expect(hasOwn(Chart.defaults.elements, 'x')).toBe(false);
     });
 
     it('should accept a path that only contains one of the names', function() {
