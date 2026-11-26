@@ -395,6 +395,54 @@ describe('Chart', function() {
     });
   });
 
+  describe('onClick on one press', function() {
+    // Presses and releases the mouse on a data element. Only the events the
+    // chart listens to are sent, since only those are handled.
+    async function pressPoint(chart) {
+      const point = chart.getDatasetMeta(0).data[1];
+      for (const type of ['mousedown', 'mouseup', 'click']) {
+        if (chart.options.events.includes(type)) {
+          await triggerMouseEvent(chart, type, point);
+        }
+      }
+    }
+
+    function createChart(events) {
+      const onClick = vi.fn();
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C'],
+          datasets: [{data: [10, 20, 30]}]
+        },
+        options: {events, onClick}
+      });
+      return {chart, onClick};
+    }
+
+    it('should call onClick once when the chart listens to both click and mouseup', async function() {
+      const {chart, onClick} = createChart(['click', 'mouseup', 'mousedown', 'mousemove']);
+      await pressPoint(chart);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(onClick.mock.calls[0][0].type).toBe('click');
+    });
+
+    it('should call onClick once on mouseup when the chart does not listen to click', async function() {
+      const {chart, onClick} = createChart(['mouseup', 'mousemove']);
+      await pressPoint(chart);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(onClick.mock.calls[0][0].type).toBe('mouseup');
+    });
+
+    it('should not call onClick again when the chart updates after a press', async function() {
+      const {chart, onClick} = createChart(['click', 'mouseup', 'mousedown', 'mousemove']);
+      await pressPoint(chart);
+      chart.update();
+      chart.update();
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('when merging scale options', function() {
     beforeEach(function() {
       Chart.helpers.merge(Chart.defaults.scale, {
