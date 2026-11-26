@@ -826,11 +826,16 @@ describe('Legend block tests', function() {
       });
 
       it('should show a numeric label as one line next to a multi-line label in a ' + position + ' legend', function() {
-        const result = drawPie([['A', 'B'], 2010, 'C'], position);
-        const asStrings = drawPie([['A', 'B'], '2010', 'C'], position);
+        // The second line of the array is its widest.
+        const result = drawPie([['A', 'WWWWWWWW'], 2010, 'C'], position);
+        const asStrings = drawPie([['A', 'WWWWWWWW'], '2010', 'C'], position);
+        const widestOnly = drawPie(['WWWWWWWW', 2010, 'C'], position);
 
-        expect(result.drawn.map(({text}) => text)).toEqual(['A', 'B', '2010', 'C']);
+        expect(result.drawn.map(({text}) => text)).toEqual(['A', 'WWWWWWWW', '2010', 'C']);
         expect(result).toEqual(asStrings);
+        // The array is as wide as its widest line.
+        expect(result.hitBoxes[0].width).toBe(widestOnly.hitBoxes[0].width);
+        expect(result.hitBoxes[0].width).toBeGreaterThan(result.hitBoxes[2].width);
         // The array is two lines tall, the number one line, like the string.
         const {hitBoxes, drawn, lineHeight, padding} = result;
         expect(hitBoxes[0].height).toBeCloseTo(2 * lineHeight, 10);
