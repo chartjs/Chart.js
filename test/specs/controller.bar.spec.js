@@ -31,6 +31,30 @@ describe('Chart.controllers.bar', function() {
       });
     });
 
+    it('should read a changed base at the next update', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a', 'b'], datasets: [{data: [12, 19], base: 3}]},
+        options: {animation: false, scales: {y: {min: -5, max: 20}}}
+      });
+      var meta = chart.getDatasetMeta(0);
+      var expectBases = function(bases) {
+        bases.forEach(function(base, index) {
+          expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+        });
+      };
+      expectBases([3, 3]);
+      chart.data.datasets[0].base = 6;
+      chart.update();
+      expectBases([6, 6]);
+      chart.data.datasets[0].base = [2, -3];
+      chart.update();
+      expectBases([2, -3]);
+      chart.data.datasets[0].base = 4;
+      chart.update();
+      expectBases([4, 4]);
+    });
+
     it('should resolve a base array from options.datasets.bar per bar', function() {
       var chart = window.acquireChart({
         type: 'bar',

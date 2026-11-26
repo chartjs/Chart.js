@@ -557,15 +557,32 @@ export default class BarController extends DatasetController {
   }
 
   /**
+	 * Resolves `base` for one bar. An array or a function gives each bar its own base,
+	 * resolved with the bar's context. Any other value is shared by all bars and kept
+	 * until the next `configure()`.
+	 * @private
+	 */
+  _resolveBase(index) {
+    const cache = this._cachedDataOpts;
+    if (cache.$base) {
+      return cache.$base.base;
+    }
+    const config = this.chart.config;
+    const scopes = config.getOptionScopes(this.getDataset(), config.datasetScopeKeys(this._type));
+    const values = config.resolveNamedOptions(scopes, ['base'], () => this.getContext(index));
+    if (values.$shared) {
+      cache.$base = values;
+    }
+    return values.base;
+  }
+
+  /**
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
 	 */
   _calculateBarValuePixels(index) {
     const {_cachedMeta: {vScale, _stacked, index: datasetIndex}, options: {minBarLength}} = this;
-    // Only scriptable or indexable bases need a per-bar context.
-    const {base: rawBase} = this.options._proxy;
-    const {base: baseValue} = typeof rawBase === 'function' || isArray(rawBase)
-      ? this.options.setContext(this.getContext(index)) : this.options;
+    const baseValue = this._resolveBase(index);
     const actualBase = baseValue || 0;
     const parsed = this.getParsed(index);
     const custom = parsed._custom;
