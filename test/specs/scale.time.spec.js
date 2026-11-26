@@ -31,11 +31,10 @@ describe('Time scale tests', function() {
     toBeCloseToTime(time, expected) {
       var actual = moment(time);
       var diff = actual.diff(expected.value, expected.unit, true);
-      var result = Math.abs(diff) < (expected.threshold !== undefined ? expected.threshold : 0.01);
       var threshold = expected.threshold !== undefined ? expected.threshold : 0.01;
 
       return {
-        pass: result,
+        pass: Math.abs(diff) < threshold,
         message: () => `Expected ${actual.toISOString()}${this.isNot ? ' not' : ''} to be within ${threshold} ${expected.unit} of ${moment(expected.value).toISOString()}, but it differs by ${diff} ${expected.unit}`
       };
     }
