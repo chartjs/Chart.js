@@ -15,6 +15,72 @@ describe('Chart.controllers.bar', function() {
       });
     });
 
+    it('should create no per-bar context for a numeric base from options.datasets.bar', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a', 'b'], datasets: [{data: [10, 15]}]},
+        options: {animation: false, datasets: {bar: {base: 3}}}
+      });
+      var meta = chart.getDatasetMeta(0);
+      var context = vi.spyOn(meta.controller, 'getContext');
+      meta.controller._calculateBarValuePixels(0);
+      meta.controller._calculateBarValuePixels(1);
+      expect(context).not.toHaveBeenCalled();
+      meta.data.forEach(function(bar) {
+        expect(bar.base).toBeCloseToPixel(meta.vScale.getPixelForValue(3));
+      });
+    });
+
+    it('should resolve a base array from options.datasets.bar per bar', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a', 'b', 'c', 'd'], datasets: [{data: [12, 19, 7, 15]}]},
+        options: {
+          animation: false,
+          datasets: {bar: {base: [2, 5, -3]}},
+          scales: {y: {min: -5, max: 20}}
+        }
+      });
+      var meta = chart.getDatasetMeta(0);
+      [2, 5, -3, 2].forEach(function(base, index) {
+        expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+      });
+    });
+
+    it('should resolve a base array per bar in a dataset other than the first', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 1, 1]}, {data: [12, 19, 7], base: [2, 5, -3]}]
+        },
+        options: {animation: false, scales: {y: {min: -5, max: 20}}}
+      });
+      var meta = chart.getDatasetMeta(1);
+      [2, 5, -3].forEach(function(base, index) {
+        expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+      });
+    });
+
+    it('should call a base function with each bar\'s context and options', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{
+            data: [30, 30, 30],
+            borderWidth: 2,
+            base: (ctx, opts) => ctx.dataIndex * 10 + opts.borderWidth
+          }]
+        },
+        options: {animation: false, scales: {y: {min: 0, max: 40}}}
+      });
+      var meta = chart.getDatasetMeta(0);
+      [2, 12, 22].forEach(function(base, index) {
+        expect(meta.data[index].base).toBeCloseToPixel(meta.vScale.getPixelForValue(base));
+      });
+    });
+
     ['x', 'y'].forEach(function(indexAxis) {
       it('should cycle short base arrays and retain minBarLength with indexAxis ' + indexAxis, function() {
         var chart = window.acquireChart({
