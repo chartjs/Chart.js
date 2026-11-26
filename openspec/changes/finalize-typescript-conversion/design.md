@@ -33,7 +33,7 @@ So converting a JavaScript module already changes published 4.x types: for examp
 - The five "uncomment after transition" flags turned on.
 - A recorded public type API and a TypeScript 4.7.4 consumer compile, both before the first conversion, so that every later piece shows its effect on the published types.
 - On v5, declarations generated from the source for everything with a runtime value, and the hand-written copies deleted.
-- Bundles that are byte-identical through the conversion.
+- Bundles whose code stays identical through the conversion (Decision 30).
 
 **Non-Goals**
 
@@ -66,7 +66,7 @@ So converting a JavaScript module already changes published 4.x types: for examp
    - No TypeScript-only runtime syntax: no enums, parameter properties, namespaces, decorators, `accessor` or `#private`.
    - `override` goes on every overriding method and static, and never on a `declare` field (TS1243).
    - Unused parameters get a `_` prefix. The hand-written declarations keep the documented names.
-   - An implicit return becomes `return undefined;` or `return;`. These, and restructured fallthroughs, are the only changes the bundle sees.
+   - An implicit return becomes `return undefined;` or `return;`. These, restructured fallthroughs and the `_` prefix on unused parameters are the only changes the bundle's code sees (Decision 30).
    - `@ts-ignore` becomes `@ts-expect-error <reason>`, or goes away.
    - A converted base must leave its JavaScript importers and subclasses compiling. The fix goes in the converted module. If it cannot be done without editing a held file, the piece waits for the holder.
 5. **The source classes take the public generic parameters, with the same defaults.** These are `Chart<TType, TData, TLabel>`, `DatasetController<TType, TElement, TDatasetElement, TParsedData>` and `Scale<O extends CoreScaleOptions>`, so that a generated declaration can later stand in for the hand-written one. A declaration a class cannot express (`interface Scale<O> extends Element<unknown, O>, LayoutItem`, the `Defaults` interface, the `Defaults.set` overload) becomes a merged interface or overload signatures next to the class.
@@ -118,6 +118,7 @@ So converting a JavaScript module already changes published 4.x types: for examp
 27. **Update modes become augmentable.** The user's constraint: plugins and additional chart types must be able to add update modes, so a frozen runtime object will not do. P6 adds `interface UpdateModeRegistry` with the seven built-in modes, and `UpdateMode` becomes `keyof UpdateModeRegistry`, the same union as before. `UpdateModeEnum` claims a runtime value that nothing exports, so it gets `@deprecated` on 4.x and is removed on v5 (the user chose this).
 28. **`chart.js/dist/types` is dropped on v5 with no shim**, and the migration guide says to import from `chart.js` (the user).
 29. **"Retiring" the hand-written file means that no declaration of anything with a runtime value is hand-kept** (the user). The registries, the options, context and config interfaces and the type-only helpers stay in `src/types/*.ts` (Decision 12).
+30. **Bundle identity compares code, not bytes.** `rollup.config.js:41` gives `rollup-plugin-cleanup` no `extensions`, and its default is `['js', 'jsx', 'mjs']`, so a `.ts` module keeps its comments and swc's indentation in `dist/chart.js` and `dist/chart.cjs`. The existing TypeScript modules show this on master already. A conversion piece therefore shows that the two unminified bundles have identical code once both builds are re-emitted by terser with no compression, no mangling and no comments. The allowed differences are the recipe's explicit returns (`return undefined;`/`return;`), restructured fallthroughs and the recipe's `_` prefix on unused parameters. `dist/chart.umd.js`, `dist/chart.umd.min.js`, `dist/chunks/*` and `helpers/*.js` stay byte-identical. `rollup.config.js` does not change: making `cleanup` process `.ts` would change master's bundles for the existing TypeScript modules.
 
 ## Risks / Trade-offs
 
@@ -130,7 +131,7 @@ So converting a JavaScript module already changes published 4.x types: for examp
 
 ## Pieces
 
-Build order. "Gate" means `pnpm lint-ts-flags` and `pnpm build`. "Report" means `pnpm api-report` (P1). "Bundle identity" means that `dist/*.js`, `dist/chunks/*`, `helpers/*.js` and the UMD bundles are byte-identical to master's build, apart from recipe rule 9 (explicit returns and fallthroughs); source maps may differ. Every conversion piece (P7–P39) waits on P1, P3 and P4, and its check is the gate, bundle identity and a report diff that only adds. No issue is open for this work, so the Advances and Completes columns are empty. Commit types: `test:`/`build:`/`refactor:` release nothing; `refactor(types)!:` and `fix(types)!:` are v5.
+Build order. "Gate" means `pnpm lint-ts-flags` and `pnpm build`. "Report" means `pnpm api-report` (P1). "Bundle identity" (Decision 30) means that `dist/chart.umd.js`, `dist/chart.umd.min.js`, `dist/chunks/*` and `helpers/*.js` are byte-identical to master's build, and that `dist/chart.js` and `dist/chart.cjs` have identical code once comments and whitespace are normalised (terser with no compression, no mangling and no comments), apart from the recipe's explicit returns, restructured fallthroughs and the `_` prefix on unused parameters (Decision 4); source maps may differ. Every conversion piece (P7–P39) waits on P1, P3 and P4, and its check is the gate, bundle identity and a report diff that only adds. No issue is open for this work, so the Advances and Completes columns are empty. Commit types: `test:`/`build:`/`refactor:` release nothing; `refactor(types)!:` and `fix(types)!:` are v5.
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes |
 |---|---|---|---|---|---|---|---|
