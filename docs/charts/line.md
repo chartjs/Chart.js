@@ -148,6 +148,8 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverBorderWidth` | Border width of point when hovered.
 | `pointHoverRadius` | The radius of the point when hovered.
 
+A hovered point also uses the dataset's `hover*` options, such as `hoverBorderWidth`. For each option, a hovered point reads the `pointHover*` option first, then the `hover*` option, and only then the `point*` option, so with `hoverBorderWidth: 10` a hovered point has a 10 pixel border even when `pointBorderWidth` is set. The `hover*` options also style the line itself when the whole dataset is hovered, with the [`'dataset'` interaction mode](../configuration/interactions.md#dataset). To style hovered points apart from the line, set the matching `pointHover*` option.
+
 ### cubicInterpolationMode
 
 The following interpolation modes are supported.

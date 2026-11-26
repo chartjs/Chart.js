@@ -65,7 +65,7 @@ module.exports = {
 Namespaces:
 
 * `data.datasets[index]` - options for this dataset only
-* `options.datasets.line` - options for all line datasets
+* `options.datasets.radar` - options for all radar datasets
 * `options.elements.line` - options for all [line elements](../configuration/elements.md#line-configuration)
 * `options.elements.point` - options for all [point elements](../configuration/elements.md#point-configuration)
 * `options` - options for the whole chart
@@ -162,6 +162,8 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverBorderColor` | Point border color when hovered.
 | `pointHoverBorderWidth` | Border width of point when hovered.
 | `pointHoverRadius` | The radius of the point when hovered.
+
+A hovered point also uses the dataset's `hover*` options, such as `hoverBorderWidth`. For each option, a hovered point reads the `pointHover*` option first, then the `hover*` option, and only then the `point*` option, so with `hoverBorderWidth: 10` a hovered point has a 10 pixel border even when `pointBorderWidth` is set. The `hover*` options also style the line itself when the whole dataset is hovered, with the [`'dataset'` interaction mode](../configuration/interactions.md#dataset). To style hovered points apart from the line, set the matching `pointHover*` option.
 
 ## Scale Options
 
