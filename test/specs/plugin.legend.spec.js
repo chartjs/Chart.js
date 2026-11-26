@@ -844,6 +844,55 @@ describe('Legend block tests', function() {
     expect(legend._getLegendItemAt(legend.right - 1, hitbox.top + hitbox.height / 2)).toBe(legend.legendItems[0]);
   });
 
+  for (const textAlign of ['right', 'center']) {
+    it(`should keep ${textAlign} aligned items of a two-column legend in their own column`, function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          datasets: Array.from({length: 12}, (_, i) => ({label: 'Item ' + i, data: []}))
+        },
+        options: {
+          plugins: {legend: {position: 'right', labels: {textAlign}}}
+        }
+      }, {canvas: {width: 1600, height: 200}});
+      const {ctx, legend} = chart;
+      const symbols = [];
+      const texts = [];
+      const rect = ctx.rect.bind(ctx);
+      vi.spyOn(ctx, 'rect').mockImplementation(function(x, y, width, height) {
+        if (width === legend.options.labels.boxWidth) {
+          symbols.push({left: x, x: x + width / 2, y: y + height / 2});
+        }
+        rect(x, y, width, height);
+      });
+      const fillText = ctx.fillText.bind(ctx);
+      vi.spyOn(ctx, 'fillText').mockImplementation(function(text, x, y, maxWidth) {
+        if (text.startsWith('Item ')) {
+          const width = ctx.measureText(text).width;
+          const left = x - (ctx.textAlign === 'center' ? width / 2 : ctx.textAlign === 'right' ? width : 0);
+          texts.push({left, right: left + width});
+        }
+        fillText(text, x, y, maxWidth);
+      });
+
+      chart.draw();
+
+      // Items 0-7 fill the first column, item 8 starts the second one.
+      expect(legend.legendHitBoxes[7].col).toBe(0);
+      expect(legend.legendHitBoxes[8].col).toBe(1);
+      expect(symbols.length).toBe(12);
+      expect(texts.length).toBe(12);
+
+      const column1Left = symbols[8].left;
+      for (let i = 0; i < 8; i++) {
+        expect(texts[i].right).toBeLessThan(column1Left);
+        expect(legend.legendHitBoxes[i].left + legend.legendHitBoxes[i].width).toBeLessThan(column1Left);
+      }
+      expect(legend._getLegendItemAt(symbols[8].x, symbols[8].y)).toBe(legend.legendItems[8]);
+      expect(legend._getLegendItemAt(texts[8].right - 1, symbols[8].y)).toBe(legend.legendItems[8]);
+    });
+  }
+
   it('should pick up the first item when the property is an array', function() {
     var chart = window.acquireChart({
       type: 'bar',

@@ -271,12 +271,24 @@ export class Legend extends Element {
         hitbox.top = top;
         const x = hitbox.left + this.left + padding;
         const textAlign = this.legendItems[i].textAlign || labels.textAlign;
-        const aligned = getAlignedHitBox(x, hitbox.width, boxWidth, fontSize, textAlign, this.right);
+        const aligned = getAlignedHitBox(x, hitbox.width, boxWidth, fontSize, textAlign, this._columnRight(x, hitbox.col));
         hitbox.width = aligned.width;
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
         top += hitbox.height + padding;
       }
     }
+  }
+
+  /**
+   * End of a vertical legend column's text area: the next column's left edge
+   * minus padding, or the legend's right edge for the last column.
+   * @param {number} x - the left edge of the column
+   * @param {number} col - the index of the column
+   * @private
+   */
+  _columnRight(x, col) {
+    const {columnSizes} = this;
+    return col < columnSizes.length - 1 ? x + columnSizes[col].width : this.right;
   }
 
   isHorizontal() {
@@ -436,7 +448,7 @@ export class Legend extends Element {
 
       drawLegendBox(realX, y, legendItem);
 
-      x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : this.right, opts.rtl);
+      x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : this._columnRight(x, cursor.line), opts.rtl);
 
       // Fill the actual label
       fillText(rtlHelper.x(x), y, legendItem);
