@@ -25,7 +25,7 @@ Each property of a text's font (family, size, style, weight, line height) SHALL 
 
 #### Scenario: A font set globally for one text
 
-- **WHEN** `Chart.defaults.plugins.tooltip.bodyFont.size` is 20 and a chart sets `options.font.size` to 30
+- **WHEN** `Chart.defaults.plugins.tooltip.bodyFont` is set to `{size: 20}` and a chart sets `options.font.size` to 30
 - **THEN** the tooltip's body is 20 px and its title 30 px
 
 #### Scenario: Two charts
