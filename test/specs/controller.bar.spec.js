@@ -55,6 +55,56 @@ describe('Chart.controllers.bar', function() {
       expectBases([4, 4]);
     });
 
+    it('should read base from the options of a controller derived from the bar controller', function() {
+      class DerivedBarController extends Chart.BarController {}
+      DerivedBarController.id = 'derivedBar';
+      DerivedBarController.defaults = Chart.BarController.defaults;
+      Chart.register(DerivedBarController);
+      try {
+        var chart = window.acquireChart({
+          type: 'derivedBar',
+          data: {labels: ['a', 'b'], datasets: [{data: [12, 19]}]},
+          options: {animation: false, datasets: {derivedBar: {base: 4}}, scales: {y: {min: -5, max: 20}}}
+        });
+        var meta = chart.getDatasetMeta(0);
+        meta.data.forEach(function(bar) {
+          expect(bar.base).toBeCloseToPixel(meta.vScale.getPixelForValue(4));
+        });
+      } finally {
+        Chart.unregister(DerivedBarController);
+      }
+    });
+
+    it('should resolve a numeric base once per dataset per update, and an array base per bar', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [12, 19, 7], base: 3}, {data: [12, 19, 7], base: [2, 5, -3]}]
+        },
+        options: {animation: false, scales: {y: {min: -5, max: 20}}}
+      });
+      var spy = vi.spyOn(chart.config, 'resolveNamedOptions');
+      chart.update();
+      var baseCalls = function() {
+        return spy.mock.calls.filter(function(args) {
+          return args[1].length === 1 && args[1][0] === 'base';
+        });
+      };
+      var calls = baseCalls();
+      var numeric = calls.filter(function(args) {
+        return args[0][0] === chart.data.datasets[0];
+      });
+      var array = calls.filter(function(args) {
+        return args[0][0] === chart.data.datasets[1];
+      });
+      expect(numeric.length).toBe(1);
+      expect(array.length).toBe(3);
+      spy.mockClear();
+      chart.update();
+      expect(baseCalls().length).toBe(4);
+    });
+
     it('should resolve a base array from options.datasets.bar per bar', function() {
       var chart = window.acquireChart({
         type: 'bar',
