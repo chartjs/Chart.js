@@ -1,7 +1,9 @@
+import type {Defaults} from './core.defaults.js';
+
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
 const colors = ['color', 'borderColor', 'backgroundColor'];
 
-export function applyAnimationsDefaults(defaults) {
+export function applyAnimationsDefaults(defaults: Defaults) {
   defaults.set('animation', {
     delay: undefined,
     duration: 1000,
@@ -16,7 +18,7 @@ export function applyAnimationsDefaults(defaults) {
   defaults.describe('animation', {
     _fallback: false,
     _indexable: false,
-    _scriptable: (name) => name !== 'onProgress' && name !== 'onComplete' && name !== 'fn',
+    _scriptable: (name: string) => name !== 'onProgress' && name !== 'onComplete' && name !== 'fn',
   });
 
   defaults.set('animations', {
@@ -64,7 +66,7 @@ export function applyAnimationsDefaults(defaults) {
         visible: {
           type: 'boolean',
           easing: 'linear',
-          fn: v => v | 0 // for keeping the dataset visible all the way through the animation
+          fn: (v: number) => v | 0 // for keeping the dataset visible all the way through the animation
         },
       }
     }

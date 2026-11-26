@@ -1,4 +1,6 @@
-export function applyLayoutsDefaults(defaults) {
+import type {Defaults} from './core.defaults.js';
+
+export function applyLayoutsDefaults(defaults: Defaults) {
   defaults.set('layout', {
     autoPadding: true,
     padding: {

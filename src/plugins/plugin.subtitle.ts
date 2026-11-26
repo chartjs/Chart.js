@@ -1,12 +1,15 @@
 import {Title} from './plugin.title.js';
 import layouts from '../core/core.layouts.js';
+import type Chart from '../core/core.controller.js';
+import type {EmptyObject} from '../types/basic.js';
+import type {TitleOptions} from '../types/index.js';
 
 const map = new WeakMap();
 
 export default {
   id: 'subtitle',
 
-  start(chart, _args, options) {
+  start(chart: Chart, _args: EmptyObject, options: TitleOptions) {
     const title = new Title({
       ctx: chart.ctx,
       options,
@@ -18,12 +21,12 @@ export default {
     map.set(chart, title);
   },
 
-  stop(chart) {
+  stop(chart: Chart) {
     layouts.removeBox(chart, map.get(chart));
     map.delete(chart);
   },
 
-  beforeUpdate(chart, _args, options) {
+  beforeUpdate(chart: Chart, _args, options: TitleOptions) {
     const title = map.get(chart);
     layouts.configure(chart, title, options);
     title.options = options;
