@@ -14,12 +14,8 @@ interface ActiveDataPoint {
     index: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ActiveDataPoint" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface ActiveElement extends ActiveDataPoint {
-    // Warning: (ae-forgotten-export) The symbol "Element_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     element: Element_2;
 }
@@ -33,8 +29,6 @@ export function _addGrace(minmax: {
     max: number;
 };
 
-// Warning: (ae-forgotten-export) The symbol "RoundedRect" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function addRoundedRectPath(ctx: CanvasRenderingContext2D, rect: RoundedRect & {
     radius: TRBLCorners;
@@ -43,8 +37,6 @@ export function addRoundedRectPath(ctx: CanvasRenderingContext2D, rect: RoundedR
 // @public (undocumented)
 type Align = 'start' | 'center' | 'end';
 
-// Warning: (ae-forgotten-export) The symbol "Chart" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function _alignPixel(chart: Chart, pixel: number, width: number): number;
 
@@ -68,7 +60,6 @@ export function _angleDiff(a: number, b: number): number;
 
 // @public (undocumented)
 class Animation_2 {
-    // Warning: (ae-forgotten-export) The symbol "AnyObject" needs to be exported by the entry point index.d.ts
     constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown);
     // (undocumented)
     active(): boolean;
@@ -94,8 +85,6 @@ interface AnimationEvent_2 {
     numSteps: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ChartType" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type AnimationOptions<TType extends ChartType> = {
     animation: false | AnimationSpec<TType> & {
@@ -145,8 +134,6 @@ interface ArcBorderRadius {
     outerStart: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "CommonHoverOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface ArcHoverOptions extends CommonHoverOptions {
     // (undocumented)
@@ -157,8 +144,6 @@ interface ArcHoverOptions extends CommonHoverOptions {
     hoverOffset: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "CommonElementOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface ArcOptions extends CommonElementOptions {
     borderAlign: 'center' | 'inner';
@@ -169,7 +154,6 @@ interface ArcOptions extends CommonElementOptions {
 
     borderJoinStyle: CanvasLineJoin;
 
-    // Warning: (ae-forgotten-export) The symbol "ArcBorderRadius" needs to be exported by the entry point index.d.ts
     borderRadius: number | ArcBorderRadius;
 
     circular: boolean;
@@ -180,7 +164,6 @@ interface ArcOptions extends CommonElementOptions {
 
     spacing: number;
 
-    // Warning: (ae-forgotten-export) The symbol "ArcSpacingMode" needs to be exported by the entry point index.d.ts
     spacingMode: ArcSpacingMode;
 }
 
@@ -209,7 +192,6 @@ export function _attachContext<T extends AnyObject[] = AnyObject[], R extends An
 
 // @public (undocumented)
 interface BackdropOptions {
-    // Warning: (ae-forgotten-export) The symbol "ScriptableScaleContext" needs to be exported by the entry point index.d.ts
     color: Scriptable<Color_2, ScriptableScaleContext>;
 
     height: number;
@@ -226,11 +208,6 @@ interface BarControllerChartOptions {
     skipNull?: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ScriptableAndArrayOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "BarOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "AnimationOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface BarControllerDatasetOptions
 extends ControllerDatasetOptions,
@@ -243,7 +220,6 @@ AnimationOptions<'bar'> {
     grouped: boolean;
     maxBarThickness: number;
     minBarLength: number;
-    // Warning: (ae-forgotten-export) The symbol "PointStyle" needs to be exported by the entry point index.d.ts
     pointStyle: PointStyle;
     skipNull?: boolean;
     xAxisID: string;
@@ -252,8 +228,6 @@ AnimationOptions<'bar'> {
 
 // @public (undocumented)
 interface BarHoverOptions extends CommonHoverOptions {
-    // Warning: (ae-forgotten-export) The symbol "BorderRadius" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     hoverBorderRadius: number | BorderRadius;
 }
@@ -271,8 +245,6 @@ interface BarOptions extends Omit<CommonElementOptions, 'borderWidth'> {
     inflateAmount: number | 'auto';
 }
 
-// Warning: (ae-forgotten-export) The symbol "CartesianParsedData" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface BarParsedData extends CartesianParsedData {
     // Only specified if floating bars are show
@@ -301,7 +273,6 @@ class BasePlatform {
     canvas: HTMLCanvasElement,
     options?: CanvasRenderingContext2DSettings
     ): CanvasRenderingContext2D | null;
-    // Warning: (ae-forgotten-export) The symbol "ChartEvent" needs to be exported by the entry point index.d.ts
     addEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
     // (undocumented)
     getDevicePixelRatio(): number;
@@ -311,13 +282,9 @@ class BasePlatform {
     isAttached(canvas: HTMLCanvasElement): boolean;
     releaseContext(context: CanvasRenderingContext2D): boolean;
     removeEventListener(chart: Chart, type: string, listener: (e: ChartEvent) => void): void;
-    // Warning: (ae-forgotten-export) The symbol "ChartConfiguration" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "ChartConfigurationCustomTypesPerDataset" needs to be exported by the entry point index.d.ts
     updateConfig(config: ChartConfiguration | ChartConfigurationCustomTypesPerDataset): void;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SplinePoint" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function _bezierCurveTo(ctx: CanvasRenderingContext2D, previous: SplinePoint, target: SplinePoint, flip?: boolean): void;
 
@@ -382,9 +349,6 @@ export function _boundSegments(line: LineElement, bounds?: {
     style?: object;
 }[];
 
-// Warning: (ae-forgotten-export) The symbol "PointOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "PointHoverOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface BubbleControllerDatasetOptions
 extends ControllerDatasetOptions,
@@ -394,8 +358,6 @@ ScriptableAndArrayOptions<PointHoverOptions, ScriptableContext<'bubble'>> {
     yAxisID: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Point" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface BubbleDataPoint extends Point {
     r?: number;
@@ -411,8 +373,6 @@ interface BubbleParsedData extends CartesianParsedData {
 // @public
 export function callback<T extends (this: TA, ...restArgs: unknown[]) => R, TA, R>(fn: T | undefined, args: unknown[], thisArg?: TA): R | undefined;
 
-// Warning: (ae-forgotten-export) The symbol "FontSpec" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface CanvasFontSpec extends FontSpec {
     // (undocumented)
@@ -435,21 +395,15 @@ interface CartesianParsedData extends Point {
     }
 }
 
-// Warning: (ae-forgotten-export) The symbol "CoreScaleOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface CartesianScaleOptions extends CoreScaleOptions {
     axis: 'x' | 'y' | 'r';
 
-    // Warning: (ae-forgotten-export) The symbol "BorderOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     border: BorderOptions;
 
     bounds: 'ticks' | 'data';
 
-    // Warning: (ae-forgotten-export) The symbol "GridLineOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     grid: Partial<GridLineOptions>;
 
@@ -467,8 +421,6 @@ interface CartesianScaleOptions extends CoreScaleOptions {
 
     stackWeight?: number;
 
-    // Warning: (ae-forgotten-export) The symbol "CartesianTickOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     ticks: CartesianTickOptions;
 
@@ -512,8 +464,6 @@ interface CartesianScaleTypeRegistry {
     };
 }
 
-// Warning: (ae-forgotten-export) The symbol "TickOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type CartesianTickOptions = TickOptions & {
     sampleSize: number;
@@ -534,8 +484,6 @@ type CartesianTickOptions = TickOptions & {
     maxTicksLimit: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "CartesianScaleOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type CategoryScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
     min: string | number;
@@ -543,15 +491,12 @@ type CategoryScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
     labels: string[] | string[][];
 };
 
-// Warning: (ae-forgotten-export) The symbol "DefaultDataPoint" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 class Chart<
 TType extends ChartType = ChartType,
 TData = DefaultDataPoint<TType>,
 TLabel = unknown
 > {
-    // Warning: (ae-forgotten-export) The symbol "ChartItem" needs to be exported by the entry point index.d.ts
     constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
     // (undocumented)
     readonly aspectRatio: number;
@@ -559,8 +504,6 @@ TLabel = unknown
     readonly attached: boolean;
     // (undocumented)
     bindEvents(): void;
-    // Warning: (ae-forgotten-export) The symbol "LayoutItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly boxes: LayoutItem[];
     // (undocumented)
@@ -569,8 +512,6 @@ TLabel = unknown
     buildOrUpdateScales(): void;
     // (undocumented)
     readonly canvas: HTMLCanvasElement;
-    // Warning: (ae-forgotten-export) The symbol "ChartArea" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly chartArea: ChartArea;
     // (undocumented)
@@ -581,12 +522,8 @@ TLabel = unknown
     readonly ctx: CanvasRenderingContext2D;
     // (undocumented)
     readonly currentDevicePixelRatio: number;
-    // Warning: (ae-forgotten-export) The symbol "ChartData" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     data: ChartData<TType, TData, TLabel>;
-    // Warning: (ae-forgotten-export) The symbol "Defaults" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static readonly defaults: Defaults;
     // (undocumented)
@@ -595,8 +532,6 @@ TLabel = unknown
     draw(): void;
     // (undocumented)
     ensureScalesHaveIDs(): void;
-    // Warning: (ae-forgotten-export) The symbol "ActiveElement" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getActiveElements(): ActiveElement[];
     // (undocumented)
@@ -607,13 +542,8 @@ TLabel = unknown
     getDatasetMeta(datasetIndex: number): ChartMeta;
     // (undocumented)
     getDataVisibility(index: number): boolean;
-    // Warning: (ae-forgotten-export) The symbol "InteractionOptions" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "InteractionItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getElementsAtEventForMode(e: Event, mode: string, options: InteractionOptions, useFinalPosition: boolean): InteractionItem[];
-    // Warning: (ae-forgotten-export) The symbol "ChartMeta" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getSortedVisibleDatasetMetas(): ChartMeta[];
     // (undocumented)
@@ -632,30 +562,18 @@ TLabel = unknown
     isPluginEnabled(pluginId: string): boolean;
     // (undocumented)
     isPointInArea(point: Point): boolean;
-    // Warning: (ae-forgotten-export) The symbol "LegendElement" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly legend?: LegendElement<TType>;
     // (undocumented)
     notifyPlugins(hook: string, args?: AnyObject): boolean | void;
-    // Warning: (ae-forgotten-export) The symbol "ChartOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     options: ChartOptions<TType>;
-    // Warning: (ae-forgotten-export) The symbol "Overrides" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static readonly overrides: Overrides;
-    // Warning: (ae-forgotten-export) The symbol "BasePlatform" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly platform: BasePlatform;
-    // Warning: (ae-forgotten-export) The symbol "ChartComponentLike" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static register(...items: ChartComponentLike[]): void;
-    // Warning: (ae-forgotten-export) The symbol "Registry" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static readonly registry: Registry;
     // (undocumented)
@@ -678,16 +596,12 @@ TLabel = unknown
     toBase64Image(type?: string, quality?: unknown): string;
     // (undocumented)
     toggleDataVisibility(index: number): void;
-    // Warning: (ae-forgotten-export) The symbol "TooltipModel" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly tooltip?: TooltipModel<TType>;
     // (undocumented)
     unbindEvents(): void;
     // (undocumented)
     static unregister(...items: ChartComponentLike[]): void;
-    // Warning: (ae-forgotten-export) The symbol "UpdateMode" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     update(mode?: UpdateMode | ((ctx: { datasetIndex: number }) => UpdateMode)): void;
     // (undocumented)
@@ -729,8 +643,6 @@ class Chart_2 {
     chartArea: any;
     // (undocumented)
     clear(): Chart_2;
-    // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     config: Config;
     // (undocumented)
@@ -742,8 +654,6 @@ class Chart_2 {
     get data(): any;
     // (undocumented)
     _dataChanges: any[];
-    // Warning: (ae-forgotten-export) The symbol "Defaults_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static defaults: Defaults_2;
     // (undocumented)
@@ -758,8 +668,6 @@ class Chart_2 {
     // (undocumented)
     ensureScalesHaveIDs(): void;
     getActiveElements(): any[];
-    // Warning: (ae-forgotten-export) The symbol "ChartEvent_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     _getActiveElements(e: ChartEvent_2, lastActive: ActiveElement[], inChartArea: boolean, useFinalPosition: boolean): ActiveElement[];
     // (undocumented)
@@ -791,7 +699,6 @@ class Chart_2 {
     // (undocumented)
     isDatasetVisible(datasetIndex: any): boolean;
     isPluginEnabled(pluginId: string): boolean;
-    // Warning: (ae-forgotten-export) The symbol "Point_2" needs to be exported by the entry point index.d.ts
     isPointInArea(point: Point_2): boolean;
     // (undocumented)
     _lastEvent: ChartEvent;
@@ -803,7 +710,6 @@ class Chart_2 {
     _metasets: any[];
     // (undocumented)
     _minPadding: number;
-    // Warning: (ae-forgotten-export) The symbol "filterCallback" needs to be exported by the entry point index.d.ts
     notifyPlugins(hook: string, args?: any, filter?: filterCallback): boolean;
     set options(arg: any);
     // (undocumented)
@@ -814,14 +720,10 @@ class Chart_2 {
     static overrides: any;
     // (undocumented)
     platform: any;
-    // Warning: (ae-forgotten-export) The symbol "PluginService" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     _plugins: PluginService;
     // (undocumented)
     static register(...items: any[]): void;
-    // Warning: (ae-forgotten-export) The symbol "Registry_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     static registry: Registry_2;
     // (undocumented)
@@ -873,8 +775,6 @@ class Chart_2 {
     width: any;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Chart_2" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type Chart_3 = Chart_2;
 
@@ -918,9 +818,6 @@ interface ChartComponent {
     id: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ChartComponent" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "Plugin_2" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type ChartComponentLike = ChartComponent | ChartComponent[] | { [key: string]: ChartComponent } | Plugin_2 | Plugin_2[];
 
@@ -948,8 +845,6 @@ TType extends ChartType = ChartType,
 TData = DefaultDataPoint<TType>,
 TLabel = unknown
 > {
-    // Warning: (ae-forgotten-export) The symbol "ChartDataCustomTypesPerDataset" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     data: ChartDataCustomTypesPerDataset<TType, TData, TLabel>;
     // (undocumented)
@@ -964,8 +859,6 @@ TType extends ChartType = ChartType,
 TData = DefaultDataPoint<TType>,
 TLabel = unknown
 > {
-    // Warning: (ae-forgotten-export) The symbol "ChartDataset" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     datasets: ChartDataset<TType, TData>[];
     // (undocumented)
@@ -982,8 +875,6 @@ TType extends ChartType = ChartType,
 TData = DefaultDataPoint<TType>,
 TLabel = unknown
 > {
-    // Warning: (ae-forgotten-export) The symbol "ChartDatasetCustomTypesPerDataset" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     datasets: ChartDatasetCustomTypesPerDataset<TType, TData>[];
     // (undocumented)
@@ -994,11 +885,6 @@ TLabel = unknown
     yLabels?: TLabel[];
 }
 
-// Warning: (ae-forgotten-export) The symbol "DeepPartial" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ChartTypeRegistry" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "PluginDatasetOptionsByType" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ChartDatasetProperties" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type ChartDataset<
 TType extends ChartType = ChartType,
@@ -1009,8 +895,6 @@ TData = DefaultDataPoint<TType>
 PluginDatasetOptionsByType<TType>
 > & ChartDatasetProperties<TType, TData>;
 
-// Warning: (ae-forgotten-export) The symbol "ChartDatasetPropertiesCustomTypesPerDataset" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type ChartDatasetCustomTypesPerDataset<
 TType extends ChartType = ChartType,
@@ -1072,8 +956,6 @@ type ChartItem =
 | { canvas: HTMLCanvasElement }
 | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
-// Warning: (ae-forgotten-export) The symbol "ChartMetaCommon" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type ChartMeta<
 TType extends ChartType = ChartType,
@@ -1099,12 +981,8 @@ interface ChartMetaClip {
 
 // @public (undocumented)
 interface ChartMetaCommon<TElement extends Element_2 = Element_2, TDatasetElement extends Element_2 = Element_2> {
-    // Warning: (ae-forgotten-export) The symbol "ChartMetaClip" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     _clip: ChartMetaClip;
-    // Warning: (ae-forgotten-export) The symbol "DatasetController" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     controller: DatasetController;
     // (undocumented)
@@ -1155,12 +1033,6 @@ interface ChartMetaCommon<TElement extends Element_2 = Element_2, TDatasetElemen
     yScale?: Scale;
 }
 
-// Warning: (ae-forgotten-export) The symbol "CoreChartOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ElementChartOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "PluginChartOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "DatasetChartOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ScaleChartOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type ChartOptions<TType extends ChartType = ChartType> = Exclude<
 DeepPartial<
@@ -1256,8 +1128,6 @@ interface ChartTypeRegistry {
 // @public
 export function clearCanvas(canvas?: HTMLCanvasElement, ctx?: CanvasRenderingContext2D): void;
 
-// Warning: (ae-forgotten-export) The symbol "TRBL" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function clipArea(ctx: CanvasRenderingContext2D, area: TRBL): void;
 
@@ -1313,7 +1183,6 @@ interface CommonHoverOptions {
 interface ComplexFillTarget {
     above: Color_2;
     below: Color_2;
-    // Warning: (ae-forgotten-export) The symbol "FillTarget" needs to be exported by the entry point index.d.ts
     target: FillTarget;
 }
 
@@ -1385,13 +1254,9 @@ export interface ContextCache<T extends AnyObject[] = AnyObject[], R extends Any
     _subProxy: ResolverProxy<T, R>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Merge" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type ContextProxy<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T> = Merge<T[number]> & ContextCache<T, R>;
 
-// Warning: (ae-forgotten-export) The symbol "ParsingOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface ControllerDatasetOptions extends ParsingOptions {
     clip: number | ChartArea | false;
@@ -1407,7 +1272,6 @@ interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, Anim
 
     aspectRatio: number;
 
-    // Warning: (ae-forgotten-export) The symbol "ScriptableAndArray" needs to be exported by the entry point index.d.ts
     backgroundColor: ScriptableAndArray<Color_2, ScriptableContext<TType>>;
 
     borderColor: ScriptableAndArray<Color_2, ScriptableContext<TType>>;
@@ -1436,8 +1300,6 @@ interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, Anim
 
     indexAxis: 'x' | 'y';
 
-    // Warning: (ae-forgotten-export) The symbol "CoreInteractionOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     interaction: CoreInteractionOptions;
 
@@ -1464,11 +1326,9 @@ interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, Anim
 
 // @public (undocumented)
 interface CoreInteractionOptions {
-    // Warning: (ae-forgotten-export) The symbol "InteractionAxis" needs to be exported by the entry point index.d.ts
     axis: InteractionAxis;
     includeInvisible: boolean;
     intersect: boolean;
-    // Warning: (ae-forgotten-export) The symbol "InteractionMode" needs to be exported by the entry point index.d.ts
     mode: InteractionMode;
 }
 
@@ -1519,8 +1379,6 @@ type DatasetChartOptions<TType extends ChartType = ChartType> = {
     };
 };
 
-// Warning: (ae-forgotten-export) The symbol "ParsedDataType" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 class DatasetController<
 TType extends ChartType = ChartType,
@@ -1650,7 +1508,6 @@ TParsedData = ParsedDataType<TType>,
 class DatasetController_2 {
     // (undocumented)
     $context: any;
-    // Warning: (ae-forgotten-export) The symbol "Chart_3" needs to be exported by the entry point index.d.ts
     constructor(chart: Chart_3, datasetIndex: number);
     // (undocumented)
     addElements(): void;
@@ -1706,8 +1563,6 @@ class DatasetController_2 {
     };
     // (undocumented)
     protected getParsed(index: any): any;
-    // Warning: (ae-forgotten-export) The symbol "Scale_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getScaleForId(scaleID: string): Scale_2;
     protected getSharedOptions(options: any): any;
@@ -1792,15 +1647,9 @@ const enum DecimationAlgorithm {
     minmax = 'min-max',
 }
 
-// Warning: (ae-forgotten-export) The symbol "LttbDecimationOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "MinMaxDecimationOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
 
-// Warning: (ae-forgotten-export) The symbol "_DeepPartialArray" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "_DeepPartialObject" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type DeepPartial<T> = T extends Function
 ? T
@@ -1816,8 +1665,6 @@ type _DeepPartialArray<T> = Array<DeepPartial<T>>
 // @public (undocumented)
 type _DeepPartialObject<T> = { [P in keyof T]?: DeepPartial<T[P]> };
 
-// Warning: (ae-forgotten-export) The symbol "DistributiveArray" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type DefaultDataPoint<TType extends ChartType> = DistributiveArray<ChartTypeRegistry[TType]['defaultDataPoint']>;
 
@@ -1831,12 +1678,8 @@ interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<Char
     // (undocumented)
     override(scope: string, values: AnyObject): AnyObject;
     route(scope: string, name: string, targetScope: string, targetName: string): void;
-    // Warning: (ae-forgotten-export) The symbol "ScaleOptionsByType" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     scale: ScaleOptionsByType;
-    // Warning: (ae-forgotten-export) The symbol "ScaleType" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     scales: {
         [key in ScaleType]: ScaleOptionsByType<key>;
@@ -1971,8 +1814,6 @@ interface DoughnutAnimationOptions extends AnimationSpec<'doughnut'> {
 
 // @public (undocumented)
 interface DoughnutControllerChartOptions {
-    // Warning: (ae-forgotten-export) The symbol "DoughnutAnimationOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     animation: false | DoughnutAnimationOptions;
 
@@ -1991,9 +1832,6 @@ interface DoughnutControllerChartOptions {
     spacingMode: ArcSpacingMode;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ArcOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ArcHoverOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface DoughnutControllerDatasetOptions
 extends ControllerDatasetOptions,
@@ -2087,8 +1925,6 @@ type EasingFunction = keyof typeof easingEffects;
 
 // @public (undocumented)
 class Element_2<T = AnyObject, O = AnyObject> {
-    // Warning: (ae-forgotten-export) The symbol "Animation_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     $animations: Record<keyof T, Animation_2>;
     // (undocumented)
@@ -2121,13 +1957,8 @@ type ElementChartOptions<TType extends ChartType = ChartType> = {
 interface ElementOptionsByType<TType extends ChartType> {
     // (undocumented)
     arc: ScriptableAndArrayOptions<ArcOptions & ArcHoverOptions, ScriptableContext<TType>>;
-    // Warning: (ae-forgotten-export) The symbol "BarHoverOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     bar: ScriptableAndArrayOptions<BarOptions & BarHoverOptions, ScriptableContext<TType>>;
-    // Warning: (ae-forgotten-export) The symbol "LineOptions" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "LineHoverOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     line: ScriptableAndArrayOptions<LineOptions & LineHoverOptions, ScriptableContext<TType>>;
     // (undocumented)
@@ -2154,7 +1985,6 @@ export function _factorize(value: number): number[];
 
 // @public (undocumented)
 interface FillerControllerDatasetOptions {
-    // Warning: (ae-forgotten-export) The symbol "ComplexFillTarget" needs to be exported by the entry point index.d.ts
     fill: FillTarget | ComplexFillTarget;
 }
 
@@ -2232,8 +2062,6 @@ export function getRelativePosition(event: Event | ChartEvent | TouchEvent | Mou
 // @public (undocumented)
 export function getRtlAdapter(rtl: boolean, rectX: number, width: number): RTLAdapter;
 
-// Warning: (ae-forgotten-export) The symbol "PointElement_2" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function _getStartAndCountOfVisiblePoints(meta: ChartMeta<'line' | 'scatter'>, points: PointElement_2[], animationsDisabled: boolean): {
     start: number;
@@ -2294,8 +2122,6 @@ interface InteractionItem {
     index: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "InteractionModeMap" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type InteractionMode = keyof InteractionModeMap;
 
@@ -2311,7 +2137,6 @@ useFinalPosition?: boolean
 interface InteractionModeMap {
     dataset: InteractionModeFunction;
 
-    // Warning: (ae-forgotten-export) The symbol "InteractionModeFunction" needs to be exported by the entry point index.d.ts
     index: InteractionModeFunction;
 
     nearest: InteractionModeFunction;
@@ -2369,14 +2194,10 @@ export function _isPointInArea(point: Point, area: TRBL, margin?: number): boole
 
 // @public (undocumented)
 interface LabelItem {
-    // Warning: (ae-forgotten-export) The symbol "CanvasFontSpec" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     font: CanvasFontSpec;
     // (undocumented)
     label: string | string[];
-    // Warning: (ae-forgotten-export) The symbol "RenderTextOpts" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     options: RenderTextOpts;
     // (undocumented)
@@ -2393,7 +2214,6 @@ interface LayoutItem {
     height: number;
     isHorizontal(): boolean;
     left: number;
-    // Warning: (ae-forgotten-export) The symbol "LayoutPosition" needs to be exported by the entry point index.d.ts
     position: LayoutPosition;
     right: number;
     top: number;
@@ -2405,8 +2225,6 @@ interface LayoutItem {
 // @public (undocumented)
 type LayoutPosition = 'left' | 'top' | 'right' | 'bottom' | 'center' | 'chartArea' | {[scaleId: string]: number};
 
-// Warning: (ae-forgotten-export) The symbol "LegendOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface LegendElement<TType extends ChartType> extends Element_2<AnyObject, LegendOptions<TType>>, LayoutItem {
     // (undocumented)
@@ -2415,8 +2233,6 @@ interface LegendElement<TType extends ChartType> extends Element_2<AnyObject, Le
     ctx: CanvasRenderingContext2D;
     // (undocumented)
     fit(): void;
-    // Warning: (ae-forgotten-export) The symbol "LegendItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     legendItems?: LegendItem[];
     // (undocumented)
@@ -2455,7 +2271,6 @@ interface LegendItem {
 
     text: string;
 
-    // Warning: (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
     textAlign?: TextAlign;
 }
 
@@ -2536,10 +2351,6 @@ interface LineControllerChartOptions {
     spanGaps: boolean | number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "PointPrefixedOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "PointPrefixedHoverOptions" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "ScriptableOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface LineControllerDatasetOptions
 extends ControllerDatasetOptions,
@@ -2557,8 +2368,6 @@ AnimationOptions<'line'> {
     yAxisID: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "LineElement_2" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type LineElement = LineElement_2;
 
@@ -2580,7 +2389,6 @@ class LineElement_2 extends Element_2<AnyObject, AnyObject> {
         _indexable: (name: any) => boolean;
     };
     draw(ctx: CanvasRenderingContext2D, chartArea: object, start?: number, count?: number): void;
-    // Warning: (ae-forgotten-export) The symbol "PointElement_3" needs to be exported by the entry point index.d.ts
     first(): PointElement_3 | undefined;
     // (undocumented)
     _fullLoop: any;
@@ -2672,8 +2480,6 @@ type LogarithmicScaleOptions = CartesianScaleOptions & {
     };
 };
 
-// Warning: (ae-forgotten-export) The symbol "Things" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export function _longestText(ctx: CanvasRenderingContext2D, font: string, arrayOfThings: Things, cache?: {
     data?: Record<string, number>;
@@ -2699,12 +2505,8 @@ export const _lookupByKey: (table: Record<string, number>[], key: string, value:
     hi: number;
 };
 
-// Warning: (ae-forgotten-export) The symbol "BaseDecimationOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface LttbDecimationOptions extends BaseDecimationOptions {
-    // Warning: (ae-forgotten-export) The symbol "DecimationAlgorithm" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     algorithm: DecimationAlgorithm.lttb | 'lttb';
     // (undocumented)
@@ -2714,9 +2516,6 @@ interface LttbDecimationOptions extends BaseDecimationOptions {
 // @public (undocumented)
 export function _measureText(ctx: CanvasRenderingContext2D, data: Record<string, number>, gc: string[], longest: number, string: string): number;
 
-// Warning: (ae-forgotten-export) The symbol "AllKeys" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "PickType" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type Merge<T extends object> = {
     [k in AllKeys<T>]: PickType<T, k>;
@@ -2850,8 +2649,6 @@ type PieMetaExtensions = DoughnutMetaExtensions;
 // @public (undocumented)
 export const PITAU: number;
 
-// Warning: (ae-forgotten-export) The symbol "ExtendedPlugin" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface Plugin_2<TType extends ChartType = ChartType, O = AnyObject> extends ExtendedPlugin<TType, O> {
     afterBuildTicks?(chart: Chart<TType>, args: { scale: Scale }, options: O): void;
@@ -2915,7 +2712,6 @@ interface Plugin_2<TType extends ChartType = ChartType, O = AnyObject> extends E
     // (undocumented)
     id: string;
 
-    // Warning: (ae-forgotten-export) The symbol "EmptyObject" needs to be exported by the entry point index.d.ts
     install?(chart: Chart<TType>, args: EmptyObject, options: O): void;
 
     reset?(chart: Chart<TType>, args: EmptyObject, options: O): void;
@@ -2931,44 +2727,30 @@ interface Plugin_2<TType extends ChartType = ChartType, O = AnyObject> extends E
 
 // @public (undocumented)
 interface PluginChartOptions<TType extends ChartType> {
-    // Warning: (ae-forgotten-export) The symbol "PluginOptionsByType" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     plugins: PluginOptionsByType<TType>;
 }
 
 // @public (undocumented)
 interface PluginDatasetOptionsByType<TType extends ChartType> {
-    // Warning: (ae-forgotten-export) The symbol "TooltipDatasetOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     tooltip: TooltipDatasetOptions<TType>;
 }
 
 // @public (undocumented)
 interface PluginOptionsByType<TType extends ChartType> {
-    // Warning: (ae-forgotten-export) The symbol "ColorsPluginOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     colors: ColorsPluginOptions;
-    // Warning: (ae-forgotten-export) The symbol "DecimationOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     decimation: DecimationOptions;
-    // Warning: (ae-forgotten-export) The symbol "FillerOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     filler: FillerOptions;
     // (undocumented)
     legend: LegendOptions<TType>;
-    // Warning: (ae-forgotten-export) The symbol "TitleOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     subtitle: TitleOptions;
     // (undocumented)
     title: TitleOptions;
-    // Warning: (ae-forgotten-export) The symbol "TooltipOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     tooltip: TooltipOptions<TType>;
 }
@@ -2992,7 +2774,6 @@ class PluginService {
     }[];
     // (undocumented)
     invalidate(): void;
-    // Warning: (ae-forgotten-export) The symbol "Chart_5" needs to be exported by the entry point index.d.ts
     notify(chart: Chart_5, hook: string, args?: object, filter?: filterCallback): boolean;
     // (undocumented)
     _oldCache: {
@@ -3015,8 +2796,6 @@ type Point_2 = Point;
 // @public (undocumented)
 export type PointElement = PointElement_2;
 
-// Warning: (ae-forgotten-export) The symbol "PointProps" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 class PointElement_2 extends Element_2<PointProps, PointOptions & PointHoverOptions> {
     constructor(cfg: any);
@@ -3126,8 +2905,6 @@ type PolarAreaAnimationOptions = DoughnutAnimationOptions;
 
 // @public (undocumented)
 interface PolarAreaControllerChartOptions {
-    // Warning: (ae-forgotten-export) The symbol "PolarAreaAnimationOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     animation: false | PolarAreaAnimationOptions;
 
@@ -3256,8 +3033,6 @@ interface Registry {
     addPlugins(...args: ChartComponentLike[]): void;
     // (undocumented)
     addScales(...args: ChartComponentLike[]): void;
-    // Warning: (ae-forgotten-export) The symbol "TypedRegistry" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly controllers: TypedRegistry<DatasetController>;
     // (undocumented)
@@ -3282,20 +3057,14 @@ interface Registry {
 class Registry_2 {
     // (undocumented)
     add(...args: any[]): void;
-    // Warning: (ae-forgotten-export) The symbol "DatasetController_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     addControllers(...args: (typeof DatasetController_2)[]): void;
     // (undocumented)
     addElements(...args: (typeof Element_2)[]): void;
     // (undocumented)
     addPlugins(...args: any[]): void;
-    // Warning: (ae-forgotten-export) The symbol "Scale_3" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     addScales(...args: (typeof Scale_3)[]): void;
-    // Warning: (ae-forgotten-export) The symbol "TypedRegistry_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     controllers: TypedRegistry_2;
     // (undocumented)
@@ -3331,7 +3100,6 @@ export function renderText(ctx: CanvasRenderingContext2D, text: string | string[
 
 // @public (undocumented)
 interface RenderTextOpts {
-    // Warning: (ae-forgotten-export) The symbol "BackdropOptions" needs to be exported by the entry point index.d.ts
     backdrop?: BackdropOptions;
 
     color?: Color_2;
@@ -3497,8 +3265,6 @@ interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element_2
     // (undocumented)
     getDecimalForPixel(pixel: number): number;
     getLabelForValue(value: number): string;
-    // Warning: (ae-forgotten-export) The symbol "LabelItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     getLabelItems(chartArea?: ChartArea): LabelItem[];
     // (undocumented)
@@ -3544,8 +3310,6 @@ interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element_2
     parse(raw: unknown, index?: number): unknown;
     // (undocumented)
     setDimensions(): void;
-    // Warning: (ae-forgotten-export) The symbol "Tick" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     ticks: Tick[];
     // (undocumented)
@@ -3612,7 +3376,6 @@ class Scale_3 extends Element_2<AnyObject, AnyObject> {
     _calculatePadding(first: any, last: any, sin: any, cos: any): void;
     // (undocumented)
     _callHooks(name: any): void;
-    // Warning: (ae-forgotten-export) The symbol "Chart_4" needs to be exported by the entry point index.d.ts
     chart: Chart_4;
     // (undocumented)
     protected configure(): void;
@@ -3727,7 +3490,6 @@ class Scale_3 extends Element_2<AnyObject, AnyObject> {
     _suggestedMax: any;
     // (undocumented)
     _suggestedMin: any;
-    // Warning: (ae-forgotten-export) The symbol "Tick_2" needs to be exported by the entry point index.d.ts
     ticks: Tick_2[];
     // (undocumented)
     _ticksLength: number;
@@ -3754,8 +3516,6 @@ type ScaleChartOptions<TType extends ChartType = ChartType> = {
     };
 };
 
-// Warning: (ae-forgotten-export) The symbol "ScaleTypeRegistry" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type ScaleOptionsByType<TScale extends ScaleType = ScaleType> =
     { [key in ScaleType]: { type: key } & ScaleTypeRegistry[key]['options'] }[TScale]
@@ -3816,8 +3576,6 @@ interface ScriptableContext<TType extends ChartType> {
     chart: Chart;
     // (undocumented)
     dataIndex: number;
-    // Warning: (ae-forgotten-export) The symbol "UnionToIntersection" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     dataset: UnionToIntersection<ChartDataset<TType>>;
     // (undocumented)
@@ -3883,8 +3641,6 @@ interface ScriptableTooltipContext<TType extends ChartType> {
     chart: UnionToIntersection<Chart<TType>>;
     // (undocumented)
     tooltip: UnionToIntersection<TooltipModel<TType>>;
-    // Warning: (ae-forgotten-export) The symbol "TooltipItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     tooltipItems: TooltipItem<TType>[];
 }
@@ -3963,8 +3719,6 @@ export const _textX: (align: 'left' | 'right' | 'center', left: number, right: n
 // @public (undocumented)
 type Thing = string | undefined | null;
 
-// Warning: (ae-forgotten-export) The symbol "Thing" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type Things = (Thing | Thing[])[];
 
@@ -4087,8 +3841,6 @@ export const _toLeftRightCenter: (align: 'start' | 'end' | 'center') => "center"
 // @public
 export function toLineHeight(value: number | string, size: number): number;
 
-// Warning: (ae-forgotten-export) The symbol "TooltipDatasetCallbacks" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 interface TooltipCallbacks<
 TType extends ChartType,
@@ -4115,8 +3867,6 @@ Item = TooltipItem<TType>> extends TooltipDatasetCallbacks<TType, Model, Item> {
     footer(this: Model, tooltipItems: Item[]): string | string[] | void;
     // (undocumented)
     label(this: Model, tooltipItem: Item): string | string[] | void;
-    // Warning: (ae-forgotten-export) The symbol "TooltipLabelStyle" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     labelColor(this: Model, tooltipItem: Item): TooltipLabelStyle | void;
     // (undocumented)
@@ -4263,8 +4013,6 @@ interface TooltipModel<TType extends ChartType> extends Element_2<AnyObject, Too
     x: number;
 
     // The items that we are rendering in the tooltip. See Tooltip Item Interface section
-    // Warning: (ae-forgotten-export) The symbol "TooltipXAlignment" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     xAlign: TooltipXAlignment;
 
@@ -4273,8 +4021,6 @@ interface TooltipModel<TType extends ChartType> extends Element_2<AnyObject, Too
     y: number;
 
     // The items that we are rendering in the tooltip. See Tooltip Item Interface section
-    // Warning: (ae-forgotten-export) The symbol "TooltipYAlignment" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     yAlign: TooltipYAlignment;
 }
@@ -4295,15 +4041,12 @@ interface TooltipOptions<TType extends ChartType = ChartType> extends CoreIntera
     boxHeight: Scriptable<number, ScriptableTooltipContext<TType>>;
     boxPadding: number;
     boxWidth: Scriptable<number, ScriptableTooltipContext<TType>>;
-    // Warning: (ae-forgotten-export) The symbol "TooltipCallbacks" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     callbacks: TooltipCallbacks<TType>;
     caretPadding: Scriptable<number, ScriptableTooltipContext<TType>>;
     caretSize: Scriptable<number, ScriptableTooltipContext<TType>>;
     cornerRadius: Scriptable<number | BorderRadius, ScriptableTooltipContext<TType>>;
     displayColors: Scriptable<boolean, ScriptableTooltipContext<TType>>;
-    // Warning: (ae-forgotten-export) The symbol "ScriptableTooltipContext" needs to be exported by the entry point index.d.ts
     enabled: Scriptable<boolean, ScriptableTooltipContext<TType>>;
     external(this: TooltipModel<TType>, args: { chart: Chart; tooltip: TooltipModel<TType> }): void;
     // (undocumented)
@@ -4316,7 +4059,6 @@ interface TooltipOptions<TType extends ChartType = ChartType> extends CoreIntera
     itemSort: (a: TooltipItem<TType>, b: TooltipItem<TType>, data: ChartData) => number;
     multiKeyBackground: Scriptable<Color_2, ScriptableTooltipContext<TType>>;
     padding: Scriptable<Padding, ScriptableTooltipContext<TType>>;
-    // Warning: (ae-forgotten-export) The symbol "TooltipPositioner" needs to be exported by the entry point index.d.ts
     position: Scriptable<TooltipPositioner, ScriptableTooltipContext<TType>>
     rtl: Scriptable<boolean, ScriptableTooltipContext<TType>>;
     textDirection: Scriptable<string, ScriptableTooltipContext<TType>>;
@@ -4339,13 +4081,9 @@ interface TooltipPosition extends Point {
     yAlign?: TooltipYAlignment;
 }
 
-// Warning: (ae-forgotten-export) The symbol "TooltipPositionerMap" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type TooltipPositioner = keyof TooltipPositionerMap;
 
-// Warning: (ae-forgotten-export) The symbol "TooltipPosition" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type TooltipPositionerFunction<TType extends ChartType> = (
 this: TooltipModel<TType>,
@@ -4355,8 +4093,6 @@ eventPosition: Point
 
 // @public (undocumented)
 interface TooltipPositionerMap {
-    // Warning: (ae-forgotten-export) The symbol "TooltipPositionerFunction" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     average: TooltipPositionerFunction<ChartType>;
     // (undocumented)
@@ -4435,8 +4171,6 @@ class TypedRegistry_2 {
     items: any;
     // (undocumented)
     override: any;
-    // Warning: (ae-forgotten-export) The symbol "IChartComponent" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     register(item: IChartComponent): string;
     // (undocumented)
@@ -4462,8 +4196,6 @@ export function unlistenArrayEvents<T>(array: T[], listener: ArrayListener<T>): 
 // @public (undocumented)
 export function _updateBezierControlPoints(points: SplinePoint[], options: any, area: ChartArea, loop: boolean, indexAxis: 'x' | 'y'): void;
 
-// Warning: (ae-forgotten-export) The symbol "UpdateModeEnum" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 type UpdateMode = keyof typeof UpdateModeEnum;
 
@@ -4487,65 +4219,6 @@ enum UpdateModeEnum {
 
 // @public
 export function valueOrDefault<T>(value: T | undefined, defaultValue: T): T;
-
-// Warnings were encountered during analysis:
-//
-// dist/helpers/helpers.canvas.d.ts:73:5 - (ae-forgotten-export) The symbol "TRBLCorners" needs to be exported by the entry point index.d.ts
-// dist/types/geometric.d.ts:36:3 - (ae-forgotten-export) The symbol "CornerRadius" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:545:22 - (ae-forgotten-export) The symbol "Scale" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1742:5 - (ae-forgotten-export) The symbol "Padding" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1751:3 - (ae-forgotten-export) The symbol "Scriptable" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1751:3 - (ae-forgotten-export) The symbol "ScriptableContext" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1756:3 - (ae-forgotten-export) The symbol "EasingFunction" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1785:5 - (ae-forgotten-export) The symbol "Color_2" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1799:3 - (ae-forgotten-export) The symbol "TransitionSpec" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1803:3 - (ae-forgotten-export) The symbol "AnimationSpec" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1807:5 - (ae-forgotten-export) The symbol "AnimationEvent_2" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1813:3 - (ae-forgotten-export) The symbol "AnimationsSpec" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:1814:3 - (ae-forgotten-export) The symbol "TransitionsSpec" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:2010:5 - (ae-forgotten-export) The symbol "ScriptableLineSegmentContext" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:2214:3 - (ae-forgotten-export) The symbol "ElementOptionsByType" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:2495:5 - (ae-forgotten-export) The symbol "ScriptableChartContext" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3319:5 - (ae-forgotten-export) The symbol "Align" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3329:5 - (ae-forgotten-export) The symbol "ScriptableAndScriptableOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3329:5 - (ae-forgotten-export) The symbol "ScriptableCartesianScaleContext" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3443:3 - (ae-forgotten-export) The symbol "TimeUnit" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3518:3 - (ae-forgotten-export) The symbol "TimeScaleTimeOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3520:3 - (ae-forgotten-export) The symbol "TimeScaleTickOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3624:5 - (ae-forgotten-export) The symbol "ScriptableScalePointLabelContext" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3679:3 - (ae-forgotten-export) The symbol "RadialTickOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3702:5 - (ae-forgotten-export) The symbol "LinearScaleOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3705:5 - (ae-forgotten-export) The symbol "LogarithmicScaleOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3708:5 - (ae-forgotten-export) The symbol "CategoryScaleOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3711:5 - (ae-forgotten-export) The symbol "TimeScaleOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3720:5 - (ae-forgotten-export) The symbol "RadialLinearScaleOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3763:5 - (ae-forgotten-export) The symbol "BarControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3764:5 - (ae-forgotten-export) The symbol "BarControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3767:5 - (ae-forgotten-export) The symbol "BarParsedData" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3768:5 - (ae-forgotten-export) The symbol "CartesianScaleTypeRegistry" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3771:5 - (ae-forgotten-export) The symbol "LineControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3772:5 - (ae-forgotten-export) The symbol "LineControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3772:5 - (ae-forgotten-export) The symbol "FillerControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3773:5 - (ae-forgotten-export) The symbol "ScatterDataPoint" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3779:5 - (ae-forgotten-export) The symbol "ScatterControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3780:5 - (ae-forgotten-export) The symbol "ScatterControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3788:5 - (ae-forgotten-export) The symbol "BubbleControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3789:5 - (ae-forgotten-export) The symbol "BubbleDataPoint" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3791:5 - (ae-forgotten-export) The symbol "BubbleParsedData" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3795:5 - (ae-forgotten-export) The symbol "PieControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3796:5 - (ae-forgotten-export) The symbol "PieControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3797:5 - (ae-forgotten-export) The symbol "PieDataPoint" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3798:5 - (ae-forgotten-export) The symbol "PieMetaExtensions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3803:5 - (ae-forgotten-export) The symbol "DoughnutControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3804:5 - (ae-forgotten-export) The symbol "DoughnutControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3805:5 - (ae-forgotten-export) The symbol "DoughnutDataPoint" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3806:5 - (ae-forgotten-export) The symbol "DoughnutMetaExtensions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3811:5 - (ae-forgotten-export) The symbol "PolarAreaControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3812:5 - (ae-forgotten-export) The symbol "PolarAreaControllerDatasetOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3815:5 - (ae-forgotten-export) The symbol "RadialParsedData" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3816:5 - (ae-forgotten-export) The symbol "RadialScaleTypeRegistry" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3819:5 - (ae-forgotten-export) The symbol "RadarControllerChartOptions" needs to be exported by the entry point index.d.ts
-// dist/types/index.d.ts:3820:5 - (ae-forgotten-export) The symbol "RadarControllerDatasetOptions" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

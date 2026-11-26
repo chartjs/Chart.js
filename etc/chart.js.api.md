@@ -45,8 +45,6 @@ class Animation_2 {
 }
 export { Animation_2 as Animation }
 
-// Warning: (ae-forgotten-export) The symbol "Animation_4" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 type Animation_3 = Animation_4;
 
@@ -165,22 +163,17 @@ export class Animator {
     stop(chart: Chart): void;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Animator_2" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export const animator: Animator_2;
 
 // @public
 class Animator_2 {
-    // Warning: (ae-forgotten-export) The symbol "Animation_3" needs to be exported by the entry point types.d.ts
     add(chart: Chart_6, items: Animation_3[]): void;
     // (undocumented)
     _charts: Map<any, any>;
     has(chart: Chart_6): boolean;
     // (undocumented)
     _lastDate: number;
-    // Warning: (ae-forgotten-export) The symbol "Chart_6" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     listen(chart: Chart_6, event: string, cb: Function): void;
     remove(chart: Chart_6): boolean;
@@ -343,8 +336,6 @@ export const BarController: ChartComponent & {
     new (chart: Chart, datasetIndex: number): BarController;
 };
 
-// Warning: (ae-forgotten-export) The symbol "DatasetController_2" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 class BarController_2 extends DatasetController_2 {
     // (undocumented)
@@ -507,7 +498,6 @@ export class BasePlatform {
 // @public
 class BasePlatform_2 {
     acquireContext(canvas: HTMLCanvasElement, aspectRatio?: number): void;
-    // Warning: (ae-forgotten-export) The symbol "Chart_7" needs to be exported by the entry point types.d.ts
     addEventListener(chart: Chart_7, type: string, listener: Function): void;
     // (undocumented)
     getDevicePixelRatio(): number;
@@ -519,15 +509,12 @@ class BasePlatform_2 {
     isAttached(canvas: HTMLCanvasElement): boolean;
     releaseContext(context: CanvasRenderingContext2D): boolean;
     removeEventListener(chart: Chart_7, type: string, listener: Function): void;
-    // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point types.d.ts
     updateConfig(config: Config): void;
 }
 
 // @public (undocumented)
 export class BasicPlatform extends BasePlatform {}
 
-// Warning: (ae-forgotten-export) The symbol "BasePlatform_2" needs to be exported by the entry point types.d.ts
-//
 // @public
 class BasicPlatform_2 extends BasePlatform_2 {
     // (undocumented)
@@ -728,8 +715,6 @@ export const CategoryScale: ChartComponent & {
     new <O extends CategoryScaleOptions = CategoryScaleOptions>(cfg: AnyObject): CategoryScale<O>;
 };
 
-// Warning: (ae-forgotten-export) The symbol "Scale_2" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 class CategoryScale_2 extends Scale_2 {
     // (undocumented)
@@ -887,8 +872,6 @@ TLabel = unknown
     readonly width: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "Chart_3" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 type Chart_2 = Chart_3;
 
@@ -934,8 +917,6 @@ class Chart_3 {
     get data(): any;
     // (undocumented)
     _dataChanges: any[];
-    // Warning: (ae-forgotten-export) The symbol "Defaults_2" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     static defaults: Defaults_2;
     // (undocumented)
@@ -950,8 +931,6 @@ class Chart_3 {
     // (undocumented)
     ensureScalesHaveIDs(): void;
     getActiveElements(): any[];
-    // Warning: (ae-forgotten-export) The symbol "ChartEvent_2" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     _getActiveElements(e: ChartEvent_2, lastActive: ActiveElement[], inChartArea: boolean, useFinalPosition: boolean): ActiveElement[];
     // (undocumented)
@@ -983,7 +962,6 @@ class Chart_3 {
     // (undocumented)
     isDatasetVisible(datasetIndex: any): boolean;
     isPluginEnabled(pluginId: string): boolean;
-    // Warning: (ae-forgotten-export) The symbol "Point_2" needs to be exported by the entry point types.d.ts
     isPointInArea(point: Point_2): boolean;
     // (undocumented)
     _lastEvent: ChartEvent;
@@ -995,7 +973,6 @@ class Chart_3 {
     _metasets: any[];
     // (undocumented)
     _minPadding: number;
-    // Warning: (ae-forgotten-export) The symbol "filterCallback" needs to be exported by the entry point types.d.ts
     notifyPlugins(hook: string, args?: any, filter?: filterCallback): boolean;
     set options(arg: any);
     // (undocumented)
@@ -1006,14 +983,10 @@ class Chart_3 {
     static overrides: any;
     // (undocumented)
     platform: any;
-    // Warning: (ae-forgotten-export) The symbol "PluginService" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     _plugins: PluginService;
     // (undocumented)
     static register(...items: any[]): void;
-    // Warning: (ae-forgotten-export) The symbol "Registry_2" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     static registry: Registry_2;
     // (undocumented)
@@ -1181,8 +1154,6 @@ TLabel = unknown
     yLabels?: TLabel[];
 }
 
-// Warning: (ae-forgotten-export) The symbol "DeepPartial" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export type ChartDataset<
 TType extends ChartType = ChartType,
@@ -1254,8 +1225,6 @@ export type ChartItem =
 | { canvas: HTMLCanvasElement }
 | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
-// Warning: (ae-forgotten-export) The symbol "ChartMetaCommon" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export type ChartMeta<
 TType extends ChartType = ChartType,
@@ -1281,8 +1250,6 @@ interface ChartMetaClip {
 
 // @public (undocumented)
 interface ChartMetaCommon<TElement extends Element_2 = Element_2, TDatasetElement extends Element_2 = Element_2> {
-    // Warning: (ae-forgotten-export) The symbol "ChartMetaClip" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     _clip: ChartMetaClip;
     // (undocumented)
@@ -1770,7 +1737,6 @@ TParsedData = ParsedDataType<TType>,
 class DatasetController_2 {
     // (undocumented)
     $context: any;
-    // Warning: (ae-forgotten-export) The symbol "Chart_2" needs to be exported by the entry point types.d.ts
     constructor(chart: Chart_2, datasetIndex: number);
     // (undocumented)
     addElements(): void;
@@ -1826,8 +1792,6 @@ class DatasetController_2 {
     };
     // (undocumented)
     protected getParsed(index: any): any;
-    // Warning: (ae-forgotten-export) The symbol "Scale_3" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     getScaleForId(scaleID: string): Scale_3;
     protected getSharedOptions(options: any): any;
@@ -1932,15 +1896,9 @@ export const enum DecimationAlgorithm {
     minmax = 'min-max',
 }
 
-// Warning: (ae-forgotten-export) The symbol "LttbDecimationOptions" needs to be exported by the entry point types.d.ts
-// Warning: (ae-forgotten-export) The symbol "MinMaxDecimationOptions" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export type DecimationOptions = LttbDecimationOptions | MinMaxDecimationOptions;
 
-// Warning: (ae-forgotten-export) The symbol "_DeepPartialArray" needs to be exported by the entry point types.d.ts
-// Warning: (ae-forgotten-export) The symbol "_DeepPartialObject" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 type DeepPartial<T> = T extends Function
 ? T
@@ -2320,8 +2278,6 @@ namespace _default_6 {
     additionalOptionScopes: string[];
 }
 
-// Warning: (ae-forgotten-export) The symbol "DistributiveArray" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export type DefaultDataPoint<TType extends ChartType> = DistributiveArray<ChartTypeRegistry[TType]['defaultDataPoint']>;
 
@@ -2426,9 +2382,6 @@ class Defaults_2 {
     showLine: boolean;
 }
 
-// Warning: (ae-forgotten-export) The symbol "BasicPlatform_2" needs to be exported by the entry point types.d.ts
-// Warning: (ae-forgotten-export) The symbol "DomPlatform_2" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export function _detectPlatform(canvas: any): typeof BasicPlatform_2 | typeof DomPlatform_2;
 
@@ -2442,8 +2395,6 @@ export class DomPlatform extends BasePlatform {}
 class DomPlatform_2 extends BasePlatform_2 {
     // (undocumented)
     acquireContext(canvas: HTMLCanvasElement, aspectRatio?: number): CanvasRenderingContext2D | null;
-    // Warning: (ae-forgotten-export) The symbol "Chart_8" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     removeEventListener(chart: Chart_8, type: string): void;
 }
@@ -2565,8 +2516,6 @@ export interface DoughnutMetaExtensions {
     total: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "effects" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 export type EasingFunction = keyof typeof effects;
 
@@ -2953,8 +2902,6 @@ export const LinearScale: ChartComponent & {
     new <O extends LinearScaleOptions = LinearScaleOptions>(cfg: AnyObject): LinearScale<O>;
 };
 
-// Warning: (ae-forgotten-export) The symbol "LinearScaleBase" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 class LinearScale_2 extends LinearScaleBase {
     static defaults: any;
@@ -3094,7 +3041,6 @@ class LineElement_2 extends Element_2<AnyObject, AnyObject> {
         _indexable: (name: any) => boolean;
     };
     draw(ctx: CanvasRenderingContext2D, chartArea: object, start?: number, count?: number): void;
-    // Warning: (ae-forgotten-export) The symbol "PointElement_2" needs to be exported by the entry point types.d.ts
     first(): PointElement_2 | undefined;
     // (undocumented)
     _fullLoop: any;
@@ -3128,8 +3074,6 @@ class LineElement_2 extends Element_2<AnyObject, AnyObject> {
     _pointsUpdated: boolean;
     // (undocumented)
     get segments(): Segment_2[];
-    // Warning: (ae-forgotten-export) The symbol "Segment_2" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     _segments: Segment_2[];
     // (undocumented)
@@ -3221,8 +3165,6 @@ export type LogarithmicScaleOptions = CartesianScaleOptions & {
     };
 };
 
-// Warning: (ae-forgotten-export) The symbol "BaseDecimationOptions" needs to be exported by the entry point types.d.ts
-//
 // @public (undocumented)
 interface LttbDecimationOptions extends BaseDecimationOptions {
     // (undocumented)
@@ -3356,7 +3298,6 @@ interface Plugin_2<TType extends ChartType = ChartType, O = AnyObject> extends E
     // (undocumented)
     id: string;
 
-    // Warning: (ae-forgotten-export) The symbol "EmptyObject" needs to be exported by the entry point types.d.ts
     install?(chart: Chart<TType>, args: EmptyObject, options: O): void;
 
     reset?(chart: Chart<TType>, args: EmptyObject, options: O): void;
@@ -3433,7 +3374,6 @@ class PluginService {
     }[];
     // (undocumented)
     invalidate(): void;
-    // Warning: (ae-forgotten-export) The symbol "Chart_5" needs to be exported by the entry point types.d.ts
     notify(chart: Chart_5, hook: string, args?: object, filter?: filterCallback): boolean;
     // (undocumented)
     _oldCache: {
@@ -3876,8 +3816,6 @@ class Registry_2 {
     addPlugins(...args: any[]): void;
     // (undocumented)
     addScales(...args: (typeof Scale_2)[]): void;
-    // Warning: (ae-forgotten-export) The symbol "TypedRegistry_2" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     controllers: TypedRegistry_2;
     // (undocumented)
@@ -4103,7 +4041,6 @@ class Scale_2 extends Element_2<AnyObject, AnyObject> {
     _calculatePadding(first: any, last: any, sin: any, cos: any): void;
     // (undocumented)
     _callHooks(name: any): void;
-    // Warning: (ae-forgotten-export) The symbol "Chart_4" needs to be exported by the entry point types.d.ts
     chart: Chart_4;
     // (undocumented)
     protected configure(): void;
@@ -4218,7 +4155,6 @@ class Scale_2 extends Element_2<AnyObject, AnyObject> {
     _suggestedMax: any;
     // (undocumented)
     _suggestedMin: any;
-    // Warning: (ae-forgotten-export) The symbol "Tick_2" needs to be exported by the entry point types.d.ts
     ticks: Tick_2[];
     // (undocumented)
     _ticksLength: number;
@@ -4345,8 +4281,6 @@ export interface ScriptableContext<TType extends ChartType> {
     chart: Chart;
     // (undocumented)
     dataIndex: number;
-    // Warning: (ae-forgotten-export) The symbol "UnionToIntersection" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     dataset: UnionToIntersection<ChartDataset<TType>>;
     // (undocumented)
@@ -4507,8 +4441,6 @@ export const TimeScale: ChartComponent & {
 // @public (undocumented)
 class TimeScale_2 extends Scale_2 {
     constructor(props: object);
-    // Warning: (ae-forgotten-export) The symbol "DateAdapter_2" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     _adapter: DateAdapter_2;
     _cache: {
@@ -4554,7 +4486,6 @@ class TimeScale_2 extends Scale_2 {
         round: any;
         isoWeekday: any;
     };
-    // Warning: (ae-forgotten-export) The symbol "Unit" needs to be exported by the entry point types.d.ts
     _unit: Unit;
 }
 
@@ -4948,8 +4879,6 @@ class TypedRegistry_2 {
     items: any;
     // (undocumented)
     override: any;
-    // Warning: (ae-forgotten-export) The symbol "IChartComponent" needs to be exported by the entry point types.d.ts
-    //
     // (undocumented)
     register(item: IChartComponent): string;
     // (undocumented)
@@ -5002,12 +4931,6 @@ export interface VisualElement {
     // (undocumented)
     inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
 }
-
-// Warnings were encountered during analysis:
-//
-// dist/core/core.adapters.d.ts:63:9 - (ae-forgotten-export) The symbol "AnyObject" needs to be exported by the entry point types.d.ts
-// dist/plugins/plugin.colors.d.ts:8:5 - (ae-forgotten-export) The symbol "ColorsPluginOptions" needs to be exported by the entry point types.d.ts
-// dist/types/index.d.ts:1742:5 - (ae-forgotten-export) The symbol "Padding" needs to be exported by the entry point types.d.ts
 
 // (No @packageDocumentation comment for this package)
 

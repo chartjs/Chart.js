@@ -45,7 +45,7 @@
       },
       "ae-forgotten-export": {
         "logLevel": "none",
-        "addToApiReportFile": true
+        "addToApiReportFile": false
       },
       "ae-missing-release-tag": {
         "logLevel": "none",
