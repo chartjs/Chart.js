@@ -105,7 +105,7 @@ describe('UMD bundle in a web worker', () => {
         // importScripts throws when the bundle does not load, before the
         // worker can post a message.
         worker.onerror = (event) => reject(new Error(`worker failed: ${event.message}`));
-        worker.postMessage({type: 'initialize', canvas: offscreenCanvas}, [offscreenCanvas]);
+        worker.postMessage({canvas: offscreenCanvas}, [offscreenCanvas]);
       });
       expect(errorMessage).toBeUndefined();
       expect(type).toBe('success');

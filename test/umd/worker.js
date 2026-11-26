@@ -2,7 +2,7 @@
 // built bundle with importScripts, creates a chart on the OffscreenCanvas it is
 // sent and checks that the chart chose the basic platform.
 
-// Receives messages with data of type: { type: 'initialize', canvas: OffscreenCanvas }
+// Receives one message with data of type: { canvas: OffscreenCanvas }
 // Sends messages with data of types: { type: 'success' } | { type: 'error', errorMessage: string }
 
 // The same URL test/setup.umd.js loads in the page.
@@ -10,11 +10,7 @@ importScripts('/dist/chart.umd.min.js');
 
 onmessage = function(event) {
   try {
-    const {type, canvas} = event.data;
-    if (type !== 'initialize') {
-      throw new Error('invalid message type received by worker: ' + type);
-    }
-
+    const {canvas} = event.data;
     const chart = new Chart(canvas);
     if (!(chart.platform instanceof Chart.platforms.BasicPlatform)) {
       throw new Error('did not use basic platform for chart in web worker');
