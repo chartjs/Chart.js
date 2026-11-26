@@ -2,23 +2,23 @@ describe('Chart.Animation', function() {
   it('should animate boolean', function() {
     const target = {prop: false};
     const anim = new Chart.Animation({duration: 1000}, target, 'prop', true);
-    expect(anim.active()).toBeTrue();
+    expect(anim.active()).toBe(true);
 
     anim.tick(anim._start + 500);
-    expect(anim.active()).toBeTrue();
-    expect(target.prop).toBeFalse();
+    expect(anim.active()).toBe(true);
+    expect(target.prop).toBe(false);
 
     anim.tick(anim._start + 501);
-    expect(anim.active()).toBeTrue();
-    expect(target.prop).toBeTrue();
+    expect(anim.active()).toBe(true);
+    expect(target.prop).toBe(true);
 
     anim.tick(anim._start - 100);
-    expect(anim.active()).toBeTrue();
-    expect(target.prop).toBeFalse();
+    expect(anim.active()).toBe(true);
+    expect(target.prop).toBe(false);
 
     anim.tick(anim._start + 1000);
-    expect(anim.active()).toBeFalse();
-    expect(target.prop).toBeTrue();
+    expect(anim.active()).toBe(false);
+    expect(target.prop).toBe(true);
   });
 
   describe('color', function() {
@@ -84,7 +84,7 @@ describe('Chart.Animation', function() {
 
     anim.tick(anim._start + 100);
     expect(target.testColor).toEqual('red');
-    expect(anim.active()).toBeFalse();
+    expect(anim.active()).toBe(false);
 
     anim.update({duration: 500}, 'blue', Date.now());
     expect(anim._duration).toEqual(100);

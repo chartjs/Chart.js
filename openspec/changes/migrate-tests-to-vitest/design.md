@@ -106,9 +106,12 @@ No `jasmine` compatibility object. Vitest runs with `globals: true`, and `test/s
 | `expect(x).withContext(i)` with a number `i` | ``expect(x, `${i}`)`` |
 | `function(done)` | an `async` test awaiting a Promise; `done.fail(m)` rejects |
 | `fail(m)` | `expect.unreachable(m)` |
+| `fail(m)` in a callback that must not run | a flag the callback sets, and `expect(flag, m).toBe(false)` after the wait (a throw from an observer or timer callback is not attributed to the test) |
 | `pending()` | `ctx.skip()` |
 | `this.x` in hooks and tests | a `let` in the enclosing `describe` |
 | `jasmine.addMatchers({...})` | `expect.extend({...})` in that spec |
+| `jasmine.clock().withMock(fn)` | `vi.useFakeTimers({toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']})`, then the body in `try { ... } finally { vi.useRealTimers(); }` (the timers Jasmine's clock mocks; Vitest's default would also fake `requestAnimationFrame` and stall the animator, and `restoreMocks` does not restore timers) |
+| `jasmine.clock().tick(n)` | `vi.advanceTimersByTime(n)` |
 | `toBe(0)` / `toEqual(0)` on a value that can be -0 | `toBeCloseTo(0)` (Jasmine's `toBe` is `===`; Vitest's `toBe` and `toEqual` use `Object.is`) |
 | `toBeGreaterThan(m)` / `toBeLessThan(m)` and the other comparison matchers given a non-number such as a moment | pass `m.valueOf()` (Jasmine coerces with `>` / `<`; Vitest requires a number or bigint) |
 

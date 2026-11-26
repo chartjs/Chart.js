@@ -3,7 +3,6 @@ describe('Chart', function() {
   const overrides = Chart.overrides;
 
   // https://github.com/chartjs/Chart.js/issues/2481
-  // See global.deprecations.tests.js for backward compatibility
   it('should be defined and prototype of chart instances', function() {
     var chart = acquireChart({});
     expect(Chart).toBeDefined();
@@ -232,13 +231,13 @@ describe('Chart', function() {
 
     it('should initialize the data object', function() {
       const chart = acquireChart({type: 'bar'});
-      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      expect(chart.data).toEqual(expect.objectContaining({labels: [], datasets: []}));
       chart.data = {};
-      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      expect(chart.data).toEqual(expect.objectContaining({labels: [], datasets: []}));
       chart.data = null;
-      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      expect(chart.data).toEqual(expect.objectContaining({labels: [], datasets: []}));
       chart.data = undefined;
-      expect(chart.data).toEqual(jasmine.objectContaining({labels: [], datasets: []}));
+      expect(chart.data).toEqual(expect.objectContaining({labels: [], datasets: []}));
     });
 
     describe('should disable hover', function() {
@@ -249,7 +248,7 @@ describe('Chart', function() {
             hover: false
           }
         });
-        expect(chart.options.hover).toBeFalse();
+        expect(chart.options.hover).toBe(false);
       });
 
       it('when options.interaction=false and options.hover is not defined', function() {
@@ -259,7 +258,7 @@ describe('Chart', function() {
             interaction: false
           }
         });
-        expect(chart.options.hover).toBeFalse();
+        expect(chart.options.hover).toBe(false);
       });
 
       it('when options.interaction=false and options.hover is defined', function() {
@@ -270,7 +269,7 @@ describe('Chart', function() {
             hover: {mode: 'nearest'}
           }
         });
-        expect(chart.options.hover).toBeFalse();
+        expect(chart.options.hover).toBe(false);
       });
     });
 
@@ -287,7 +286,7 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[1];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point}]);
     });
 
@@ -308,13 +307,13 @@ describe('Chart', function() {
       var point1 = chart.getDatasetMeta(0).data[1];
       var point2 = chart.getDatasetMeta(0).data[2];
 
-      await jasmine.triggerMouseEvent(chart, 'click', point1);
+      await triggerMouseEvent(chart, 'click', point1);
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: point1}]);
 
       chart.options.events = ['mousemove'];
       chart.update();
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point2);
+      await triggerMouseEvent(chart, 'mousemove', point2);
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 2, element: point2}]);
     });
 
@@ -338,7 +337,7 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[0];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: point.y});
+      await triggerMouseEvent(chart, 'mousemove', {x: 1, y: point.y});
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
     });
 
@@ -358,7 +357,7 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[1];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       expect(chart.getActiveElements()).toEqual([]);
     });
 
@@ -385,13 +384,13 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[0];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
-      await jasmine.triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
+      await triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([]);
     });
   });
@@ -457,7 +456,7 @@ describe('Chart', function() {
       expect(chart.scales.foo.type).toBe('logarithmic');
       expect(chart.scales.foo.options).toEqual(chart.options.scales.foo);
       expect(chart.scales.foo.options).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           _jasmineCheckA: 'a0',
           _jasmineCheckB: 'b1',
           _jasmineCheckC: 'c2',
@@ -487,7 +486,7 @@ describe('Chart', function() {
       expect(chart.scales.x.type).toBe('logarithmic');
       expect(chart.scales.x.options).toEqual(chart.options.scales.x);
       expect(chart.scales.x.options).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           _jasmineCheckA: 'a0',
           _jasmineCheckB: 'b1',
           _jasmineCheckC: 'c2',
@@ -497,7 +496,7 @@ describe('Chart', function() {
       expect(chart.scales.y.type).toBe('time');
       expect(chart.scales.y.options).toEqual(chart.options.scales.y);
       expect(chart.scales.y.options).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           _jasmineCheckA: 'a0',
           _jasmineCheckB: 'b0',
           _jasmineCheckC: 'c2',
@@ -649,12 +648,16 @@ describe('Chart', function() {
       });
 
       expect(count).toEqual(1);
-      expect(correctThis).toBeTrue();
+      expect(correctThis).toBe(true);
       expect(size).toEqual({width: 300, height: 350});
     });
 
 
-    it('should resize the canvas when parent width changes', function(done) {
+    it('should resize the canvas when parent width changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -692,9 +695,14 @@ describe('Chart', function() {
         wrapper.style.width = '150px';
       });
       wrapper.style.width = '455px';
+      await complete;
     });
 
-    it('should call update with the resize mode when resizeDelay is set', function(done) {
+    it('should call update with the resize mode when resizeDelay is set', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -710,7 +718,7 @@ describe('Chart', function() {
         }
       });
 
-      spyOn(chart, 'update').and.callThrough();
+      vi.spyOn(chart, 'update');
       waitForResize(chart, function() {
         setTimeout(function() {
           expect(chart.update).toHaveBeenCalledWith('resize');
@@ -718,10 +726,12 @@ describe('Chart', function() {
         }, 50);
       });
       chart.canvas.parentNode.style.width = '455px';
+      await complete;
     });
 
     it('should cancel a pending resize update when destroyed', function() {
-      jasmine.clock().withMock(function() {
+      vi.useFakeTimers({toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']});
+      try {
         const chart = acquireChart({
           options: {
             responsive: true,
@@ -730,26 +740,29 @@ describe('Chart', function() {
             resizeDelay: 20
           }
         });
-        const update = spyOn(chart, 'update').and.callThrough();
+        const update = vi.spyOn(chart, 'update');
 
         chart.resize(200, 200);
         expect(update).not.toHaveBeenCalled();
-        jasmine.clock().tick(20);
+        vi.advanceTimersByTime(20);
         expect(update).toHaveBeenCalledTimes(1);
-        update.calls.reset();
+        update.mockClear();
 
         chart.resize(220, 200);
         expect(chart.width).toBe(220);
         expect(update).not.toHaveBeenCalled();
         chart.destroy();
 
-        expect(() => jasmine.clock().tick(20)).not.toThrow();
+        expect(() => vi.advanceTimersByTime(20)).not.toThrow();
         expect(update).not.toHaveBeenCalled();
-      });
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('should not queue a resize update when onResize destroys the chart', function() {
-      jasmine.clock().withMock(function() {
+      vi.useFakeTimers({toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval']});
+      try {
         let destroyOnResize = false;
         const chart = acquireChart({
           options: {
@@ -764,17 +777,23 @@ describe('Chart', function() {
             }
           }
         });
-        const update = spyOn(chart, 'update').and.callThrough();
+        const update = vi.spyOn(chart, 'update');
         destroyOnResize = true;
         chart.resize(220, 200);
 
         expect(chart.canvas).toBeNull();
-        expect(() => jasmine.clock().tick(20)).not.toThrow();
+        expect(() => vi.advanceTimersByTime(20)).not.toThrow();
         expect(update).not.toHaveBeenCalled();
-      });
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
-    it('should restore the original size when parent became invisible', function(done) {
+    it('should restore the original size when parent became invisible', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -796,14 +815,16 @@ describe('Chart', function() {
         });
 
         var original = chart.resize;
+        var resized = false;
         chart.resize = function() {
-          fail('resize should not have been called');
+          resized = true;
         };
 
         var wrapper = chart.canvas.parentNode;
         wrapper.style.display = 'none';
 
         setTimeout(function() {
+          expect(resized, 'resize should not have been called').toBe(false);
           expect(wrapper.clientWidth).toEqual(0);
           expect(wrapper.clientHeight).toEqual(0);
 
@@ -825,9 +846,14 @@ describe('Chart', function() {
           wrapper.style.display = 'block';
         }, 200);
       });
+      await complete;
     });
 
-    it('should resize the canvas when parent is RTL and width changes', function(done) {
+    it('should resize the canvas when parent is RTL and width changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -865,9 +891,14 @@ describe('Chart', function() {
         wrapper.style.width = '150px';
       });
       wrapper.style.width = '455px';
+      await complete;
     });
 
-    it('should resize the canvas when parent height changes', function(done) {
+    it('should resize the canvas when parent height changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -905,9 +936,14 @@ describe('Chart', function() {
         wrapper.style.height = '150px';
       });
       wrapper.style.height = '455px';
+      await complete;
     });
 
-    it('should not include parent padding when resizing the canvas', function(done) {
+    it('should not include parent padding when resizing the canvas', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         type: 'line',
         options: {
@@ -939,9 +975,14 @@ describe('Chart', function() {
       });
       wrapper.style.height = '355px';
       wrapper.style.width = '455px';
+      await complete;
     });
 
-    it('should resize the canvas when the canvas display style changes from "none" to "block"', function(done) {
+    it('should resize the canvas when the canvas display style changes from "none" to "block"', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -966,9 +1007,14 @@ describe('Chart', function() {
         done();
       });
       canvas.style.display = 'block';
+      await complete;
     });
 
-    it('should resize the canvas when the wrapper display style changes from "none" to "block"', function(done) {
+    it('should resize the canvas when the wrapper display style changes from "none" to "block"', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -993,9 +1039,14 @@ describe('Chart', function() {
         done();
       });
       wrapper.style.display = 'block';
+      await complete;
     });
 
-    it('should resize the canvas when the wrapper has display style changes from "none" to "block"', function(done) {
+    it('should resize the canvas when the wrapper has display style changes from "none" to "block"', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       // https://github.com/chartjs/Chart.js/issues/4659
       var chart = acquireChart({
         options: {
@@ -1021,10 +1072,15 @@ describe('Chart', function() {
         done();
       });
       wrapper.style.display = 'block';
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/5485
-    it('should resize the canvas when the devicePixelRatio changes', function(done) {
+    it('should resize the canvas when the devicePixelRatio changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1055,10 +1111,15 @@ describe('Chart', function() {
       });
       chart.options.devicePixelRatio = 2;
       chart.resize();
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/3790
-    it('should resize the canvas if attached to the DOM after construction', function(done) {
+    it('should resize the canvas if attached to the DOM after construction', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var canvas = document.createElement('canvas');
       var wrapper = document.createElement('div');
       var body = window.document.body;
@@ -1092,11 +1153,16 @@ describe('Chart', function() {
       wrapper.style.cssText = 'width: 455px; height: 355px';
       wrapper.appendChild(canvas);
       body.appendChild(wrapper);
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/12166
     // https://github.com/chartjs/Chart.js/issues/12269
-    it('should update before drawing if attached to the DOM after construction with resizeDelay', function(done) {
+    it('should update before drawing if attached to the DOM after construction with resizeDelay', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var canvas = document.createElement('canvas');
       var wrapper = document.createElement('div');
       var body = window.document.body;
@@ -1134,6 +1200,7 @@ describe('Chart', function() {
       wrapper.style.cssText = 'width: 455px; height: 355px';
       wrapper.appendChild(canvas);
       body.appendChild(wrapper);
+      await complete;
     });
 
     it('should not draw on resize before the first update with resizeDelay', function() {
@@ -1179,7 +1246,11 @@ describe('Chart', function() {
       expect(chart.chartArea).not.toBeUndefined();
     });
 
-    it('should resize the canvas when attached to a different parent', function(done) {
+    it('should resize the canvas when attached to a different parent', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var canvas = document.createElement('canvas');
       var wrapper = document.createElement('div');
       var body = window.document.body;
@@ -1224,10 +1295,15 @@ describe('Chart', function() {
       wrapper.style.cssText = 'width: 455px; height: 355px';
       wrapper.appendChild(canvas);
       body.appendChild(wrapper);
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/3521
-    it('should resize the canvas after the wrapper has been re-attached to the DOM', function(done) {
+    it('should resize the canvas after the wrapper has been re-attached to the DOM', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1275,10 +1351,15 @@ describe('Chart', function() {
         parent.appendChild(wrapper);
         wrapper.style.height = '355px';
       }, 0);
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/9875
-    it('should detect detach/attach in series', function(done) {
+    it('should detect detach/attach in series', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1307,9 +1388,14 @@ describe('Chart', function() {
 
       parent.removeChild(wrapper);
       parent.appendChild(wrapper);
+      await complete;
     });
 
-    it('should detect detach/attach/detach in series', function(done) {
+    it('should detect detach/attach/detach in series', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1327,8 +1413,9 @@ describe('Chart', function() {
       var wrapper = chart.canvas.parentNode;
       var parent = wrapper.parentNode;
 
+      var resized = false;
       waitForResize(chart, function() {
-        fail();
+        resized = true;
       });
 
       parent.removeChild(wrapper);
@@ -1336,12 +1423,18 @@ describe('Chart', function() {
       parent.removeChild(wrapper);
 
       setTimeout(function() {
-        expect(chart.attached).toBeFalse();
+        expect(resized).toBe(false);
+        expect(chart.attached).toBe(false);
         done();
       }, 100);
+      await complete;
     });
 
-    it('should detect attach/detach in series', function(done) {
+    it('should detect attach/detach in series', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1362,25 +1455,32 @@ describe('Chart', function() {
       parent.removeChild(wrapper);
 
       setTimeout(function() {
-        expect(chart.attached).toBeFalse();
+        expect(chart.attached).toBe(false);
 
+        var resized = false;
         waitForResize(chart, function() {
-          fail();
+          resized = true;
         });
 
         parent.appendChild(wrapper);
         parent.removeChild(wrapper);
 
         setTimeout(function() {
-          expect(chart.attached).toBeFalse();
+          expect(resized).toBe(false);
+          expect(chart.attached).toBe(false);
 
           done();
         }, 100);
       }, 100);
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/4737
-    it('should resize the canvas when re-creating the chart', function(done) {
+    it('should resize the canvas when re-creating the chart', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true
@@ -1421,9 +1521,14 @@ describe('Chart', function() {
         canvas.parentNode.style.width = '455px';
         canvas.parentNode.style.height = '455px';
       });
+      await complete;
     });
 
-    it('should resize the canvas if attached to the DOM after construction with multiple parents', function(done) {
+    it('should resize the canvas if attached to the DOM after construction with multiple parents', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var canvas = document.createElement('canvas');
       var wrapper = document.createElement('div');
       var wrapper2 = document.createElement('div');
@@ -1462,11 +1567,16 @@ describe('Chart', function() {
       wrapper.style.cssText = 'width: 455px; height: 355px';
       wrapper.appendChild(canvas);
       body.appendChild(wrapper3);
+      await complete;
     });
   });
 
   describe('config.options.responsive: true (maintainAspectRatio: true)', function() {
-    it('should resize the canvas with correct aspect ratio when parent width changes', function(done) {
+    it('should resize the canvas with correct aspect ratio when parent width changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         type: 'line', // AR == 2
         options: {
@@ -1505,10 +1615,15 @@ describe('Chart', function() {
         wrapper.style.width = '150px';
       });
       wrapper.style.width = '450px';
+      await complete;
     });
 
     // https://github.com/chartjs/Chart.js/issues/11005
-    it('should grow back when the parent has no height of its own', function(done) {
+    it('should grow back when the parent has no height of its own', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         type: 'line', // AR == 2
         options: {
@@ -1555,9 +1670,14 @@ describe('Chart', function() {
         });
       });
       wrapper.style.width = '150px';
+      await complete;
     });
 
-    it('should maintain aspect ratio when parent height changes', function(done) {
+    it('should maintain aspect ratio when parent height changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1595,17 +1715,20 @@ describe('Chart', function() {
         wrapper.style.height = '150px';
       });
       wrapper.style.height = '455px';
+      await complete;
     });
   });
 
   describe('Retina scale (a.k.a. device pixel ratio)', function() {
+    let devicePixelRatio;
+
     beforeEach(function() {
-      this.devicePixelRatio = window.devicePixelRatio;
+      devicePixelRatio = window.devicePixelRatio;
       window.devicePixelRatio = 3;
     });
 
     afterEach(function() {
-      window.devicePixelRatio = this.devicePixelRatio;
+      window.devicePixelRatio = devicePixelRatio;
     });
 
     // see https://github.com/chartjs/Chart.js/issues/3575
@@ -1646,13 +1769,15 @@ describe('Chart', function() {
   });
 
   describe('config.options.devicePixelRatio', function() {
+    let devicePixelRatio;
+
     beforeEach(function() {
-      this.devicePixelRatio = window.devicePixelRatio;
+      devicePixelRatio = window.devicePixelRatio;
       window.devicePixelRatio = 1;
     });
 
     afterEach(function() {
-      window.devicePixelRatio = this.devicePixelRatio;
+      window.devicePixelRatio = devicePixelRatio;
     });
 
     // see https://github.com/chartjs/Chart.js/issues/3575
@@ -1695,7 +1820,11 @@ describe('Chart', function() {
   });
 
   describe('config.options.aspectRatio', function() {
-    it('should resize the canvas when the aspectRatio option changes', function(done) {
+    it('should resize the canvas when the aspectRatio option changes', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
       var chart = acquireChart({
         options: {
           responsive: true,
@@ -1723,6 +1852,7 @@ describe('Chart', function() {
       });
       chart.options.aspectRatio = 2;
       chart.resize();
+      await complete;
     });
   });
 
@@ -1967,7 +2097,7 @@ describe('Chart', function() {
       var meta = chart.getDatasetMeta(0);
       var point = meta.data[1];
 
-      await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+      await triggerMouseEvent(chart, 'mousemove', point);
       // Check and see if tooltip was displayed
       var tooltip = chart.tooltip;
 
@@ -2069,8 +2199,12 @@ describe('Chart', function() {
       ]
     };
 
-    it ('should notify plugin in correct order', function(done) {
-      var plugin = this.plugin = {};
+    it ('should notify plugin in correct order', async function() {
+      let done;
+      const complete = new Promise((resolve) => {
+        done = resolve;
+      });
+      var plugin = {};
       var sequence = [];
 
       Object.keys(hooks).forEach(function(group) {
@@ -2115,10 +2249,11 @@ describe('Chart', function() {
       });
       chart.canvas.parentNode.style.width = '400px';
       chart.canvas.parentNode.style.height = '400px';
+      await complete;
     });
 
     it ('should notify initially disabled plugin in correct order', function() {
-      var plugin = this.plugin = {id: 'plugin'};
+      var plugin = {id: 'plugin'};
       var sequence = [];
 
       Object.keys(hooks).forEach(function(group) {
@@ -2168,7 +2303,7 @@ describe('Chart', function() {
 
     it('should not notify before/afterDatasetDraw if dataset is hidden', function() {
       var sequence = [];
-      var plugin = this.plugin = {
+      var plugin = {
         beforeDatasetDraw: function(chart, args) {
           sequence.push('before-' + args.index);
         },
@@ -2208,8 +2343,10 @@ describe('Chart', function() {
   });
 
   describe('metasets', function() {
+    let chart;
+
     beforeEach(function() {
-      this.chart = acquireChart({
+      chart = acquireChart({
         type: 'line',
         data: {
           datasets: [
@@ -2222,45 +2359,45 @@ describe('Chart', function() {
       });
     });
     afterEach(function() {
-      const metasets = this.chart._metasets;
-      expect(metasets.length).toEqual(this.chart.data.datasets.length);
+      const metasets = chart._metasets;
+      expect(metasets.length).toEqual(chart.data.datasets.length);
       for (let i = 0; i < metasets.length; i++) {
         expect(metasets[i].index).toEqual(i);
-        expect(metasets[i]._dataset).toEqual(this.chart.data.datasets[i]);
+        expect(metasets[i]._dataset).toEqual(chart.data.datasets[i]);
       }
     });
     it('should build metasets array in order', function() {
-      const metasets = this.chart._metasets;
+      const metasets = chart._metasets;
       expect(metasets[0].order).toEqual(2);
       expect(metasets[1].order).toEqual(1);
       expect(metasets[2].order).toEqual(4);
       expect(metasets[3].order).toEqual(3);
     });
     it('should build sorted metasets array in correct order', function() {
-      const metasets = this.chart._sortedMetasets;
+      const metasets = chart._sortedMetasets;
       expect(metasets[0].order).toEqual(1);
       expect(metasets[1].order).toEqual(2);
       expect(metasets[2].order).toEqual(3);
       expect(metasets[3].order).toEqual(4);
     });
     it('should be moved when datasets are removed from beginning', function() {
-      this.chart.data.datasets.splice(0, 2);
-      this.chart.update();
-      const metasets = this.chart._metasets;
+      chart.data.datasets.splice(0, 2);
+      chart.update();
+      const metasets = chart._metasets;
       expect(metasets[0].order).toEqual(4);
       expect(metasets[1].order).toEqual(3);
     });
     it('should be moved when datasets are removed from middle', function() {
-      this.chart.data.datasets.splice(1, 2);
-      this.chart.update();
-      const metasets = this.chart._metasets;
+      chart.data.datasets.splice(1, 2);
+      chart.update();
+      const metasets = chart._metasets;
       expect(metasets[0].order).toEqual(2);
       expect(metasets[1].order).toEqual(3);
     });
     it('should be moved when datasets are inserted', function() {
-      this.chart.data.datasets.splice(1, 0, {label: '1.5', order: 5});
-      this.chart.update();
-      const metasets = this.chart._metasets;
+      chart.data.datasets.splice(1, 0, {label: '1.5', order: 5});
+      chart.update();
+      const metasets = chart._metasets;
       expect(metasets[0].order).toEqual(2);
       expect(metasets[1].order).toEqual(5);
       expect(metasets[2].order).toEqual(1);
@@ -2268,36 +2405,36 @@ describe('Chart', function() {
       expect(metasets[4].order).toEqual(3);
     });
     it('should be replaced when dataset is replaced', function() {
-      this.chart.data.datasets.splice(1, 1, {label: '1.5', order: 5});
-      this.chart.update();
-      const metasets = this.chart._metasets;
+      chart.data.datasets.splice(1, 1, {label: '1.5', order: 5});
+      chart.update();
+      const metasets = chart._metasets;
       expect(metasets[0].order).toEqual(2);
       expect(metasets[1].order).toEqual(5);
       expect(metasets[2].order).toEqual(4);
       expect(metasets[3].order).toEqual(3);
     });
     it('should update properly when dataset locations are swapped', function() {
-      const orig = this.chart.data.datasets;
-      this.chart.data.datasets = [orig[0], orig[2], orig[1], orig[3]];
-      this.chart.update();
-      let metasets = this.chart._metasets;
+      const orig = chart.data.datasets;
+      chart.data.datasets = [orig[0], orig[2], orig[1], orig[3]];
+      chart.update();
+      let metasets = chart._metasets;
       expect(metasets[0].label).toEqual('1');
       expect(metasets[1].label).toEqual('3');
       expect(metasets[2].label).toEqual('2');
       expect(metasets[3].label).toEqual('4');
 
-      this.chart.data.datasets = [{label: 'new', order: 10}, orig[3], orig[2], orig[1], orig[0]];
-      this.chart.update();
-      metasets = this.chart._metasets;
+      chart.data.datasets = [{label: 'new', order: 10}, orig[3], orig[2], orig[1], orig[0]];
+      chart.update();
+      metasets = chart._metasets;
       expect(metasets[0].label).toEqual('new');
       expect(metasets[1].label).toEqual('4');
       expect(metasets[2].label).toEqual('3');
       expect(metasets[3].label).toEqual('2');
       expect(metasets[4].label).toEqual('1');
 
-      this.chart.data.datasets = [orig[3], orig[2], orig[1], {label: 'new', order: 10}];
-      this.chart.update();
-      metasets = this.chart._metasets;
+      chart.data.datasets = [orig[3], orig[2], orig[1], {label: 'new', order: 10}];
+      chart.update();
+      metasets = chart._metasets;
       expect(metasets[0].label).toEqual('4');
       expect(metasets[1].label).toEqual('3');
       expect(metasets[2].label).toEqual('2');
@@ -2306,8 +2443,10 @@ describe('Chart', function() {
   });
 
   describe('_destroyDatasetMeta', function() {
+    let chart;
+
     beforeEach(function() {
-      this.chart = acquireChart({
+      chart = acquireChart({
         type: 'line',
         data: {
           datasets: [
@@ -2320,8 +2459,8 @@ describe('Chart', function() {
       });
     });
     it('cleans up metasets when the chart is destroyed', function() {
-      this.chart.destroy();
-      expect(this.chart._metasets).toEqual([undefined, undefined, undefined, undefined]);
+      chart.destroy();
+      expect(chart._metasets).toEqual([undefined, undefined, undefined, undefined]);
     });
   });
 
@@ -2609,7 +2748,7 @@ describe('Chart', function() {
     let props = meta.data[0].getProps(['borderColor']);
     expect(props.options.borderColor).toEqual('red');
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', {x: point0.x, y: point0.y});
+    await triggerMouseEvent(chart, 'mousemove', {x: point0.x, y: point0.y});
     expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point0}]);
     expect(point0.options.borderColor).toEqual('blue');
     expect(point1.options.borderColor).toEqual('red');
