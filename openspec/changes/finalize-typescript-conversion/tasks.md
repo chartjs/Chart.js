@@ -25,9 +25,9 @@
 
 ## 4. P4: Lint parity for TypeScript
 
-- [ ] 4.1 Show the failure: `eslint --stdin --stdin-filename src/helpers/helpers.segment.ts < src/helpers/helpers.segment.js` reports 6 `no-use-before-define`, and the same for `platform.base` reports 3 `no-empty-function` and 11 unused arguments.
-- [ ] 4.2 In the TypeScript override of `.eslintrc.yml`, set `@typescript-eslint/no-use-before-define` to `{functions: false}`, turn `@typescript-eslint/no-empty-function` and `prefer-const` off as for JavaScript, and set `@typescript-eslint/no-unused-vars` to ignore arguments that start with `_`.
-- [ ] 4.3 Rebase after #12506.
+- [x] 4.1 Show the failure: `eslint --stdin --stdin-filename src/helpers/helpers.segment.ts < src/helpers/helpers.segment.js` reports 6 `no-use-before-define`, and the same for `platform.base` reports 3 `no-empty-function` and 11 unused arguments.
+- [x] 4.2 In the TypeScript override of `.eslintrc.yml`, set `@typescript-eslint/no-use-before-define` to `{functions: false}`, turn `@typescript-eslint/no-empty-function` and `prefer-const` off as for JavaScript, and set `@typescript-eslint/no-unused-vars` to ignore arguments that start with `_`.
+- [x] 4.3 Rebase after #12506.
 
 ## 5. P5: Hand-kept declarations as TypeScript modules
 
