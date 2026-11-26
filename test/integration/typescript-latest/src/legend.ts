@@ -17,3 +17,32 @@ const chart = new Chart('id', {
 });
 
 export const titleColor = chart.options.scales?.x?.title?.color;
+
+// The same for a callback that types only `this`, one chart per callback.
+const clickChart = new Chart('id', {
+  type: 'line',
+  data: {datasets: []},
+  options: {plugins: {legend: {onClick(this: LegendElement<ChartType>, e: ChartEvent, legendItem: LegendItem) {
+    this.chart.update();
+  }}}}
+});
+const hoverChart = new Chart('id', {
+  type: 'line',
+  data: {datasets: []},
+  options: {plugins: {legend: {onHover(this: LegendElement<ChartType>, e: ChartEvent, legendItem: LegendItem) {
+    this.chart.update();
+  }}}}
+});
+const leaveChart = new Chart('id', {
+  type: 'line',
+  data: {datasets: []},
+  options: {plugins: {legend: {onLeave(this: LegendElement<ChartType>, e: ChartEvent, legendItem: LegendItem) {
+    this.chart.update();
+  }}}}
+});
+
+export const titles = [
+  clickChart.options.scales?.x?.title,
+  hoverChart.options.scales?.x?.title,
+  leaveChart.options.scales?.x?.title
+];
