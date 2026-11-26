@@ -40,7 +40,7 @@ const plugins = (minify) =>
       })
       : cleanup({
         comments: ['some', /__PURE__/],
-        // Own array: the plugin strips the dots in place, which would break resolve's `extensions`.
+        // Own array: the plugin strips the dots from it in place, and resolve shares the other one.
         extensions: ['js', 'ts']
       })
   ];
