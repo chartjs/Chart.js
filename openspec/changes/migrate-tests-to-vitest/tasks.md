@@ -52,9 +52,9 @@
 ## 7. P7: Specs open pull requests touch, controllers
 
 - [ ] 7.1 List the open pull requests that touch the files of this piece; after the piece merges, comment on each with the rebase recipe (design D13)
-- [ ] 7.2 Record both test counts
-- [ ] 7.3 Rename and convert `controller.{bar,doughnut,line,scatter}`
-- [ ] 7.4 Confirm the counts
+- [x] 7.2 Record both test counts
+- [x] 7.3 Rename and convert `controller.{bar,doughnut,line,scatter}`
+- [x] 7.4 Confirm the counts
 
 ## 8. P8: Specs open pull requests touch, core
 
