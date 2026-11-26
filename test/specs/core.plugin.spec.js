@@ -7,13 +7,13 @@ describe('Chart.plugins', function() {
       });
       var args = {value: 42};
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       chart.notifyPlugins('hook', args);
-      expect(plugin.hook.calls.count()).toBe(1);
-      expect(plugin.hook.calls.first().args[0]).toBe(chart);
-      expect(plugin.hook.calls.first().args[1]).toBe(args);
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({});
+      expect(plugin.hook.mock.calls.length).toBe(1);
+      expect(plugin.hook.mock.calls[0][0]).toBe(chart);
+      expect(plugin.hook.mock.calls[0][1]).toBe(args);
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({});
     });
 
     it('should call global plugins with arguments', function() {
@@ -21,14 +21,14 @@ describe('Chart.plugins', function() {
       var chart = window.acquireChart({});
       var args = {value: 42};
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       Chart.register(plugin);
       chart.notifyPlugins('hook', args);
-      expect(plugin.hook.calls.count()).toBe(1);
-      expect(plugin.hook.calls.first().args[0]).toBe(chart);
-      expect(plugin.hook.calls.first().args[1]).toBe(args);
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({});
+      expect(plugin.hook.mock.calls.length).toBe(1);
+      expect(plugin.hook.mock.calls[0][0]).toBe(chart);
+      expect(plugin.hook.mock.calls[0][1]).toBe(args);
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({});
       Chart.unregister(plugin);
     });
 
@@ -38,11 +38,11 @@ describe('Chart.plugins', function() {
         plugins: [plugin, plugin]
       });
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       Chart.register([plugin, plugin]);
       chart.notifyPlugins('hook');
-      expect(plugin.hook.calls.count()).toBe(1);
+      expect(plugin.hook.mock.calls.length).toBe(1);
       Chart.unregister(plugin);
     });
 
@@ -113,7 +113,7 @@ describe('Chart.plugins', function() {
 
       var plugins = chart.config.plugins;
       plugins.forEach(function(plugin) {
-        spyOn(plugin, 'hook').and.callThrough();
+        vi.spyOn(plugin, 'hook');
       });
 
       var ret = chart.notifyPlugins('hook');
@@ -148,7 +148,7 @@ describe('Chart.plugins', function() {
 
       var plugins = chart.config.plugins;
       plugins.forEach(function(plugin) {
-        spyOn(plugin, 'hook').and.callThrough();
+        vi.spyOn(plugin, 'hook');
       });
 
       var ret = chart.notifyPlugins('hook', {cancelable: true});
@@ -173,17 +173,17 @@ describe('Chart.plugins', function() {
         }
       });
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       Chart.register(plugin);
       chart.notifyPlugins('hook');
       chart.notifyPlugins('hook', {arg1: 'bla'});
       chart.notifyPlugins('hook', {arg1: 'bla', arg2: 42});
 
-      expect(plugin.hook.calls.count()).toBe(3);
-      expect(plugin.hook.calls.argsFor(0)[2]).toEqualOptions({a: '123'});
-      expect(plugin.hook.calls.argsFor(1)[2]).toEqualOptions({a: '123'});
-      expect(plugin.hook.calls.argsFor(2)[2]).toEqualOptions({a: '123'});
+      expect(plugin.hook.mock.calls.length).toBe(3);
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({a: '123'});
+      expect(plugin.hook.mock.calls[1][2]).toEqualOptions({a: '123'});
+      expect(plugin.hook.mock.calls[2][2]).toEqualOptions({a: '123'});
 
       Chart.unregister(plugin);
     });
@@ -208,18 +208,18 @@ describe('Chart.plugins', function() {
         }
       });
 
-      spyOn(plugins.a, 'hook');
-      spyOn(plugins.b, 'hook');
-      spyOn(plugins.c, 'hook');
+      vi.spyOn(plugins.a, 'hook').mockImplementation(() => {});
+      vi.spyOn(plugins.b, 'hook').mockImplementation(() => {});
+      vi.spyOn(plugins.c, 'hook').mockImplementation(() => {});
 
       chart.notifyPlugins('hook');
 
       expect(plugins.a.hook).toHaveBeenCalled();
       expect(plugins.b.hook).toHaveBeenCalled();
       expect(plugins.c.hook).toHaveBeenCalled();
-      expect(plugins.a.hook.calls.first().args[2]).toEqualOptions({a: '123'});
-      expect(plugins.b.hook.calls.first().args[2]).toEqualOptions({b: '456'});
-      expect(plugins.c.hook.calls.first().args[2]).toEqualOptions({c: '789'});
+      expect(plugins.a.hook.mock.calls[0][2]).toEqualOptions({a: '123'});
+      expect(plugins.b.hook.mock.calls[0][2]).toEqualOptions({b: '456'});
+      expect(plugins.c.hook.mock.calls[0][2]).toEqualOptions({c: '789'});
 
       Chart.unregister(plugins.a);
     });
@@ -243,9 +243,9 @@ describe('Chart.plugins', function() {
         }
       });
 
-      spyOn(plugins.a, 'hook');
-      spyOn(plugins.b, 'hook');
-      spyOn(plugins.c, 'hook');
+      vi.spyOn(plugins.a, 'hook').mockImplementation(() => {});
+      vi.spyOn(plugins.b, 'hook').mockImplementation(() => {});
+      vi.spyOn(plugins.c, 'hook').mockImplementation(() => {});
 
       chart.notifyPlugins('hook');
 
@@ -269,13 +269,13 @@ describe('Chart.plugins', function() {
         }
       });
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(Object.keys(plugin.hook.calls.first().args[2])).toEqual(['a']);
-      expect(plugin.hook.calls.first().args[2]).toEqual(jasmine.objectContaining({a: 42}));
+      expect(Object.keys(plugin.hook.mock.calls[0][2])).toEqual(['a']);
+      expect(plugin.hook.mock.calls[0][2]).toEqual(expect.objectContaining({a: 42}));
 
       Chart.unregister(plugin);
     });
@@ -285,14 +285,14 @@ describe('Chart.plugins', function() {
       var plugin = {id: 'a', hook: function() {}, defaults: {a: 'foobar'}};
 
       Chart.register(plugin);
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       var chart = window.acquireChart();
 
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({a: 'foobar'});
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({a: 'foobar'});
 
       Chart.unregister(plugin);
     });
@@ -311,11 +311,11 @@ describe('Chart.plugins', function() {
         },
       });
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({foo: 'foo', bar: 'bar'});
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({foo: 'foo', bar: 'bar'});
 
       Chart.unregister(plugin);
     });
@@ -334,21 +334,21 @@ describe('Chart.plugins', function() {
         },
       });
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({foo: 'foo'});
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({foo: 'foo'});
 
       chart.options.plugins.a = {bar: 'bar'};
       chart.update();
 
-      plugin.hook.calls.reset();
+      plugin.hook.mockClear();
       chart.notifyPlugins('hook');
 
       expect(plugin.hook).toHaveBeenCalled();
-      expect(plugin.hook.calls.first().args[2]).toEqualOptions({bar: 'bar'});
+      expect(plugin.hook.mock.calls[0][2]).toEqualOptions({bar: 'bar'});
     });
 
     // https://github.com/chartjs/Chart.js/issues/10654
@@ -396,7 +396,7 @@ describe('Chart.plugins', function() {
         }
       });
 
-      spyOn(plugin, 'hook');
+      vi.spyOn(plugin, 'hook').mockImplementation(() => {});
 
       chart.notifyPlugins('hook');
 
@@ -422,15 +422,19 @@ describe('Chart.plugins', function() {
       expect(results).toEqual([1]);
     });
 
-    it('should default to false for _scriptable, _indexable', function(done) {
+    it('should default to false for _scriptable, _indexable', async function() {
+      let done;
+      const started = new Promise((resolve) => {
+        done = resolve;
+      });
       const plugin = {
         id: 'test',
         start: function(chart, args, opts) {
-          expect(opts.fun).toEqual(jasmine.any(Function));
+          expect(opts.fun).toEqual(expect.any(Function));
           expect(opts.fun()).toEqual('test');
           expect(opts.arr).toEqual([1, 2, 3]);
 
-          expect(opts.sub.subfun).toEqual(jasmine.any(Function));
+          expect(opts.sub.subfun).toEqual(expect.any(Function));
           expect(opts.sub.subfun()).toEqual('subtest');
           expect(opts.sub.subarr).toEqual([3, 2, 1]);
           done();
@@ -451,6 +455,7 @@ describe('Chart.plugins', function() {
         },
         plugins: [plugin]
       });
+      await started;
     });
 
     it('should filter event callbacks by plugin events array', async function() {
@@ -474,10 +479,10 @@ describe('Chart.plugins', function() {
           }
         }]
       });
-      await jasmine.triggerMouseEvent(chart, 'mousemove', {x: 0, y: 0});
-      await jasmine.triggerMouseEvent(chart, 'test', {x: 0, y: 0});
-      await jasmine.triggerMouseEvent(chart, 'test2', {x: 0, y: 0});
-      await jasmine.triggerMouseEvent(chart, 'pointerleave', {x: 0, y: 0});
+      await triggerMouseEvent(chart, 'mousemove', {x: 0, y: 0});
+      await triggerMouseEvent(chart, 'test', {x: 0, y: 0});
+      await triggerMouseEvent(chart, 'test2', {x: 0, y: 0});
+      await triggerMouseEvent(chart, 'pointerleave', {x: 0, y: 0});
       expect(results).toEqual(['beforetest', 'aftertest', 'beforemouseout', 'aftermouseout']);
     });
 
