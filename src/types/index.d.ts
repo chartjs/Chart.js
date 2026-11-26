@@ -3290,7 +3290,8 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   stackWeight?: number;
 
   /**
-   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. If not set, it is decided by `position`, then by the first dataset that names the scale in `xAxisID`, `yAxisID` or `rAxisID`, then by the first character of the ID when the scale's type allows it, then by the defaults of the type.
+   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. An ID that is exactly 'x', 'y' or 'r' is that axis. Otherwise, if not set, it is decided by `position`, then by the first dataset that names the scale in `xAxisID`, `yAxisID` or `rAxisID`, then by the first character of the ID when the scale's type allows it, then by `axis` or `position` in the defaults of the type, then 'r' for a radial type.
+   *   @see https://www.chartjs.org/docs/latest/axes/#the-axis-of-a-scale
    */
   axis: 'x' | 'y' | 'r';
 

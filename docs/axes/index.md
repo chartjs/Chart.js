@@ -119,9 +119,11 @@ The following chart will have `'myScale'` scale:
 ```js
 let chart = new Chart(ctx, {
   type: 'radar',
-  scales: {
-    myScale: {
-      axis: 'r'
+  options: {
+    scales: {
+      myScale: {
+        axis: 'r'
+      }
     }
   }
 });
