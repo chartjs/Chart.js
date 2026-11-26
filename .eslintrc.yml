@@ -54,7 +54,12 @@ overrides:
       indent: "off"
       "@typescript-eslint/indent": ["error", 2]
       no-use-before-define: "off"
-      '@typescript-eslint/no-use-before-define': "error"
+      '@typescript-eslint/no-use-before-define': ["error", { "functions": false }]
+      '@typescript-eslint/no-empty-function': "off"
+      prefer-const: "off"
+      # Unused arguments named with a leading underscore are intentional, as
+      # for tsc's noUnusedParameters.
+      '@typescript-eslint/no-unused-vars': ["warn", { "argsIgnorePattern": "^_" }]
       no-shadow: "off"
       '@typescript-eslint/no-shadow': "error"
       space-before-function-paren: "off"
