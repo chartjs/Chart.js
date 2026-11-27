@@ -128,18 +128,16 @@ function generateTicks(generationOptions, dataRange) {
 
   // The spacing will have changed in cases 1, 2, and 3 so the factor cannot be computed
   // until this point
-  const spacingPlaces = _decimalPlaces(spacing);
-  const minPlaces = _decimalPlaces(niceMin);
-  if (isNullOrUndef(precision) && (spacingPlaces === undefined || minPlaces === undefined)) {
-    // The decimals of the spacing or of the minimum cannot be counted (they are
-    // subnormal, for example), so the ticks cannot be rounded to them.
-    return [{value: niceMin}, {value: niceMax}];
-  }
-  const decimalPlaces = Math.max(spacingPlaces, minPlaces);
+  const decimalPlaces = Math.max(
+    _decimalPlaces(spacing),
+    _decimalPlaces(niceMin)
+  );
   factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
   if (!isFinite(Math.max(Math.abs(niceMin), Math.abs(niceMax)) * factor)) {
-    // Every tick lies between the nice bounds. If they cannot be scaled by the
-    // factor, the ticks cannot be rounded to it.
+    // The ticks cannot be rounded to the factor. Every tick lies between the nice
+    // bounds, and these times the factor are beyond the largest number; or the
+    // factor is NaN, because the decimals of the spacing or of the minimum cannot
+    // be counted (_decimalPlaces returns undefined, for a subnormal value).
     return [{value: niceMin}, {value: niceMax}];
   }
   niceMin = Math.round(niceMin * factor) / factor;
