@@ -1419,22 +1419,26 @@ describe('Linear Scale', function() {
     });
   });
 
-  ['ticks', 'data'].forEach(function(bounds) {
-    it('Should generate finite ticks when the spacing has too many decimals to count with bounds: ' + bounds, function() {
+  [
+    // the decimals of the spacing cannot be counted
+    {data: [0, 1e-310], y: {bounds: 'ticks', min: 0}},
+    {data: [0, 1e-310], y: {bounds: 'data', min: 0}},
+    // the decimals of the minimum cannot be counted
+    {data: [1e-310, 1], y: {bounds: 'data'}}
+  ].forEach(function({data, y}) {
+    it('Should generate the bounds as ticks when the decimals cannot be counted with ' + JSON.stringify({data, y}), function() {
       var chart = window.acquireChart({
         type: 'line',
         data: {
           labels: ['a', 'b'],
-          datasets: [{data: [0, 1e-310]}]
+          datasets: [{data}]
         },
         options: {
-          scales: {
-            y: {bounds, min: 0}
-          }
+          scales: {y}
         }
       });
 
-      expectFiniteIncreasing(chart.scales.y.ticks.map(tick => tick.value));
+      expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual(data);
     });
   });
 

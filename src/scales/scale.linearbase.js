@@ -50,10 +50,6 @@ function generateTicks(generationOptions, dataRange) {
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
-  if (!isFinite(rmax - rmin)) {
-    // The range is wider than the largest number, so no spacing can be computed
-    return [{value: rmin}, {value: rmax}];
-  }
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
   const countDefined = !isNullOrUndef(count);
@@ -61,7 +57,7 @@ function generateTicks(generationOptions, dataRange) {
   let spacing = niceNum((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
 
-  // Beyond MIN_SPACING floating point numbers being to lose precision
+  // Beyond MIN_SPACING floating point numbers begin to lose precision
   // such that we can't do the math necessary to generate ticks
   if (spacing < MIN_SPACING && !minDefined && !maxDefined) {
     return [{value: rmin}, {value: rmax}];
@@ -133,8 +129,9 @@ function generateTicks(generationOptions, dataRange) {
   const spacingPlaces = _decimalPlaces(spacing);
   const minPlaces = _decimalPlaces(niceMin);
   if (isNullOrUndef(precision) && (spacingPlaces === undefined || minPlaces === undefined)) {
-    // The decimals cannot be counted (a subnormal spacing, for example), so the
-    // ticks cannot be rounded to them.
+    // The decimals cannot be counted, so the ticks cannot be rounded to them: the
+    // spacing is subnormal, or it is not finite because the range is wider than
+    // the largest number.
     return [{value: niceMin}, {value: niceMax}];
   }
   const decimalPlaces = Math.max(spacingPlaces, minPlaces);
