@@ -87,11 +87,11 @@
 
 ## 12. P12: Convert the layout service to TypeScript
 
-- [ ] 12.1 Rename the modules to `.ts`. Show the gate's errors for the layout service before the fix.
-- [ ] 12.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 12.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 12.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 12.5 Run the whole test suite; no fixture changes.
+- [x] 12.1 Rename the modules to `.ts`. Show the gate's errors for the layout service before the fix.
+- [x] 12.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 12.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 12.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 12.5 Run the whole test suite; no fixture changes.
 
 ## 13. P13: Convert the segment helpers to TypeScript
 
