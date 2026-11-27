@@ -34,12 +34,17 @@ When `minBarLength` lengthens a stacked segment, the next segment on the same si
 
 ### Requirement: minBarLength is the visible length
 
-`minBarLength` SHALL be the minimum length of the part of a bar inside the value range, measured from the edge where the bar enters it. A bar entirely outside the value range SHALL NOT be drawn inside the chart area. A hidden data item SHALL NOT be lengthened. Other datasets and the value range SHALL use the data values.
+`minBarLength` SHALL be the minimum length of the part of a bar inside the value range, measured from the edge where the bar enters it. A bar entirely outside the value range SHALL NOT be drawn inside the chart area. A lengthened bar whose value is inside the value range SHALL be drawn whole inside the chart area. A hidden data item SHALL NOT be lengthened. Other datasets and the value range SHALL use the data values.
 
 #### Scenario: Base below the axis minimum
 
 - **WHEN** the value axis has `min: 10`, the data is `[10, 50]` and `minBarLength` is 5
 - **THEN** the first bar shows 5 pixels from the bottom of the chart area
+
+#### Scenario: A zero at the edge of the range
+
+- **WHEN** the value axis begins at zero, the data is `[0, 30]` and `minBarLength` is 20
+- **THEN** the first bar is 20 pixels long, from the bottom of the chart area up
 
 #### Scenario: Bar outside the range
 
@@ -53,9 +58,14 @@ When `minBarLength` lengthens a stacked segment, the next segment on the same si
 
 ### Requirement: Zero-length bars centre on their value
 
-An unstacked bar of zero length that `minBarLength` lengthens SHALL be centred on its value. A stacked segment SHALL NOT be centred.
+An unstacked bar of zero length that `minBarLength` lengthens SHALL be centred on its value when the centred bar fits in the chart area, and otherwise SHALL be moved inside the chart area at its full length. A stacked segment SHALL NOT be centred.
 
 #### Scenario: A point in time on a timeline
 
 - **WHEN** the value axis is 0 to 10, a floating bar is `[5, 5]` and `minBarLength` is 10
 - **THEN** the bar reaches 5 pixels on each side of the value 5
+
+#### Scenario: A point in time at the edge of the range
+
+- **WHEN** the value axis is 0 to 10, a floating bar is `[0, 0]` and `minBarLength` is 10
+- **THEN** the bar is 10 pixels long, from the bottom of the chart area up

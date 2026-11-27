@@ -16,9 +16,9 @@ The bar controller works out where each bar goes on the index axis once per data
   - `borderSkipped: 'middle'` and the rounded corners of stacked bars follow the visible segments (#11721, #10245);
   - short stacked segments lengthened by `minBarLength` chain without gaps (#11515).
 - Behaviour changes, released as minors with a release-note line:
-  - **BREAKING (visual)** floating bars in a stacked chart are drawn at their own start and end and take no room in the stack (#12197, #11730);
-  - `minBarLength` is the length of the visible part of a bar. A bar entirely outside the value range is no longer drawn at the edge (#10487, #7174). Lines and the axis keep using data values (#11254 is answered, not changed);
-  - a zero-length unstacked bar lengthened by `minBarLength` is centred on its value (#11667);
+  - behaviour change: floating bars in a stacked chart are drawn at their own start and end and take no room in the stack (#12197, #11730);
+  - `minBarLength` is the length of the visible part of a bar. A bar entirely outside the value range is no longer drawn at the edge (#10487, #7174); a bar whose value is in the range is still kept inside the chart area (#10005); Lines and the axis keep using data values (#11254 is answered, not changed);
+  - a zero-length unstacked bar lengthened by `minBarLength` is centred on its value when it fits in the chart area (#11667);
   - `index` interaction mode without `axis` follows `indexAxis` (#10312);
   - with `intersect: true`, the bar drawn on top wins when several bars contain the pointer (#11646).
 - Bars whose base or head is outside the chart area can be found by the interaction modes through their visible part (#11733).

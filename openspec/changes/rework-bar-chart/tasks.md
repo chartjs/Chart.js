@@ -22,8 +22,15 @@
 
 - [ ] 5.1 New `test/specs/controller.bar.layout.spec.js`. With 1000 datasets of one point each, `getMatchingVisibleMetas` and `_getAxis` are called at most a few times per scale in an update; master calls them 2003 and 2000 times. With 3 datasets × 1000 points and `skipNull`, `meta._parsed.find` is called 0 times; it fails on master (18 000). A spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` the way chartjs-chart-financial does.
 - [ ] 5.2 The pull request says `Closes #12000`; its closing comment explains sub-pixel slots and an explicit `barThickness` (design D13).
-- [ ] 5.3 New `src/controllers/controller.bar.layout.ts` with `ScaleLayout`, `BandLayout`, `getScaleLayout` and `getBandLayout` (design D2); move `getAllScaleValues` and `computeMinSampleSize` there, with rework-ticks P16's change if it has merged. Values are keyed by type; add a release-note line for two bar-derived types on one scale. Cache it in `scale._cache.$barLayout` and drop it in `configure()`.
+- [ ] 5.3 New `src/controllers/controller.bar.layout.ts` with `ScaleLayout`, `BandLayout`, `getScaleLayout` and `getBandLayout` (design D2); move `getAllScaleValues` and `computeMinSampleSize` there, with rework-ticks P16's change if it has merged. Values stay shared by every bar type on the scale, as master's `$bar` (P21 keys them by type). Cache it in `scale._cache.$barLayout` and drop it in `configure()`.
 - [ ] 5.4 `_getStacks`, `_getStackCount`, `_getStackIndex`, `_getRuler` and `_calculateBarIndexPixels` read the layout and return what they returned before, including today's `_getAxis` count. All bar specs and fixtures are unchanged.
+
+## 21. P21: Each bar type finds its own smallest gap
+
+Built after P5 and before P6; the number was added after the design's pull request opened.
+
+- [ ] 21.1 Layout spec: a `bar` dataset with points 1 h apart and a bar-derived type registered in the spec with points 1 day apart on one time scale. The second type's bars get a day's width; on master they are as thin as the first's.
+- [ ] 21.2 Key the values in `scale._cache.$barLayout` by controller type (design D2). Release-note line: a second bar-derived type on one scale (chartjs-chart-financial over volume bars) uses its own gap.
 
 ## 6. P6: Index scales with the same range share the slots
 
@@ -55,12 +62,12 @@
 ## 11. P11: Short stacked segments chain
 
 - [ ] 11.1 Value specs, each failing on master: `minBarLength: 10`, stacked `[100], [0], [30]` (dataset 2 starts at dataset 1's head); a value of 1 lengthened at 100 px and not after a resize to 600 px (no stale offset); an `order` that puts the lengthened segment lower but with the higher index (no overlap).
-- [ ] 11.2 The first reader of a stack computes every segment's `base` and `head` in stacking order, from each dataset's own options; `_calculateBarValuePixels` reads them. Remove the `_visualValues` write. The pull request says `Closes #11515`.
+- [ ] 11.2 The first reader of a stack computes every segment's `base` and `head` in stacking order, from each dataset's own options; `_calculateBarValuePixels` reads them. Remove the `_visualValues` write. Release-note line: a line stacked with bars under one stack name sits on its data value, not on a bar lengthened by `minBarLength`. The pull request says `Closes #11515`.
 
 ## 12. P12: The stack fields leave core
 
 - [ ] 12.1 Remove `_top`, `_bottom` and `_visualValues` from `updateStacks`, `clearStacks` and `applyStack`. Update the `_stacks` specs in `test/specs/core.datasetController.spec.js` (after #12499).
-- [ ] 12.2 Release-note lines: plugins that read these fields; lines stacked with bars under one stack name sit on the data value, not on a bar lengthened by `minBarLength`.
+- [ ] 12.2 Release-note line: plugins that read these fields. No output changes; nothing reads them after P11.
 
 ## 13. P13: Floating bars keep their values in a stack
 
@@ -78,7 +85,7 @@
 ## 15. P15: Zero-length bars centre on their value
 
 - [ ] 15.1 Value spec: y 0-10, `[[5, 5]]`, `minBarLength: 10` reaches ±5 px around px(5). It fails on master.
-- [ ] 15.2 Centre unstacked zero-length bars. Release-note line. The pull request says `Closes #11667`.
+- [ ] 15.2 Centre unstacked zero-length bars when the centred bar fits in the chart area; otherwise move it inside, as master does (design D14). The 10 `minBarLength/*` fixtures are unchanged. Release-note line. The pull request says `Closes #11667`.
 
 ## 16. P16: Bars cut off by the chart area are found
 
