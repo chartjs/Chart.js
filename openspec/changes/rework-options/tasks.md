@@ -94,8 +94,8 @@
 
 ## 14. P14: Docs: hover options of line and radar datasets
 
-- [ ] 14.1 In `docs/charts/line.md` and `docs/charts/radar.md`, say that the dataset's `hover*` options apply to its points unless the matching `pointHover*` option is set, also when the dataset sets the plain `point*` option (`hoverBorderWidth` wins over `pointBorderWidth`).
-- [ ] 14.2 The pull request says `Part of #10381` in a sentence; the issue stays open for 5.0.
+- [x] 14.1 In `docs/charts/line.md` and `docs/charts/radar.md`, say that the dataset's `hover*` options apply to its points unless the matching `pointHover*` option is set, also when the dataset sets the plain `point*` option (`hoverBorderWidth` wins over `pointBorderWidth`).
+- [x] 14.2 The pull request says `Part of #10381` in a sentence; the issue stays open for 5.0.
 
 ## 15. P15: Docs: type defaults of a scale
 
