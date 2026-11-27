@@ -99,6 +99,8 @@ Allows sorting of [tooltip items](#tooltip-item-context). Must implement at mini
 
 Allows filtering of [tooltip items](#tooltip-item-context). Must implement at minimum a function that can be passed to [Array.prototype.filter](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/filter). This function can also accept a fourth parameter that is the data object passed to the chart.
 
+If the filter removes every item, the tooltip is hidden and the content callbacks (`title`, `beforeBody`, `label`, `afterBody`, `footer`, …) are not called.
+
 ## Tooltip Callbacks
 
 Namespace: `options.plugins.tooltip.callbacks`, the tooltip has the following callbacks for providing text. For all functions, `this` will be the tooltip object created from the `Tooltip` constructor. If the callback returns `undefined`, then the default callback will be used. To remove things from the tooltip callback should return an empty string.

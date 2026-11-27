@@ -650,8 +650,7 @@ export class Tooltip extends Element {
     if (!tooltipItems.length) {
       if (active.length) {
         // Every item was filtered out: clear the content so the previous
-        // body is not drawn with the cleared label colors while fading out,
-        // and anchor the caret so an identical event is not a position change
+        // body is not drawn with the cleared label colors while fading out
         this.title = [];
         this.beforeBody = [];
         this.body = [];
@@ -659,6 +658,7 @@ export class Tooltip extends Element {
         this.footer = [];
         const position = positioners[options.position].call(this, active, this._eventPosition);
         if (position !== false) {
+          // _positionChanged() compares against the caret, so a repeated event on a filtered item is not a position change
           this.caretX = position.x;
           this.caretY = position.y;
         }
