@@ -1545,7 +1545,11 @@ describe('Legend block tests', function() {
         },
         options: {animation: false, plugins: {legend: {position}}}
       }, {canvas: {width: 120, height: 300}});
-      const drawn = Object.fromEntries(fillText.mock.calls.map(([text, x, y]) => [text, y]));
+      // The y each text was drawn at.
+      const drawn = {};
+      fillText.mock.calls.forEach(function(args) {
+        drawn[args[0]] = args[2];
+      });
       fillText.mockRestore();
       const {legend} = chart;
       const [multi, next] = legend.legendHitBoxes;
@@ -1622,6 +1626,27 @@ describe('Legend block tests', function() {
     expect(legend.legendHitBoxes.length).toBe(0);
     // Only the title and the legend's fixed 10 pixels.
     expect(legend.height).toBe(legend._computeTitleHeight() + 10);
+  });
+
+  it('should make an array label in a top legend as wide as its widest line', function() {
+    const chart = window.acquireChart({
+      type: 'bar',
+      data: {labels: ['A'], datasets: [{label: ['WWWW', 'i'], data: [1]}]},
+      options: {plugins: {legend: {position: 'top'}}}
+    });
+    const {legend} = chart;
+    const {font, boxWidth} = legend._labelLayout;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.font = font.string;
+    const widest = ctx.measureText('WWWW').width;
+    // The array as one string, which is what was measured before.
+    expect(widest).toBeLessThan(ctx.measureText('WWWW,i').width);
+    ctx.restore();
+
+    const width = boxWidth + font.size / 2 + widest;
+    expect(legend.legendHitBoxes[0].width).toBeCloseTo(width, 5);
+    expect(legend.lineWidths).toEqual([width + legend.options.labels.padding]);
   });
 
   it('should draw the labels in the font they were laid out with', function() {

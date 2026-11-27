@@ -359,7 +359,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     let top = 0;
     let rowHeight = 0;
     this.legendItems.forEach((legendItem, i) => {
-      const textWidth = ctx.measureText(legendItem.text).width;
+      const textWidth = calculateTextWidth(legendItem, ctx);
       const itemWidth = boxWidth + (fontSize / 2) + textWidth;
       const itemHeight = calculateItemHeight(lineItemHeight, legendItem, font.lineHeight);
 
@@ -738,7 +738,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
 }
 
 /**
- * Width of an item's label in a vertical legend: its widest line.
+ * Width of an item's label: its widest line.
  */
 function calculateTextWidth(legendItem: LegendItem, ctx: CanvasRenderingContext2D) {
   const legendItemText = legendItem.text;
