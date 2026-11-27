@@ -4,7 +4,7 @@
   "description": "chart.js should work in node next typescript project",
   "dependencies": {
     "chart.js": "workspace:*",
-    "typescript": "^4.7.4"
+    "typescript": "4.7.4"
   },
   "scripts": {
     "test": "tsc"

@@ -235,15 +235,16 @@ export function drawPointLegend(
       ctx.closePath();
       break;
     case 'rect':
-      if (!rotation) {
-        size = Math.SQRT1_2 * radius;
-        width = w ? w / 2 : size;
-        ctx.rect(x - width, y - size, 2 * width, 2 * size);
-        break;
-      }
-      rad += QUARTER_PI;
-    /* falls through */
     case 'rectRot':
+      if (style === 'rect') {
+        if (!rotation) {
+          size = Math.SQRT1_2 * radius;
+          width = w ? w / 2 : size;
+          ctx.rect(x - width, y - size, 2 * width, 2 * size);
+          break;
+        }
+        rad += QUARTER_PI;
+      }
       xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
       xOffset = Math.cos(rad) * radius;
       yOffset = Math.sin(rad) * radius;
@@ -255,9 +256,10 @@ export function drawPointLegend(
       ctx.closePath();
       break;
     case 'crossRot':
-      rad += QUARTER_PI;
-    /* falls through */
     case 'cross':
+      if (style === 'crossRot') {
+        rad += QUARTER_PI;
+      }
       xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
       xOffset = Math.cos(rad) * radius;
       yOffset = Math.sin(rad) * radius;

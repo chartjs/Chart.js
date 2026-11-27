@@ -1,6 +1,6 @@
 module.exports = {
   config: {
-    type: 'polarArea',
+    type: 'doughnut',
     data: {
       labels: [0, 1, 2, 3, 4, 5],
       datasets: [
@@ -18,11 +18,6 @@ module.exports = {
           backgroundColor: 'transparent',
           borderWidth: 1,
           borderDash: [3, 3]
-        }
-      },
-      scales: {
-        r: {
-          display: false
         }
       }
     }

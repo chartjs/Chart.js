@@ -96,7 +96,6 @@ class DateAdapterBase implements DateAdapter {
     this.options = options || {};
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   init() {}
 
   formats(): Record<TimeUnit | 'datetime', string> {

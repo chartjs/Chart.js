@@ -1,4 +1,4 @@
-import Animations from './core.animations.js';
+import Animations, {_animationsNeedContext} from './core.animations.js';
 import defaults from './core.defaults.js';
 import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core.js';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection.js';
@@ -214,16 +214,28 @@ function clearStacks(meta, items) {
   }
 
   items = items || meta._parsed;
-  for (const parsed of items) {
-    const stacks = parsed._stacks;
-    if (!stacks || stacks[axis] === undefined || stacks[axis][datasetIndex] === undefined) {
-      continue;
-    }
-    delete stacks[axis][datasetIndex];
-    if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
-      delete stacks[axis]._visualValues[datasetIndex];
+  // Indexed loop: `for...of` allocates an iterator result per item until optimized
+  for (let i = 0, ilen = items.length; i < ilen; ++i) {
+    const parsed = items[i];
+    // An element inserted but not yet parsed has no entry and nothing to clear
+    if (parsed) {
+      clearItemStack(parsed._stacks, axis, datasetIndex);
     }
   }
+}
+
+function clearItemStack(stacks, axis, datasetIndex) {
+  if (!stacks || stacks[axis] === undefined || stacks[axis][datasetIndex] === undefined) {
+    return;
+  }
+  delete stacks[axis][datasetIndex];
+  if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
+    delete stacks[axis]._visualValues[datasetIndex];
+  }
+}
+
+function isNotInOrder(cur, prev, iAxis) {
+  return cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
 }
 
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
@@ -470,11 +482,15 @@ export default class DatasetController {
         parsed = this.parsePrimitiveData(meta, data, start, count);
       }
 
-      const isNotInOrderComparedToPrev = () => cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
+      const _parsed = meta._parsed;
+      if (_parsed.length < start + count) {
+        // Grow once, instead of on every assignment below
+        _parsed.length = start + count;
+      }
       for (i = 0; i < count; ++i) {
-        meta._parsed[i + start] = cur = parsed[i];
+        _parsed[i + start] = cur = parsed[i];
         if (sorted) {
-          if (isNotInOrderComparedToPrev()) {
+          if (isNotInOrder(cur, prev, iAxis)) {
             sorted = false;
           }
           prev = cur;
@@ -847,14 +863,22 @@ export default class DatasetController {
       return cached;
     }
     let options;
+    let cacheable = true;
     if (chart.options.animation !== false) {
       const config = this.chart.config;
       const scopeKeys = config.datasetAnimationScopeKeys(this._type, transition);
       const scopes = config.getOptionScopes(this.getDataset(), scopeKeys);
-      options = config.createResolver(scopes, this.getContext(index, active, transition));
+      options = config.createResolver(scopes);
+      // Only animations that read the context differ from one element to the next.
+      // The answer is the same for every element: `false` in the cache saves checking it again.
+      if (cached === false || _animationsNeedContext(options)) {
+        cacheable = false;
+        cache[cacheKey] = false;
+        options = config.createResolver(scopes, this.getContext(index, active, transition));
+      }
     }
     const animations = new Animations(chart, options && options.animations);
-    if (options && options._cacheable) {
+    if (cacheable) {
       cache[cacheKey] = Object.freeze(animations);
     }
     return animations;
@@ -963,11 +987,14 @@ export default class DatasetController {
     const data = this._data;
     const elements = this._cachedMeta.data;
 
-    // Apply changes detected through array listeners
+    // Apply changes detected through array listeners. The inserted elements are
+    // parsed and reset only after all the changes, so that the data is parsed in order.
+    const newElements = this._newElements = [];
     for (const [method, arg1, arg2] of this._syncList) {
       this[method](arg1, arg2);
     }
     this._syncList = [];
+    this._newElements = undefined;
 
     const numMeta = elements.length;
     const numData = data.length;
@@ -985,6 +1012,30 @@ export default class DatasetController {
       this._insertElements(numMeta, numData - numMeta, resetNewElements);
     } else if (numData < numMeta) {
       this._removeElements(numData, numMeta - numData);
+    }
+
+    this._resetElements(newElements);
+  }
+
+  /**
+	 * Resets the given elements that are still in the dataset, in contiguous runs.
+	 * @private
+	 */
+  _resetElements(elements) {
+    if (!elements.length) {
+      return;
+    }
+    const data = this._cachedMeta.data;
+    const items = new Set(elements);
+    let start = -1;
+    for (let i = 0; i <= data.length; i++) {
+      const isNew = i < data.length && items.has(data[i]);
+      if (isNew && start < 0) {
+        start = i;
+      } else if (!isNew && start >= 0) {
+        this.updateElements(data, start, i - start, 'reset');
+        start = -1;
+      }
     }
   }
 
@@ -1012,6 +1063,13 @@ export default class DatasetController {
     if (this._parsing) {
       move(meta._parsed);
     }
+
+    if (this._newElements) {
+      // Inserted from the sync list: _resyncElements parses and resets these later
+      this._newElements.push(...data.slice(start, end));
+      return;
+    }
+
     this.parse(start, count);
 
     if (resetNewElements) {
@@ -1054,7 +1112,9 @@ export default class DatasetController {
   }
 
   _onDataPop() {
-    this._sync(['_removeElements', this._cachedMeta.data.length - 1, 1]);
+    // The listener runs after the pop, so the length is the index of the removed item.
+    // The elements may not be synced yet, when earlier changes are still queued.
+    this._sync(['_removeElements', this.getDataset().data.length, 1]);
   }
 
   _onDataShift() {
@@ -1066,7 +1126,7 @@ export default class DatasetController {
       this._sync(['_removeElements', start, count]);
     }
     const newCount = arguments.length - 2;
-    if (newCount) {
+    if (newCount > 0) {
       this._sync(['_insertElements', start, newCount]);
     }
   }

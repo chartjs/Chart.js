@@ -1,14 +1,17 @@
 # HTML Legend
 
 This example shows how to create a custom HTML legend using a plugin and connect it to the chart in lieu of the default on-canvas legend.  
-For an html legend to work you need to place an empty div at your web page with the ID you provide in the options to bind to like so: `<div id="legend-container"></div>`.  
+For an html legend to work you need to place an empty div at your web page, like so: `<div id="legend-container"></div>`, and give the plugin's `container` option either that element or its ID.
+When the chart is in a shadow root, pass the element: `document.getElementById` does not find elements inside a shadow root.
 
 <div id="legend-container"></div>
 
 ```js chart-editor
 // <block:plugin:0>
-const getOrCreateLegendList = (chart, id) => {
-  const legendContainer = document.getElementById(id);
+const getOrCreateLegendList = (chart, container) => {
+  const legendContainer = typeof container === 'string'
+    ? document.getElementById(container)
+    : container;
   let listContainer = legendContainer.querySelector('ul');
 
   if (!listContainer) {
@@ -27,7 +30,7 @@ const getOrCreateLegendList = (chart, id) => {
 const htmlLegendPlugin = {
   id: 'htmlLegend',
   afterUpdate(chart, args, options) {
-    const ul = getOrCreateLegendList(chart, options.containerID);
+    const ul = getOrCreateLegendList(chart, options.container);
 
     // Remove old legend items
     while (ul.firstChild) {
@@ -116,8 +119,8 @@ const config = {
   options: {
     plugins: {
       htmlLegend: {
-        // ID of the container to put the legend in
-        containerID: 'legend-container',
+        // The container to put the legend in: an element, or its ID
+        container: 'legend-container',
       },
       legend: {
         display: false,
@@ -133,6 +136,26 @@ module.exports = {
   config: config,
 };
 ```
+
+## TypeScript
+
+`htmlLegend` is not one of the built-in plugins, so TypeScript does not know its options. Declare them by [augmenting `PluginOptionsByType`](../../developers/plugins.md#typescript-typings), for example in a `.d.ts` file:
+
+```ts
+import type {ChartType} from 'chart.js';
+
+declare module 'chart.js' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface PluginOptionsByType<TType extends ChartType> {
+    htmlLegend?: {
+      // The container to put the legend in: an element, or its ID
+      container?: string | HTMLElement;
+    };
+  }
+}
+```
+
+Keep the `TType` type parameter even though the options do not use it: every declaration of an interface must have the same type parameters, and TypeScript reports error TS2428 without it.
 
 ## Docs 
 * [Data structures (`labels`)](../../general/data-structures.md)

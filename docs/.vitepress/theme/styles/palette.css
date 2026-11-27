@@ -1,0 +1,25 @@
+/*
+ * The Chart.js palette of vuepress-theme-chartjs, as the custom properties of
+ * VitePress' default theme. Its brand colour is the site name; its accent is
+ * what VitePress calls "brand": links and active states. Light only, so there
+ * is no dark variant.
+ */
+:root {
+  --chartjs-brand: #ff6384;
+  --chartjs-accent: #3080d0;
+
+  --vp-c-brand-1: var(--chartjs-accent);
+  --vp-c-brand-2: #4a93da;
+  --vp-c-brand-3: #2569b0;
+  --vp-c-brand-soft: rgba(48, 128, 208, 0.15);
+
+  --vp-home-hero-name-color: var(--chartjs-brand);
+  --vp-button-brand-bg: var(--chartjs-accent);
+  --vp-button-brand-hover-bg: #4a93da;
+  --vp-button-brand-active-bg: #2569b0;
+}
+
+.VPNavBarTitle .title {
+  color: var(--chartjs-brand);
+  font-weight: bold;
+}

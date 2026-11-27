@@ -148,6 +148,17 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverBorderWidth` | Border width of point when hovered.
 | `pointHoverRadius` | The radius of the point when hovered.
 
+Point options have two spellings. In a dataset and in `options.datasets.line`, they carry the `point` prefix: `pointBorderWidth`, `pointHoverBorderWidth`. In `options.elements.point`, the same options are written without it: `borderWidth`, `hoverBorderWidth`. A dataset's own `hover*` options, such as `hoverBorderWidth`, are meant for the line.
+
+A hovered point looks for `pointHoverBorderWidth`, then `hoverBorderWidth`, then `pointBorderWidth`, then `borderWidth`. It checks each name in the dataset, `options.datasets.line`, `options.elements.point`, `options` and the defaults before it tries the next name. So:
+
+* the dataset's `hoverBorderWidth: 10`, meant for the line, also gives hovered points a 10 pixel border, even when `pointBorderWidth` is set;
+* `pointBorderWidth` and `pointRadius` never apply to a hovered point, because `Chart.defaults.elements.point` sets `hoverBorderWidth: 1` and `hoverRadius: 4`;
+* the default hover colors come from `Chart.defaults.hoverBackgroundColor` and `Chart.defaults.hoverBorderColor`, which return a darker shade of the point's `pointBackgroundColor` and `pointBorderColor`; the dataset's `hoverBackgroundColor` and `hoverBorderColor`, like its `hoverBorderWidth`, also reach hovered points;
+* options without a hover form, such as `pointStyle`, `pointRotation` and `pointHitRadius`, apply as usual.
+
+To style only hovered points, set the `pointHover*` options. In the [`'dataset'` interaction mode](../configuration/interactions.md#dataset) the `hover*` options also style the line.
+
 ### cubicInterpolationMode
 
 The following interpolation modes are supported.
@@ -286,7 +297,7 @@ module.exports = {
 
 ### Config Options
 
-The configuration options for the vertical line chart are the same as for the [line chart](#configuration-options). However, any options specified on the x-axis in a line chart, are applied to the y-axis in a vertical line chart.
+The configuration options for the vertical line chart are the same as for the [line chart](#dataset-properties). However, any options specified on the x-axis in a line chart, are applied to the y-axis in a vertical line chart.
 
 ## Internal data format
 

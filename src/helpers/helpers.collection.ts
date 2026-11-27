@@ -22,14 +22,13 @@ export function _lookup(
   value: number,
   cmp?: (value: number) => boolean
 ) {
-  cmp = cmp || ((index) => table[index] < value);
   let hi = table.length - 1;
   let lo = 0;
-  let mid: number;
 
   while (hi - lo > 1) {
-    mid = (lo + hi) >> 1;
-    if (cmp(mid)) {
+    const mid = (lo + hi) >> 1;
+    const below = cmp ? cmp(mid) : (table[mid] as number) < value;
+    if (below) {
       lo = mid;
     } else {
       hi = mid;
@@ -47,18 +46,27 @@ export function _lookup(
  * @param last - lookup last index
  * @private
  */
-export const _lookupByKey = (
+export function _lookupByKey(
   table: Record<string, number>[],
   key: string,
   value: number,
   last?: boolean
-) =>
-  _lookup(table, value, last
-    ? index => {
-      const ti = table[index][key];
-      return ti < value || ti === value && table[index + 1][key] === value;
+) {
+  let hi = table.length - 1;
+  let lo = 0;
+
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    const v = table[mid][key];
+    if (v < value || last && v === value && table[mid + 1][key] === value) {
+      lo = mid;
+    } else {
+      hi = mid;
     }
-    : index => table[index][key] < value);
+  }
+
+  return {lo, hi};
+}
 
 /**
  * Reverse binary search
@@ -67,12 +75,25 @@ export const _lookupByKey = (
  * @param value - value to find
  * @private
  */
-export const _rlookupByKey = (
+export function _rlookupByKey(
   table: Record<string, number>[],
   key: string,
   value: number
-) =>
-  _lookup(table, value, index => table[index][key] >= value);
+) {
+  let hi = table.length - 1;
+  let lo = 0;
+
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (table[mid][key] >= value) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+
+  return {lo, hi};
+}
 
 /**
  * Return subset of `values` between `min` and `max` inclusive.

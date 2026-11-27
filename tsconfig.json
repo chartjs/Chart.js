@@ -29,6 +29,7 @@
     "allowSyntheticDefaultImports": true,
     /* Language and Environment */
     "target": "ES6",
+    "useDefineForClassFields": true,
     "lib": ["es2018", "DOM"]
   },
   "typedocOptions": {

@@ -1,0 +1,25 @@
+{
+    "name": "chartjs-docs-vitepress",
+    "private": true,
+    "description": "The VitePress site's dependencies while VuePress still publishes the docs; scripts are not named build or dev so the root docs scripts never run them",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "api": "typedoc --options typedoc.json --out ../api",
+        "site:build": "pnpm run api && vitepress build ..",
+        "site:dev": "pnpm run api && vitepress dev ..",
+        "test": "node --test theme/versions.test.ts redirects.test.ts",
+        "typecheck": "vue-tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/node": "^18.15.11",
+        "markdown-it-include": "^2.0.0",
+        "typedoc": "^0.28.20",
+        "typedoc-plugin-markdown": "^4.14.1",
+        "typedoc-vitepress-theme": "^1.1.4",
+        "typescript": "~6.0.3",
+        "vitepress": "^1.6.4",
+        "vue": "^3.5.46",
+        "vue-tsc": "^3.3.14"
+    }
+}

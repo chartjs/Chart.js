@@ -1,5 +1,6 @@
 import defaults, {overrides, descriptors} from './core.defaults.js';
-import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core.js';
+import registry from './core.registry.js';
+import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject, _isRadialScale} from '../helpers/helpers.core.js';
 import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config.js';
 
 export function getIndexAxis(type, options) {
@@ -37,35 +38,61 @@ function axisFromPosition(position) {
   }
 }
 
-export function determineAxis(id, ...scaleOptions) {
+/**
+ * The axis of the first letter of the id, when the scale's type allows it:
+ * `r` only for a type that is radial, `x` and `y` only for one that is not.
+ * A type that is not registered limits nothing.
+ */
+function axisFromFirstLetter(id, scaleClass) {
+  const axis = id.length > 1 && idMatchesAxis(id[0].toLowerCase());
+  if (!axis || !scaleClass) {
+    return axis;
+  }
+  return (axis === 'r') === _isRadialScale(scaleClass.prototype) ? axis : undefined;
+}
+
+/**
+ * The axis that the scale's type gives the id: the first letter when the type
+ * allows it, then `axis` or `position` in the defaults of the type, then `r`
+ * when the type is radial.
+ */
+function axisFromType(id, type) {
+  const scaleClass = /** @type {{prototype: {getPointPositionForValue?: unknown}} | undefined} */ (registry.scales.get(type));
+  const typeDefaults = defaults.scales[type] || {};
+  return axisFromFirstLetter(id, scaleClass)
+    || typeDefaults.axis
+    || axisFromPosition(typeDefaults.position)
+    || (scaleClass && _isRadialScale(scaleClass.prototype) ? 'r' : undefined);
+}
+
+/**
+ * Decides the axis of the scale `id`: the id when it is exactly `x`, `y` or
+ * `r`, then `axis`, `position`, the axis by which a dataset binds the id, and
+ * what the scale's type gives it (see `axisFromType`).
+ * @param {string} id
+ * @param {object} scaleOptions - the scale's options, its `type` included
+ * @param {string} [boundAxis] - the axis of the first dataset that names the id
+ */
+export function determineAxis(id, scaleOptions, boundAxis) {
   if (idMatchesAxis(id)) {
     return id;
   }
-  for (const opts of scaleOptions) {
-    const axis = opts.axis
-      || axisFromPosition(opts.position)
-      || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
-    if (axis) {
-      return axis;
-    }
+  const axis = scaleOptions.axis
+    || axisFromPosition(scaleOptions.position)
+    || boundAxis
+    || axisFromType(id, scaleOptions.type);
+  if (axis) {
+    return axis;
   }
   throw new Error(`Cannot determine type of '${id}' axis. Please provide 'axis' or 'position' option.`);
 }
 
-function getAxisFromDataset(id, axis, dataset) {
-  if (dataset[axis + 'AxisID'] === id) {
-    return {axis};
-  }
-}
-
 function retrieveAxisFromDatasets(id, config) {
-  if (config.data && config.data.datasets) {
-    const boundDs = config.data.datasets.filter((d) => d.xAxisID === id || d.yAxisID === id);
-    if (boundDs.length) {
-      return getAxisFromDataset(id, 'x', boundDs[0]) || getAxisFromDataset(id, 'y', boundDs[0]);
-    }
+  const datasets = config.data && config.data.datasets || [];
+  const dataset = datasets.find((d) => d.xAxisID === id || d.yAxisID === id || d.rAxisID === id);
+  if (dataset) {
+    return ['x', 'y', 'r'].find((axis) => dataset[axis + 'AxisID'] === id);
   }
-  return {};
 }
 
 function mergeScaleConfig(config, options) {
@@ -83,7 +110,7 @@ function mergeScaleConfig(config, options) {
     if (scaleConf._proxy) {
       return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
     }
-    const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config), defaults.scales[scaleConf.type]);
+    const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config));
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
     scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);

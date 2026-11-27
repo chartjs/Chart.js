@@ -1,2 +1,4 @@
 dist/*
+docs/api/*
+etc/*
 test/integration/react-browser/*

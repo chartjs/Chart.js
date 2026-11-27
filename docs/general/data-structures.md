@@ -75,6 +75,8 @@ This is also the internal format used for parsed data. In this mode, parsing can
 
 The values provided must be parsable by the associated scales or in the internal format of the associated scales. For example, the `category` scale uses integers as an internal format, where each integer represents an index in the labels array; but, if parsing is enabled, it can also parse string labels.
 
+For a multi-line category label, the value on the category axis can be an array with one entry per line, such as `{x: ['Net', 'sales'], y: 20}`. It matches a label with the same lines, so it does not have to be the same array as in `labels`.
+
 `null` can be used for skipped values.
 
 ## Object[] using custom properties

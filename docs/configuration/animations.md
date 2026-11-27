@@ -127,7 +127,7 @@ These paths are valid under `defaults` for global configuration and `options` fo
 
 ## animation
 
-The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.defaults.js" target="_blank">core.animations.defaults.js</a>
+The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.defaults.ts" target="_blank">core.animations.defaults.ts</a>
 
 Namespace: `options.animation`
 
@@ -172,7 +172,7 @@ These default animations are overridden by most of the dataset controllers.
 
 The core transitions are `'active'`, `'hide'`, `'reset'`, `'resize'`, `'show'`.
 A custom transition can be used by passing a custom `mode` to [update](../developers/api.md#updatemode).
-Transition extends the main [animation configuration](#animation-configuration) and [animations configuration](#animations-configuration).
+Transition extends the main [animation configuration](#animation-configuration) and [animations configuration](#animations-2).
 
 ### Default transitions
 

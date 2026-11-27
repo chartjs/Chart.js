@@ -15,6 +15,9 @@ build/
 # Generated type docs
 docs/api
 docs/.vuepress/dist
+docs/.vitepress/cache
+docs/.vitepress/.temp
+docs/.vitepress/dist
 
 # Development
 .DS_Store
@@ -33,6 +36,9 @@ docs/.vuepress/dist
 
 # Generated
 /test/types/autogen*.ts
+
+# Vitest: attachments, such as screenshots of failing browser tests
+/.vitest/
 
 # Eslint
 .eslintcache

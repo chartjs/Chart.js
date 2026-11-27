@@ -1,0 +1,13 @@
+import type {Defaults} from './core.defaults.js';
+
+export function applyLayoutsDefaults(defaults: Defaults) {
+  defaults.set('layout', {
+    autoPadding: true,
+    padding: {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    }
+  });
+}
