@@ -296,7 +296,9 @@ function _resolveArray(
 
   if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
     const item = value[_context.index % value.length];
-    // An object picked by index resolves on its own, under the prefixes in effect
+    // An object picked by index resolves on its own, under the prefixes in effect. Not
+    // createSubResolver: that would merge objects of lower scopes under the same key into
+    // the item, where the raw item never took them.
     return needsSubResolver(prop, item) ? _createResolver([item], _proxy._prefixes) : item;
   } else if (isObject(value[0])) {
     // Array of objects, return array or resolvers

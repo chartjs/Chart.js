@@ -1048,6 +1048,19 @@ describe('Chart.helpers.config', function() {
         expect(opts.nodes.test).toEqual(4);
       });
 
+      it('should apply to the item an indexable array gives for a context index past its length', function() {
+        const nodes = [{test: 1, hoverTest: 2}, {test: 3, hoverTest: 4}];
+        const opts = _attachContext(_createResolver([{nodes}], hover), {index: 3});
+        expect(opts.nodes.test).toEqual(4);
+      });
+
+      it('should not merge a lower object under the same key into the item an indexable array gives', function() {
+        const nodes = [{test: 1, hoverTest: 2}];
+        const opts = _attachContext(_createResolver([{nodes}, {nodes: {extra: 5}}], hover), {index: 0});
+        expect(opts.nodes.test).toEqual(2);
+        expect(opts.nodes.extra).toBeUndefined();
+      });
+
       it('should resolve as before when no nested key has a prefix', function() {
         const res = _createResolver([{node: {test: 1, other: 2}}], hover);
         expect(res.node.test).toEqual(1);
@@ -1093,6 +1106,13 @@ describe('Chart.helpers.config', function() {
         const hovered = _attachContext(_createResolver([options]), {}).setContext({}, hover);
 
         expect(hovered.nodes[0].color).toEqual('red+dark');
+      });
+
+      it('should give the second argument of an item of an array the context', function() {
+        const options = {nodes: [{size: ctx => ctx.n, color: 'red', hoverColor: (ctx, opts) => 'c' + opts.size}]};
+        const hovered = _attachContext(_createResolver([options]), {n: 1}).setContext({n: 7}, hover);
+
+        expect(hovered.nodes[0].color).toEqual('c7');
       });
 
       it('should not detect recursion for a prefix that is not named hover', function() {
