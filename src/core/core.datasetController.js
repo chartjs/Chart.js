@@ -759,6 +759,18 @@ export default class DatasetController {
   }
 
   /**
+   * Whether the data item at `index` is shown. A hidden data item cannot be active.
+   * Controllers that hide data by `chart.toggleDataVisibility` also check that.
+   * @param {number} index - data index
+   * @returns {boolean}
+   * @protected
+   */
+  _isDataVisible(index) {
+    const element = this._cachedMeta.data[index];
+    return !(element && element.hidden);
+  }
+
+  /**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
 	 * @param {number} index - data index

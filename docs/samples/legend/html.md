@@ -53,10 +53,13 @@ const htmlLegendPlugin = {
         if (type === 'pie' || type === 'doughnut') {
           // Pie and doughnut charts only have a single dataset and visibility is per item
           chart.toggleDataVisibility(item.index);
+          chart.update();
+        } else if (chart.isDatasetVisible(item.datasetIndex)) {
+          // hide and show update the chart with the hide and show animations
+          chart.hide(item.datasetIndex);
         } else {
-          chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
+          chart.show(item.datasetIndex);
         }
-        chart.update();
       };
 
       // Color box

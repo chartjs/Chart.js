@@ -522,6 +522,7 @@ class Chart {
       });
     }
 
+    this._deactivateHidden();
     this._updateDatasets(mode);
 
     // Do this before render so that any plugins that need final scale updates can use it
@@ -529,15 +530,57 @@ class Chart {
 
     this._layers.sort(compare2Level('z', '_idx'));
 
-    // Replay last event from before update, or set hover styles on active elements
+    this._replayActive();
+
+    this.render();
+  }
+
+  /**
+   * Drops the hidden data from the active elements before the datasets update, so
+   * the update resolves their normal options. Their active state ends without the
+   * un-hover animation: the update animates them in its own mode, such as 'hide'.
+   * @private
+   */
+  _deactivateHidden() {
+    const lastActive = this._active;
+    if (!lastActive.length) {
+      return;
+    }
+    const isShown = this._activeFilter();
+    const datasetMode = this.options.hover.mode === 'dataset';
+    const active = [];
+    let cleared;
+    for (const item of lastActive) {
+      if (isShown(item)) {
+        active.push(item);
+        continue;
+      }
+      item.element.active = false;
+      if (datasetMode && item.datasetIndex !== cleared) {
+        cleared = item.datasetIndex;
+        // A removed dataset has no meta left, and getDatasetMeta would make one.
+        const meta = this.data.datasets[cleared] && this.getDatasetMeta(cleared);
+        if (meta && meta.dataset) {
+          meta.dataset.active = false;
+        }
+      }
+    }
+    if (active.length !== lastActive.length) {
+      this._active = active;
+    }
+  }
+
+  /**
+   * Replays the last event from before the update, or sets the hover styles on the active elements.
+   * @private
+   */
+  _replayActive() {
     const {_active, _lastEvent} = this;
     if (_lastEvent) {
       this._eventHandler(_lastEvent, true);
     } else if (_active.length) {
       this._updateHoverStyles(_active, _active, true);
     }
-
-    this.render();
   }
 
   /**
@@ -1100,7 +1143,7 @@ class Chart {
 	 */
   setActiveElements(activeElements) {
     const lastActive = this._active || [];
-    const active = activeElements.map(({datasetIndex, index}) => {
+    const active = this._filterActive(activeElements.map(({datasetIndex, index}) => {
       const meta = this.getDatasetMeta(datasetIndex);
       if (!meta) {
         throw new Error('No dataset found at index ' + datasetIndex);
@@ -1111,7 +1154,7 @@ class Chart {
         element: meta.data[index],
         index,
       };
-    }).filter(({element}) => element);
+    }).filter(({element}) => element));
     const changed = !_elementsEqual(active, lastActive);
 
     if (changed) {
@@ -1160,6 +1203,33 @@ class Chart {
     if (activated.length && hoverOptions.mode) {
       this.updateHoverStyle(activated, hoverOptions.mode, true);
     }
+  }
+
+  /**
+   * Returns a test of whether an active item may stay active: its dataset is visible and
+   * its data item is not hidden. The dataset is checked once for each run of its items.
+   * @returns {(item: {datasetIndex: number, index: number}) => boolean}
+   * @private
+   */
+  _activeFilter() {
+    let datasetIndex, controller;
+    return (item) => {
+      if (item.datasetIndex !== datasetIndex) {
+        datasetIndex = item.datasetIndex;
+        controller = this.isDatasetVisible(datasetIndex) && this.getDatasetMeta(datasetIndex).controller;
+      }
+      return !!controller && controller._isDataVisible(item.index);
+    };
+  }
+
+  /**
+   * Leaves out the items whose dataset or data item is hidden: hidden data cannot be active.
+   * @param {import('../types/index.js').ActiveElement[]} items
+   * @returns {import('../types/index.js').ActiveElement[]}
+   * @private
+   */
+  _filterActive(items) {
+    return items.length ? items.filter(this._activeFilter()) : items;
   }
 
   /**
@@ -1215,7 +1285,7 @@ class Chart {
     // This is done so we do not have to evaluate the active elements each animation frame
     // - it would be expensive.
     const useFinalPosition = replay;
-    const active = this._getActiveElements(e, lastActive, inChartArea, useFinalPosition);
+    const active = this._filterActive(this._getActiveElements(e, lastActive, inChartArea, useFinalPosition));
     const isClick = _isClickEvent(e, options.events);
     const lastEvent = determineLastEvent(e, this._lastEvent, inChartArea, isClick);
 

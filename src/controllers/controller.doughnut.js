@@ -329,6 +329,14 @@ export default class DoughnutController extends DatasetController {
     };
   }
 
+  /**
+   * An arc hidden by `chart.toggleDataVisibility` has no circumference.
+   * @protected
+   */
+  _isDataVisible(index) {
+    return this.chart.getDataVisibility(index) && super._isDataVisible(index);
+  }
+
   getMaxBorderWidth(arcs) {
     let max = 0;
     const chart = this.chart;

@@ -2900,6 +2900,158 @@ describe('Chart', function() {
       expect(chart.getActiveElements()).toEqual([]);
       expect(slice.active).toBe(false);
     });
+
+    function acquirePointChart() {
+      return acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3], pointRadius: 3, pointHoverRadius: 8}]
+        },
+        options: {
+          interaction: {mode: 'nearest', intersect: false}
+        }
+      });
+    }
+
+    it('should not leave the hover options on a hovered point of a hidden dataset', async function() {
+      const chart = acquirePointChart();
+      const point = chart.getDatasetMeta(0).data[1];
+
+      await triggerMouseEvent(chart, 'mousemove', point);
+      expect(point.options.radius).toBe(8);
+
+      chart.hide(0);
+
+      expect(point.active).toBe(false);
+      expect(point.options.radius).toBe(3);
+      expect(chart.getActiveElements()).toEqual([]);
+    });
+
+    it('should not leave the hover options on a point set active by code when its dataset is hidden', function() {
+      const chart = acquirePointChart();
+      const point = chart.getDatasetMeta(0).data[1];
+
+      chart.setActiveElements([{datasetIndex: 0, index: 1}]);
+      expect(point.options.radius).toBe(8);
+
+      chart.hide(0);
+
+      expect(point.active).toBe(false);
+      expect(point.options.radius).toBe(3);
+      expect(chart.getActiveElements()).toEqual([]);
+    });
+
+    it('should not leave the hover options on a bar hidden by toggleDataVisibility', function() {
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3], borderWidth: 1, hoverBorderWidth: 5}]
+        }
+      });
+      const bar = chart.getDatasetMeta(0).data[1];
+
+      chart.setActiveElements([{datasetIndex: 0, index: 1}]);
+      expect(bar.options.borderWidth).toBe(5);
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+
+      expect(bar.active).toBe(false);
+      expect(bar.options.borderWidth).toBe(1);
+      expect(chart.getActiveElements()).toEqual([]);
+    });
+
+    ['doughnut', 'polarArea'].forEach((type) => {
+      it(`should not leave the hover options on a ${type} arc hidden by toggleDataVisibility`, function() {
+        const chart = acquireChart({
+          type,
+          data: {
+            labels: ['a', 'b', 'c'],
+            datasets: [{data: [1, 2, 3], borderWidth: 1, hoverBorderWidth: 5}]
+          }
+        });
+        const arc = chart.getDatasetMeta(0).data[1];
+
+        chart.setActiveElements([{datasetIndex: 0, index: 1}]);
+        expect(arc.options.borderWidth).toBe(5);
+
+        chart.toggleDataVisibility(1);
+        chart.update();
+
+        expect(arc.active).toBe(false);
+        expect(arc.options.borderWidth).toBe(1);
+        expect(chart.getActiveElements()).toEqual([]);
+      });
+    });
+
+    it('should not keep a data item hidden by hide(datasetIndex, dataIndex) active', function() {
+      const chart = acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3], borderWidth: 1, hoverBorderWidth: 5}]
+        }
+      });
+      const meta = chart.getDatasetMeta(0);
+
+      chart.setActiveElements([{datasetIndex: 0, index: 0}, {datasetIndex: 0, index: 1}]);
+      chart.hide(0, 1);
+
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: meta.data[0]}]);
+      expect(meta.data[1].active).toBe(false);
+      expect(meta.data[1].options.borderWidth).toBe(1);
+    });
+
+    it('should not set a hidden data item active, unless its controller draws it', function() {
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [
+            {data: [1, 2, 3]},
+            {type: 'line', data: [3, 2, 1]}
+          ]
+        }
+      });
+      const point = chart.getDatasetMeta(1).data[1];
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+
+      chart.setActiveElements([{datasetIndex: 0, index: 1}, {datasetIndex: 1, index: 1}]);
+
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 1, index: 1, element: point}]);
+      expect(point.active).toBe(true);
+      expect(chart.getDatasetMeta(0).data[1].active).toBe(false);
+    });
+
+    it('should not pass a hidden bar that the pointer finds to onHover', async function() {
+      const onHover = vi.fn();
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          interaction: {mode: 'index', intersect: false},
+          onHover
+        }
+      });
+      const bar = chart.getDatasetMeta(0).data[1];
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+      // The hidden bar collapses to its base, but the 'index' mode still finds it.
+      await triggerMouseEvent(chart, 'mousemove', {x: bar.x, y: chart.chartArea.top + 10});
+
+      expect(onHover).toHaveBeenCalledTimes(1);
+      expect(onHover.mock.lastCall[1]).toEqual([]);
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(bar.active).toBe(false);
+    });
   });
 
   it('should not replace the user set active elements by event replay', async function() {

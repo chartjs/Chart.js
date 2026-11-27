@@ -349,6 +349,7 @@ class BarController_2 extends DatasetController_2 {
     getFirstScaleIdForIndexAxis(): string;
     // (undocumented)
     static id: string;
+    protected _isDataVisible(index: any): boolean;
     static overrides: any;
     protected parseArrayData(meta: any, data: any, start: any, count: any): any[];
     protected parseObjectData(meta: any, data: any, start: any, count: any): any[];
@@ -1812,6 +1813,7 @@ class DatasetController_2 {
     index: number;
     // (undocumented)
     initialize(): void;
+    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     linkScales(): void;
     // (undocumented)
@@ -2399,6 +2401,7 @@ class DoughnutController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
+    protected _isDataVisible(index: any): boolean;
     // (undocumented)
     offsetX: number;
     // (undocumented)
@@ -3616,6 +3619,7 @@ class PolarAreaController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
+    protected _isDataVisible(index: any): boolean;
     // (undocumented)
     outerRadius: number;
     static overrides: any;

@@ -376,6 +376,14 @@ export default class BarController extends DatasetController {
     };
   }
 
+  /**
+   * A bar hidden by `chart.toggleDataVisibility` collapses to its base.
+   * @protected
+   */
+  _isDataVisible(index) {
+    return this.chart.getDataVisibility(index) && super._isDataVisible(index);
+  }
+
   initialize() {
     this.enableOptionSharing = true;
 
