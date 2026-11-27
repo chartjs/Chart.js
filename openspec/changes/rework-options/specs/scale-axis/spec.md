@@ -6,7 +6,7 @@ How the axis of a scale (`x`, `y` or `r`) is decided.
 
 ### Requirement: The axis of a scale
 
-The axis of a scale given in `options.scales` SHALL be the first of: the id when it is exactly `x`, `y` or `r`; its `axis` option; the axis of the `position` the chart gave it; the axis by which the first dataset that names the id binds it; the first letter of the id when the scale's type allows it; `r` when the scale's type is radial. When none applies, creating the chart SHALL fail with a message that asks for `axis` or `position`.
+The axis of a scale given in `options.scales` SHALL be the first of: the id when it is exactly `x`, `y` or `r`; its `axis` option; the axis of the `position` the chart gave it; the axis by which the first dataset that names the id binds it; the first letter of the id when the scale's type allows it; the axis of `axis` or `position` in the defaults of the scale's type; `r` when the scale's type is radial. When none applies, creating the chart SHALL fail with a message that asks for `axis` or `position`.
 
 #### Scenario: Bound id that starts with r
 
@@ -49,8 +49,13 @@ A first letter `r` SHALL decide the axis only when the chart gives the scale no 
 
 #### Scenario: Cartesian type on an id that starts with r
 
-- **WHEN** a scale `ramazan` has `type: 'linear'`, no `axis`, no `position`, and no dataset names it
+- **WHEN** a scale `ramazan` has `type: 'linear'` (a type whose defaults declare no axis), no `axis`, no `position`, and no dataset names it
 - **THEN** creating the chart fails with the message that asks for `axis` or `position`
+
+#### Scenario: A type that declares its axis
+
+- **WHEN** a registered scale type that is not radial has `axis: 'x'` in its defaults, and an unbound scale `rFoo` with no `axis` and no `position` has that type
+- **THEN** `rFoo` is a horizontal axis
 
 #### Scenario: The same scale, bound
 

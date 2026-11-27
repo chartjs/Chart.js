@@ -2192,6 +2192,11 @@ export function isPatternOrGradient(value: unknown): value is CanvasPattern | Ca
 // @public
 export function _isPointInArea(point: Point, area: TRBL, margin?: number): boolean;
 
+// @public
+export function _isRadialScale(scale: {
+    getPointPositionForValue?: unknown;
+} | undefined): boolean;
+
 // @public (undocumented)
 interface LabelItem {
     // (undocumented)

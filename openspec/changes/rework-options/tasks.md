@@ -1,7 +1,7 @@
 ## 1. P1: Defaults paths cannot reach prototypes (#12268)
 
 - [ ] 1.1 Add specs that fail on master: `Chart.defaults.set('plugins.__proto__', {p: 1})` throws and `({}).p` is undefined; the same for `set('__proto__', …)`, `get`, `describe`, `override`, `route`, a `constructor.prototype` path and a route name `__proto__`; `set('toString.x', {p: 1})`, `set('valueOf.x', {p: 1})` and `set('set.x', {p: 1})` throw and leave `Object.prototype.toString`, `Object.prototype.valueOf` and `Chart.defaults.set` without `x`; `route('rt', 'x', '', '__proto__')` throws; after `set({describe: {a: 1}, color: 'red'})`, `Chart.defaults.describe` is a function and `color` is `'red'`; `set('myconstructor.a', …)` still works.
-- [ ] 1.2 Ask the author to add them, to make the walk follow own properties only (a segment that names an inherited property throws the same error), to check the name `route` defines and its target name, and to skip a key of the given values that the target inherits and does not own; rebase onto master after #12499.
+- [ ] 1.2 On the author's branch (maintainer edits, the author's commit kept), add them, make the walk follow own properties only (a segment that names an inherited property throws the same error), check the name `route` defines and its target name, and skip a key of the given values that the target inherits and does not own; rebase onto master after #12499. Comment on the pull request what changed.
 - [ ] 1.3 The pull request says `Closes #12265` and has a release-note line: the five methods throw for such paths.
 
 ## 2. P2: An options array is not a scope of its items (#12388)
@@ -35,19 +35,19 @@
 ## 6. P6: Bar base per bar (#12334)
 
 - [ ] 6.1 Confirm #12334's specs fail on master (an array is ignored, a function gives NaN).
-- [ ] 6.2 Ask the author to replace the read of `this.options._proxy` with `config.resolveNamedOptions(scopes, ['base'], () => this.getContext(index))`, with the scopes `configure()` uses.
+- [ ] 6.2 On the author's branch (maintainer edits, the author's commit kept), replace the read of `this.options._proxy` with `config.resolveNamedOptions(scopes, ['base'], () => this.getContext(index))`, with the scopes `configure()` uses. Comment on the pull request what changed.
 - [ ] 6.3 Measure a bar chart with 10 000 bars and a numeric `base`, time and allocation, before and after, one process per variant.
 - [ ] 6.4 The pull request says `Closes #11624`.
 
 ## 7. P7: The dataset binding decides the axis
 
-- [ ] 7.1 Add `test/specs/core.config.spec.js` with specs that fail on master: `yAxisID: 'ramazan'` gives axis `y` and finite point pixels; `xAxisID: 'yFoo'` gives `x`; a radar scale `foo` of type `radialLinear` bound by `rAxisID` is the radial axis; an unbound `ramazan: {type: 'linear'}` throws the documented message; an unbound `xFoo: {type: 'radialLinear'}` is the radial axis; a scale `foo` with no `axis`, `position`, `type` or binding throws the documented message.
-- [ ] 7.2 Add specs that pass on master: `axis` and `position` win, also over the type; unbound `y2`, `xTop` and `r2` without a `type` follow the first letter; `ramazan: {type: 'linear'}` bound as `yAxisID` is a y axis; a first letter with a type that is not registered when the chart is constructed decides as before; rebinding a dataset from `yAxisID` to `xAxisID` keeps the scale vertical; a chart created before its data keeps the first-letter axis (P16 changes this one).
-- [ ] 7.3 Add `_isRadialScale(scale)` to `src/helpers/helpers.core.ts`: true when the object has a `getPointPositionForValue` method. Spec it with a radial scale, a linear scale, and a class written from scratch that has the method. Use it for the two inline tests in the filler plugin.
-- [ ] 7.4 Change the order in `determineAxis`; its call in `mergeScaleConfig` passes the binding and the class registered for the chart's `type` of the scale, when there is one. The two calls in `core.controller.js` keep reading the stored `axis`. Add `rAxisID` to the binding lookup.
-- [ ] 7.5 Add a spec for the output that changes: with `scales: {ramazan: {}, y: {}}`, a dataset on `ramazan` and one without `yAxisID`, both are on `ramazan`.
-- [ ] 7.6 Update `docs/axes/cartesian/_common.md` and `docs/axes/index.md`.
-- [ ] 7.7 The pull request says `Closes #11640` and has release-note lines: a scale bound by a dataset takes that axis, and a dataset without an axis id uses the first scale of its axis, which can now be that scale; a scale whose id only starts with `r`, `x` or `y` and whose `type` is of the other kind needs `axis` or `position`.
+- [x] 7.1 Add `test/specs/core.config.spec.js` with specs that fail on master: `yAxisID: 'ramazan'` gives axis `y` and finite point pixels; `ramazan: {type: 'linear'}` bound as `yAxisID` is a y axis; `xAxisID: 'yFoo'` gives `x`; a radar scale `foo` of type `radialLinear` bound by `rAxisID` is the radial axis; an unbound `ramazan: {type: 'linear'}` throws the documented message; an unbound `xFoo: {type: 'radialLinear'}` is the radial axis; a scale `foo` with no `axis`, `position`, `type` or binding throws the documented message.
+- [x] 7.2 Add specs that pass on master: `axis` and `position` win, also over the type; unbound `y2`, `xTop` and `r2` without a `type` follow the first letter; a first letter with a type that is not registered when the chart is constructed decides as before; rebinding a dataset from `yAxisID` to `xAxisID` keeps the scale vertical; a chart created before its data keeps the first-letter axis (P16 changes this one).
+- [x] 7.3 Add `_isRadialScale(scale)` to `src/helpers/helpers.core.ts`: true when the object has a `getPointPositionForValue` method. Spec it with a radial scale, a linear scale, and a class written from scratch that has the method. Use it for the two inline tests in the filler plugin.
+- [x] 7.4 Change the order in `determineAxis`; its call in `mergeScaleConfig` passes the binding, and `determineAxis` reads the scale's `type` to look up the registered class (the limit and the radial step) and `defaults.scales[type]` (the type's `axis` or `position`, after the first letter). The two calls in `core.controller.js` keep reading the stored `axis`. Add `rAxisID` to the binding lookup. Spec that a custom type that is not radial and declares `axis` in its defaults gives that axis to an unbound `ramazan` (`y`) and `rFoo` (`x`).
+- [x] 7.5 Add a spec for the output that changes: with `scales: {ramazan: {}, y: {}}`, a dataset on `ramazan` and one without `yAxisID`, both are on `ramazan`.
+- [x] 7.6 Update `docs/axes/cartesian/_common.md` and `docs/axes/index.md`.
+- [x] 7.7 The pull request says `Closes #11640` and has release-note lines: a scale bound by a dataset takes that axis, and a dataset without an axis id uses the first scale of its axis, which can now be that scale; a scale whose id only starts with `r`, `x` or `y` and whose `type` is of the other kind needs `axis` or `position`; a scale whose id starts with `r` and whose custom type is not radial takes the axis its type declares.
 
 ## 8. P8: Refactor the scale merge into stored and derived parts
 

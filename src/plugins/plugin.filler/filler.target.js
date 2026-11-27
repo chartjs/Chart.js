@@ -1,4 +1,4 @@
-import {isFinite} from '../../helpers/index.js';
+import {isFinite, _isRadialScale} from '../../helpers/index.js';
 import {_createBoundaryLine} from './filler.helper.js';
 import {_getTargetPixel, _getTargetValue} from './filler.options.js';
 import {_buildStackLine} from './filler.target.stack.js';
@@ -47,7 +47,7 @@ function getLineByIndex(chart, index) {
 function computeBoundary(source) {
   const scale = source.scale || {};
 
-  if (scale.getPointPositionForValue) {
+  if (_isRadialScale(scale)) {
     return computeCircularBoundary(source);
   }
   return computeLinearBoundary(source);

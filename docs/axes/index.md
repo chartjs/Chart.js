@@ -15,7 +15,23 @@ Scales in Chart.js >v2.0 are significantly more powerful, but also different fro
 
 The default `scaleId`'s for cartesian charts are `'x'` and `'y'`. For radial charts: `'r'`.
 Each dataset is mapped to a scale for each axis (x, y or r) it requires. The scaleId's that a dataset is mapped to is determined by the `xAxisID`, `yAxisID` or `rAxisID`.
-If the ID for an axis is not specified, the first scale for that axis is used. If no scale for an axis is found, a new scale is created.
+If the ID for an axis is not specified, the first scale for that axis is used, in the order of `options.scales`. If no scale for an axis is found, a new scale is created.
+
+## The axis of a scale
+
+The axis of a scale in `options.scales` is the first of these that applies:
+
+1. The ID, when it is exactly `'x'`, `'y'` or `'r'`.
+2. The `axis` option.
+3. The `position` option: `'top'` and `'bottom'` give `'x'`, `'left'` and `'right'` give `'y'`.
+4. The first dataset that names the ID: `xAxisID` gives `'x'`, `yAxisID` gives `'y'` and `rAxisID` gives `'r'`.
+5. The first letter of the ID, `'x'`, `'y'` or `'r'`, when the scale's `type` allows it: a first letter `'r'` counts when the scale has no `type` or a radial one, and `'x'` or `'y'` when it has no `type` or one that is not radial.
+6. `axis` or `position` in the defaults of the scale's `type`.
+7. `'r'`, when the scale's `type` is radial.
+
+A scale type is radial when its scales have a `getPointPositionForValue` method. When nothing applies, creating the chart fails with "Cannot determine type of 'myScale' axis. Please provide 'axis' or 'position' option."
+
+It is recommended to give `axis` or `position` to every scale whose ID is not `'x'`, `'y'` or `'r'`.
 
 Some examples:
 
@@ -70,6 +86,26 @@ let chart = new Chart(ctx, {
 });
 ```
 
+The following chart will have scales `'x'` and `'rate'`, and `'rate'` is a vertical axis because the dataset binds it with `yAxisID`:
+
+```js
+let chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [{
+      yAxisID: 'rate'
+    }]
+  },
+  options: {
+    scales: {
+      rate: {
+        type: 'linear'
+      }
+    }
+  }
+});
+```
+
 The following chart will have `'r'` scale:
 
 ```js
@@ -83,9 +119,11 @@ The following chart will have `'myScale'` scale:
 ```js
 let chart = new Chart(ctx, {
   type: 'radar',
-  scales: {
-    myScale: {
-      axis: 'r'
+  options: {
+    scales: {
+      myScale: {
+        axis: 'r'
+      }
     }
   }
 });

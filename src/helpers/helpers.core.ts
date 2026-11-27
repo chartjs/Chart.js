@@ -423,3 +423,13 @@ export function _isClickEvent(e: ChartEvent, events?: string[]) {
   }
   return e.type === 'click' || e.type === 'contextmenu';
 }
+
+/**
+ * Whether a scale is radial: it has a `getPointPositionForValue` method,
+ * whatever class it extends.
+ * @param scale - A scale, or the prototype of a scale class
+ * @private
+ */
+export function _isRadialScale(scale: {getPointPositionForValue?: unknown} | undefined): boolean {
+  return !!scale && isFunction(scale.getPointPositionForValue);
+}
