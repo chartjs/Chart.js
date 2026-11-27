@@ -13,6 +13,11 @@ The default numeric formatter SHALL show enough fraction digits that ticks on th
 - **WHEN** a y axis has `min: 0`, `max: 1` and `ticks.stepSize: 0.25`
 - **THEN** the labels are "0", "0.25", "0.50", "0.75" and "1.00"
 
+#### Scenario: A step with floating-point error
+
+- **WHEN** a line chart has data [1.27, 1.78] and its y axis has `ticks.maxTicksLimit: 8`
+- **THEN** the labels are "1.2", "1.3", …, "1.8"
+
 #### Scenario: Whole and half steps stay short
 
 - **WHEN** a y axis has `min: 0`, `max: 10` and `ticks.stepSize: 2.5`

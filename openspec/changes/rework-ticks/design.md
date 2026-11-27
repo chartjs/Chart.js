@@ -25,20 +25,20 @@ src/scales/scale.linearbase.js:2, 40, 52, 66, 74, 106-107
 git grep -nE "formatters\.(numeric|logarithmic)" -- src
 src/core/core.ticks.js:100; src/scales/scale.linear.js:15; src/scales/scale.radialLinear.js:370; src/scales/scale.logarithmic.js:83
 git grep -n -w autoSkip -- src
-src/core/core.scale.defaults.js:70; src/core/core.scale.js:462-463; src/scales/scale.time.js:386-389; src/types/index.d.ts:3197-3202
+src/core/core.scale.defaults.js:70; src/core/core.scale.js:462-463; src/scales/scale.time.js:392-394; src/types/index.d.ts:3197-3202
 git grep -n maxTicksLimit -- src
 src/core/core.scale.autoskip.js:20; src/core/core.scale.js:11, 594, 812, 828, 1091-1092; src/scales/scale.linearbase.js:221-236
 git grep -n -E "getPixelForTick\(|_tickSize|ticks\.length" -- src
 src/controllers/controller.bar.js:47-51 (bar width from the smallest gap between kept ticks)
 src/core/core.scale.js:40-65, 700-701, 991, 1212-1219
 src/scales/scale.linearbase.js:297-312 (configure: offset padding from the kept tick count)
-src/scales/scale.time.js:392-398, 418-440 (offsetAfterAutoskip: offsets from the first and last kept gaps)
+src/scales/scale.time.js:406-412, 422-446 (offsetAfterAutoskip: offsets from the first and last kept gaps)
 ```
 
 Other readers:
 - No plugin in `src` reads the generation options.
 - `Ticks` is public (`src/core/index.ts:15`, `src/types/index.d.ts:1542`), so the formatter's signature stays.
-- `helpers.math._decimalPlaces` is tested directly (`test/specs/helpers.math.tests.js:5`).
+- `helpers.math._decimalPlaces` is tested directly (`test/specs/helpers.math.spec.js:5`).
 - `radialLinear` has no pixel positions for its ticks: `getPixelForValue` is the empty base method (`core.scale.js:893`).
 
 The bar controller, the time scale's offsets and the linear offset padding read the kept ticks. So autoskip keeps its output shape: an array of the original tick objects, in order.
@@ -65,6 +65,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 | #12100, #11278 | 12 categories at 300 px with `offset` and `grid.offset`, every other label skipped: lines on categories 1, 3, …, 11; first cell 33.5 px, the others 45 px | offset lines go midway between kept ticks, not on category boundaries |
 | #11816, #6154 | 20 labels, `maxTicksLimit: 7`: L0, L3, …, L18; 50 labels at 300 px: L0..L45 | ticks are kept at 0, s, 2s, …; the last is kept only when it falls on that grid |
 | #4048, #9973 (#12237) | y 0..100, `stepSize: 1` at 400 px: 0, 6, …, 96; y -35..115, `stepSize: 10` at 150 px: -40, -10, 20, … (no 0) | skipping counts indexes, not values |
+| (#12543) | data [1.27, 1.78], `maxTicksLimit: 8`: "1.20", "1.30", …, "1.80"; ticks 0.0022..0.0025: "0.00220", … (#12383 as it stands gives the same) | the spacing is a plain subtraction, so `1.4 - 1.3` is 0.09999999999999987 and `floor(log10)` asks for one more digit |
 
 ## Goals / Non-Goals
 
@@ -170,6 +171,11 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - P17 no longer waits on P15's private field. It reads the step from the tick values.
 - `LinearScaleBase.configure` offset padding, the time scale's `offsetAfterAutoskip` and the bar width were added as readers of the kept ticks.
 
+### Changed after the design PR opened
+
+- #12543 (opened 2026-11-27) fixes the noisy spacing that P7's grid rule also removes, in the same file. It becomes P19, ahead of P7, so P7 builds on it instead of superseding it. P19 counts places with `_decimalPlaces` (`helpers.math.ts:110`) rather than adding a second copy of that loop, so it waits on P1, which makes `_decimalPlaces` always return.
+- Karma was removed (#12516). Test files are named `*.spec.js` throughout, and the time-scale line numbers follow #12489.
+
 ## Risks / Trade-offs
 
 - **Image baselines change:**
@@ -184,39 +190,40 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - **Readers of the kept tick count.** The linear offset padding (`configure`), the time offsets and the bar width read it. P11, P16 and P17 change that count on some charts. Each adds a fixture for a linear axis with `offset`, and P16 adds one for bars on a time axis.
 - **Callback cost (P14).** The label callback runs once per generated tick (measured above).
 - **Test files.**
-  - The Vitest migration converts `core.scale.tests.js`, `core.ticks.tests.js`, `helpers.math.tests.js`, `scale.linear.tests.js` and `scale.logarithmic.tests.js` in its pieces P8, P9 and P11.
-  - Pieces that take a contributor's PR keep its test in the Karma file, and should merge before that file is converted.
-  - New tests go to new `*.spec.js` files, which only Vitest runs.
+  - Karma was removed in #12516; every test is a `*.spec.js` file that Vitest runs.
+  - The contributor PRs taken here (#12266, #12288, #12225, #12390, #12383, #12401, #12287) still add their tests to the deleted `*.tests.js` files. Each piece moves them to the `.spec.js` file of the same name when it rebases.
+- **Shared image.** P6 and P19 both regenerate `scale.logarithmic/large-values-small-range.png`. Whichever merges second regenerates it again.
 - **Held lines.** `core.scale.js` is also held by #12203, #12244, #11188 and #12327, on other lines. P8, P12 and P14 rebase over whichever merges first.
 
 ## Pieces
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes | Release |
 |---|---|---|---|---|---|---|---|---|
-| P1 | #12266 as is: `_decimalPlaces` returns `undefined` instead of looping | `src/helpers/helpers.math.ts`, `test/specs/helpers.math.tests.js` | #12266's spec (never returns on master) | ~10 | | #12184 | | 4.6.x |
-| P2 | #12288 as is: no repeated final tick | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.tests.js` | `bounds: 'data'`, [0, 5.4]: 0..5, 5 | ~30 | | | | 4.6.x |
+| P1 | #12266 as is: `_decimalPlaces` returns `undefined` instead of looping | `src/helpers/helpers.math.ts`, `test/specs/helpers.math.spec.js` | #12266's spec (never returns on master) | ~10 | | #12184 | | 4.6.x |
+| P2 | #12288 as is: no repeated final tick | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.spec.js` | `bounds: 'data'`, [0, 5.4]: 0..5, 5 | ~30 | | | | 4.6.x |
 | P3 | #12225 with one change: both step-count tests within machine precision | same | 0/3333/500 gives 476.14 steps; `bounds: 'data'` [0, 3200] has no 3000 | ~50 | P2 (same file) | | #12165 | 4.6.x |
 | P4 | The step-size tick limit is counted on the generation range | same | [10, 20, 80], `grace: '10%'`, `stepSize: 10`: max 100, last tick 90 | ~40 | P3 (same lines) | | #11864 | 4.6.x |
 | P5 | Finite ticks: overflow falls back to the data bound, a non-finite range gives two ticks, both `_decimalPlaces` callers handle `undefined`; supersedes #12185 | same | [0, MAX] runs out of memory; [-MAX, MAX] gives NaN | ~50 | P1 (contract), P4 (same file) | | #12184 | 4.6.x |
-| P6 | #12390 as is: first log tick from scaled integers | `src/scales/scale.logarithmic.js`, `test/specs/scale.logarithmic.tests.js`, `scale.logarithmic/large-values-small-range.png` | data [7, 10]: min 6.9; `min: 0.3`: 0.3 twice | ~50 + png | | | #12389 | 4.6.x |
-| P7 | #12383 with changes: grid digits from the step's last significant digit, off-grid ticks grid + 1 or fewer, on-grid tolerance with the float-spacing term, steps ≥ 1 by the same rule | `src/core/core.ticks.js`, `test/specs/core.ticks.tests.js` | stepSize 0.25 gives "0.3"; "12.000000001"; [1e-5, 1.3e-5] gives "1.0000000E-5"; #12383 as it stands gives "0.310" | ~130 | (#12386 appends to the same file; rebase) | #11954 | #12382 | 4.6.x |
-| P8 | #12401 as is: null-label ticks removed in one pass | `src/core/core.scale.js`, `test/specs/core.scale.tests.js` | its specs pass on the old loop; the proof is the timing: 100k ticks 3,973 ms → 10 ms, about 6.4 MiB less allocated per update | ~85 | | | | 4.6.x |
+| P6 | #12390 as is: first log tick from scaled integers | `src/scales/scale.logarithmic.js`, `test/specs/scale.logarithmic.spec.js`, `scale.logarithmic/large-values-small-range.png` | data [7, 10]: min 6.9; `min: 0.3`: 0.3 twice | ~50 + png | | | #12389 | 4.6.x |
+| P7 | #12383 with changes: grid digits from the step's last significant digit, off-grid ticks grid + 1 or fewer, on-grid tolerance with the float-spacing term, steps ≥ 1 by the same rule | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js` | stepSize 0.25 gives "0.3"; "12.000000001"; [1e-5, 1.3e-5] gives "1.0000000E-5"; #12383 as it stands gives "0.310" | ~130 | P19 (same file); (#12386 appends to the same file; rebase) | #11954 | #12382 | 4.6.x |
+| P8 | #12401 as is: null-label ticks removed in one pass | `src/core/core.scale.js`, `test/specs/core.scale.spec.js` | its specs pass on the old loop; the proof is the timing: 100k ticks 3,973 ms → 10 ms, about 6.4 MiB less allocated per update | ~85 | | | | 4.6.x |
 | P9 | #12287 with changes: even majors detected from the first gap; category and log specs instead of its time test | `src/core/core.scale.autoskip.js`, `test/specs/core.scale.autoskip.spec.js` (new) | majors 0/30/60/90 of 120: gaps 4 and 5 | ~45 | | #10373 | | 4.6.x |
 | P10 | The same whole step from each major between uneven majors | `src/core/core.scale.autoskip.js`, same spec, time autoskip-major fixture | majors 0/31/59/90/120/151 of 181: gaps 8, 8, 7, 8, … | ~70 | P9 (same file) | | #10373 | 4.6.x |
 | P11 | The number of labels that fit is counted from tick values | same, plus a radar spec | linear 0..1000 at 600 px with ticks over 0..500: labels 11.3 px apart | ~50 | P10 (same file) | #9614 | | 4.6.x |
 | P12 | Offset grid lines on the boundaries of the generated ticks | `src/core/core.scale.js`, `docs/axes/styling.md`, `test/specs/core.scale.grid.spec.js` (new), bar fixtures | 12 categories at 300 px: lines on categories, first cell 33.5 px; the same with a callback returning `null` for odd indexes | ~80 | P8 (same file); #11188 (same lines region) | | #12100, #11278 | 4.6.x |
-| P13 | feat: `ticks.precision` caps label digits | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js` or its Karma file, `docs/axes/cartesian/linear.md` (precision) | `precision: 1` on 0.1234567..0.8765432: edges "0.12", "0.88" | ~30 | P7 (same file) | | #11954 | 4.7.0 |
+| P13 | feat: `ticks.precision` caps label digits | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js`, `docs/axes/cartesian/linear.md` (precision) | `precision: 1` on 0.1234567..0.8765432: edges "0.12", "0.88" | ~30 | P7 (same file) | | #11954 | 4.7.0 |
 | P14 | feat: the label callback runs once on every generated tick, with full-set indexes; no second pass | `src/core/core.scale.js`, `test/specs/core.scale.labels.spec.js` (new), `docs/axes/_common_ticks.md` and `docs/general/performance.md` (`sampleSize`) | 50 categories, `sampleSize: 5`, i % 7: L0 and a misplaced L7 | ~60 | P12 (same file) | | | 4.7.0 |
-| P15 | feat: with `bounds: 'data'` ticks are on the grid and the data bounds follow `includeBounds` | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.tests.js` or its `.spec.js`, `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/index.md`, `controller.line/stacking/bounds-data.png` | [0, 97] with `includeBounds: false` shows 97; [0.31, 0.97] gives 0.41 | ~120 + png | P5 (same file) | | #10066 | 4.7.0 |
+| P15 | feat: with `bounds: 'data'` ticks are on the grid and the data bounds follow `includeBounds` | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.spec.js`, `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/index.md`, `controller.line/stacking/bounds-data.png` | [0, 97] with `includeBounds: false` shows 97; [0.31, 0.97] gives 0.41 | ~120 + png | P5 (same file) | | #10066 | 4.7.0 |
 | P16 | feat: `ticks.autoSkipKeepEnds` keeps the last tick when skipping | `src/core/core.scale.autoskip.js`, `src/core/core.scale.defaults.js`, `src/types/index.d.ts`, `src/controllers/controller.bar.js` (skip the end gap), `docs/axes/cartesian/_common_ticks.md`, spec, a bar-on-time fixture | 20 labels, `maxTicksLimit: 7`: L19 missing | ~130 | P11 (same file) | | #11816, #6154 | 4.7.0 |
 | P17 | feat: skipping keeps round multiples of the step on linear axes; supersedes #12237 | `src/core/core.scale.autoskip.js`, `src/scales/scale.linearbase.js`, `docs/axes/cartesian/_common_ticks.md`, spec | 0..100 `stepSize: 1` at 400 px: 0, 6, …, 96 | ~150 | P16 (same file), P15 (same file) | | #4048, #9973 | 4.7.0 |
-| P18 | `ticks.autoSkipKeepEnds` on by default; migration note | `src/core/core.scale.defaults.js`, `docs/axes/cartesian/_common_ticks.md`, the v5 migration guide, `test/specs/core.scale.tests.js` ("should not display the last tick if it does not fit evenly") | that spec expects the last tick missing | ~30 + baselines | P16 | | | 5.0.0 |
+| P18 | `ticks.autoSkipKeepEnds` on by default; migration note | `src/core/core.scale.defaults.js`, `docs/axes/cartesian/_common_ticks.md`, the v5 migration guide, `test/specs/core.scale.spec.js` ("should not display the last tick if it does not fit evenly") | that spec expects the last tick missing | ~30 + baselines | P16 | | | 5.0.0 |
+| P19 | #12543 with one change: the tick spacing and the integer-part offset are read without subtraction noise, counting places with `_decimalPlaces` instead of a second copy of its loop | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js`, `scale.logarithmic/large-values-small-range.png` | data [1.27, 1.78], `maxTicksLimit: 8`: "1.20", …, "1.80"; ticks 0.0022..0.0025: "0.00220", … | ~25 + png | P1 (`_decimalPlaces` returns) | #12382 | | 4.6.x |
 
 **In parallel:**
 - Five chains start at once:
   - values: P1 and P2, then P3 → P4 → P5;
   - log: P6;
-  - labels: P7;
+  - labels: P19 (after P1) → P7;
   - removal and grid lines: P8 → P12;
   - majors and fit: P9 → P10 → P11.
 - In 4.7.0: P13 needs P7; P14 needs P12; P15 needs P5; P16 needs P11; P17 needs P15 and P16.
@@ -224,7 +231,8 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 ## Contracts
 
-- **P1 → P5:** `_decimalPlaces(x)` returns `undefined` when it cannot count the decimals, and never loops.
+- **P1 → P5, P19:** `_decimalPlaces(x)` returns `undefined` when it cannot count the decimals, and never loops.
+- **P19 → P7:** the spacing the formatter reads is the difference of two tick values without subtraction noise: `1.4 - 1.3` is read as 0.1.
 - **P2, P3, P5 → P11, P17:** linear tick values are finite and strictly increasing before `reverse`. They are on multiples of the spacing, except a bound tick. No tick repeats.
 - **P5 → P15:** a non-finite range gives the two data bounds as ticks.
 - **P7 → P13, P14:** the formatter's output depends only on the value and the tick list passed.

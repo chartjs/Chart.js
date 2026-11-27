@@ -41,7 +41,7 @@ None.
 
 - Code: `src/scales/scale.linearbase.js`, `src/scales/scale.logarithmic.js`, `src/core/core.ticks.js`, `src/helpers/helpers.math.ts`, `src/core/core.scale.autoskip.js`, `src/core/core.scale.js`, `src/core/core.scale.defaults.js`, `src/controllers/controller.bar.js`, `src/types/index.d.ts`.
 - Docs: `docs/axes/_common_ticks.md`, `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/linear.md`, `docs/axes/cartesian/index.md`, `docs/axes/styling.md`, `docs/general/performance.md`, the 5.0 migration guide.
-- Open pull requests taken in, with their authors credited: #12266, #12288, #12225, #12390, #12383 (with changes), #12401, #12287 (with changes). Superseded: #12185, #12237.
+- Open pull requests taken in, with their authors credited: #12266, #12288, #12225, #12390, #12383 (with changes), #12401, #12287 (with changes), #12543 (with changes). Superseded: #12185, #12237.
 - Image baselines change in the pieces that say so: one logarithmic fixture, the autoskip-major time fixture, bar charts that skip labels with `grid.offset`, and one `bounds: 'data'` fixture. Time axes with major ticks draw different ticks after the majors pieces, though no time tick value changes.
 - Radar and polar area charts use the linear rules through `radialLinear`.
 - Out of scope, for their own designs: time-scale tick generation (#11545, #12128, #11582, #11568; also week and weekday alignment between majors), tick label placement (crossAlign, padding, rotation, ellipsis, wrapping), and logarithmic tick density, given values and minor ticks (#11215, #5199, #5589, #10741, #11774). Also out: the formatter's locale default (#10982), `min` above `max` (#10745).

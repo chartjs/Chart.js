@@ -47,7 +47,7 @@
 
 ## 7. P7: Labels tell ticks apart (#12383)
 
-- [ ] 7.1 Add the label scenarios of the `numeric-tick-labels` spec, except the `precision` one, to `core.ticks.tests.js`, or to its `.spec.js` if it has been converted. Confirm on master:
+- [ ] 7.1 Add the label scenarios of the `numeric-tick-labels` spec, except the `precision` one, to `core.ticks.spec.js`, after P19's spacing specs. Confirm on master:
   - stepSize 0.25 gives "0.3";
   - `max: 12.000000001` gives "12.000000001";
   - [1e-5, 1.3e-5] gives "1.0000000E-5".
@@ -143,3 +143,10 @@
 
 - [ ] 18.1 Flip "should not display the last tick if it does not fit evenly" to expect the last tick.
 - [ ] 18.2 Turn the option on in the defaults, add a migration note, and update the baselines that change.
+
+## 19. P19: Tick spacing without subtraction noise (#12543)
+
+- [ ] 19.1 Confirm #12543's specs fail on master: data [1.27, 1.78] with `maxTicksLimit: 8` gives "1.20", …, "1.80", and ticks 0.0022..0.0025 give "0.00220", ….
+- [ ] 19.2 Ask the author to count places with `_decimalPlaces` from `helpers.math` instead of the loop in `difference`, falling back to `a - b` when it returns `undefined` (after P1). If the author does not answer, make the change with `Co-authored-by`.
+- [ ] 19.3 Regenerate `scale.logarithmic/large-values-small-range.png` if P6 merged first.
+- [ ] 19.4 The pull request says `Part of #12382`.
