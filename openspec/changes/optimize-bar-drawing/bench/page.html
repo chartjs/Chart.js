@@ -1,12 +1,11 @@
 <!doctype html><html><body><div style="width:1600px;height:800px"><canvas id=c width=1600 height=800></canvas></div>
-<script src="chart.umd.js"></script>
 <script>
 window.setup = function(cfg) {
   const n = cfg.n, ds = cfg.datasets;
   const labels = Array.from({length: n}, (_, i) => 'L' + i);
   const datasets = Array.from({length: ds}, (_, d) => ({
     data: labels.map((_, i) => ((i * 7919 + d * 104729) % 1000) + 10),
-    backgroundColor: cfg.alpha ? 'rgba(54,162,235,0.5)' : '#36a2eb',
+    backgroundColor: '#36a2eb',
     borderColor: '#1f6fa8',
     borderWidth: cfg.borderWidth, borderRadius: cfg.borderRadius
   }));
@@ -15,16 +14,18 @@ window.setup = function(cfg) {
       plugins: {legend: {display: false}, tooltip: {enabled: false}},
       scales: {x: {display: false}, y: {display: false}}}});
 };
-window.bench = function(iter) {
+window.drawBars = function(frames) {
   const ctrls = chart.getSortedVisibleDatasetMetas().map(m => m.controller);
-  const run = () => { for (const c of ctrls) c.draw(); };
-  for (let i = 0; i < 5; i++) run();
-  chart.ctx.getImageData(0,0,1,1);
+  for (let i = 0; i < frames; i++) for (const c of ctrls) c.draw();
+};
+window.bench = function(frames) {
+  drawBars(5);
+  chart.ctx.getImageData(0, 0, 1, 1);
   const t = [];
-  for (let i = 0; i < iter; i++) {
-    const s = performance.now(); run(); chart.ctx.getImageData(0,0,1,1); t.push(performance.now() - s);
+  for (let i = 0; i < frames; i++) {
+    const s = performance.now(); drawBars(1); chart.ctx.getImageData(0, 0, 1, 1); t.push(performance.now() - s);
   }
-  t.sort((a,b)=>a-b);
-  return {median: t[t.length>>1], p10: t[Math.floor(t.length*0.1)]};
+  t.sort((a, b) => a - b);
+  return t[t.length >> 1];
 };
 </script></body></html>

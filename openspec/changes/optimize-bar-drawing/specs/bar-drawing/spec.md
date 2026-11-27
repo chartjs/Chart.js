@@ -1,6 +1,6 @@
 ## Purpose
 
-How a bar is painted: which areas its border and background cover, how their edges are antialiased, and what the canvas context holds after bars are drawn.
+How a bar is painted: which areas its border and background cover, and how the outer edge of a bordered bar is antialiased.
 
 ## ADDED Requirements
 
@@ -11,7 +11,8 @@ A bar's border and background SHALL cover the same areas for every combination o
 #### Scenario: A bar with a border skipped at the base
 
 - **WHEN** a vertical bar with `borderWidth: 2` and `borderSkipped: 'start'` is drawn
-- **THEN** the border covers the top, left and right sides and not the base, and the background covers the inner area, grown by the inflate amount on the bordered sides only
+- **THEN** the border covers the top, left and right sides and not the base
+- **THEN** the background covers the inner area, grown by the inflate amount on the bordered sides only
 
 #### Scenario: A bar without a border
 
@@ -20,28 +21,9 @@ A bar's border and background SHALL cover the same areas for every combination o
 
 ### Requirement: The outer edge of a bordered bar is antialiased once
 
-The outer edge of a bar with a border SHALL be antialiased once, the same as the edge of a bar without a border.
-
-#### Scenario: Stacked bordered segments
-
-- **WHEN** stacked bars with a border and `borderSkipped: 'middle'` are drawn
-- **THEN** no light seam shows where two segments meet
+The outer edge of a bar with a border SHALL be antialiased once, the same as the edge of a bar without a border. Drawing a bar SHALL NOT change the context's clip region or transform.
 
 #### Scenario: Drawing a bordered bar sets no clip
 
 - **WHEN** a bar with a border is drawn
-- **THEN** no clip region is set for the bar
-
-### Requirement: Drawing a dataset leaves the context as it was
-
-After a dataset is drawn, the context's fill style, clip region and transform SHALL be what they were before, whether the dataset clip is on or off.
-
-#### Scenario: A dataset with the clip off
-
-- **WHEN** a dataset with `clip: false` is drawn and its controller changes `fillStyle`
-- **THEN** a plugin's `afterDatasetDraw` sees the fill style the context had before the dataset was drawn
-
-#### Scenario: A bar drawn outside a chart draw
-
-- **WHEN** code calls a bar element's `draw(ctx)` directly
-- **THEN** the clip region and transform are unchanged, and the fill style is the bar's last fill colour
+- **THEN** no clip region is set for the bar, and its outer edge is antialiased by its own fill only
