@@ -1272,6 +1272,42 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.max).toEqual(99);
   });
 
+  function getDataBoundsScale(data, y) {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data}]
+      },
+      options: {
+        scales: {
+          y: {bounds: 'data', ...y, ticks: {autoSkip: false, ...y.ticks}}
+        }
+      }
+    });
+    return chart.scales.y;
+  }
+
+  it('Should leave the data bounds out of the ticks with bounds: data and includeBounds: false', function() {
+    var scale = getDataBoundsScale([0, 97], {ticks: {includeBounds: false}});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80, 90]);
+    expect(scale.min).toBe(0);
+    expect(scale.max).toBe(97);
+  });
+
+  it('Should place the ticks on the grid between off-grid data bounds with bounds: data', function() {
+    var scale = getDataBoundsScale([0.31, 0.97], {});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([0.31, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.97]);
+  });
+
+  it('Should space count ticks evenly between the data bounds with bounds: data', function() {
+    var scale = getDataBoundsScale([1, 99], {ticks: {count: 3}});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([1, 50, 99]);
+  });
+
   it('Should not produce a duplicate final tick when bounding to a fractional data max', function() {
     var chart = window.acquireChart({
       type: 'line',
