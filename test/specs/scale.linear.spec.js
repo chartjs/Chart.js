@@ -761,6 +761,29 @@ describe('Linear Scale', function() {
     expect(ticks).toEqual(ticks.slice().sort((a, b) => a - b));
   });
 
+  [[[10, 20, 80], 90], [[10, 20, 90], 100]].forEach(function([data, last]) {
+    it('should end the axis at its last tick with grace and stepSize for data ' + JSON.stringify(data), function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data}]
+        },
+        options: {
+          scales: {
+            y: {grace: '10%', ticks: {stepSize: 10}}
+          }
+        }
+      });
+      var scale = chart.scales.y;
+      var expected = Array.from({length: last / 10 + 1}, (_, i) => i * 10);
+
+      expect(scale.ticks.map(tick => tick.value)).toEqual(expected);
+      expect(scale.min).toBe(0);
+      expect(scale.max).toBe(last);
+    });
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
