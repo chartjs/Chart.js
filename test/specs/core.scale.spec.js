@@ -530,6 +530,19 @@ describe('Core.scale', function() {
       expect(state.values).toEqual([]);
       expect(chart.scales.x.ticks.length).toBe(0);
     });
+
+    it('should keep the ticks with an empty or falsy label', function() {
+      var labels = ['tick1', 'tick2', 'tick3', 'tick4', 'tick5', 'tick6'];
+      var returned = [0, '', [], ['line1', 'line2'], null, 'tick6'];
+      var state = {};
+      var chart = acquireChartWithCallback(labels, function(value, index) {
+        return returned[index];
+      }, state);
+
+      expect(state.sameArray).toBe(true);
+      expect(state.values).toEqual([0, 1, 2, 3, 5]);
+      expect(getLabels(chart.scales.x)).toEqual([0, '', [], ['line1', 'line2'], 'tick6']);
+    });
   });
 
   describe('_layers', function() {
