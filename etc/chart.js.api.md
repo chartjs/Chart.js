@@ -2774,9 +2774,9 @@ class Legend_2 extends Element_2<AnyObject, LegendOpts> implements LayoutItem {
     // (undocumented)
     fit(): void;
     // (undocumented)
-    _fitCols(titleHeight: number, labelFont: LegendFont, boxWidth: number, _itemHeight: number): number;
+    _fitCols(titleHeight: number, layout: LegendLabelLayout): number;
     // (undocumented)
-    _fitRows(titleHeight: number, fontSize: number, boxWidth: number, itemHeight: number): number;
+    _fitRows(titleHeight: number, layout: LegendLabelLayout): number;
     // (undocumented)
     fullSize: boolean;
     // (undocumented)
@@ -2788,6 +2788,8 @@ class Legend_2 extends Element_2<AnyObject, LegendOpts> implements LayoutItem {
     _hoveredItem: LegendItem | null;
     // (undocumented)
     isHorizontal(): boolean;
+    // (undocumented)
+    _labelLayout: LegendLabelLayout;
     // (undocumented)
     left: number;
     // (undocumented)
@@ -2856,6 +2858,17 @@ interface LegendHitBox {
     left: number;
     // (undocumented)
     row?: number;
+    _symbol: {
+        x: number;
+        y: number;
+    };
+    // (undocumented)
+    _text: {
+        width: number;
+        x: number;
+        y: number;
+        align: CanvasTextAlign;
+    };
     // (undocumented)
     top: number;
     // (undocumented)
@@ -2895,6 +2908,20 @@ export interface LegendItem {
     text: string;
 
     textAlign?: TextAlign;
+}
+
+// @public
+interface LegendLabelLayout {
+    // (undocumented)
+    boxHeight: number;
+    // (undocumented)
+    boxWidth: number;
+    // (undocumented)
+    font: LegendFont;
+    itemHeight: number;
+    // (undocumented)
+    pointStyleWidth: number;
+    usePointStyle: boolean;
 }
 
 // @public (undocumented)

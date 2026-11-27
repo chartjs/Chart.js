@@ -909,6 +909,75 @@ describe('Legend block tests', function() {
     return {symbols, texts};
   }
 
+  it('should give an item without a text alignment the one of the labels', function() {
+    const chart = window.acquireChart({
+      type: 'line',
+      data: {labels: [], datasets: [{data: []}]},
+      options: {plugins: {legend: {labels: {
+        textAlign: 'right',
+        generateLabels: () => [{text: 'own', textAlign: 'center'}, {text: 'none'}]
+      }}}}
+    });
+
+    expect(chart.legend.legendItems.map(item => item.textAlign)).toEqual(['center', 'right']);
+  });
+
+  ['top', 'left'].forEach(function(position) {
+    it('should center a point style at the right-to-left start of the items in a ' + position + ' legend', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: [], datasets: [{label: 'first', data: []}, {label: 'second', data: []}]},
+        options: {plugins: {legend: {position, rtl: true, labels: {usePointStyle: true, textAlign: 'left'}}}}
+      });
+      const centers = [];
+      vi.spyOn(chart.ctx, 'arc').mockImplementation(function(x, y) {
+        centers.push({x, y});
+      });
+
+      chart.draw();
+
+      const {legendHitBoxes, _labelLayout: {boxWidth}} = chart.legend;
+      expect(centers.length).toBe(2);
+      centers.forEach(function(center, i) {
+        // In right-to-left the symbol sits at the right end of the item.
+        const hitbox = legendHitBoxes[i];
+        expect(center.x).toBeCloseTo(hitbox.left + hitbox.width - boxWidth / 2, 5);
+      });
+    });
+
+    it('should keep the symbol of the layout when usePointStyle changes without an update in a ' + position + ' legend', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: [], datasets: [{label: 'first', data: []}]},
+        options: {animation: false, plugins: {legend: {position}}}
+      });
+      const {symbols: laidOut} = drawLegendItems(chart);
+      vi.restoreAllMocks();
+      const arc = vi.spyOn(chart.ctx, 'arc');
+
+      // The legend's resolved options, which the next update replaces.
+      chart.legend.options.labels.usePointStyle = true;
+      const {symbols} = drawLegendItems(chart);
+
+      expect(arc).not.toHaveBeenCalled();
+      expect(symbols).toEqual(laidOut);
+    });
+
+    it('should center a box lower than the font on the text in a ' + position + ' legend', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: [], datasets: [{label: 'first', data: []}, {label: 'second', data: []}]},
+        options: {plugins: {legend: {position, labels: {boxHeight: 4, font: {size: 20}}}}}
+      });
+      const {symbols, texts} = drawLegendItems(chart);
+
+      expect(symbols.length).toBe(2);
+      symbols.forEach(function(symbol, i) {
+        expect(symbol.y).toBeCloseTo(texts[i].y, 5);
+      });
+    });
+  });
+
   // The hit box runs from the leftmost to the rightmost edge of what is drawn.
   function expectHitBoxToCover(hitbox, symbol, text) {
     expect(hitbox.left).toBeCloseTo(Math.min(symbol.left, text.left), 0);
@@ -1462,6 +1531,34 @@ describe('Legend block tests', function() {
     }
   });
 
+  it('should draw the labels in the font they were laid out with', function() {
+    const defaultSize = Chart.defaults.font.size;
+    const chart = acquireChart({
+      type: 'bar',
+      data: {labels: ['A'], datasets: [{label: 'first', data: [1]}]},
+      options: {animation: false}
+    });
+    // The canvas normalizes the font string it is given.
+    chart.ctx.font = Chart.helpers.toFont(chart.legend.options.labels.font).string;
+    const laidOut = chart.ctx.font;
+    const fonts = [];
+    vi.spyOn(chart.ctx, 'fillText').mockImplementation(function(text) {
+      if (text === 'first') {
+        fonts.push(chart.ctx.font);
+      }
+    });
+
+    try {
+      // A render without an update keeps the layout, so the size must not change either.
+      Chart.defaults.font.size = 42;
+      chart.render();
+    } finally {
+      Chart.defaults.font.size = defaultSize;
+    }
+
+    expect(fonts).toEqual([laidOut]);
+  });
+
   ['top', 'right'].forEach(function(position) {
     it('should draw a ' + position + ' legend whose generateLabels returns more items after the layout', function() {
       // fit() runs during the layout and sees 2 items. afterUpdate builds the
@@ -1513,6 +1610,38 @@ describe('Legend block tests', function() {
       // Only the items that have a hit box are drawn.
       const drawn = fillText.mock.calls.map(args => args[0]).filter(text => text.startsWith('item'));
       expect(drawn).toEqual(['item0', 'item1']);
+    });
+  });
+
+  ['top', 'left'].forEach(function(position) {
+    it('should not measure text when drawing a ' + position + ' legend', function() {
+      // fit() measures every item, so draw() only reads the hit boxes. A hidden
+      // item is struck through, and that decoration still measures its line.
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['A'],
+          datasets: [
+            {label: 'first', data: [1]},
+            {label: ['second', 'on two lines'], data: [2]},
+            {label: 'third', data: [3]}
+          ]
+        },
+        options: {
+          animation: false,
+          plugins: {
+            legend: {
+              position,
+              title: {display: true, text: 'Title'}
+            }
+          }
+        }
+      });
+      const measureText = vi.spyOn(chart.ctx, 'measureText');
+
+      chart.draw();
+
+      expect(measureText).not.toHaveBeenCalled();
     });
   });
 

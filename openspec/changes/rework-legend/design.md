@@ -94,10 +94,9 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 1. **The hit boxes are the layout.** `fit()` decides, for each item, everything drawing needs:
    - its row or column;
    - its size;
-   - its text lines and text width;
-   - the symbol's offset in the item.
+   - its text width.
 
-   It keeps these on the item's entry in `legendHitBoxes`. The new fields are private and start with `_`.
+   It keeps these on the item's entry in `legendHitBoxes`; what every item shares (the font, the symbol size, the one-line item height) it keeps once on the legend. The new fields are private and start with `_`. The text itself is not kept: `afterUpdate` builds `legendItems` again after `fit()`, so drawing takes the text from the item it draws the symbol of.
 
    `adjustHitBoxes()` keeps doing what only it can: placing lines in the final box, mirroring for right-to-left, and writing the absolute text and symbol positions. It does not measure or wrap. `_draw()` reads the hit boxes for geometry and `legendItems[i]` for colours and styles. The font is resolved once in fit and kept on the legend, so a later change to the defaults cannot move items (#12196).
 
@@ -226,7 +225,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 | P7 | The legend callbacks do not infer the chart type | `src/types/index.d.ts`, `src/types/utils.d.ts`, `etc/chart.js.api.md`, `etc/chart.js-helpers.api.md`, `test/types/plugins/plugin.legend/*.ts`, `test/integration/typescript-node/src/legend.ts`, `test/integration/typescript-latest/src/legend.ts` | `pnpm lint-types` on the #10442 snippet, and `pnpm test-ci-integration` on it with TypeScript 4.7.4 and the newest TypeScript; a #11666 snippet (passes on master, kept as a guard; the PR says it was not reproduced) | ~50 | P6 (same file); the 4.6.3 type PR on `index.d.ts` (#12349). The other type PRs rebase onto it (decision 25) | | #10442, #11666 |
 | P8 | Docs: the custom `onClick` per chart type; the TypeScript note for the HTML legend; a container option in the HTML legend sample that accepts an element (works in a shadow root); `onLeave` and scrolling | `docs/configuration/legend.md`, `docs/samples/legend/html.md` | none (docs) | ~60 | P6 (same doc) | | #12144, #11877, #10624, #10384 |
 | P19 | refactor: `plugin.legend.js` becomes `plugin.legend.ts`; class fields, method signatures and an internal hit-box interface are typed; public types stay in `src/types/index.d.ts` | `src/plugins/plugin.legend.js` → `src/plugins/plugin.legend.ts`; `src/core/core.layouts.js` (JSDoc only) | none (no behaviour change): `tsc` reports no errors in the file (124 on a plain rename), `pnpm lint-types` passes, every legend spec and fixture is unchanged | ~250 | P6 (same file); P8 only for order | | |
-| P9 | refactor: the hit boxes carry what drawing needs; drawing reads them | `src/plugins/plugin.legend.ts`, `test/specs/plugin.legend.tests.js` | `measureText` count during `draw()` is 0 for a legend without hidden or decorated items (master > 0); every legend fixture unchanged | ~220 | P19 (same file) | #9342 | |
+| P9 | refactor: the hit boxes carry what drawing needs; drawing reads them | `src/plugins/plugin.legend.ts`, `test/specs/plugin.legend.spec.js` | `measureText` count during `draw()` is 0 for a legend without hidden or decorated items (master > 0); every legend fixture unchanged | ~220 | P19 (same file) | #9342 | |
 | P10 | Rows as tall as their tallest item | same | three-line label in a top legend: the next row starts below line 3 (master overlaps) | ~40 | P9 | | #11824 |
 | P11 | Wrap within `maxWidth` / `maxHeight` | same, plus `docs/configuration/legend.md` | right legend with `maxHeight: 100`: every hit box within 100 px of the first, in two or more columns (master: one column to 400 px); top legend with `maxWidth: 150`: every row within 150 px | ~50 | P10 | | #11805 |
 | P12 | Hidden data is not active | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update) | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()` | ~130 | P6 (same file), P8 (same sample); #12391 | | #10882 |
@@ -276,9 +275,10 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 - **P4 → P9:** an item's text area runs from after its symbol to the next column's left edge minus `labels.padding`. For the last column, it runs to the legend's right edge. The hit box covers the symbol and the text inside that area.
 - **P19 → P9 and every later legend piece:** the plugin is `src/plugins/plugin.legend.ts`; its internal shapes have interfaces in that file, and its public types come from `src/types/index.d.ts`.
 - **P9 → P10, P11, P14, P15, P16:**
-  - `fit()` writes each hit box's size, row or column, and private `_text` (lines, width) and `_symbol` (offset, size) fields.
-  - `adjustHitBoxes()` writes the absolute positions.
-  - `_draw()` reads the hit boxes and the styles of `legendItems`, and nothing else.
+  - `fit()` writes each hit box's size, row or column, and the private `_text.width` it measured. What every item shares (the label font, `boxWidth`, `boxHeight`, the one-line `itemHeight`, `usePointStyle` and `pointStyleWidth`) it keeps once on the legend, in private `_labelLayout`.
+  - `adjustHitBoxes()` writes the absolute positions: the hit box's, `_text` (`x`, `y`, `align`, after right-to-left mirroring) and `_symbol` (`x`, `y`: the box's top left corner, or the point style's center).
+  - `_draw()` reads the hit boxes, `_labelLayout` and the styles and text of `legendItems`, and nothing else. It draws `legendItems[i].text`, because `afterUpdate` builds the items again after `fit()`.
+  - A row's or column's size comes from the items `fit()` measured; the drawn text comes from the items `afterUpdate` rebuilt.
 - **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. The chart passes its `events` everywhere it calls the helper.
 - **P12 → P13:** one chart method decides whether an active item is still allowed (dataset visible, element not hidden). P13 calls it for the tooltip's code-set elements.
 - **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. A pointer event that changes the set clears it.

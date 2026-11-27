@@ -59,10 +59,10 @@
 
 ## 10. P9: Drawing reads the hit boxes (refactor)
 
-- [ ] 10.1 Spec: `ctx.measureText` is not called during `chart.draw()` for a legend with no hidden or decorated items (fails on master).
-- [ ] 10.2 In `plugin.legend.ts`, `fit()` resolves the font once and writes private `_text` (lines, width) and `_symbol` (offset, size) on each hit box. `adjustHitBoxes()` writes the absolute text and symbol positions. `_draw()` reads the hit boxes and the `legendItems` styles.
-- [ ] 10.3 `legendHitBoxes`, `lineWidths` and `columnSizes` keep their values: the existing specs that read them pass unchanged. P1's changing-count spec still passes.
-- [ ] 10.4 Every legend fixture is pixel-identical. Commit type `refactor`; the pull request says it is part of #9342.
+- [x] 10.1 Spec: `ctx.measureText` is not called during `chart.draw()` for a legend with no hidden or decorated items (fails on master).
+- [x] 10.2 In `plugin.legend.ts`, `fit()` resolves the font and the symbol size once into private `_labelLayout` and writes private `_text.width` on each hit box. `adjustHitBoxes()` writes the absolute `_text` (`x`, `y`, `align`) and `_symbol` (`x`, `y`) positions. `_draw()` reads the hit boxes, `_labelLayout` and the `legendItems` styles and text.
+- [x] 10.3 `legendHitBoxes`, `lineWidths` and `columnSizes` keep their values: the existing specs that read them pass unchanged. P1's changing-count spec still passes.
+- [x] 10.4 Every legend fixture is pixel-identical. Commit type `refactor`; the pull request says it is part of #9342.
 
 ## 11. P10: Rows as tall as their tallest item
 
@@ -94,7 +94,7 @@
 ## 15. P14: labels.boxYOffset (#12242)
 
 - [ ] 15.1 #12242's spec fails on master. The author renames the option to `labels.boxYOffset` and declares it in the types instead of `datasetRadiusBuffer`.
-- [ ] 15.2 The offset moves the symbol's y (the hit box's `_symbol` offset) for boxes and point styles; text stays.
+- [ ] 15.2 The offset moves the symbol's y (`_symbol.y`) for boxes and point styles; text stays.
 - [ ] 15.3 Docs and the point-style sample. Commit type `feat`. The pull request says `Closes #11884`.
 
 ## 16. P15: Text decoration
