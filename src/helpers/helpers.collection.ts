@@ -128,10 +128,39 @@ export interface ArrayListener<T> {
   _onDataUnshift?(...item: T[]): void;
 }
 
+function applySplice(array, base, args) {
+  const length = array.length;
+  const start = args[0];
+  const normalizeStart = () => {
+    const relative = Math.trunc(+start) || 0;
+    args[0] = relative < 0 ? Math.max(length + relative, 0) : Math.min(relative, length);
+    return args[0];
+  };
+
+  const native = base === Array.prototype.splice;
+  if (native && start !== null && (typeof start === 'object' || typeof start === 'function')) {
+    // Native splice snapshots the length before running user-defined coercions.
+    args[0] = {valueOf: normalizeStart};
+  } else {
+    normalizeStart();
+  }
+  if (!native) {
+    const remaining = length - args[0];
+    args[1] = args.length === 1 ? remaining : Math.min(Math.max(Math.trunc(+args[1]) || 0, 0), remaining);
+  }
+
+  const removed = base.apply(array, args);
+  if (native) {
+    args[1] = removed.length;
+  }
+  return removed;
+}
+
 /**
  * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
  * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
- * called on the '_onData*' callbacks (e.g. _onDataPush, etc.) with same arguments.
+ * called on the '_onData*' callbacks (e.g. _onDataPush). Splice listeners receive
+ * the effective start and delete count.
  */
 export function listenArrayEvents<T>(array: T[], listener: ArrayListener<T>): void;
 export function listenArrayEvents(array, listener) {
@@ -156,7 +185,7 @@ export function listenArrayEvents(array, listener) {
       configurable: true,
       enumerable: false,
       value(...args) {
-        const res = base.apply(this, args);
+        const res = key === 'splice' && args.length ? applySplice(this, base, args) : base.apply(this, args);
 
         array._chartjs.listeners.forEach((object) => {
           if (typeof object[method] === 'function') {
