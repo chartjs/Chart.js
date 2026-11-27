@@ -1763,6 +1763,71 @@ describe('Legend block tests', function() {
     });
   });
 
+  describe('wrapping within maxWidth and maxHeight', function() {
+    function legendWith(position, legendOptions, count, text) {
+      return window.acquireChart({
+        type: 'bar',
+        data: {labels: ['A'], datasets: Array.from({length: count}, (_, i) => ({label: text(i), data: [i]}))},
+        options: {animation: false, plugins: {legend: {position, ...legendOptions}}}
+      }, {canvas: {width: 600, height: 400}}).legend;
+    }
+
+    it('should wrap a right legend into columns within maxHeight', function() {
+      const legend = legendWith('right', {maxHeight: 100}, 12, i => 'Dataset ' + i);
+      const boxes = legend.legendHitBoxes;
+      const first = boxes[0].top;
+
+      expect(new Set(boxes.map(box => box.col)).size).toBeGreaterThanOrEqual(2);
+      boxes.forEach(function(box) {
+        expect(box.top + box.height - first).toBeLessThanOrEqual(100);
+      });
+    });
+
+    it('should wrap a top legend into rows within maxWidth', function() {
+      const legend = legendWith('top', {maxWidth: 150}, 6, i => 'Dataset ' + i);
+      const boxes = legend.legendHitBoxes;
+      const rows = [...new Set(boxes.map(box => box.row))];
+
+      expect(rows.length).toBeGreaterThanOrEqual(2);
+      rows.forEach(function(row) {
+        const inRow = boxes.filter(box => box.row === row);
+        const left = Math.min(...inRow.map(box => box.left));
+        const right = Math.max(...inRow.map(box => box.left + box.width));
+        expect(right - left).toBeLessThanOrEqual(150);
+      });
+    });
+
+    // Items without text are exactly boxWidth + fontSize / 2 = 46 wide and
+    // fontSize = 12 tall, so the sums below have no rounding.
+    const emptyText = () => '';
+
+    it('should not wrap a row whose width with its padding equals maxWidth', function() {
+      // Two items and three paddings: 46 + 46 + 3 * 10.
+      const legend = legendWith('top', {maxWidth: 122}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 0, 1]);
+    });
+
+    it('should wrap a row one pixel wider than maxWidth', function() {
+      const legend = legendWith('top', {maxWidth: 121}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 1, 2]);
+    });
+
+    it('should not wrap a column whose height with its padding equals maxHeight', function() {
+      // Two items and three paddings: 12 + 12 + 3 * 10.
+      const legend = legendWith('right', {maxHeight: 54}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 0, 1]);
+    });
+
+    it('should wrap a column one pixel taller than maxHeight', function() {
+      const legend = legendWith('right', {maxHeight: 53}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 1, 2]);
+    });
+  });
+
   describe('config update', function() {
     it('should update the options', function() {
       var chart = acquireChart({
