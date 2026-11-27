@@ -2,20 +2,29 @@ import Element from '../core/core.element.js';
 import {isObject, _isBetween, _limitValue} from '../helpers/index.js';
 import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options.js';
+import type {BarOptions, Point} from '../types/index.js';
+import type {RoundedRect, TRBL, TRBLCorners} from '../types/geometric.js';
 
-/** @typedef {{ x: number, y: number, base: number, horizontal: boolean, width: number, height: number }} BarProps */
+export interface BarProps extends Point {
+  base: number;
+  horizontal: boolean;
+  width: number;
+  height: number;
+}
+
+type BarRect = RoundedRect & {radius: TRBLCorners};
 
 /**
  * Helper function to get the bounds of the bar regardless of the orientation
- * @param {BarElement} bar the bar
- * @param {boolean} [useFinalPosition]
- * @return {object} bounds of the bar
+ * @param bar the bar
+ * @param [useFinalPosition]
+ * @return bounds of the bar
  * @private
  */
-function getBarBounds(bar, useFinalPosition) {
-  const {x, y, base, width, height} = /** @type {BarProps} */ (bar.getProps(['x', 'y', 'base', 'width', 'height'], useFinalPosition));
+function getBarBounds(bar: BarElement, useFinalPosition?: boolean) {
+  const {x, y, base, width, height} = bar.getProps(['x', 'y', 'base', 'width', 'height'], useFinalPosition);
 
-  let left, right, top, bottom, half;
+  let left: number, right: number, top: number, bottom: number, half: number;
 
   if (bar.horizontal) {
     half = height / 2;
@@ -34,14 +43,15 @@ function getBarBounds(bar, useFinalPosition) {
   return {left, top, right, bottom};
 }
 
-function skipOrLimit(skip, value, min, max) {
+function skipOrLimit(skip: boolean, value: number, min: number, max: number) {
   return skip ? 0 : _limitValue(value, min, max);
 }
 
-function parseBorderWidth(bar, maxW, maxH) {
+function parseBorderWidth(bar: BarElement, maxW: number, maxH: number) {
   const value = bar.options.borderWidth;
   const skip = bar.borderSkipped;
-  const o = toTRBL(value);
+  // toTRBL reads a side that is left out as 0, which a partial object relies on.
+  const o = toTRBL(value as number | TRBL);
 
   return {
     t: skipOrLimit(skip.top, o.top, 0, maxH),
@@ -51,7 +61,7 @@ function parseBorderWidth(bar, maxW, maxH) {
   };
 }
 
-function parseBorderRadius(bar, maxW, maxH) {
+function parseBorderRadius(bar: BarElement, maxW: number, maxH: number) {
   const {enableBorderRadius} = bar.getProps(['enableBorderRadius']);
   const value = bar.options.borderRadius;
   const o = toTRBLCorners(value);
@@ -70,7 +80,7 @@ function parseBorderRadius(bar, maxW, maxH) {
   };
 }
 
-function boundingRects(bar) {
+function boundingRects(bar: BarElement): {outer: BarRect, inner: BarRect} {
   const bounds = getBarBounds(bar);
   const width = bounds.right - bounds.left;
   const height = bounds.bottom - bounds.top;
@@ -100,7 +110,7 @@ function boundingRects(bar) {
   };
 }
 
-function inRange(bar, x, y, useFinalPosition) {
+function inRange(bar: BarElement, x: number | null, y: number | null, useFinalPosition?: boolean) {
   const skipX = x === null;
   const skipY = y === null;
   const skipBoth = skipX && skipY;
@@ -111,20 +121,20 @@ function inRange(bar, x, y, useFinalPosition) {
 		&& (skipY || _isBetween(y, bounds.top, bounds.bottom));
 }
 
-function hasRadius(radius) {
+function hasRadius(radius: TRBLCorners) {
   return radius.topLeft || radius.topRight || radius.bottomLeft || radius.bottomRight;
 }
 
 /**
  * Add a path of a rectangle to the current sub-path
- * @param {CanvasRenderingContext2D} ctx Context
- * @param {*} rect Bounding rect
+ * @param ctx Context
+ * @param rect Bounding rect
  */
-function addNormalRectPath(ctx, rect) {
+function addNormalRectPath(ctx: CanvasRenderingContext2D, rect: RoundedRect) {
   ctx.rect(rect.x, rect.y, rect.w, rect.h);
 }
 
-function inflateRect(rect, amount, refRect = {}) {
+function inflateRect(rect: BarRect, amount: number, refRect: Partial<RoundedRect> = {}): BarRect {
   const x = rect.x !== refRect.x ? -amount : 0;
   const y = rect.y !== refRect.y ? -amount : 0;
   const w = (rect.x + rect.w !== refRect.x + refRect.w ? amount : 0) - x;
@@ -138,14 +148,11 @@ function inflateRect(rect, amount, refRect = {}) {
   };
 }
 
-export default class BarElement extends Element {
+export default class BarElement extends Element<BarProps, BarOptions> {
 
   static id = 'bar';
 
-  /**
-   * @type {any}
-   */
-  static defaults = {
+  static override defaults: any = {
     borderSkipped: 'start',
     borderWidth: 0,
     borderRadius: 0,
@@ -153,13 +160,17 @@ export default class BarElement extends Element {
     pointStyle: undefined
   };
 
-  /**
-   * @type {any}
-   */
-  static defaultRoutes = {
+  static override defaultRoutes: any = {
     backgroundColor: 'backgroundColor',
     borderColor: 'borderColor'
   };
+
+  declare horizontal: boolean;
+  declare base: number;
+  declare width: number;
+  declare height: number;
+  declare inflateAmount: number;
+  declare borderSkipped: {top: boolean, right: boolean, bottom: boolean, left: boolean};
 
   constructor(cfg) {
     super();
@@ -176,7 +187,7 @@ export default class BarElement extends Element {
     }
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D) {
     const {inflateAmount, options: {borderColor, backgroundColor}} = this;
     const {inner, outer} = boundingRects(this);
     const addRectPath = hasRadius(outer.radius) ? addRoundedRectPath : addNormalRectPath;
@@ -200,27 +211,27 @@ export default class BarElement extends Element {
     ctx.restore();
   }
 
-  inRange(mouseX, mouseY, useFinalPosition) {
+  inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean) {
     return inRange(this, mouseX, mouseY, useFinalPosition);
   }
 
-  inXRange(mouseX, useFinalPosition) {
+  inXRange(mouseX: number, useFinalPosition?: boolean) {
     return inRange(this, mouseX, null, useFinalPosition);
   }
 
-  inYRange(mouseY, useFinalPosition) {
+  inYRange(mouseY: number, useFinalPosition?: boolean) {
     return inRange(this, null, mouseY, useFinalPosition);
   }
 
-  getCenterPoint(useFinalPosition) {
-    const {x, y, base, horizontal} = /** @type {BarProps} */ (this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition));
+  getCenterPoint(useFinalPosition?: boolean) {
+    const {x, y, base, horizontal} = this.getProps(['x', 'y', 'base', 'horizontal'], useFinalPosition);
     return {
       x: horizontal ? (x + base) / 2 : x,
       y: horizontal ? y : (y + base) / 2
     };
   }
 
-  getRange(axis) {
+  getRange(axis: 'x' | 'y') {
     return axis === 'x' ? this.width / 2 : this.height / 2;
   }
 }
