@@ -79,11 +79,11 @@
 
 ## 11. P11: Convert the interaction modes to TypeScript
 
-- [ ] 11.1 Rename the modules to `.ts`. Show the gate's errors for the interaction modes before the fix.
-- [ ] 11.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 11.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 11.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 11.5 Run the whole test suite; no fixture changes.
+- [x] 11.1 Rename the modules to `.ts`. Show the gate's errors for the interaction modes before the fix.
+- [x] 11.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 11.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 11.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 11.5 Run the whole test suite; no fixture changes.
 
 ## 12. P12: Convert the layout service to TypeScript
 
