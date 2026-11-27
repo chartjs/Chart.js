@@ -55,9 +55,22 @@ type LegendLabelOptions = LegendOpts['labels'];
 type LegendFont = ReturnType<typeof toFont>;
 
 /**
- * Where a legend item sits and how large it is. `fit()` stores the size and the
- * row (horizontal legend) or column (vertical legend); `adjustHitBoxes()` moves
- * the box to its position on the canvas.
+ * What every legend item shares: the label font and the symbol size, resolved
+ * once in `fit()` so that drawing uses the font the items were measured with.
+ */
+interface LegendLabelLayout {
+  font: LegendFont;
+  boxWidth: number;
+  boxHeight: number;
+  /** The height of a one-line item. */
+  itemHeight: number;
+}
+
+/**
+ * Where a legend item sits and how large it is. `fit()` stores the size, the
+ * row (horizontal legend) or column (vertical legend) and the text width;
+ * `adjustHitBoxes()` moves the box to its position on the canvas and stores
+ * where the symbol and the text are drawn. Drawing reads only these.
  */
 interface LegendHitBox {
   left: number;
@@ -66,6 +79,22 @@ interface LegendHitBox {
   height: number;
   row?: number;
   col?: number;
+  _text: {
+    /** The width `fit()` measured. */
+    width: number;
+    /** Where the first line is drawn, after right-to-left mirroring. */
+    x: number;
+    y: number;
+    align: CanvasTextAlign;
+  };
+  /**
+   * The symbol's top left corner, or its center when the labels use point
+   * styles, after right-to-left mirroring.
+   */
+  _symbol: {
+    x: number;
+    y: number;
+  };
 }
 
 interface LegendColumnSize {
@@ -90,13 +119,64 @@ const getBoxSize = (labelOpts: LegendLabelOptions, fontSize: number) => {
 
 const itemsEqual = (a: LegendItem | null, b: LegendItem | null) => a !== null && b !== null && a.datasetIndex === b.datasetIndex && a.index === b.index;
 
-function getAlignedHitBox(x: number, width: number, boxWidth: number, fontSize: number, textAlign: TextAlign, right: number) {
-  const textWidth = width - boxWidth - fontSize / 2;
+function getAlignedHitBox(x: number, textWidth: number, boxWidth: number, fontSize: number, textAlign: TextAlign, right: number) {
   const textX = _textX(textAlign, x + boxWidth + fontSize / 2, right, false);
   const textLeft = textX - (textAlign === 'center' ? textWidth / 2 : textAlign === 'right' ? textWidth : 0);
   const left = Math.min(x, textLeft);
   // Cover both the symbol and the aligned text in LTR coordinates.
   return {left, width: Math.max(x + boxWidth, textLeft + textWidth) - left};
+}
+
+/**
+ * The text alignment of an item: its own, or else the labels' one, which the
+ * item then keeps.
+ */
+function itemTextAlign(item: LegendItem | undefined, labelAlign: TextAlign): TextAlign {
+  // The labels are built again after fit(), so there can be fewer items than hit boxes.
+  if (!item) {
+    return labelAlign;
+  }
+  return item.textAlign || (item.textAlign = labelAlign);
+}
+
+/**
+ * What `adjustHitBoxes()` reads once to place every item.
+ */
+interface ItemPlacement {
+  layout: LegendLabelLayout;
+  rtlHelper: ReturnType<typeof getRtlAdapter>;
+  rtl: boolean;
+  usePointStyle: boolean;
+}
+
+/**
+ * Store where an item's symbol and text are drawn.
+ * @param placement - what every item shares
+ * @param hitbox - the item's hit box, with its final top
+ * @param textAlign - the alignment of the item's text
+ * @param x - the left edge of the item, before right-to-left mirroring
+ * @param right - the right end of the item's text area, before mirroring
+ */
+function placeItem({layout: {font, boxWidth, boxHeight, itemHeight}, rtlHelper, rtl, usePointStyle}: ItemPlacement, hitbox: LegendHitBox, textAlign: TextAlign, x: number, right: number) {
+  const halfFontSize = font.size / 2;
+  const y = hitbox.top;
+  const realX = rtlHelper.x(x);
+  const symbol = hitbox._symbol;
+  const text = hitbox._text;
+
+  if (usePointStyle) {
+    symbol.x = rtlHelper.xPlus(realX, boxWidth / 2);
+    symbol.y = y + halfFontSize;
+  } else {
+    // Center the box when it is lower than the font.
+    symbol.x = rtlHelper.leftForLtr(realX, boxWidth);
+    symbol.y = y + Math.max((font.size - boxHeight) / 2, 0);
+  }
+
+  // The canvas alignment, which is mirrored for right-to-left, places the text.
+  text.align = rtlHelper.textAlign(textAlign);
+  text.x = rtlHelper.x(_textX(text.align, x + boxWidth + halfFontSize, right, rtl));
+  text.y = y + itemHeight / 2;
 }
 
 export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem {
@@ -127,6 +207,10 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
   position: LayoutPosition;
   weight: number;
   fullSize: boolean;
+  /**
+   * @private
+   */
+  _labelLayout: LegendLabelLayout;
 
   constructor(config: {ctx: CanvasRenderingContext2D; options: LegendOpts; chart: Chart}) {
     super();
@@ -154,6 +238,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     this.position = undefined;
     this.weight = undefined;
     this.fullSize = undefined;
+    this._labelLayout = undefined;
   }
 
   update(maxWidth: number, maxHeight: number, margins: ChartArea) {
@@ -210,21 +295,20 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     }
 
     const labelOpts = options.labels;
-    const labelFont = toFont(labelOpts.font);
-    const fontSize = labelFont.size;
+    const font = toFont(labelOpts.font);
     const titleHeight = this._computeTitleHeight();
-    const {boxWidth, itemHeight} = getBoxSize(labelOpts, fontSize);
+    const layout: LegendLabelLayout = this._labelLayout = {font, ...getBoxSize(labelOpts, font.size)};
 
     let width: number, height: number;
 
-    ctx.font = labelFont.string;
+    ctx.font = font.string;
 
     if (this.isHorizontal()) {
       width = this.maxWidth; // fill all the width
-      height = this._fitRows(titleHeight, fontSize, boxWidth, itemHeight) + 10;
+      height = this._fitRows(titleHeight, layout) + 10;
     } else {
       height = this.maxHeight; // fill all the height
-      width = Math.max(this._fitCols(titleHeight, labelFont, boxWidth, itemHeight), this._computeTitleWidth()) + 10;
+      width = Math.max(this._fitCols(titleHeight, layout), this._computeTitleWidth()) + 10;
     }
 
     this.width = Math.min(width, options.maxWidth || this.maxWidth);
@@ -234,8 +318,10 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
   /**
    * @private
    */
-  _fitRows(titleHeight: number, fontSize: number, boxWidth: number, itemHeight: number) {
+  _fitRows(titleHeight: number, layout: LegendLabelLayout) {
     const {ctx, maxWidth, options: {labels: {padding}}} = this;
+    const {font, boxWidth, itemHeight} = layout;
+    const fontSize = font.size;
     const hitboxes: LegendHitBox[] = this.legendHitBoxes = [];
     // Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
     const lineWidths = this.lineWidths = [0];
@@ -248,7 +334,8 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     let row = -1;
     let top = -lineHeight;
     this.legendItems.forEach((legendItem, i) => {
-      const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+      const textWidth = ctx.measureText(legendItem.text).width;
+      const itemWidth = boxWidth + (fontSize / 2) + textWidth;
 
       if (i === 0 || lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
         totalHeight += lineHeight;
@@ -257,7 +344,12 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
         row++;
       }
 
-      hitboxes[i] = {left: 0, top, row, width: itemWidth, height: itemHeight};
+      // adjustHitBoxes() writes the positions; they start at 0 so that every hit box has one shape.
+      hitboxes[i] = {
+        left: 0, top, row, width: itemWidth, height: itemHeight,
+        _text: {width: textWidth, x: 0, y: 0, align: 'left'},
+        _symbol: {x: 0, y: 0}
+      };
 
       lineWidths[lineWidths.length - 1] += itemWidth + padding;
     });
@@ -265,7 +357,11 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     return totalHeight;
   }
 
-  _fitCols(titleHeight: number, labelFont: LegendFont, boxWidth: number, _itemHeight: number) {
+  /**
+   * @private
+   */
+  _fitCols(titleHeight: number, layout: LegendLabelLayout) {
+    const {font, boxWidth, itemHeight: lineItemHeight} = layout;
     const {ctx, maxHeight, options: {labels: {padding}}} = this;
     const hitboxes: LegendHitBox[] = this.legendHitBoxes = [];
     const columnSizes: LegendColumnSize[] = this.columnSizes = [];
@@ -279,7 +375,9 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     let col = 0;
 
     this.legendItems.forEach((legendItem, i) => {
-      const {itemWidth, itemHeight} = calculateItemSize(boxWidth, labelFont, ctx, legendItem, _itemHeight);
+      const textWidth = calculateTextWidth(legendItem, ctx);
+      const itemWidth = boxWidth + (font.size / 2) + textWidth;
+      const itemHeight = calculateItemHeight(lineItemHeight, legendItem, font.lineHeight);
 
       // If too tall, go to new column
       if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
@@ -290,8 +388,12 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
         currentColWidth = currentColHeight = 0;
       }
 
-      // Store the hitbox width and height here. Final position will be updated in `draw`
-      hitboxes[i] = {left, top: currentColHeight, col, width: itemWidth, height: itemHeight};
+      // Store the hitbox width and height here. adjustHitBoxes() writes the final position.
+      hitboxes[i] = {
+        left, top: currentColHeight, col, width: itemWidth, height: itemHeight,
+        _text: {width: textWidth, x: 0, y: 0, align: 'left'},
+        _symbol: {x: 0, y: 0}
+      };
 
       // Get max width
       currentColWidth = Math.max(currentColWidth, itemWidth);
@@ -309,24 +411,26 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       return;
     }
     const titleHeight = this._computeTitleHeight();
-    const {legendHitBoxes: hitboxes, options: {align, labels, rtl}} = this;
-    const {padding} = labels;
+    const {legendHitBoxes: hitboxes, legendItems, options: {align, labels, rtl}} = this;
+    const {padding, textAlign: labelAlign} = labels;
     const rtlHelper = getRtlAdapter(rtl, this.left, this.width);
+    const placement: ItemPlacement = {layout: this._labelLayout, rtlHelper, rtl, usePointStyle: labels.usePointStyle};
     if (this.isHorizontal()) {
       let row = 0;
       let left = _alignStartEnd(align, this.left + padding, this.right - this.lineWidths[row]);
-      for (const hitbox of hitboxes) {
+      for (let i = 0; i < hitboxes.length; i++) {
+        const hitbox = hitboxes[i];
         if (row !== hitbox.row) {
           row = hitbox.row;
           left = _alignStartEnd(align, this.left + padding, this.right - this.lineWidths[row]);
         }
         hitbox.top += this.top + titleHeight + padding;
+        placeItem(placement, hitbox, itemTextAlign(legendItems[i], labelAlign), left, left + hitbox.width);
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(left), hitbox.width);
         left += hitbox.width + padding;
       }
     } else {
-      const fontSize = toFont(labels.font).size;
-      const {boxWidth} = getBoxSize(labels, fontSize);
+      const {boxWidth, font: {size: fontSize}} = this._labelLayout;
       let col = 0;
       let top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
       for (let i = 0; i < hitboxes.length; i++) {
@@ -336,11 +440,12 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
           top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
         }
         hitbox.top = top;
+        // The left edge from fit(), before the aligned text moves the hit box.
         const x = hitbox.left + this.left + padding;
-        // The labels are built again after fit(), so there can be fewer items than hit boxes.
-        const item = this.legendItems[i];
-        const textAlign = (item && item.textAlign) || labels.textAlign;
-        const aligned = getAlignedHitBox(x, hitbox.width, boxWidth, fontSize, textAlign, this._columnRight(x, hitbox.col));
+        const right = this._columnRight(x, col);
+        const textAlign = itemTextAlign(legendItems[i], labelAlign);
+        placeItem(placement, hitbox, textAlign, x, right);
+        const aligned = getAlignedHitBox(x, hitbox._text.width, boxWidth, fontSize, textAlign, right);
         hitbox.width = aligned.width;
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
         top += hitbox.height + padding;
@@ -379,15 +484,10 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
    * @private
    */
   _draw() {
-    const {options: opts, columnSizes, lineWidths, ctx, legendHitBoxes: hitboxes} = this;
-    const {align, labels: labelOpts} = opts;
+    const {options: opts, ctx, legendHitBoxes: hitboxes, _labelLayout: {font: labelFont, boxWidth, boxHeight}} = this;
+    const {usePointStyle, pointStyleWidth} = opts.labels;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
-    const labelFont = toFont(labelOpts.font);
-    const {padding} = labelOpts;
-    const fontSize = labelFont.size;
-    const halfFontSize = fontSize / 2;
-    let cursor: {x: number; y: number; line: number};
 
     this.drawTitle();
 
@@ -397,9 +497,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     ctx.lineWidth = 0.5;
     ctx.font = labelFont.string;
 
-    const {boxWidth, boxHeight, itemHeight} = getBoxSize(labelOpts, fontSize);
-
-    // current position
+    // x and y are the center of a point style, else the box's top left corner.
     const drawLegendBox = function(x: number, y: number, legendItem: LegendItem) {
       if (isNaN(boxWidth) || boxWidth <= 0 || isNaN(boxHeight) || boxHeight < 0) {
         return;
@@ -418,39 +516,32 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
 
       ctx.setLineDash(valueOrDefault(legendItem.lineDash, []));
 
-      if (labelOpts.usePointStyle) {
-        // Recalculate x and y for drawPoint() because its expecting
-        // x and y to be center of figure (instead of top left)
+      if (usePointStyle) {
         const drawOptions = {
           radius: boxHeight * Math.SQRT2 / 2,
           pointStyle: legendItem.pointStyle,
           rotation: legendItem.rotation,
           borderWidth: lineWidth
         };
-        const centerX = rtlHelper.xPlus(x, boxWidth / 2);
-        const centerY = y + halfFontSize;
 
         // Draw pointStyle as legend symbol
-        drawPointLegend(ctx, drawOptions, centerX, centerY, labelOpts.pointStyleWidth && boxWidth);
+        drawPointLegend(ctx, drawOptions, x, y, pointStyleWidth && boxWidth);
       } else {
         // Draw box as legend symbol
-        // Adjust position when boxHeight < fontSize (want it centered)
-        const yBoxTop = y + Math.max((fontSize - boxHeight) / 2, 0);
-        const xBoxLeft = rtlHelper.leftForLtr(x, boxWidth);
         const borderRadius = toTRBLCorners(legendItem.borderRadius);
 
         ctx.beginPath();
 
         if (Object.values(borderRadius).some(v => v !== 0)) {
           addRoundedRectPath(ctx, {
-            x: xBoxLeft,
-            y: yBoxTop,
+            x,
+            y,
             w: boxWidth,
             h: boxHeight,
             radius: borderRadius,
           });
         } else {
-          ctx.rect(xBoxLeft, yBoxTop, boxWidth, boxHeight);
+          ctx.rect(x, y, boxWidth, boxHeight);
         }
 
         ctx.fill();
@@ -462,78 +553,27 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       ctx.restore();
     };
 
-    const fillText = function(x: number, y: number, legendItem: LegendItem) {
-      renderText(ctx, legendItem.text, x, y + (itemHeight / 2), labelFont, {
-        strikethrough: legendItem.hidden,
-        textAlign: rtlHelper.textAlign(legendItem.textAlign)
-      });
-    };
-
-    // Horizontal
-    const isHorizontal = this.isHorizontal();
-    const titleHeight = this._computeTitleHeight();
-    if (isHorizontal) {
-      cursor = {
-        x: _alignStartEnd(align, this.left + padding, this.right - lineWidths[0]),
-        y: this.top + padding + titleHeight,
-        line: 0
-      };
-    } else {
-      cursor = {
-        x: this.left + padding,
-        y: _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[0].height),
-        line: 0
-      };
-    }
-
     overrideTextDirection(this.ctx, opts.textDirection);
 
-    const lineHeight = itemHeight + padding;
     this.legendItems.forEach((legendItem, i) => {
-      // Draw each item in the row or column that fit() gave it. An item
-      // without a hit box was added after fit(), so there is no room for it.
+      // Draw each item where adjustHitBoxes() placed it. An item without a
+      // hit box was added after fit(), so there is no room for it.
       const hitbox = hitboxes[i];
       if (!hitbox) {
         return;
       }
+      const {_symbol: symbol, _text: text} = hitbox;
 
       ctx.strokeStyle = legendItem.fontColor; // for strikethrough effect
       ctx.fillStyle = legendItem.fontColor; // render in correct colour
 
-      const textWidth = ctx.measureText(legendItem.text).width;
-      const textAlign = rtlHelper.textAlign(legendItem.textAlign || (legendItem.textAlign = labelOpts.textAlign));
-      const width = boxWidth + halfFontSize + textWidth;
-      let x = cursor.x;
-      let y = cursor.y;
-
-      rtlHelper.setWidth(this.width);
-
-      if (isHorizontal) {
-        if (hitbox.row !== cursor.line) {
-          y = cursor.y += lineHeight;
-          cursor.line = hitbox.row;
-          x = cursor.x = _alignStartEnd(align, this.left + padding, this.right - lineWidths[cursor.line]);
-        }
-      } else if (hitbox.col !== cursor.line) {
-        x = cursor.x = x + columnSizes[cursor.line].width + padding;
-        cursor.line = hitbox.col;
-        y = cursor.y = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - columnSizes[cursor.line].height);
-      }
-
-      const realX = rtlHelper.x(x);
-
-      drawLegendBox(realX, y, legendItem);
-
-      x = _textX(textAlign, x + boxWidth + halfFontSize, isHorizontal ? x + width : this._columnRight(x, cursor.line), opts.rtl);
+      drawLegendBox(symbol.x, symbol.y, legendItem);
 
       // Fill the actual label
-      fillText(rtlHelper.x(x), y, legendItem);
-
-      if (isHorizontal) {
-        cursor.x += width + padding;
-      } else {
-        cursor.y += calculateItemHeight(itemHeight, legendItem, labelFont.lineHeight) + padding;
-      }
+      renderText(ctx, legendItem.text, text.x, text.y, labelFont, {
+        strikethrough: legendItem.hidden,
+        textAlign: text.align
+      });
     });
 
     // @ts-expect-error restoreTextDirection takes the [value, priority] pair that overrideTextDirection saved, not the direction.
@@ -674,18 +714,14 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
   }
 }
 
-function calculateItemSize(boxWidth: number, labelFont: LegendFont, ctx: CanvasRenderingContext2D, legendItem: LegendItem, _itemHeight: number) {
-  const itemWidth = calculateItemWidth(legendItem, boxWidth, labelFont, ctx);
-  const itemHeight = calculateItemHeight(_itemHeight, legendItem, labelFont.lineHeight);
-  return {itemWidth, itemHeight};
-}
-
-function calculateItemWidth(legendItem: LegendItem, boxWidth: number, labelFont: LegendFont, ctx: CanvasRenderingContext2D) {
+/**
+ * Width of an item's label in a vertical legend: its widest line.
+ */
+function calculateTextWidth(legendItem: LegendItem, ctx: CanvasRenderingContext2D) {
   const legendItemText = legendItem.text;
-  const textWidth = isArray<string>(legendItemText)
+  return isArray<string>(legendItemText)
     ? Math.max(0, ...legendItemText.map(line => ctx.measureText(line).width))
     : ctx.measureText(legendItemText).width;
-  return boxWidth + (labelFont.size / 2) + textWidth;
 }
 
 /**

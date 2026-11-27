@@ -94,10 +94,9 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 1. **The hit boxes are the layout.** `fit()` decides, for each item, everything drawing needs:
    - its row or column;
    - its size;
-   - its text lines and text width;
-   - the symbol's offset in the item.
+   - its text width.
 
-   It keeps these on the item's entry in `legendHitBoxes`. The new fields are private and start with `_`.
+   It keeps these on the item's entry in `legendHitBoxes`; what every item shares (the font, the symbol size, the one-line item height) it keeps once on the legend. The new fields are private and start with `_`. The text itself is not kept: `afterUpdate` builds `legendItems` again after `fit()`, so drawing takes the text from the item it draws the symbol of.
 
    `adjustHitBoxes()` keeps doing what only it can: placing lines in the final box, mirroring for right-to-left, and writing the absolute text and symbol positions. It does not measure or wrap. `_draw()` reads the hit boxes for geometry and `legendItems[i]` for colours and styles. The font is resolved once in fit and kept on the legend, so a later change to the defaults cannot move items (#12196).
 
@@ -276,9 +275,9 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 - **P4 → P9:** an item's text area runs from after its symbol to the next column's left edge minus `labels.padding`. For the last column, it runs to the legend's right edge. The hit box covers the symbol and the text inside that area.
 - **P19 → P9 and every later legend piece:** the plugin is `src/plugins/plugin.legend.ts`; its internal shapes have interfaces in that file, and its public types come from `src/types/index.d.ts`.
 - **P9 → P10, P11, P14, P15, P16:**
-  - `fit()` writes each hit box's size, row or column, and private `_text` (lines, width) and `_symbol` (offset, size) fields.
-  - `adjustHitBoxes()` writes the absolute positions.
-  - `_draw()` reads the hit boxes and the styles of `legendItems`, and nothing else.
+  - `fit()` writes each hit box's size, row or column, and the private `_text.width` it measured. What every item shares (the label font, `boxWidth`, `boxHeight` and the one-line `itemHeight`) it keeps once on the legend, in private `_labelLayout`.
+  - `adjustHitBoxes()` writes the absolute positions: the hit box's, `_text` (`x`, `y`, `align`, after right-to-left mirroring) and `_symbol` (`x`, `y`: the box's top left corner, or the point style's center).
+  - `_draw()` reads the hit boxes, `_labelLayout` and the styles and text of `legendItems`, and nothing else. It draws `legendItems[i].text`, because `afterUpdate` builds the items again after `fit()`.
 - **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. The chart passes its `events` everywhere it calls the helper.
 - **P12 → P13:** one chart method decides whether an active item is still allowed (dataset visible, element not hidden). P13 calls it for the tooltip's code-set elements.
 - **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. A pointer event that changes the set clears it.
