@@ -2789,7 +2789,7 @@ describe('Chart', function() {
 
     // The hover colour is less opaque than the normal one, so an un-hover
     // animation that takes over the hide animation makes the line more opaque.
-    function acquireLineChart() {
+    function acquireLineChart(onClick) {
       const chart = acquireChart({
         type: 'line',
         data: {
@@ -2806,6 +2806,7 @@ describe('Chart', function() {
           animation: {duration: 1000},
           interaction: {mode: 'dataset', intersect: false},
           transitions: {active: {animation: {duration: 0}}},
+          onClick
         }
       });
       // End the initial animation, which a hover would otherwise retarget.
@@ -3051,6 +3052,121 @@ describe('Chart', function() {
       expect(onHover.mock.lastCall[1]).toEqual([]);
       expect(chart.getActiveElements()).toEqual([]);
       expect(bar.active).toBe(false);
+    });
+
+    function acquireDatasetModeChart(options, plugins = []) {
+      return acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3], borderWidth: 1, hoverBorderWidth: 5}, {data: [3, 2, 1]}]
+        },
+        options: Object.assign({interaction: {mode: 'dataset', intersect: false}}, options),
+        plugins
+      });
+    }
+
+    function expectNothingOfDataset0Active(chart) {
+      const meta = chart.getDatasetMeta(0);
+      expect(chart.getActiveElements().filter(({datasetIndex}) => datasetIndex === 0)).toEqual([]);
+      expect(meta.dataset.active).toBe(false);
+      expect(meta.data.some((element) => element.active)).toBe(false);
+    }
+
+    it('should not set a dataset that onClick hides active', async function() {
+      const chart = acquireDatasetModeChart({onClick: () => chart.hide(0)});
+
+      // A tap: a click with no mousemove before it.
+      await triggerMouseEvent(chart, 'click', chart.getDatasetMeta(0).data[0]);
+
+      expect(chart.isDatasetVisible(0)).toBe(false);
+      expectNothingOfDataset0Active(chart);
+    });
+
+    it('should fade a hovered line out when onClick hides it', async function() {
+      const chart = acquireLineChart(() => chart.hide(0));
+      const meta = chart.getDatasetMeta(0);
+      const line = meta.dataset;
+
+      await triggerMouseEvent(chart, 'mousemove', meta.data[1]);
+      const start = alphaOf(line.options.borderColor);
+      expect(start).toBeCloseTo(0.5, 2);
+
+      await triggerMouseEvent(chart, 'click', meta.data[1]);
+
+      expect(chart.isDatasetVisible(0)).toBe(false);
+      expect(borderAlphaAtMidHide(line)).toBeLessThan(start);
+      expectNothingOfDataset0Active(chart);
+      chart.stop();
+    });
+
+    it('should not set a dataset that onHover hides active', async function() {
+      const chart = acquireDatasetModeChart({
+        onHover: (e, active) => active.length && active[0].datasetIndex === 0 && chart.hide(0)
+      });
+
+      await triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[0]);
+
+      expect(chart.isDatasetVisible(0)).toBe(false);
+      expectNothingOfDataset0Active(chart);
+    });
+
+    it('should keep the hover style of a dataset when one of its items is hidden', function() {
+      // Record the dataset element's active state as the datasets update.
+      let activeInUpdate;
+      const chart = acquireDatasetModeChart({}, [{
+        id: 'probe',
+        beforeDatasetsUpdate: (c) => {
+          activeInUpdate = c.getDatasetMeta(0).dataset.active;
+        }
+      }]);
+      const meta = chart.getDatasetMeta(0);
+
+      chart.setActiveElements(meta.data.map((element, index) => ({datasetIndex: 0, index})));
+      expect(meta.dataset.options.borderWidth).toBe(5);
+
+      chart.hide(0, 2);
+
+      expect(activeInUpdate).toBe(true);
+      expect(meta.dataset.active).toBe(true);
+      expect(meta.dataset.options.borderWidth).toBe(5);
+      expect(chart.getActiveElements().map(({index}) => index)).toEqual([0, 1]);
+    });
+
+    it('should end the hover style of every dataset that is hidden in one update', function() {
+      const chart = acquireDatasetModeChart();
+      const items = (datasetIndex) => chart.getDatasetMeta(datasetIndex).data.map((element, index) => ({datasetIndex, index}));
+
+      chart.setActiveElements(items(0));
+      chart.setActiveElements([...items(0), ...items(1)]);
+      expect(chart.getDatasetMeta(0).dataset.active).toBe(true);
+      expect(chart.getDatasetMeta(1).dataset.active).toBe(true);
+
+      chart.setDatasetVisibility(0, false);
+      chart.setDatasetVisibility(1, false);
+      chart.update();
+
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(chart.getDatasetMeta(0).dataset.active).toBe(false);
+      expect(chart.getDatasetMeta(1).dataset.active).toBe(false);
+    });
+
+    ['bar', 'polarArea'].forEach((type) => {
+      it(`should not keep a ${type} item hidden by hide(datasetIndex, dataIndex) active`, function() {
+        const chart = acquireChart({
+          type,
+          data: {
+            labels: ['a', 'b', 'c'],
+            datasets: [{data: [1, 2, 3]}]
+          }
+        });
+
+        chart.setActiveElements([{datasetIndex: 0, index: 1}]);
+        chart.hide(0, 1);
+
+        expect(chart.getActiveElements()).toEqual([]);
+        expect(chart.getDatasetMeta(0).data[1].active).toBe(false);
+      });
     });
   });
 
