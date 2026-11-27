@@ -597,7 +597,8 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     const titleOpts = this.options.title;
     const titleFont = toFont(titleOpts.font);
     const titlePadding = toPadding(titleOpts.padding);
-    return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
+    const lineCount = isArray(titleOpts.text) ? titleOpts.text.length : 1;
+    return titleOpts.display ? lineCount * titleFont.lineHeight + titlePadding.height : 0;
   }
 
   /**

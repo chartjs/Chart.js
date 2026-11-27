@@ -1,4 +1,33 @@
 describe('Legend block tests', function() {
+  for (const position of ['top', 'left']) {
+    it(`should leave room for each line of the legend title at the ${position}`, function() {
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {labels: ['A'], datasets: [{data: [1]}]},
+        options: {
+          plugins: {
+            legend: {
+              position,
+              align: 'start',
+              title: {display: true, text: 'One', font: {lineHeight: '20px'}}
+            }
+          }
+        }
+      });
+      const {legend} = chart;
+      const firstItemTop = legend.legendHitBoxes[0].top - legend.top;
+      const height = legend.height;
+
+      chart.options.plugins.legend.title.text = ['One', 'Two', 'Three'];
+      chart.update();
+
+      expect(legend.legendHitBoxes[0].top - legend.top).toBe(firstItemTop + 40);
+      if (position === 'top') {
+        expect(legend.height).toBe(height + 40);
+      }
+    });
+  }
+
   describe('vertical legend titles', function() {
     const padding = {left: 7, right: 17};
 
