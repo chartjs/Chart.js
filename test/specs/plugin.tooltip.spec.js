@@ -829,7 +829,7 @@ describe('Plugin.Tooltip', function() {
   });
 
   it('should hide the tooltip and not run content callbacks when all items are filtered out', async function() {
-    var titleCallback = jasmine.createSpy('titleCallback');
+    var titleCallback = vi.fn();
     var chart = window.acquireChart({
       type: 'line',
       data: {
@@ -857,7 +857,7 @@ describe('Plugin.Tooltip', function() {
     var meta = chart.getDatasetMeta(0);
     var point = meta.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(titleCallback).not.toHaveBeenCalled();
     expect(chart.tooltip.opacity).toBe(0);
@@ -888,9 +888,9 @@ describe('Plugin.Tooltip', function() {
     var meta = chart.getDatasetMeta(0);
 
     // Show the tooltip on an accepted item, then move to a filtered one
-    await jasmine.triggerMouseEvent(chart, 'mousemove', meta.data[1]);
+    await triggerMouseEvent(chart, 'mousemove', meta.data[1]);
     expect(chart.tooltip.body.length).toBe(1);
-    await jasmine.triggerMouseEvent(chart, 'mousemove', meta.data[2]);
+    await triggerMouseEvent(chart, 'mousemove', meta.data[2]);
 
     expect(chart.tooltip.body.length).toBe(0);
 
@@ -926,10 +926,10 @@ describe('Plugin.Tooltip', function() {
     var meta = chart.getDatasetMeta(0);
     var point = meta.data[1];
 
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    await triggerMouseEvent(chart, 'mousemove', point);
 
-    var updateSpy = spyOn(chart.tooltip, 'update').and.callThrough();
-    await jasmine.triggerMouseEvent(chart, 'mousemove', point);
+    var updateSpy = vi.spyOn(chart.tooltip, 'update');
+    await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(updateSpy).not.toHaveBeenCalled();
   });
