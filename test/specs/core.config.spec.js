@@ -523,6 +523,12 @@ describe('Chart.Config', function() {
         type: 'line',
         data: {labels, datasets: [{type: 'bar', data: values}, {data: values}]}
       }),
+      // The chart type's x is a category scale, the dataset type's linear.
+      'line chart with a scatter dataset and an x without a type': () => ({
+        type: 'line',
+        data: {labels, datasets: [{type: 'scatter', data: points}]},
+        options: {scales: {x: {}}}
+      }),
       'multi-axis': () => ({
         type: 'line',
         data: {labels, datasets: [{data: values, yAxisID: 'y'}, {data: values, yAxisID: 'y1'}]},
@@ -645,6 +651,39 @@ describe('Chart.Config', function() {
       return scales;
     }
 
+    // No built-in chart type has scale overrides under both names.
+    it('should prefer the overrides of the axis to those of _index_ and _value_', function() {
+      class AxisOverridesController extends Chart.LineController {
+        static id = 'axisOverrides';
+        static overrides = {
+          scales: {
+            x: {offset: true},
+            _index_: {type: 'category', offset: false, reverse: true},
+            y: {beginAtZero: true},
+            _value_: {type: 'linear', beginAtZero: false, reverse: true}
+          }
+        };
+      }
+      Chart.register(AxisOverridesController);
+      try {
+        const chart = window.acquireChart({
+          type: 'axisOverrides',
+          data: {labels, datasets: [{data: values}]},
+          options: {scales: {x: {}, y: {}}}
+        });
+
+        for (let i = 0; i < 2; i++) {
+          expect(chart.scales.x.options.offset).toBe(true);
+          expect(chart.scales.x.options.reverse).toBe(true);
+          expect(chart.scales.y.options.beginAtZero).toBe(true);
+          expect(chart.scales.y.options.reverse).toBe(true);
+          chart.update();
+        }
+      } finally {
+        Chart.unregister(AxisOverridesController);
+      }
+    });
+
     Object.keys(configurations).forEach((name) => {
       it(`should resolve the scale options of the "${name}" configuration, also after updates`, function() {
         const chart = window.acquireChart(configurations[name]());
@@ -662,6 +701,132 @@ describe('Chart.Config', function() {
 
         expect(created).toMatchSnapshot();
       });
+    });
+  });
+
+  // What the scale merge keeps apart: the record of each stored entry and the
+  // derived object of the defaults a scale takes.
+  describe('stored and derived scale options', function() {
+    const impliedScaleConfig = () => ({
+      type: 'bar',
+      data: {
+        labels: ['a', 'b', 'c'],
+        datasets: [{data: [10, 11, 12]}, {type: 'line', data: [10, 11, 12], yAxisID: 'y1'}]
+      },
+      options: {scales: {y: {min: 5}}}
+    });
+    const record = (chart, id) => chart.config._scaleRecords.get(chart.config.options.scales[id]);
+
+    it('should record which entries only a dataset implies, also after updates', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+
+      expect(record(chart, 'x')).toEqual({implied: true});
+      expect(record(chart, 'y')).toEqual({implied: false});
+      expect(record(chart, 'y1')).toEqual({implied: true});
+
+      const y1Record = record(chart, 'y1');
+      chart.update();
+      chart.update();
+
+      expect(record(chart, 'x')).toEqual({implied: true});
+      expect(record(chart, 'y')).toEqual({implied: false});
+      expect(record(chart, 'y1')).toBe(y1Record);
+    });
+
+    it('should keep the record of an implied entry when its dataset is removed', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+
+      chart.data.datasets.pop();
+      chart.update();
+
+      expect(chart.scales.y1).toBeDefined();
+      expect(record(chart, 'y1')).toEqual({implied: true});
+    });
+
+    it('should count an entry the chart replaces as given', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+
+      chart.options.scales.y1 = {};
+      chart.update();
+
+      expect(record(chart, 'y1')).toEqual({implied: false});
+    });
+
+    it('should count every entry as given after the chart options are replaced', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+
+      chart.options = {scales: {y1: {}}};
+      chart.update();
+
+      expect(record(chart, 'y1')).toEqual({implied: false});
+    });
+
+    // The merge after the first treats every stored id as given, so the
+    // derived object of y1 then also holds the chart type's defaults; the
+    // copies in the stored entry mask them.
+    it('should derive the defaults of the chart and dataset types for each scale', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+      const derived = chart.config._derivedOptions.scales;
+
+      expect(Object.keys(derived).sort()).toEqual(['x', 'y', 'y1']);
+      expect(derived.x.type).toBe('category');
+      expect(derived.x.offset).toBe(true);
+      expect(derived.y.beginAtZero).toBe(true);
+      expect(derived.y1.type).toBe('linear');
+      expect(derived.y1.ticks.callback).toBe(Chart.defaults.scales.linear.ticks.callback);
+      expect(chart.config.options.scales.y1.beginAtZero).toBe(false);
+    });
+
+    it('should derive defaults only, not what the chart or the merge sets', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+      const derived = chart.config._derivedOptions.scales;
+
+      chart.update();
+
+      ['x', 'y', 'y1'].forEach((id) => {
+        expect(Object.keys(chart.config._derivedOptions.scales[id])).not.toContain('axis');
+        expect(Object.keys(chart.config._derivedOptions.scales[id])).not.toContain('id');
+        expect(Object.keys(chart.config._derivedOptions.scales[id])).not.toContain('position');
+      });
+      expect(Object.keys(derived.y)).not.toContain('min');
+      expect(chart.config.options.scales.y.min).toBe(5);
+    });
+
+    it('should rebuild the derived object at every update', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+      const derived = chart.config._derivedOptions;
+
+      chart.update();
+
+      expect(chart.config._derivedOptions).not.toBe(derived);
+      expect(chart.config._derivedOptions).toEqual(derived);
+    });
+
+    it('should hold clones, so that a write through the options reaches no defaults', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+      const derived = chart.config._derivedOptions.scales;
+      const defaultColor = Chart.defaults.scale.grid.color;
+      const defaultTitlePadding = Chart.defaults.scale.title.padding;
+
+      expect(derived.y.grid).not.toBe(Chart.defaults.scale.grid);
+      expect(derived.y.title.padding).not.toBe(defaultTitlePadding);
+      expect(derived.x.grid).not.toBe(Chart.overrides.bar.scales._index_.grid);
+      expect(derived.y.grid).not.toBe(chart.config.options.scales.y.grid);
+
+      chart.options.scales.y.grid.color = 'red';
+      chart.options.scales.y.title.padding.top = 20;
+      chart.options.scales.x.grid.offset = false;
+
+      expect(chart.config.options.scales.y.grid.color).toBe('red');
+      expect(derived.y.grid.color).toBe(defaultColor);
+      expect(Chart.defaults.scale.grid.color).toBe(defaultColor);
+      expect(Chart.defaults.scale.title.padding.top).toBe(4);
+      expect(Chart.overrides.bar.scales._index_.grid.offset).toBe(true);
+
+      chart.update();
+
+      expect(chart.config._derivedOptions.scales.y.grid.color).toBe(defaultColor);
+      expect(chart.config.options.scales.y.grid.color).toBe('red');
     });
   });
 
