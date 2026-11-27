@@ -18,6 +18,7 @@
 - [ ] 2.4 `lint-js` becomes `biome lint`; remove `lint-md`
 - [ ] 2.5 Convert the 10 suppressions and add the 5 new ones listed in design D7, each with a reason
 - [ ] 2.6 Delete `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml`, `.eslintignore`; remove the `.eslintcache` lines from `.gitignore`
+- [ ] 2.6a Remove the dead `eslint-disable-next-line` from `docs/samples/legend/html.md`
 - [ ] 2.7 Contributing guide: Biome instead of ESLint; Markdown examples are not linted; do not format whole files until the reformat has landed
 - [ ] 2.8 Add the D18 answer to `openspec/changes/migrate-docs-to-vitepress/design.md`
 - [ ] 2.9 On a scratch copy, run `biome format --write` and then `biome lint`. Confirm every `biome-ignore` still suppresses its finding and none is reported as unused
@@ -35,13 +36,13 @@
 ## 4. P4: Reformat
 
 - [ ] 4.1 Rebase on master right after a release, announced in advance; set `formatter.enabled: true` in `biome.json`, run `biome format --write`, and commit only these
-- [ ] 4.2 Confirm `biome format` reports nothing; `pnpm lint`, the build and the test suite pass; and on the parent commit, the `enabled` switch plus `biome format --write` reproduce the commit's tree exactly
+- [ ] 4.2 Confirm `biome format` reports nothing; `pnpm lint` (including `lint-types` and its API reports under `etc/`), the build and the test suite pass; and on the parent commit, the `enabled` switch plus `biome format --write` reproduce the commit's tree exactly
 - [ ] 4.3 Squash-merge as one commit
 
 ## 5. P5: Sort imports
 
 - [ ] 5.1 Directly after P4 has merged: set `assist.enabled: true` with only `organizeImports` on in `biome.json`; run `biome check --write --linter-enabled=false`; commit only these
-- [ ] 5.2 Confirm the build, `pnpm lint` and the test suite pass; check that the `/** @namespace Chart */` comment in `src/index.umd.ts` still sits on its declaration; and confirm that on the parent commit the switch plus the command reproduce the commit's tree exactly
+- [ ] 5.2 Confirm the build, `pnpm lint` (including `lint-types` and its API reports) and the test suite pass; confirm the bundles' code is unchanged once comments and whitespace are normalised, as finalize-typescript-conversion Decision 31 compares it, since Rollup emits modules in import order and D3's import graph was read before the conversion; check that the `/** @namespace Chart */` comment in `src/index.umd.ts` still sits on its declaration; and confirm that on the parent commit the switch plus the command reproduce the commit's tree exactly
 - [ ] 5.3 Squash-merge as one commit
 
 ## 6. P6: Enforce the format

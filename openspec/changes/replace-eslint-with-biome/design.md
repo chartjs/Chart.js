@@ -13,7 +13,7 @@ What reads or decides lint behaviour today:
 | `test/.eslintrc.yml` | 5 helper globals for all of `test`, max-statements 50; overrides for the Vitest specs, setups and the UMD smoke suite (12 globals), the image fixtures (`triggerMouseEvent`) and the smoke suite's web worker (`env: worker`) |
 | `test/types/.eslintrc.yml` | relaxations; ESLint reaches only `test/types/autogen.js` |
 | `docs/samples/.eslintrc.yml` | `no-console` off; affects only Markdown examples |
-| `.eslintignore` | `dist/*`, `docs/api/*`, `test/integration/react-browser/*` |
+| `.eslintignore` | `dist/*`, `docs/api/*`, `etc/*` (API reports, Markdown only), `test/integration/react-browser/*` |
 | `.gitignore:43-44` | `.eslintcache` |
 | `.github/workflows/ci.yml:64-65` | `pnpm run lint` on Ubuntu and Windows |
 | `docs/developers/contributing.md:7,35` | names ESLint |
@@ -124,7 +124,7 @@ git merge upstream/master && pnpm lint
 The import-sorting commit (P5) is a second mechanical commit. The recipe is applied once per mechanical commit, in order, with `biome check --write --linter-enabled=false` in place of `biome format --write` for P5. When nothing lands between P4 and P5, one pass with R set to P5 covers both. P6 tests the recipe on one open pull request before documenting it.
 
 **D10. Test globals and the other designs.**
-- *Test globals:* Karma is gone (#12516), so the split by test runner is replaced by the overrides `test/.eslintrc.yml` has today. Because globals overrides replace each other, every list is complete: the 5 helper globals for all of `test`; plus the 12 Vitest globals for the Vitest specs, setups and smoke suite; plus `triggerMouseEvent` for the image fixtures; plus `importScripts` for the smoke suite's web worker. The patterns are disjoint, so a file gets exactly one list. `jasmine` is undeclared everywhere (tested). P2 carries over whatever `test/.eslintrc.yml` holds at that time.
+- *Test globals:* Karma is gone (#12516), so the split by test runner is replaced by the overrides `test/.eslintrc.yml` has today. Because globals overrides replace each other, each list is complete: the 5 helper globals plus the 12 Vitest globals for the Vitest specs, setups and smoke suite; plus `triggerMouseEvent` for the image fixtures; plus `importScripts` for the smoke suite's web worker. The patterns are disjoint, so a file gets at most one list. The type tests and integration checks get none, so a missing `import {Chart}` there is reported (changed by review: a list for all of `test` declared `Chart` there and hid it). `jasmine` is undeclared everywhere (tested). P2 carries over whatever `test/.eslintrc.yml` holds at that time.
 - *migrate-tests-to-vitest* is archived, so no note goes to it.
 - *migrate-docs-to-vitepress:* its D18 is answered: the site's `.ts` is linted and formatted without the ES guard, and `.vue` stays out (D15). P2 adds one sentence saying so to that design.
 
@@ -153,15 +153,22 @@ The import-sorting commit (P5) is a second mechanical commit. The recipe is appl
 9. The guard also rejects ES2021+ syntax that SWC does not lower: numeric separators, private members, static blocks, `Object.hasOwn`, the regexp `d` flag and logical assignment (added in P3, each with samples; logical assignment needs a pattern that is first tested).
 10. Import sorting lands as its own later `style:` piece (P5).
 11. The reformat lands right after a release, announced in advance (#12444, which it also waited for, has merged).
+12. Root config files are linted and formatted.
 
-**D16. The whole change waits for finalize-typescript-conversion P40** (user decision, 2026-11-27). On b6dd5a58, 60 of the 69 open pull requests touch `src`, and the conversion still has its module pieces to build, each of which renames a module and rewrites it. P1 is wide over `src`, and the reformat touches 74 files in `src`; built now, both would conflict with every conversion piece. After P40 every module of `src` is TypeScript, so P1 fixes only `.ts` and the JavaScript-only settings matter only for tests and scripts. *Alternatives:* switching the linter now and reformatting after P40, rejected because layout would be unchecked from the switch until the reformat; doing everything now, rejected because every open pull request, the conversion pieces included, would go through the rebase recipe. *Cost:* ESLint 8 stays until P40 has merged.
+**D16. The whole change waits for finalize-typescript-conversion P40** (user decision, 2026-11-27). On b6dd5a58, 60 of the 69 open pull requests touch `src`, and the conversion still has its module pieces to build, each of which renames a module and rewrites it. P1 is wide over `src`, and the reformat touches 74 files in `src`; built now, both would conflict with every conversion piece. After P40 every module of `src` is TypeScript, so P1 fixes only `.ts` and the JavaScript-only settings matter only for tests and scripts. *Alternatives:* switching the linter now and reformatting after P40, rejected because layout would be unchecked from the switch until the reformat; doing everything now, rejected because every open pull request, the conversion pieces included, would go through the rebase recipe. *Cost:* ESLint 8 stays until P40 has merged. The conversion's later pieces (P41–P57, most of them for v5) are not waited for (user decision, 2026-11-27): they are built one at a time, so when the reformat lands, the one or two of them that are open go through the rebase recipe.
 
 **D17. Biome rather than oxlint or ESLint 10** (maintainers, on #12494, 2026-11-26). The three designs were compared side by side; the oxlint and ESLint 10 designs (#12486, #12488) are closed.
-12. Root config files are linted and formatted.
+
+**D18. Changes from the review of the refresh** (2026-11-27).
+- The `test/**` globals list is dropped (D10).
+- P2 also removes the dead `eslint-disable-next-line` in the published sample `docs/samples/legend/html.md`, which nothing reads once `lint-md` goes.
+- P4 and P5 also check `lint-types` and its API reports, and P5 compares the bundles' code, because Rollup emits modules in import order and D3's import graph predates the conversion.
+- D15's twelfth answer was misplaced and the `.eslintignore` row lacked `etc/*`; both are corrected.
 
 ## Risks / Trade-offs
 
 - **The reformat conflicts with open work.** On b6dd5a58 it touches 643 files, and 60 of the 69 open pull requests touch `src`. Mitigation: the whole change waits for the TypeScript conversion (D16); the reformat lands right after a release, announced in advance; the recipe is in the contributing guide.
+- **Conversion pieces after P40** that are open when P4 or P5 lands (P41–P57 edit `src/types/index.ts`, `src/types.ts` and the `test/types` imports) rebase with the recipe (D16).
 - **ESLint 8 stays longer.** It is end of life, and it stays until finalize-typescript-conversion P40 has merged (D16).
 - **The guard is approximate.** It matches text, not semantics (D5). The self-test catches a broken guard, not a missed alias.
 - **Nursery rules are unstable.** They are pinned with the version (D8) and reviewed on upgrade.
@@ -180,7 +187,7 @@ Sizes are hand-edited changed lines; the lockfile and the mechanical reformat ar
 | Piece | Builds | Files | Fails without it | Size | Waits on | Issues |
 | --- | --- | --- | --- | --- | --- | --- |
 | P1 | `refactor:` code that both ESLint and Biome accept: the four adopted rules of D6 (isFinite aliases 10, `else` after `return` 9, return-assignments 33, comments in empty blocks, 103 on b6dd5a58), the directive sites of D13, `useConst` (26), `noShadow` renames (20), one unused import, collapse `core.scale.js:1250` (drops its `no-lonely-if` disable), merge the string literals in `docs/scripts/analyzer.js:41`, `Array.isArray` (4), redundant `'use strict'` (3), one approximate constant, one duplicate test title, `self.onmessage` in `test/umd/worker.js`, the infos | **wide**: about 70 files in `src`, `test`, `docs/scripts`, including `src/scales/scale.time.ts` and `test/types/extensions/plugin.ts` for D13 | Biome with the Contracts config reports errors (188 on b6dd5a58); after P1 only the suppression sites remain; ESLint stays at 0 errors; formatting a scratch copy makes `tsc -p test/types` fail (D13) | ~340 | finalize-typescript-conversion P40 (D16) | none |
-| P2 | `build:` the switch: `biome.json` (formatter settings present, `formatter.enabled: false`), `es2018.grit`, `lint-js` on `biome lint`, `lint-md` removed, dependencies swapped, the 5 ESLint config and ignore files deleted, the 15 suppressions of D7, `.gitignore`, contributing guide, the note in the VitePress design | `package.json`, `pnpm-lock.yaml`, `biome.json`, `es2018.grit`, `.gitignore`, `docs/developers/contributing.md`, `openspec/changes/migrate-docs-to-vitepress/design.md`, about 14 suppression files; deleted `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml`, `.eslintignore` | `pnpm why eslint` lists eslint; `a?.b` in `src` passes `pnpm lint` | ~290 edited, ~110 deleted | P1 | none |
+| P2 | `build:` the switch: `biome.json` (formatter settings present, `formatter.enabled: false`), `es2018.grit`, `lint-js` on `biome lint`, `lint-md` removed, dependencies swapped, the 5 ESLint config and ignore files deleted, the 15 suppressions of D7, `.gitignore`, contributing guide, the note in the VitePress design | `package.json`, `pnpm-lock.yaml`, `biome.json`, `es2018.grit`, `.gitignore`, `docs/developers/contributing.md`, `openspec/changes/migrate-docs-to-vitepress/design.md`, `docs/samples/legend/html.md` (dead directive), about 14 suppression files; deleted `.eslintrc.yml`, `test/.eslintrc.yml`, `test/types/.eslintrc.yml`, `docs/samples/.eslintrc.yml`, `.eslintignore` | `pnpm why eslint` lists eslint; `a?.b` in `src` passes `pnpm lint` | ~290 edited, ~110 deleted | P1 | none |
 | P3 | `test:` the guard's self-test as `lint-es2018` inside `pnpm lint`; the ES2021+ patterns of D15; delete the 32 dead `eslint-disable` comments | a script under `scripts/`, 2 sample files outside the lint scope, `package.json`, ~20 files in `src` and `test` | a Grit pattern that stops matching passes `pnpm lint` silently; `1_000` in `src` passes `pnpm lint` | ~150 | P2 | none |
 | P4 | `style:` the reformat: `formatter.enabled: true` and the `biome format --write` output, nothing else | `biome.json`, ~640 files, **wide** | `biome format` reports the files as unformatted | 0 hand-written | P2; lands right after a release (D15) | none |
 | P5 | `style:` sort imports: `assist.enabled: true` with only `organizeImports` on, and the `biome check --write --linter-enabled=false` output, nothing else | `biome.json`, ~51 files in `src` and more in `test` and `docs`, **wide** | `biome check` with the action enabled reports unsorted imports | 0 hand-written | P4, landed right after it | none |
@@ -252,7 +259,6 @@ The configuration as P2 commits it, with the answers of D15 and the test globals
       "correctness": {"noInnerDeclarations": "off"}, "style": {"useImportType": "off"},
       "suspicious": {"noFocusedTests": "error"},
       "nursery": {"noExcessiveStatementsPerFunction": {"level": "warn", "options": {"max": 50}}}}}},
-    {"includes": ["test/**"], "javascript": {"globals": ["arguments", "acquireChart", "afterEvent", "Chart", "moment", "waitForResize"]}},
     {"includes": ["test/specs/**/*.spec.js", "test/umd/**/*.spec.js", "test/setup.js", "test/setup.node.js", "test/setup.umd.js", "test/vitest.shared.js"],
      "javascript": {"globals": ["arguments", "acquireChart", "afterEvent", "Chart", "moment", "waitForResize", "afterAll", "afterEach", "beforeAll", "beforeEach", "createMockContext", "describe", "expect", "it", "releaseChart", "test", "triggerMouseEvent", "vi"]}},
     {"includes": ["test/fixtures/**/*.js"], "javascript": {"globals": ["arguments", "acquireChart", "afterEvent", "Chart", "moment", "waitForResize", "triggerMouseEvent"]}},
