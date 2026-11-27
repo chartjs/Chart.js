@@ -214,7 +214,9 @@ function clearStacks(meta, items) {
   }
 
   items = items || meta._parsed;
-  for (const parsed of items) {
+  // Indexed loop: `for...of` allocates an iterator result per item until optimized
+  for (let i = 0, ilen = items.length; i < ilen; ++i) {
+    const parsed = items[i];
     // An element inserted but not yet parsed has no entry and nothing to clear
     if (parsed) {
       clearItemStack(parsed._stacks, axis, datasetIndex);
@@ -230,6 +232,10 @@ function clearItemStack(stacks, axis, datasetIndex) {
   if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
     delete stacks[axis]._visualValues[datasetIndex];
   }
+}
+
+function isNotInOrder(cur, prev, iAxis) {
+  return cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
 }
 
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
@@ -476,11 +482,15 @@ export default class DatasetController {
         parsed = this.parsePrimitiveData(meta, data, start, count);
       }
 
-      const isNotInOrderComparedToPrev = () => cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
+      const _parsed = meta._parsed;
+      if (_parsed.length < start + count) {
+        // Grow once, instead of on every assignment below
+        _parsed.length = start + count;
+      }
       for (i = 0; i < count; ++i) {
-        meta._parsed[i + start] = cur = parsed[i];
+        _parsed[i + start] = cur = parsed[i];
         if (sorted) {
-          if (isNotInOrderComparedToPrev()) {
+          if (isNotInOrder(cur, prev, iAxis)) {
             sorted = false;
           }
           prev = cur;

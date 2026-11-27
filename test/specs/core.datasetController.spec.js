@@ -1450,6 +1450,89 @@ describe('Chart.DatasetController', function() {
     });
   });
 
+  describe('parse', function() {
+    it('should not treat data with a null index value as sorted', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: -5, y: 1}, {x: null, y: 2}, {x: 3, y: 3}]
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'linear'}
+          }
+        }
+      });
+
+      expect(chart.getDatasetMeta(0)._sorted).toBe(false);
+    });
+
+    it('should treat data in order as sorted', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: -5, y: 1}, {x: 0, y: 2}, {x: 3, y: 3}]
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'linear'}
+          }
+        }
+      });
+
+      expect(chart.getDatasetMeta(0)._sorted).toBe(true);
+    });
+
+    it('should treat data with equal index values as sorted', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [{x: -5, y: 1}, {x: 0, y: 2}, {x: 0, y: 3}, {x: 3, y: 4}]
+          }]
+        },
+        options: {
+          scales: {
+            x: {type: 'linear'}
+          }
+        }
+      });
+
+      expect(chart.getDatasetMeta(0)._sorted).toBe(true);
+    });
+
+    it('should clear the stacks of data removed by setting the length', function() {
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{
+            data: [1, 2, 3]
+          }, {
+            data: [1, 1, 1]
+          }]
+        },
+        options: {
+          scales: {
+            x: {stacked: true},
+            y: {stacked: true}
+          }
+        }
+      });
+
+      chart.data.datasets[0].data.length = 2;
+      chart.update();
+
+      const bar = chart.getDatasetMeta(1).data[2];
+      expect(chart.scales.y.getValueForPixel(bar.base)).toBeCloseTo(0, 1);
+      expect(chart.scales.y.getValueForPixel(bar.y)).toBeCloseTo(1, 1);
+    });
+  });
+
   describe('getContext', function() {
     it('should reflect updated data', function() {
       var chart = acquireChart({
