@@ -1763,6 +1763,146 @@ describe('Legend block tests', function() {
     });
   });
 
+  describe('wrapping within maxWidth and maxHeight', function() {
+    function legendWith(position, legendOptions, count, text) {
+      return window.acquireChart({
+        type: 'bar',
+        data: {labels: ['A'], datasets: Array.from({length: count}, (_, i) => ({label: text(i), data: [i]}))},
+        options: {animation: false, plugins: {legend: {position, ...legendOptions}}}
+      }, {canvas: {width: 600, height: 400}}).legend;
+    }
+
+    it('should wrap a right legend into columns within maxHeight', function() {
+      const legend = legendWith('right', {maxHeight: 100}, 12, i => 'Dataset ' + i);
+      const boxes = legend.legendHitBoxes;
+      const first = boxes[0].top;
+
+      expect(new Set(boxes.map(box => box.col)).size).toBeGreaterThanOrEqual(2);
+      boxes.forEach(function(box) {
+        expect(box.top + box.height - first).toBeLessThanOrEqual(100);
+      });
+      // The legend's box keeps the full height.
+      expect(legend.height).toBe(legend.chart.height);
+    });
+
+    it('should wrap a top legend into rows within maxWidth', function() {
+      const legend = legendWith('top', {maxWidth: 150}, 6, i => 'Dataset ' + i);
+      const boxes = legend.legendHitBoxes;
+      const rows = [...new Set(boxes.map(box => box.row))];
+
+      expect(rows.length).toBeGreaterThanOrEqual(2);
+      rows.forEach(function(row) {
+        const inRow = boxes.filter(box => box.row === row);
+        const left = Math.min(...inRow.map(box => box.left));
+        const right = Math.max(...inRow.map(box => box.left + box.width));
+        expect(right - left).toBeLessThanOrEqual(150);
+      });
+      // The legend's box keeps the full width.
+      expect(legend.width).toBe(legend.chart.width);
+    });
+
+    // Items without text are exactly boxWidth + fontSize / 2 = 46 wide and
+    // fontSize = 12 tall, so the sums below have no rounding.
+    const emptyText = () => '';
+    const labels = {font: {size: 12}, boxWidth: 40, padding: 10};
+
+    it('should not wrap a row whose width with its padding equals maxWidth', function() {
+      // Two items and three paddings: 46 + 46 + 3 * 10.
+      const legend = legendWith('top', {maxWidth: 122, labels}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 0, 1]);
+    });
+
+    it('should wrap a row one pixel wider than maxWidth', function() {
+      const legend = legendWith('top', {maxWidth: 121, labels}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 1, 2]);
+    });
+
+    it('should not wrap a column whose height with its padding equals maxHeight', function() {
+      // Two items and three paddings: 12 + 12 + 3 * 10.
+      const legend = legendWith('right', {maxHeight: 54, labels}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 0, 1]);
+    });
+
+    it('should wrap a column one pixel taller than maxHeight', function() {
+      const legend = legendWith('right', {maxHeight: 53, labels}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 1, 2]);
+    });
+
+    it('should count the title in maxHeight', function() {
+      // Taller than an item and its padding, so that the third item would fit beside it.
+      const title = {display: true, text: 'Title', padding: 20};
+      const titleHeight = legendWith('right', {title, labels}, 3, emptyText)._computeTitleHeight();
+      const legend = legendWith('right', {maxHeight: 54 + titleHeight, title, labels}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 0, 1]);
+    });
+
+    it('should fit a top legend to maxWidth before the layout places it', function() {
+      // The layout then gives the legend the full width of its box.
+      const legend = legendWith('top', {maxWidth: 150}, 6, i => 'Dataset ' + i);
+      legend.fit();
+
+      expect(legend.width).toBe(150);
+    });
+
+    it('should put one item in each row when maxWidth is smaller than an item', function() {
+      const legend = legendWith('top', {maxWidth: 30}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 1, 2]);
+    });
+
+    it('should put every item in its own column when maxHeight is the title height', function() {
+      const title = {display: true, text: 'Title'};
+      const titleHeight = legendWith('right', {title}, 3, emptyText)._computeTitleHeight();
+      const legend = legendWith('right', {maxHeight: titleHeight, title}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 1, 2]);
+    });
+
+    it('should not limit the wrapping when maxWidth is 0', function() {
+      const legend = legendWith('top', {maxWidth: 0}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 0, 0]);
+    });
+
+    it('should not limit the wrapping when maxHeight is 0', function() {
+      const legend = legendWith('right', {maxHeight: 0}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 0, 0]);
+    });
+
+    it('should not limit the height of a top legend when maxWidth and maxHeight are 0', function() {
+      const legend = legendWith('top', {maxWidth: 0, maxHeight: 0}, 3, emptyText);
+
+      expect(legend.height).toBeGreaterThan(0);
+    });
+
+    it('should not limit the width of a right legend when maxWidth is 0', function() {
+      const legend = legendWith('right', {maxWidth: 0}, 3, emptyText);
+
+      expect(legend.width).toBeGreaterThan(0);
+    });
+
+    it('should limit the height of a top legend to maxHeight', function() {
+      const legend = legendWith('top', {maxHeight: 30}, 12, i => 'A long dataset label ' + i);
+
+      // The rows need more, but the other axis is clamped.
+      expect(legend.height).toBeLessThanOrEqual(30);
+    });
+
+    it('should fit a right legend to maxHeight before the layout places it', function() {
+      // The layout then gives the legend the full height of its box.
+      const legend = legendWith('right', {maxHeight: 100}, 12, i => 'Dataset ' + i);
+      legend.fit();
+
+      expect(legend.height).toBe(100);
+    });
+  });
+
   describe('config update', function() {
     it('should update the options', function() {
       var chart = acquireChart({

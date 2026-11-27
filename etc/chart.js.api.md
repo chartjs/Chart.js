@@ -2777,9 +2777,9 @@ class Legend_2 extends Element_2<AnyObject, LegendOpts> implements LayoutItem {
     // (undocumented)
     fit(): void;
     // (undocumented)
-    _fitCols(titleHeight: number, layout: LegendLabelLayout): number;
+    _fitCols(titleHeight: number, layout: LegendLabelLayout, maxHeight: number): number;
     // (undocumented)
-    _fitRows(titleHeight: number, layout: LegendLabelLayout): number;
+    _fitRows(titleHeight: number, layout: LegendLabelLayout, maxWidth: number): number;
     // (undocumented)
     fullSize: boolean;
     // (undocumented)

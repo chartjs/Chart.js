@@ -2442,11 +2442,14 @@ export interface LegendOptions<TType extends ChartType> {
    */
   align: Align;
   /**
-   * Maximum height of the legend, in pixels
+   * For a left or right legend, the height its columns of items wrap within; for a top or
+   * bottom legend, the maximum height of the legend. The title counts in it either way.
+   * In pixels; 0 means no limit.
    */
   maxHeight: number;
   /**
-   * Maximum width of the legend, in pixels
+   * For a top or bottom legend, the width its rows of items wrap within;
+   * for a left or right legend, the maximum width of the legend. In pixels; 0 means no limit.
    */
   maxWidth: number;
   /**

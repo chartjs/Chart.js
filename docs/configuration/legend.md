@@ -11,8 +11,8 @@ Namespace: `options.plugins.legend`, the global options for the chart legend is 
 | `display` | `boolean` | `true` | Is the legend shown?
 | `position` | `string` | `'top'` | Position of the legend. [more...](#position)
 | `align` | `string` | `'center'` | Alignment of the legend. [more...](#align)
-| `maxHeight` | `number` | | Maximum height of the legend, in pixels
-| `maxWidth` | `number` | | Maximum width of the legend, in pixels
+| `maxHeight` | `number` | | For a left or right legend, the height its columns of items wrap within; for a top or bottom legend, the maximum height of the legend. Either way the title counts in it. In pixels. [more...](#wrapping)
+| `maxWidth` | `number` | | For a top or bottom legend, the width its rows of items wrap within; for a left or right legend, the maximum width of the legend. In pixels. [more...](#wrapping)
 | `fullSize` | `boolean` | `true` | Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
 | `onClick` | `function` | | A callback that is called when a `'click'` event is registered on a label item, or a `'mouseup'` (also from `'touchend'` and `'pointerup'`) when the [legend's events](./interactions.md#event-option) do not include `'click'`. A right-click (`'contextmenu'`) does not call it. Arguments: `[event, legendItem, legend]`.
 | `onHover` | `function` | | A callback that is called when a `'mousemove'` event moves the pointer onto a label item. Arguments: `[event, legendItem, legend]`. [more...](#hover-and-scrolling)
@@ -52,6 +52,18 @@ Alignment of the legend. Options are:
 * `'end'`
 
 Defaults to `'center'` for unrecognized values.
+
+## Wrapping
+
+A top or bottom legend puts its items in rows, and starts a new row when the next item would make the row wider than the available width or `maxWidth`, whichever is smaller. A left or right legend puts its items in columns in the same way, within the available height or `maxHeight`. The legend's own padding around the items counts in the row width or column height, and the legend title counts in `maxHeight` on every side.
+
+With the default `fullSize: true`, the legend's box still takes the full width (top, bottom) or height (left, right) of the chart, and `align` places each row or column within it.
+
+* A limit smaller than an item puts one item in each row or column.
+* On a left or right legend, a `maxHeight` at or below the height of the title puts every item in its own column.
+* `0` means no limit.
+
+On the other axis, `maxHeight` (top, bottom) or `maxWidth` (left, right) limits the size of the legend.
 
 ## Hover and scrolling
 
