@@ -34,6 +34,8 @@ Options are resolved from top to bottom, using a context dependent route.
 
 Each scope is looked up with `elementType` prefix in the option name first, then without the prefix. For example, `radius` for `point` element is looked up using `pointRadius` and if that does not hit, then `radius`.
 
+Keys inside an option whose value is an object are looked up the same way: with the `elementType` prefix first, and for an active (hovered) element with the `hover` prefixes before that. This holds for an object given directly, for an object a scriptable option returns, and for an item of an array. For example, a bar with `borderRadius: {topLeft: 3, barTopLeft: 8}` has a top-left radius of 8, and an active bar with `borderWidth: {top: 1, hoverTop: 4}` has a top border width of 4.
+
 * dataset
 * options.datasets[`dataset.type`]
 * options.datasets[`dataset.type`].elements[`elementType`]

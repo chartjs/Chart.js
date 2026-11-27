@@ -45,7 +45,11 @@ export function _createResolver<
     _rootScopes: finalRootScopes,
     _fallback: fallback,
     _getTarget: getTarget,
+    // Every sub-resolver is created with these
+    _prefixes: prefixes,
     override: (scope: AnyObject) => _createResolver([scope, ...scopes], prefixes, finalRootScopes, fallback),
+    // The same options under other prefixes: a set lands where it lands without them
+    overridePrefixes: (newPrefixes: string[]) => _createResolver(scopes, newPrefixes, finalRootScopes, fallback, getTarget)
   };
   return new Proxy(cache, {
     /**
@@ -135,7 +139,14 @@ export function _attachContext<
     _descriptors: _descriptors(proxy, descriptorDefaults),
     // The second proxy follows the new context and the override, so a scriptable option
     // reads the options it is resolved with
-    setContext: (ctx: AnyObject) => _attachContext(proxy, ctx, subProxy && subProxy.setContext(ctx), descriptorDefaults),
+    setContext: (ctx: AnyObject, prefixes?: string[]) => {
+      const withContext = _attachContext(proxy, ctx, subProxy && subProxy.setContext(ctx), descriptorDefaults);
+      // A scriptable option reads the options as they were before the call, with the new
+      // context, so `hoverColor: (ctx, opts) => opts.color` does not read itself
+      return prefixes && prefixes.length
+        ? _attachContext(proxy.overridePrefixes(prefixes), ctx, withContext, descriptorDefaults)
+        : withContext;
+    },
     override: (scope: AnyObject) => _attachContext(proxy.override(scope), context, subProxy && subProxy.override(scope), descriptorDefaults)
   };
   return new Proxy(cache, {
@@ -217,6 +228,7 @@ export function _descriptors(
   };
 }
 
+const NO_PREFIXES = [''];
 const readKey = (prefix: string, name: string) => prefix ? prefix + _capitalize(name) : name;
 const needsSubResolver = (prop: string, value: unknown) => isObject(value) && prop !== 'adapters' &&
   (Object.getPrototypeOf(value) === null || value.constructor === Object);
@@ -280,20 +292,30 @@ function _resolveArray(
   target: ContextCache,
   isIndexable: (key: string) => boolean
 ) {
-  const {_proxy, _context, _descriptors: descriptors} = target;
+  const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
 
   if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
-    return value[_context.index % value.length];
+    const item = value[_context.index % value.length];
+    // An object picked by index resolves on its own, under the prefixes in effect. Not
+    // createSubResolver: that would merge objects of lower scopes under the same key into
+    // the item, where the raw item never took them.
+    return needsSubResolver(prop, item) ? _createResolver([item], _proxy._prefixes) : item;
   } else if (isObject(value[0])) {
     // Array of objects, return array or resolvers
     const arr = value;
     const scopes = _proxy._scopes.filter(s => s !== arr);
+    // A scriptable option in an item reads the same item, resolved as the second proxy
+    // resolves: the second proxy may have another array for this key (`nodes` against
+    // `hoverNodes`), and its array would not hold the item.
+    const subResolver = _subProxy && _subProxy._proxy;
+    const subScopes = subResolver && subResolver._scopes.filter(s => s !== arr);
     value = [];
     for (const item of arr) {
       const resolver = createSubResolver(scopes, _proxy, prop, item);
-      // No second proxy: a scriptable option in an item reads the item's own options,
-      // not the array of the second proxy
-      value.push(_attachContext(resolver, _context, undefined, descriptors));
+      const subItem = subResolver
+        ? _attachContext(createSubResolver(subScopes, subResolver, prop, item), _context, undefined, descriptors)
+        : undefined;
+      value.push(_attachContext(resolver, _context, subItem, descriptors));
     }
   }
   return value;
@@ -361,7 +383,7 @@ function createSubResolver(
       return false;
     }
   }
-  return _createResolver(Array.from(set), [''], rootScopes, fallback,
+  return _createResolver(Array.from(set), resolver._prefixes, rootScopes, fallback,
     () => subGetTarget(resolver, prop as string, value));
 }
 
@@ -402,7 +424,8 @@ function _resolveWithPrefixes(
   proxy: ResolverProxy
 ) {
   let value: unknown;
-  for (const prefix of prefixes) {
+  // The descriptors (`_fallback`, `_scriptable`, `_indexable`, `_allKeys`) have no prefixed forms
+  for (const prefix of prop[0] === '_' ? NO_PREFIXES : prefixes) {
     value = _resolve(readKey(prefix, prop), scopes);
     if (typeof value !== 'undefined') {
       return needsSubResolver(prop, value)

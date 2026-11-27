@@ -1,7 +1,7 @@
 ## 1. P1: Defaults paths cannot reach prototypes (#12268)
 
 - [ ] 1.1 Add specs that fail on master: `Chart.defaults.set('plugins.__proto__', {p: 1})` throws and `({}).p` is undefined; the same for `set('__proto__', …)`, `get`, `describe`, `override`, `route`, a `constructor.prototype` path and a route name `__proto__`; `set('toString.x', {p: 1})`, `set('valueOf.x', {p: 1})` and `set('set.x', {p: 1})` throw and leave `Object.prototype.toString`, `Object.prototype.valueOf` and `Chart.defaults.set` without `x`; `route('rt', 'x', '', '__proto__')` throws; after `set({describe: {a: 1}, color: 'red'})`, `Chart.defaults.describe` is a function and `color` is `'red'`; `set('myconstructor.a', …)` still works.
-- [ ] 1.2 On the author's branch (maintainer edits, the author's commit kept), add them, make the walk follow own properties only (a segment that names an inherited property throws the same error), check the name `route` defines and its target name, and skip a key of the given values that the target inherits and does not own; rebase onto master after #12499. Comment on the pull request what changed.
+- [ ] 1.2 On the author's branch (maintainer edits, the author's commit kept), add them, make the walk follow own properties only (a segment that names an inherited property throws the same error), check the name `route` defines and its target name, and skip a key of the given values that the target inherits and does not own; rebase onto master. Comment on the pull request what changed.
 - [ ] 1.3 The pull request says `Closes #12265` and has a release-note line: the five methods throw for such paths.
 
 ## 2. P2: An options array is not a scope of its items (#12388)
@@ -18,11 +18,11 @@
 
 ## 4. P4: Prefixes for nested options (#11105)
 
-- [ ] 4.1 Add specs that fail on master: `hoverTest` resolves in a static sub-object, in an object returned by a function, in an item of an array and two levels down; `hoverColor: (ctx, opts) => opts.color + '+dark'` gives `'red+dark'` at the root and one level down; `setContext(ctx, [])` keeps the prefixes and `['']` resets them; after `['point', '']` and then `['pointHover', 'point', '']` a scriptable's second argument reads `pointColor`; `activeColor: (ctx, opts) => opts.color + '+dark'` under `['active', '']` gives `'red+dark'`; an active bar with `borderWidth: () => ({top: 1, hoverTop: 9})` has top 9.
-- [ ] 4.2 Ask the author for the changes of the review on #11105: the resolver stores its prefixes and `createSubResolver` reads them; `setContext(ctx, prefixes?)` gives scriptables the options as they were before the call; no prefix argument on `override`; the types make the argument optional and `overridePrefixes(prefixes: string[]): ResolverProxy<T, R>`.
-- [ ] 4.3 Rebase onto P3 and keep its contract: `setContext(ctx)` on prefixed options gives scriptables the new context.
-- [ ] 4.4 A type test: `setContext(ctx)` and `override(scope)` with one argument compile.
-- [ ] 4.5 The pull request says `Closes #11104` and has a release-note line: nested keys named `hover<Key>` or `<elementType><Key>` now take effect.
+- [x] 4.1 Add specs that fail on master: `hoverTest` resolves in a static sub-object, in an object returned by a function, in an item of an array and two levels down; `hoverColor: (ctx, opts) => opts.color + '+dark'` gives `'red+dark'` at the root and one level down; `setContext(ctx, [])` keeps the prefixes and `['']` resets them; after `['point', '']` and then `['pointHover', 'point', '']` a scriptable's second argument reads `pointColor`; `activeColor: (ctx, opts) => opts.color + '+dark'` under `['active', '']` gives `'red+dark'`; an active bar with `borderWidth: () => ({top: 1, hoverTop: 9})` has top 9; an active bar with `borderRadius: [{topLeft: 4, hoverTopLeft: 8}, …]` has topLeft 8 (master: 4).
+- [x] 4.2 On a maintainers' branch (#11105 allows no maintainer edits and the author did not answer; the author's commit kept, credit as co-author, D11, D20), make the changes of the review on #11105: the resolver stores its prefixes and `createSubResolver` reads them; `setContext(ctx, prefixes?)` gives scriptables the options as they were before the call; no prefix argument on `override`; the types make the argument optional and `overridePrefixes(prefixes: string[]): ResolverProxy<T, R>`.
+- [x] 4.3 Rebase onto P3 and keep its contract: `setContext(ctx)` on prefixed options gives scriptables the new context.
+- [x] 4.4 A type test: `setContext(ctx)` and `override(scope)` with one argument compile.
+- [x] 4.5 The pull request says `Closes #11104` and has a release-note line: nested keys named `hover<Key>` or `<elementType><Key>` now take effect.
 
 ## 5. P5: A block of options applies by its key with one override
 
@@ -59,7 +59,7 @@
 
 - [ ] 9.1 Add specs that fail on master: after changing `Chart.defaults.scale.grid.color`, `Chart.defaults.color` or `Chart.defaults.borderColor` and updating, grid, border, tick and title colours follow; a colour the chart set stays; a scale type's default follows; line to bar to line gives offset `false, true, false`; one options object used for a bar chart and then a line chart leaves no bar defaults on the second; the user's scale objects keep their keys; `chart.options = {scales: {y1: {}}}` on a scale a dataset implied gives the chart type's defaults; `chart.config.options.scales.y.min = 5` followed by an update works; a bar chart with `scales.y.beginAtZero: undefined` begins at zero.
 - [ ] 9.2 Put the derived object into `chartOptionScopes()` after the chart's options and stop merging it into the stored entry. Reuse stored entries across updates.
-- [ ] 9.3 Run P8's guard specs, the whole suite and the image fixtures; fix `core.controller.tests.js` expectations that compare a scale's whole options.
+- [ ] 9.3 Run P8's guard specs, the whole suite and the image fixtures; fix `core.controller.spec.js` expectations that compare a scale's whole options.
 - [ ] 9.4 Measure `chart.update()` on a chart with 10 scales, time and allocation, before and after, one process per variant.
 - [ ] 9.5 Update `docs/general/options.md` (where a scale option comes from) and `docs/developers/updates.md`.
 - [ ] 9.6 The pull request says `Closes #11096` and `Closes #11910` and has release-note lines: scale options follow the defaults and the chart type at update; the keys of a scale's options list what the chart set; nested objects the chart did not set are absent from `chart.config.options.scales[id]` (write through `chart.options`); an `undefined` scale option counts as not set.

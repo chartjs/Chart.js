@@ -1253,8 +1253,7 @@ export interface ContextCache<T extends AnyObject[] = AnyObject[], R extends Any
     override<S extends AnyObject>(scope: S): ContextProxy<(T[number] | S)[], T | R>;
     // (undocumented)
     _proxy: ResolverProxy<T, R>;
-    // (undocumented)
-    setContext(ctx: AnyObject): ContextProxy<T, R>;
+    setContext(ctx: AnyObject, prefixes?: string[]): ContextProxy<T, R>;
     // (undocumented)
     _stack: Set<string>;
     // (undocumented)
@@ -3194,6 +3193,8 @@ export interface ResolverCache<T extends AnyObject[] = AnyObject[], R extends An
     _keys?: string[];
     // (undocumented)
     override<S extends AnyObject>(scope: S): ResolverProxy<(T[number] | S)[], T | R>;
+    overridePrefixes(prefixes: string[]): ResolverProxy<T, R>;
+    _prefixes: string[];
     // (undocumented)
     _rootScopes: T | R;
     // (undocumented)
