@@ -962,6 +962,23 @@ export default class DatasetController {
     });
   }
 
+  /**
+   * Ends the hover style of a data element without animating it, before an update
+   * that animates the element in its own mode (for example 'hide'). An element of a
+   * controller that shares its options gets the shared options back, because the
+   * update animates those and leaves the element's own options alone.
+   * @param {import('./core.element.js').default} element - the data element
+   * @param {number} index - data index
+   * @private
+   */
+  _clearHoverStyle(element, index) {
+    element.active = false;
+    const sharedOptions = this.getSharedOptions(this.getStyle(index, false));
+    if (sharedOptions) {
+      element.options = sharedOptions;
+    }
+  }
+
   removeHoverStyle(element, datasetIndex, index) {
     this._setStyle(element, index, 'active', false);
   }

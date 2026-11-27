@@ -537,7 +537,7 @@ class Chart {
 
   /**
    * Drops the hidden data from the active elements before the datasets update, so
-   * the update resolves their normal options. Their active state ends without the
+   * the update resolves their normal options. Their hover style ends without the
    * un-hover animation: the update animates them in its own mode, such as 'hide'.
    * @private
    */
@@ -549,12 +549,22 @@ class Chart {
     const isShown = this._activeFilter();
     const active = [];
     const dropped = new Set();
+    let datasetIndex, controller;
     for (const item of lastActive) {
       if (isShown(item)) {
         active.push(item);
+        continue;
+      }
+      if (item.datasetIndex !== datasetIndex) {
+        datasetIndex = item.datasetIndex;
+        dropped.add(datasetIndex);
+        // A removed dataset has no meta left, and getDatasetMeta would make one.
+        controller = this.data.datasets[datasetIndex] && this.getDatasetMeta(datasetIndex).controller;
+      }
+      if (controller) {
+        controller._clearHoverStyle(item.element, item.index);
       } else {
         item.element.active = false;
-        dropped.add(item.datasetIndex);
       }
     }
     if (active.length === lastActive.length) {
