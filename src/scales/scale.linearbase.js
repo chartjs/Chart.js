@@ -243,7 +243,11 @@ export default class LinearScaleBase extends Scale {
     let maxTicks;
 
     if (stepSize) {
-      maxTicks = Math.ceil(this.max / stepSize) - Math.floor(this.min / stepSize) + 1;
+      // Count the steps on the range the ticks are generated for (grace included),
+      // which is the same in every layout pass. this.min and this.max are the data
+      // bounds in the first pass and the widened tick bounds in the next.
+      const {min, max} = this._range || this;
+      maxTicks = Math.ceil(max / stepSize) - Math.floor(min / stepSize) + 1;
       if (maxTicks > 1000) {
         console.warn(`scales.${this.id}.ticks.stepSize: ${stepSize} would result generating up to ${maxTicks} ticks. Limiting to 1000.`);
         maxTicks = 1000;

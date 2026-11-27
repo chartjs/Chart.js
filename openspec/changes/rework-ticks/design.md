@@ -184,6 +184,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - P3: the step-count tolerance counts the bounds, `max((|hi| + |lo|) / step * 2ε, 1e-14)`, instead of `max(|n| * ε, 1e-14)`. A sweep of 56,730 `generateTicks` inputs (magnitudes 1e-9 to 1e12, both `bounds`, with and without `min`, `max` and `stepSize`):
   - near-duplicate ticks (closer than 1e-6 of a gap): 6 on master, 44 with the count-only rule, 0 with the bounds rule;
   - decimally divisible `min`/`max`/`stepSize` inputs that miss the step grid: 201 on master, 440 with the count-only rule, 144 with the bounds rule. The 144 remaining are case 1 spacing the ticks evenly when `maxTicks` cuts the step count, which master does as well.
+- P4: a third spec covers the `|| this` fallback (`buildTicks` with no `_range`), because no other spec failed when the fallback was removed. On master the grace case's first pass gives 0..100 at a spacing of 20 and the second gives 0..90, but `this.max` stays 100, because `_setMinAndMaxByKey` only widens. With P4 both passes give 0..90.
 
 ## Risks / Trade-offs
 

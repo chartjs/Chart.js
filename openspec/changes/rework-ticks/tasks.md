@@ -19,11 +19,11 @@
 
 ## 4. P4: The step-size limit is counted on the generation range
 
-- [ ] 4.1 Add two specs:
+- [x] 4.1 Add two specs:
   - data [10, 20, 80], `grace: '10%'`, `stepSize: 10` gives ticks 0..90 and axis max 90 (master: 100);
   - data [10, 20, 90] gives a top tick and max of 100.
-- [ ] 4.2 Count the steps in `getTickLimit` on `this._range || this`.
-- [ ] 4.3 The pull request says `Closes #11864`. Quote the issue comment that shows `grace` with `stepSize`, because the issue's title is about spacing below the chart title.
+- [x] 4.2 Count the steps in `getTickLimit` on `this._range || this`.
+- [x] 4.3 The pull request says `Closes #11864`. Quote the issue comment that shows `grace` with `stepSize`, because the issue's title is about spacing below the chart title.
 
 ## 5. P5: Tick values are finite
 
