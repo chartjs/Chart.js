@@ -2,7 +2,7 @@ describe('Curve helper tests', function() {
   let helpers;
 
   beforeAll(function() {
-    helpers = window.Chart.helpers;
+    helpers = Chart.helpers;
   });
 
   it('should spline curves', function() {

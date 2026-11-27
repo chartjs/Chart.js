@@ -19,9 +19,9 @@
 
 ## 2. Run core.helpers and helpers.curve in Node (P2)
 
-- [ ] 2.1 Check that `pnpm test-unit core.helpers` finds no file
-- [ ] 2.2 Rename both specs to `*.unit.spec.js` in a commit of renames only, then replace `window.Chart.helpers` with `Chart.helpers` in both
-- [ ] 2.3 Verify both pass in `pnpm test-unit` and are gone from the browser project
+- [x] 2.1 Check that `pnpm test-unit core.helpers` finds no file
+- [x] 2.2 Rename both specs to `*.unit.spec.js` in a commit of renames only, then replace `window.Chart.helpers` with `Chart.helpers` in both
+- [x] 2.3 Verify both pass in `pnpm test-unit` and are gone from the browser project
 
 ## 3. Run the unit specs on Windows (P3)
 
