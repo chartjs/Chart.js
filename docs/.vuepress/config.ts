@@ -355,6 +355,7 @@ export default defineConfig({
                 'axes/cartesian/category',
                 'axes/cartesian/linear',
                 'axes/cartesian/logarithmic',
+                'axes/cartesian/symlog',
                 'axes/cartesian/time',
                 'axes/cartesian/timeseries'
               ],
