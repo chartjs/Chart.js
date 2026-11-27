@@ -529,15 +529,31 @@ class Chart {
 
     this._layers.sort(compare2Level('z', '_idx'));
 
-    // Replay last event from before update, or set hover styles on active elements
+    this._replayActive();
+
+    this.render();
+  }
+
+  /**
+   * Replays the last event from before the update, or sets the hover styles on the active elements.
+   * Active items whose data was removed since they were set are dropped first: resolving options
+   * for an index past the end of the data throws in scriptable options (ctx.raw is undefined),
+   * and the stale item would stay active forever. Element counts are current here, the
+   * controllers were rebuilt above, so this also covers datasets that were removed entirely.
+   * @private
+   */
+  _replayActive() {
+    this._active = (this._active || []).filter(({datasetIndex, index}) => {
+      // A removed dataset has no meta left, and getDatasetMeta would make one.
+      const meta = this.data.datasets[datasetIndex] && this.getDatasetMeta(datasetIndex);
+      return meta && index < meta.data.length;
+    });
     const {_active, _lastEvent} = this;
     if (_lastEvent) {
       this._eventHandler(_lastEvent, true);
     } else if (_active.length) {
       this._updateHoverStyles(_active, _active, true);
     }
-
-    this.render();
   }
 
   /**
