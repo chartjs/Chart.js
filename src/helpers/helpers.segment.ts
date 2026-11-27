@@ -1,39 +1,51 @@
 import {_angleBetween, _angleDiff, _isBetween, _normalizeAngle} from './helpers.math.js';
 import {createContext} from './helpers.options.js';
 import {isPatternOrGradient} from './helpers.color.js';
+import type {AnyObject} from '../types/basic.js';
+import type LineElementClass from '../elements/element.line.js';
+import type PointElementClass from '../elements/element.point.js';
 
-/**
- * @typedef { import('../elements/element.line.js').default } LineElement
- * @typedef { import('../elements/element.point.js').default } PointElement
- * @typedef {{start: number, end: number, loop: boolean, style?: any}} Segment
- */
+export type LineElement = LineElementClass;
+export type PointElement = PointElementClass;
+// `style` is published as `any` in chart.js/helpers
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Segment = {start: number, end: number, loop: boolean, style?: any};
 
-const angleFns = {
+type StyledSegment = {start: number, end: number, loop: boolean, style?: object};
+type Bounds = {property: string, start: number, end: number};
+
+type PropertyFns = {
+  between: (value: number, start: number, end: number) => boolean;
+  compare: (a: number, b: number) => number;
+  normalize: (value: number) => number;
+};
+
+const angleFns: PropertyFns = {
   between: _angleBetween,
   compare: _angleDiff,
   normalize: _normalizeAngle,
 };
 
-const valueFns = {
+const valueFns: PropertyFns = {
   between: _isBetween,
   compare: (a, b) => a - b,
   normalize: x => x
 };
 
-function propertyFn(property) {
+function propertyFn(property: string) {
   return property === 'angle' ? angleFns : valueFns;
 }
 
 // Module-level, not closures in `_boundSegment`: a double captured by a closure is boxed on every write
-function shouldStart({between, compare}, inside, startBound, prevValue, value) {
+function shouldStart({between, compare}: PropertyFns, inside: boolean, startBound: number, prevValue: number, value: number) {
   return inside || (between(startBound, prevValue, value) && compare(startBound, prevValue) !== 0);
 }
 
-function shouldStop({between, compare}, inside, endBound, prevValue, value) {
+function shouldStop({between, compare}: PropertyFns, inside: boolean, endBound: number, prevValue: number, value: number) {
   return !inside || compare(endBound, value) === 0 || between(endBound, prevValue, value);
 }
 
-function normalizeSegment({start, end, count, loop, style}) {
+function normalizeSegment({start, end, count, loop, style}: StyledSegment & {count: number}): StyledSegment {
   return {
     start: start % count,
     end: end % count,
@@ -42,13 +54,13 @@ function normalizeSegment({start, end, count, loop, style}) {
   };
 }
 
-function getSegment(segment, points, bounds) {
+function getSegment(segment: StyledSegment, points: PointElement[], bounds: Bounds): StyledSegment {
   const {property, start: startBound, end: endBound} = bounds;
   const {between, normalize} = propertyFn(property);
   const count = points.length;
   // eslint-disable-next-line prefer-const
   let {start, end, loop} = segment;
-  let i, ilen;
+  let i: number, ilen: number;
 
   if (loop) {
     start += count;
@@ -72,19 +84,23 @@ function getSegment(segment, points, bounds) {
 
 /**
  * Returns the sub-segment(s) of a line segment that fall in the given bounds
- * @param {object} segment
- * @param {number} segment.start - start index of the segment, referring the points array
- * @param {number} segment.end - end index of the segment, referring the points array
- * @param {boolean} segment.loop - indicates that the segment is a loop
- * @param {object} [segment.style] - segment style
- * @param {PointElement[]} points - the points that this segment refers to
- * @param {object} [bounds]
- * @param {string} bounds.property - the property of a `PointElement` we are bounding. `x`, `y` or `angle`.
- * @param {number} bounds.start - start value of the property
- * @param {number} bounds.end - end value of the property
+ * @param segment
+ * @param segment.start - start index of the segment, referring the points array
+ * @param segment.end - end index of the segment, referring the points array
+ * @param segment.loop - indicates that the segment is a loop
+ * @param [segment.style] - segment style
+ * @param points - the points that this segment refers to
+ * @param [bounds]
+ * @param bounds.property - the property of a `PointElement` we are bounding. `x`, `y` or `angle`.
+ * @param bounds.start - start value of the property
+ * @param bounds.end - end value of the property
  * @private
  **/
-export function _boundSegment(segment, points, bounds) {
+export function _boundSegment(
+  segment: {start: number, end: number, loop: boolean, style?: object},
+  points: PointElement[],
+  bounds?: {property: string, start: number, end: number}
+): {start: number, end: number, loop: boolean, style?: object}[] {
   if (!bounds) {
     return [segment];
   }
@@ -95,10 +111,10 @@ export function _boundSegment(segment, points, bounds) {
   const {compare, between, normalize} = fns;
   const {start, end, loop, style} = getSegment(segment, points, bounds);
 
-  const result = [];
+  const result: StyledSegment[] = [];
   let inside = false;
-  let subStart = null;
-  let value, point, prevValue;
+  let subStart: number | null = null;
+  let value: number, point: PointElement, prevValue: number;
 
   for (let i = start, prev = start; i <= end; ++i) {
     point = points[i % count];
@@ -137,15 +153,18 @@ export function _boundSegment(segment, points, bounds) {
 
 /**
  * Returns the segments of the line that are inside given bounds
- * @param {LineElement} line
- * @param {object} [bounds]
- * @param {string} bounds.property - the property we are bounding with. `x`, `y` or `angle`.
- * @param {number} bounds.start - start value of the `property`
- * @param {number} bounds.end - end value of the `property`
+ * @param line
+ * @param [bounds]
+ * @param bounds.property - the property we are bounding with. `x`, `y` or `angle`.
+ * @param bounds.start - start value of the `property`
+ * @param bounds.end - end value of the `property`
  * @private
  */
-export function _boundSegments(line, bounds) {
-  const result = [];
+export function _boundSegments(
+  line: LineElement,
+  bounds?: {property: string, start: number, end: number}
+): {start: number, end: number, loop: boolean, style?: object}[] {
+  const result: StyledSegment[] = [];
   const segments = line.segments;
 
   for (let i = 0; i < segments.length; i++) {
@@ -160,7 +179,7 @@ export function _boundSegments(line, bounds) {
 /**
  * Find start and end index of a line.
  */
-function findStartAndEnd(points, count, loop, spanGaps) {
+function findStartAndEnd(points: PointElement[], count: number, loop: boolean, spanGaps: boolean | number) {
   let start = 0;
   let end = count - 1;
 
@@ -196,17 +215,17 @@ function findStartAndEnd(points, count, loop, spanGaps) {
 
 /**
  * Compute solid segments from Points, when spanGaps === false
- * @param {PointElement[]} points - the points
- * @param {number} start - start index
- * @param {number} max - max index (can go past count on a loop)
- * @param {boolean} loop - boolean indicating that this would be a loop if no gaps are found
+ * @param points - the points
+ * @param start - start index
+ * @param max - max index (can go past count on a loop)
+ * @param loop - boolean indicating that this would be a loop if no gaps are found
  */
-function solidSegments(points, start, max, loop) {
+function solidSegments(points: PointElement[], start: number, max: number, loop: boolean) {
   const count = points.length;
-  const result = [];
+  const result: Segment[] = [];
   let last = start;
   let prev = points[start];
-  let end;
+  let end: number;
 
   for (end = start + 1; end <= max; ++end) {
     const cur = points[end % count];
@@ -214,7 +233,6 @@ function solidSegments(points, start, max, loop) {
       if (!prev.skip) {
         loop = false;
         result.push({start: start % count, end: (end - 1) % count, loop});
-        // @ts-ignore
         start = last = cur.stop ? end : null;
       }
     } else {
@@ -236,12 +254,11 @@ function solidSegments(points, start, max, loop) {
 /**
  * Compute the continuous segments that define the whole line
  * There can be skipped points within a segment, if spanGaps is true.
- * @param {LineElement} line
- * @param {object} [segmentOptions]
- * @return {Segment[]}
+ * @param line
+ * @param [segmentOptions]
  * @private
  */
-export function _computeSegments(line, segmentOptions) {
+export function _computeSegments(line: LineElement, segmentOptions?: object): Segment[] {
   const points = line.points;
   const spanGaps = line.options.spanGaps;
   const count = points.length;
@@ -262,37 +279,24 @@ export function _computeSegments(line, segmentOptions) {
   return splitByStyles(line, solidSegments(points, start, max, completeLoop), points, segmentOptions);
 }
 
-/**
- * @param {Segment[]} segments
- * @param {PointElement[]} points
- * @param {object} [segmentOptions]
- * @return {Segment[]}
- */
-function splitByStyles(line, segments, points, segmentOptions) {
+function splitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions?: AnyObject): Segment[] {
   if (!segmentOptions || !segmentOptions.setContext || !points) {
     return segments;
   }
   return doSplitByStyles(line, segments, points, segmentOptions);
 }
 
-/**
- * @param {LineElement} line
- * @param {Segment[]} segments
- * @param {PointElement[]} points
- * @param {object} [segmentOptions]
- * @return {Segment[]}
- */
-function doSplitByStyles(line, segments, points, segmentOptions) {
+function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions?: AnyObject): Segment[] {
   const chartContext = line._chart.getContext();
   const baseStyle = readStyle(line.options);
   const {_datasetIndex: datasetIndex, options: {spanGaps}} = line;
   const count = points.length;
-  const result = [];
-  let prevStyle = baseStyle;
+  const result: Segment[] = [];
+  let prevStyle: AnyObject = baseStyle;
   let start = segments[0].start;
   let i = start;
 
-  function addStyle(s, e, l, st) {
+  function addStyle(s: number, e: number, l: boolean, st: AnyObject) {
     const dir = spanGaps ? -1 : 1;
     if (s === e) {
       return;
@@ -315,7 +319,7 @@ function doSplitByStyles(line, segments, points, segmentOptions) {
   for (const segment of segments) {
     start = spanGaps ? start : segment.start;
     let prev = points[start % count];
-    let style;
+    let style: AnyObject;
     for (i = start + 1; i <= segment.end; i++) {
       const pt = points[i % count];
       style = readStyle(segmentOptions.setContext(createContext(chartContext, {
@@ -340,7 +344,7 @@ function doSplitByStyles(line, segments, points, segmentOptions) {
   return result;
 }
 
-function readStyle(options) {
+function readStyle(options: AnyObject) {
   return {
     backgroundColor: options.backgroundColor,
     borderCapStyle: options.borderCapStyle,
@@ -352,12 +356,12 @@ function readStyle(options) {
   };
 }
 
-function styleChanged(style, prevStyle) {
+function styleChanged(style: AnyObject, prevStyle: AnyObject) {
   if (!prevStyle) {
     return false;
   }
-  const cache = [];
-  const replacer = function(key, value) {
+  const cache: unknown[] = [];
+  const replacer = function(_key: string, value: unknown) {
     if (!isPatternOrGradient(value)) {
       return value;
     }
