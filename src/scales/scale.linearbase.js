@@ -1,4 +1,4 @@
-import {isNullOrUndef} from '../helpers/helpers.core.js';
+import {finiteOrDefault, isFinite, isNullOrUndef} from '../helpers/helpers.core.js';
 import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign, toRadians} from '../helpers/helpers.math.js';
 import Scale from '../core/core.scale.js';
 import {formatNumber} from '../helpers/helpers.intl.js';
@@ -57,7 +57,7 @@ function generateTicks(generationOptions, dataRange) {
   let spacing = niceNum((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
 
-  // Beyond MIN_SPACING floating point numbers being to lose precision
+  // Beyond MIN_SPACING floating point numbers begin to lose precision
   // such that we can't do the math necessary to generate ticks
   if (spacing < MIN_SPACING && !minDefined && !maxDefined) {
     return [{value: rmin}, {value: rmax}];
@@ -80,9 +80,11 @@ function generateTicks(generationOptions, dataRange) {
     // spacing itself. Round the floating point error off here, otherwise
     // _decimalPlaces below reports it as significant and the factor grows large
     // enough that rounding the tick values becomes a no-op.
+    // A nice bound beyond the largest number (or one that cannot be rounded) falls
+    // back to the data bound.
     const spacingFactor = Math.pow(10, _decimalPlaces(spacing));
-    niceMin = Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor;
-    niceMax = Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor;
+    niceMin = finiteOrDefault(Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor, rmin);
+    niceMax = finiteOrDefault(Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor, rmax);
   } else {
     niceMin = rmin;
     niceMax = rmax;
@@ -117,6 +119,13 @@ function generateTicks(generationOptions, dataRange) {
     }
   }
 
+  if (!isFinite(numSpaces) || !isFinite(spacing)) {
+    // The ticks cannot be counted or spaced: the nice range or the range itself is
+    // wider than the largest number, or the spacing is 0 because the range is
+    // subnormal.
+    return [{value: niceMin}, {value: niceMax}];
+  }
+
   // The spacing will have changed in cases 1, 2, and 3 so the factor cannot be computed
   // until this point
   const decimalPlaces = Math.max(
@@ -124,6 +133,13 @@ function generateTicks(generationOptions, dataRange) {
     _decimalPlaces(niceMin)
   );
   factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
+  if (!isFinite(Math.max(Math.abs(niceMin), Math.abs(niceMax)) * factor)) {
+    // The ticks cannot be rounded to the factor. Every tick lies between the nice
+    // bounds, and these times the factor are beyond the largest number; or the
+    // factor is NaN, because the decimals of the spacing or of the minimum cannot
+    // be counted (_decimalPlaces returns undefined, for a subnormal value).
+    return [{value: niceMin}, {value: niceMax}];
+  }
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
 

@@ -165,7 +165,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 ### Changed by the review
 
 - P3 also fixes the case-4 tolerance. Data [0, 3200] with `bounds: 'data'` lost its 3000 tick through the same cause.
-- P5 dropped its `Number.MIN_VALUE` scenario and the decimal cap. On master both return two ticks at once (early return at line 46), so nothing failed without them.
+- P5 dropped its `Number.MIN_VALUE` scenario and the decimal cap. On master both return two ticks at once (the `MIN_SPACING` early return), but only when neither `min` nor `max` is set. With a user bound, or a minimum whose decimals cannot be counted, master gives NaN ticks (see "Changed by building").
 - The on-grid tolerance gained the float-spacing term.
 - The off-grid digit rule is stated as "grid + 1, or fewer". The earlier "digits of the offset" contradicted its own scenario ("0.1234567" against "0.12").
 - The kept-index refactor was dropped. Offset grid lines read the generated list, which P12 keeps; the label callback no longer needs indexes once it runs on every tick.
@@ -190,6 +190,17 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - `calculateSpacing` never tried the largest proper factor of the major gap: `_factorize` already drops the value itself, and the loop stopped one factor short. P10 loops over all factors.
 - A default log axis has majors on, and its decades are uneven: after significand 10 it emits 15, so every decade after the first has 10 ticks (1..1e5 gives 50 ticks with majors at 0, 9, 19, 29, 39, 49). P10's rule therefore changes log axes too (see "Log axes change in a patch").
 - The time autoskip-major fixture does not change: its unit is year, so it has no majors. P10 adds `scale.time/autoskip-major-uneven` instead: 181 days with unit day and majors on each month.
+- P5:
+  - When the decimals cannot be counted, the result is two ticks at the bounds, instead of no rounding. When `_decimalPlaces` returns `undefined`, the rounding factor is NaN, and the factor guard below returns the two bounds. Data [0, 1e-310] with `min: 0` (either `bounds`) and data [1e-310, 1] with `bounds: 'data'` gave NaN ticks on master. With `precision` the factor does not depend on the decimals, so [1e-310, 1] with `precision: 2` still rounds to 0, 0.1, …, 1.
+  - The two bounds are returned when the tick count or the spacing is not finite. This covers the following cases:
+    - a range that is not finite: data [-MAX_VALUE, MAX_VALUE], or user bounds `min: -1e308, max: 1e308` with `count: 5`, which gave NaN ticks between the bounds on master;
+    - a range between the nice bounds that is not finite, although the data range is finite: data [-1, MAX_VALUE] or [-MAX_VALUE, 1], with or without `stepSize` or `count`. This never ended, on master as well;
+    - a spacing of 0 from a subnormal range with a user bound: data [0, 5e-324] with `min: 0`. On master this gave [0, NaN].
+    No separate check of the data range was kept: no test could tell it apart from this guard.
+  - When the larger nice bound times the rounding factor is not finite, or the factor is NaN, the two bounds are returned. This applies whether the factor comes from `precision` or from the decimals. All ticks lie between the nice bounds. The cases:
+    - data [0, 1e307], [0, 1.7e306], [-1e307, 0] and [-1.7e306, 0] with `precision: 2`. [0, 1.7e306] overflows only at its nice maximum, 1.8e306;
+    - data [0.5, 1e308] with `bounds: 'data'`, where 0.5 needs a factor of 10. On master this gave NaN or Infinity ticks.
+  - The contract between P2, P3, P5 and P11, P17 now allows ticks off the grid when a nice bound falls back to the data bound. Data [-MAX_VALUE, 0] falls back to the data minimum, so the ticks after it are spaced from there (-1.5977e308, …). No 4.6.x reader depends on the grid: autoskip and the offsets work by index, and `_setMinAndMaxByKey` reads only the ends.
 
 ## Risks / Trade-offs
 
@@ -248,7 +259,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 - **P1 → P5:** `_decimalPlaces(x)` returns `undefined` when it cannot count the decimals, and never loops.
 - **P19 → P7:** the spacing the formatter reads is the difference of two tick values without subtraction noise: `1.4 - 1.3` is read as 0.1.
-- **P2, P3, P5 → P11, P17:** linear tick values are finite and strictly increasing before `reverse`. They are on multiples of the spacing, except a bound tick. No tick repeats.
+- **P2, P3, P5 → P11, P17:** linear tick values are finite and strictly increasing before `reverse`. They are on multiples of the spacing, except a bound tick and, when a nice bound falls back to the data bound, the ticks counted from it. No tick repeats.
 - **P5 → P15:** a non-finite range gives the two data bounds as ticks.
 - **P7 → P13, P14:** the formatter's output depends only on the value and the tick list passed.
 - **P12 → P14:** the scale keeps the generated tick list (after `afterBuildTicks`, before nulls are removed and ticks are skipped) in a private field. `scale.ticks` stays the kept list of original tick objects, in order.
