@@ -23,7 +23,7 @@ None.
 
 ## Impact
 
-- `vitest.config.js`, `package.json` scripts, a new `test/setup.node.js` and its pin spec, `test/.eslintrc.yml`, and `docs/developers/contributing.md`. Optionally `.github/workflows/ci.yml`.
+- `vitest.config.js`, `package.json` scripts, a new `test/setup.node.js` and its pin spec, `test/.eslintrc.yml`, and `docs/developers/contributing.md`. `.github/workflows/ci.yml` gets a step that runs the unit specs on Windows, and joins the `test` paths filter.
 - Sixteen spec files are renamed to `*.unit.spec.js`; two of them, `core.helpers` and `helpers.curve`, also get a one-line edit.
 - No change under `src/`, to the build or to the published package. No new release of `chartjs-test-utils` is needed.
 - Open pull requests that add a spec are unaffected: a new spec runs in the browsers unless it is named `*.unit.spec.js`. Open pull requests that edit a renamed spec rebase onto the rename, and git carries their edits into the renamed file.
