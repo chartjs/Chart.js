@@ -73,9 +73,9 @@
 
 ## 12. P11: Wrap within maxWidth and maxHeight
 
-- [ ] 12.1 Specs: a right legend with `maxHeight: 100` puts its items in two or more columns, all within 100 px of the first item's top; a top legend with `maxWidth: 150` keeps every row within 150 px. Both fail on master. The legend box itself keeps the full height or width.
-- [ ] 12.2 Wrap against the smaller of the layout's box and the option, and align lines within the legend's box.
-- [ ] 12.3 legend.md says the two options limit how far the items run, and `align` places them in the box. The pull request says `Closes #11805`.
+- [x] 12.1 Specs: a right legend with `maxHeight: 100` puts its items in two or more columns, all within 100 px of the first item's top; a top legend with `maxWidth: 150` keeps every row within 150 px. Both fail on master. The legend box itself keeps the full height or width.
+- [x] 12.2 Wrap against the smaller of the layout's box and the option, and align lines within the legend's box. The wrap boundary is pinned: a row or column whose size with its padding equals the limit stays whole, and one pixel more wraps.
+- [x] 12.3 legend.md and the `maxWidth`/`maxHeight` comments in `index.d.ts` say, per axis, that the options limit how far the items run on the main axis and the legend's size on the other, and that `align` places the items in the box. The pull request says `Closes #11805`.
 
 ## 13. P12: Hidden data is not active
 

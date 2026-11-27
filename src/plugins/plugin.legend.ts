@@ -324,27 +324,29 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       pointStyleWidth: labelOpts.pointStyleWidth
     };
 
-    let width: number, height: number;
-
     ctx.font = font.string;
 
+    // On the main axis, maxWidth (top, bottom) or maxHeight (left, right)
+    // limits how far the items wrap; 0 or no value means no limit. On the
+    // other axis, it limits the legend's size.
     if (this.isHorizontal()) {
-      width = this.maxWidth; // fill all the width
-      height = this._fitRows(titleHeight, layout) + 10;
+      const limit = Math.min(this.maxWidth, options.maxWidth || Infinity);
+      this.width = limit;
+      this.height = Math.min(this._fitRows(titleHeight, layout, limit) + 10, options.maxHeight || this.maxHeight);
     } else {
-      height = this.maxHeight; // fill all the height
-      width = Math.max(this._fitCols(titleHeight, layout), this._computeTitleWidth()) + 10;
+      const limit = Math.min(this.maxHeight, options.maxHeight || Infinity);
+      this.height = limit;
+      const width = Math.max(this._fitCols(titleHeight, layout, limit), this._computeTitleWidth()) + 10;
+      this.width = Math.min(width, options.maxWidth || this.maxWidth);
     }
-
-    this.width = Math.min(width, options.maxWidth || this.maxWidth);
-    this.height = Math.min(height, options.maxHeight || this.maxHeight);
   }
 
   /**
+   * @param maxWidth - the width a row may take, its outer padding included
    * @private
    */
-  _fitRows(titleHeight: number, layout: LegendLabelLayout) {
-    const {ctx, maxWidth, legendItems, options: {labels: {padding}}} = this;
+  _fitRows(titleHeight: number, layout: LegendLabelLayout, maxWidth: number) {
+    const {ctx, legendItems, options: {labels: {padding}}} = this;
     const {font, boxWidth, itemHeight: lineItemHeight} = layout;
     const fontSize = font.size;
     const hitboxes: LegendHitBox[] = this.legendHitBoxes = [];
@@ -390,11 +392,12 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
   }
 
   /**
+   * @param maxHeight - the height of the legend, title included, that a column may take with its padding
    * @private
    */
-  _fitCols(titleHeight: number, layout: LegendLabelLayout) {
+  _fitCols(titleHeight: number, layout: LegendLabelLayout, maxHeight: number) {
     const {font, boxWidth, itemHeight: lineItemHeight} = layout;
-    const {ctx, maxHeight, options: {labels: {padding}}} = this;
+    const {ctx, options: {labels: {padding}}} = this;
     const hitboxes: LegendHitBox[] = this.legendHitBoxes = [];
     const columnSizes: LegendColumnSize[] = this.columnSizes = [];
     const heightLimit = maxHeight - titleHeight;

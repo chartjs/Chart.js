@@ -1781,6 +1781,8 @@ describe('Legend block tests', function() {
       boxes.forEach(function(box) {
         expect(box.top + box.height - first).toBeLessThanOrEqual(100);
       });
+      // The legend's box keeps the full height.
+      expect(legend.height).toBe(legend.chart.height);
     });
 
     it('should wrap a top legend into rows within maxWidth', function() {
@@ -1795,6 +1797,8 @@ describe('Legend block tests', function() {
         const right = Math.max(...inRow.map(box => box.left + box.width));
         expect(right - left).toBeLessThanOrEqual(150);
       });
+      // The legend's box keeps the full width.
+      expect(legend.width).toBe(legend.chart.width);
     });
 
     // Items without text are exactly boxWidth + fontSize / 2 = 46 wide and
@@ -1825,6 +1829,43 @@ describe('Legend block tests', function() {
       const legend = legendWith('right', {maxHeight: 53}, 3, emptyText);
 
       expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 1, 2]);
+    });
+
+    it('should count the title in maxHeight', function() {
+      // Taller than an item and its padding, so that the third item would fit beside it.
+      const title = {display: true, text: 'Title', padding: 20};
+      const titleHeight = legendWith('right', {title}, 3, emptyText)._computeTitleHeight();
+      const legend = legendWith('right', {maxHeight: 54 + titleHeight, title}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 0, 1]);
+    });
+
+    it('should fit a top legend to maxWidth before the layout places it', function() {
+      // The layout then gives the legend the full width of its box.
+      const legend = legendWith('top', {maxWidth: 150}, 6, i => 'Dataset ' + i);
+      legend.fit();
+
+      expect(legend.width).toBe(150);
+    });
+
+    it('should put one item in each row when maxWidth is smaller than an item', function() {
+      const legend = legendWith('top', {maxWidth: 30}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 1, 2]);
+    });
+
+    it('should put every item in its own column when maxHeight is the title height', function() {
+      const title = {display: true, text: 'Title'};
+      const titleHeight = legendWith('right', {title}, 3, emptyText)._computeTitleHeight();
+      const legend = legendWith('right', {maxHeight: titleHeight, title}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.col)).toEqual([0, 1, 2]);
+    });
+
+    it('should not limit the wrapping when maxWidth is 0', function() {
+      const legend = legendWith('top', {maxWidth: 0}, 3, emptyText);
+
+      expect(legend.legendHitBoxes.map(box => box.row)).toEqual([0, 0, 0]);
     });
   });
 
