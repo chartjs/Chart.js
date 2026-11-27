@@ -10,7 +10,7 @@
 
 ## 3. P3: Bar borders are fills
 
-- [ ] 3.1 Rebase over #11898 if it has moved. In `docs/charts/bar.md`, say that bar borders are drawn as fills, so `borderDash` does not apply to bars. The pull request says `Closes #11341`.
+- [x] 3.1 Rebase over #11898 if it has moved. In `docs/charts/bar.md`, say that bar borders are drawn as fills, so `borderDash` does not apply to bars. The pull request says `Closes #11341`.
 
 ## 4. P4: The bar controller in TypeScript
 

@@ -83,15 +83,15 @@ Namespace: `options.elements.bar`, global bar options: `Chart.defaults.elements.
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `backgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.backgroundColor` | Bar fill color.
-| `borderWidth` | `number` | `0` | Bar stroke width.
-| `borderColor` | [`Color`](/general/colors.md) | `Chart.defaults.borderColor` | Bar stroke color.
+| `borderWidth` | `number` | `0` | Bar border width (in pixels).
+| `borderColor` | [`Color`](/general/colors.md) | `Chart.defaults.borderColor` | Bar border color.
 | `borderSkipped` | `string` | `'start'` | Skipped (excluded) border: `'start'`, `'end'`, `'middle'`, `'bottom'`, `'left'`, `'top'`, `'right'` or `false`.
 | `borderRadius` | `number`\|`object` | `0` | The bar border radius (in pixels).
 | `inflateAmount` | `number`\|`'auto'` | `'auto'` | The amount of pixels to inflate the bar rectangle(s) when drawing.
 | [`pointStyle`](#point-styles) | `string`\|`Image`\|`HTMLCanvasElement` | `'circle'` | Style of the point for legend.
 | `hoverBackgroundColor` | [`Color`](/general/colors.md) | `Chart.defaults.hoverBackgroundColor` | Bar fill color when hovered.
-| `hoverBorderColor` | [`Color`](/general/colors.md) | `Chart.defaults.hoverBorderColor` | Bar stroke color when hovered.
-| `hoverBorderWidth` | `number` | `borderWidth` | Bar stroke width when hovered.
+| `hoverBorderColor` | [`Color`](/general/colors.md) | `Chart.defaults.hoverBorderColor` | Bar border color when hovered.
+| `hoverBorderWidth` | `number` | `borderWidth` | Bar border width when hovered.
 | `hoverBorderRadius` | `number`\|`object` | `borderRadius` | Bar border radius when hovered.
 
 ## Arc Configuration
