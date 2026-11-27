@@ -784,6 +784,25 @@ describe('Linear Scale', function() {
     });
   });
 
+  it('should count the stepSize limit on min and max when buildTicks runs without a range', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b', 'c'],
+        datasets: [{data: [10, 20, 80]}]
+      },
+      options: {
+        scales: {
+          y: {ticks: {stepSize: 10}}
+        }
+      }
+    });
+    var scale = chart.scales.y;
+    scale._range = undefined;
+
+    expect(scale.buildTicks().map(tick => tick.value)).toEqual([10, 20, 30, 40, 50, 60, 70, 80]);
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
