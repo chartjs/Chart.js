@@ -1,31 +1,51 @@
 import effects from '../helpers/helpers.easing.js';
 import {resolve} from '../helpers/helpers.options.js';
 import {color as helpersColor} from '../helpers/helpers.color.js';
+import type {AnyObject} from '../types/basic.js';
 
 const transparent = 'transparent';
 const interpolators = {
-  boolean(from, to, factor) {
+  boolean(from: unknown, to: unknown, factor: number) {
     return factor > 0.5 ? to : from;
   },
-  /**
-   * @param {string} from
-   * @param {string} to
-   * @param {number} factor
-   */
-  color(from, to, factor) {
+  color(from: string, to: string, factor: number) {
     const c0 = helpersColor(from || transparent);
     const c1 = c0.valid && helpersColor(to || transparent);
     return c1 && c1.valid
       ? c1.mix(c0, factor).hexString()
       : to;
   },
-  number(from, to, factor) {
+  number(from: number, to: number, factor: number) {
     return from + (to - from) * factor;
   }
 };
 
 export default class Animation {
-  constructor(cfg, target, prop, to) {
+  /** @internal */
+  declare _active: boolean;
+  /** @internal */
+  declare _fn: (from: unknown, to: unknown, factor: number) => unknown;
+  /** @internal */
+  declare _easing: (t: number) => number;
+  /** @internal */
+  declare _start: number;
+  /** @internal */
+  declare _duration: number;
+  /** @internal */
+  declare _total: number;
+  /** @internal */
+  declare _loop: boolean;
+  /** @internal */
+  declare _target: AnyObject;
+  /** @internal */
+  declare _prop: string;
+  /** @internal */
+  declare _from: unknown;
+  declare _to: unknown;
+  /** @internal */
+  declare _promises: {res: () => void, rej: () => void}[];
+
+  constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown) {
     const currentValue = target[prop];
 
     to = resolve([cfg.to, to, currentValue, cfg.from]);
@@ -44,11 +64,11 @@ export default class Animation {
     this._promises = undefined;
   }
 
-  active() {
+  active(): boolean {
     return this._active;
   }
 
-  update(cfg, to, date) {
+  update(cfg: AnyObject, to: unknown, date: number): void {
     if (this._active) {
       this._notify(false);
 
@@ -64,7 +84,7 @@ export default class Animation {
     }
   }
 
-  cancel() {
+  cancel(): void {
     if (this._active) {
       // update current evaluated value, for smoother animations
       this.tick(Date.now());
@@ -73,14 +93,14 @@ export default class Animation {
     }
   }
 
-  tick(date) {
+  tick(date: number): void {
     const elapsed = date - this._start;
     const duration = this._duration;
     const prop = this._prop;
     const from = this._from;
     const loop = this._loop;
     const to = this._to;
-    let factor;
+    let factor: number;
 
     this._active = from !== to && (loop || (elapsed < duration));
 
@@ -102,14 +122,15 @@ export default class Animation {
     this._target[prop] = this._fn(from, to, factor);
   }
 
-  wait() {
+  wait(): Promise<void> {
     const promises = this._promises || (this._promises = []);
-    return new Promise((res, rej) => {
+    return new Promise<void>((res, rej) => {
       promises.push({res, rej});
     });
   }
 
-  _notify(resolved) {
+  /** @internal */
+  _notify(resolved: boolean): void {
     const method = resolved ? 'res' : 'rej';
     const promises = this._promises || [];
     for (let i = 0; i < promises.length; i++) {

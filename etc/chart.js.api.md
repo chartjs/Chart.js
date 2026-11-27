@@ -50,43 +50,46 @@ type Animation_3 = Animation_4;
 
 // @public (undocumented)
 class Animation_4 {
-    constructor(cfg: any, target: any, prop: any, to: any);
+    constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown);
     // (undocumented)
     active(): boolean;
-    // (undocumented)
+    // @internal (undocumented)
     _active: boolean;
     // (undocumented)
     cancel(): void;
-    // (undocumented)
+    // @internal (undocumented)
     _duration: number;
-    // (undocumented)
-    _easing: any;
-    // (undocumented)
-    _fn: any;
-    // (undocumented)
+    // @internal (undocumented)
+    _easing: (t: number) => number;
+    // @internal (undocumented)
+    _fn: (from: unknown, to: unknown, factor: number) => unknown;
+    // @internal (undocumented)
     _from: unknown;
-    // (undocumented)
+    // @internal (undocumented)
     _loop: boolean;
-    // (undocumented)
-    _notify(resolved: any): void;
-    // (undocumented)
-    _promises: any[];
-    // (undocumented)
-    _prop: any;
-    // (undocumented)
+    // @internal (undocumented)
+    _notify(resolved: boolean): void;
+    // @internal (undocumented)
+    _promises: {
+        res: () => void;
+        rej: () => void;
+    }[];
+    // @internal (undocumented)
+    _prop: string;
+    // @internal (undocumented)
     _start: number;
+    // @internal (undocumented)
+    _target: AnyObject;
     // (undocumented)
-    _target: any;
+    tick(date: number): void;
     // (undocumented)
-    tick(date: any): void;
-    // (undocumented)
-    _to: any;
-    // (undocumented)
+    _to: unknown;
+    // @internal (undocumented)
     _total: number;
     // (undocumented)
-    update(cfg: any, to: any, date: any): void;
+    update(cfg: AnyObject, to: unknown, date: number): void;
     // (undocumented)
-    wait(): Promise<any>;
+    wait(): Promise<void>;
 }
 
 // @public (undocumented)

@@ -71,11 +71,11 @@
 
 ## 10. P10: Convert Animation to TypeScript
 
-- [ ] 10.1 Rename the modules to `.ts`. Show the gate's errors for Animation before the fix.
-- [ ] 10.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 10.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 10.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 10.5 Run the whole test suite; no fixture changes.
+- [x] 10.1 Rename the modules to `.ts`. Show the gate's errors for Animation before the fix.
+- [x] 10.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 10.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 10.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 10.5 Run the whole test suite; no fixture changes.
 
 ## 11. P11: Convert the interaction modes to TypeScript
 
