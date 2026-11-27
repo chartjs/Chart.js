@@ -973,6 +973,11 @@ export default class DatasetController {
    */
   _clearHoverStyle(element, index) {
     element.active = false;
+    if (index >= this._cachedMeta.data.length) {
+      // The data item was removed: its element is gone, and resolving its options
+      // would give scriptable options a context without the data item.
+      return;
+    }
     const sharedOptions = this.getSharedOptions(this.getStyle(index, false));
     if (sharedOptions) {
       element.options = sharedOptions;

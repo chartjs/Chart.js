@@ -3238,6 +3238,33 @@ describe('Chart', function() {
       expect(chart.getActiveElements()).toEqual([]);
       expect(chart._metasets.length).toBe(chart.data.datasets.length);
     });
+
+    it('should not resolve the options of an active item whose data was removed when its dataset is hidden', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3, 4, 5, 6].map((y, x) => ({x, y})),
+            // Reads the data item, which an index past the data does not have.
+            pointBackgroundColor: (ctx) => (ctx.raw.y > 1 ? 'red' : 'blue')
+          }]
+        },
+        options: {
+          scales: {x: {type: 'linear'}}
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[5];
+
+      chart.setActiveElements([{datasetIndex: 0, index: 5}]);
+      expect(element.active).toBe(true);
+
+      // Index 5 is now just past the data.
+      chart.data.datasets[0].data = [1, 2, 3, 4, 5].map((y, x) => ({x, y}));
+      expect(() => chart.hide(0)).not.toThrow();
+
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(element.active).toBe(false);
+    });
   });
 
   it('should not replace the user set active elements by event replay', async function() {
