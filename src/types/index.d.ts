@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {DeepPartial, DistributiveArray, UnionToIntersection} from './utils.js';
+import {DeepPartial, DistributiveArray, NoInferType, UnionToIntersection} from './utils.js';
 
 import {TimeUnit} from '../core/core.adapters.js';
 import PointElement from '../elements/element.point.js';
@@ -2464,16 +2464,16 @@ export interface LegendOptions<TType extends ChartType> {
    * (also from 'touchend' and 'pointerup') when the legend's events do not include 'click'.
    * A right-click ('contextmenu') does not call it.
    */
-  onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+  onClick(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered on top of a label item
    */
-  onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+  onHover(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item,
    * or when the pointer leaves the canvas ('mouseout') while a label item is hovered.
    */
-  onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+  onLeave(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
 
   labels: {
     /**

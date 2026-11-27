@@ -39,9 +39,9 @@
 
 ## 7. P7: The legend callbacks do not infer the chart type
 
-- [ ] 7.1 Add `test/types/plugins/plugin.legend/` snippets: #10442's line chart with `legend: LegendElement<ChartType>` reading `options.scales?.x?.title` (fails on master), and #11666's pie default handler call (passes on master, kept as a guard).
-- [ ] 7.2 Add a no-infer alias that works with TypeScript before 5.4, and wrap `TType` in the three callbacks' `this` and `legend` types.
-- [ ] 7.3 The number of errors over `test/types` is unchanged. The pull request says `Closes #10442`, and `Closes #11666` with a note that it was not reproduced and the snippet guards it.
+- [x] 7.1 Add `test/types/plugins/plugin.legend/` snippets: #10442's line chart with `legend: LegendElement<ChartType>` reading `options.scales?.x?.title` (fails on master), and #11666's pie default handler call (passes on master, kept as a guard).
+- [x] 7.2 Add a no-infer alias that works with TypeScript before 5.4, and wrap `TType` in the three callbacks' `this` and `legend` types.
+- [x] 7.3 The number of errors over `test/types` is unchanged. The pull request says `Closes #10442`, and `Closes #11666` with a note that it was not reproduced and the snippet guards it.
 
 ## 8. P8: Legend docs
 
