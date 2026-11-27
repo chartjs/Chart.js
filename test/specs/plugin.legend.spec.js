@@ -1531,6 +1531,36 @@ describe('Legend block tests', function() {
     }
   });
 
+  ['top', 'bottom'].forEach(function(position) {
+    it('should start the row after a three-line label below its third line in a ' + position + ' legend', function() {
+      const fillText = vi.spyOn(CanvasRenderingContext2D.prototype, 'fillText');
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['A'],
+          datasets: [
+            {label: ['line 1', 'line 2', 'line 3'], data: [1]},
+            {label: 'next row', data: [2]}
+          ]
+        },
+        options: {animation: false, plugins: {legend: {position}}}
+      }, {canvas: {width: 120, height: 300}});
+      const drawn = Object.fromEntries(fillText.mock.calls.map(([text, x, y]) => [text, y]));
+      fillText.mockRestore();
+      const {legend} = chart;
+      const [multi, next] = legend.legendHitBoxes;
+      const {lineHeight} = legend._labelLayout.font;
+
+      expect(next.row).toBe(1);
+      // The text of the next row is below the third line, and so is its hit box.
+      expect(drawn['next row'] - lineHeight / 2).toBeGreaterThanOrEqual(drawn['line 3'] + lineHeight / 2);
+      expect(multi.height).toBeCloseTo(3 * lineHeight, 5);
+      expect(next.top).toBeGreaterThanOrEqual(multi.top + multi.height);
+      // The legend is tall enough for both rows.
+      expect(legend.bottom).toBeGreaterThanOrEqual(next.top + next.height);
+    });
+  });
+
   it('should draw the labels in the font they were laid out with', function() {
     const defaultSize = Chart.defaults.font.size;
     const chart = acquireChart({
