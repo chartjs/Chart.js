@@ -26,4 +26,4 @@
 ## 3. Run the unit specs on Windows (P3)
 
 - [x] 3.1 Add a `pnpm run test-unit` step to `.github/workflows/ci.yml` for `runner.os == 'Windows'`, behind the src/test filter
-- [ ] 3.2 Verify the Windows job runs the unit specs on the pull request
+- [x] 3.2 Verify the Windows job runs the unit specs on the pull request
