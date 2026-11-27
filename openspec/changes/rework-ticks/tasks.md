@@ -68,16 +68,16 @@
 
 ## 9. P9: Even majors from the first gap (#12287)
 
-- [ ] 9.1 Add `test/specs/core.scale.autoskip.spec.js` with two specs:
+- [ ] 9.1 Add `test/specs/core.scale.autoskip.unit.spec.js` with two specs:
   - majors 0/30/60/90 of 120 with 30 fitting gives a gap of 5 everywhere (master: 4 and 5);
   - a log axis 1..1e5 at 400 px keeps the same significands in each decade.
 - [ ] 9.2 Rebase #12287 with these specs in place of its time test, crediting the author. The pull request says `Part of #10373`.
 
 ## 10. P10: The same whole step from each major
 
-- [ ] 10.1 Spec: majors 0/31/59/90/120/151 of 181 with 30 fitting gives 0, 7, 14, 21, 31, 38, …. The gaps are 7, except just before a major.
-- [ ] 10.2 Repeat a whole step from each major, and drop a minor that is closer than one step to the next major.
-- [ ] 10.3 Update the time autoskip-major baseline and say in the pull request that time axes with majors change. It says `Closes #10373`.
+- [x] 10.1 Spec: majors 0/31/59/90/120/151 of 181 with 30 fitting gives 0, 7, 14, 21, 31, 38, …. The gaps are 7, except just before a major.
+- [x] 10.2 Repeat a whole step from each major, and drop a minor that is closer than one step to the next major.
+- [x] 10.3 Add the time fixture `scale.time/autoskip-major-uneven` (autoskip-major has no majors and does not change), and say in the pull request that time and log axes with majors change. It says `Closes #10373`.
 
 ## 11. P11: Fit counted from tick values
 
