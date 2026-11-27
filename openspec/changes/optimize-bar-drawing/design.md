@@ -1,6 +1,6 @@
 ## Context
 
-All references are to `upstream/master` after #12572, which converted the bar element to `src/elements/element.bar.ts`.
+All references are to `upstream/master` after #12572, which converted the bar element to `src/elements/element.bar.ts`. The bar controller is still `src/controllers/controller.bar.js`; rework-bar-chart P4 renames it to `.ts`.
 
 **How a bar is drawn today.**
 
@@ -77,7 +77,7 @@ On a side with no border, the clip is what cuts the background's growth back.
 
 - Bordered bars without a clip per bar.
 - Plain bars as one `fillRect`.
-- No per-bar save/restore.
+- No per-bar save/restore; one per bar dataset, in the controller.
 - No allocation in `draw` for numeric borders and radii.
 
 **Non-Goals**
@@ -86,7 +86,7 @@ On a side with no border, the clip is what cuts the background's growth back.
 - **Caching `fillStyle`.** Skipping a write of an unchanged colour gained nothing (3.6 against 3.7 ms).
 - **`fillRect` for the background of bordered square bars.** It gained 3 to 6 % (31.9 against 29.9 ms in Chromium, 35 against 34 ms in Firefox), which is within noise. The bordered paths for square and rounded bars stay the same code.
 - **Hit testing without allocation.** `getBarBounds` keeps returning a new object (D4).
-- **Changing context state for other chart types** (review, D3).
+- **Changing context state for other chart types** (review, D3). Only the bar controller changes.
 - **#12094, #9906, #10477.** These are gaps and seams between border and fill, or between bars without borders, and a Safari-only line. The change is not shown to fix them, and no piece closes them.
 - **Stroked or dashed borders, and a radius for the whole stack.** These stay non-goals, as rework-bar-chart says.
 
@@ -108,20 +108,19 @@ Alternatives:
 
 A bar without a border and without a radius is one `fillRect` of the inner rectangle grown on all sides. No path is built. This changed none of the 670 fixtures in Chromium.
 
-### D3. The bar does not save or restore the context
+### D3. The bar controller saves and restores the context once per dataset
 
-The per-bar `save()` and `restore()` go: they are 1.4 ms of a 3.7 ms plain frame. Where the context is restored instead is open question Q1.
+The per-bar `save()` and `restore()` go: they are 1.4 ms of a 3.7 ms plain frame. `BarController.draw` calls `save()` before its loop over the bars and `restore()` after it. That is the user's choice (2026-11-28, Q1).
 
-The recommendation is that nothing takes over the bar's save:
-- With the dataset clip on (the default), `_drawDataset` already restores after each dataset.
-- With `clip: false`, a bar then leaves `fillStyle` set, as points already leave `fillStyle`, `strokeStyle` and `lineWidth`.
-- A plain bar builds no path, so after P2 the current path is whatever was current before the bar. Today it is the last bar's rectangle.
+- **Inside a chart.** Nothing a bar sets leaks out of the dataset draw, with or without the dataset clip. That holds as long as the controller wraps the bars' draws.
+- **Outside a chart.** Code that calls a bar's `draw(ctx)` directly, or a subclass that draws after `super.draw(ctx)`, finds `fillStyle` set to the bar's last fill colour.
+- **The current path.** A plain bar builds no path, so after P3 the current path is whatever was current before the bar; today it is the last bar's rectangle. The path is not part of the saved state, so the controller's restore does not change this.
 
-Code that calls `draw(ctx)` directly, or a subclass that draws after `super.draw(ctx)`, sees both.
+The controller file is held by open pull requests (#12334, #12566, #12335) and is renamed by rework-bar-chart P4, which waits for them. The controller change is therefore its own small piece (P2), placed after rework-bar-chart P4.
 
-Alternatives considered (review):
-- **`_drawDataset` saves and restores also with `clip: false`.** This changes what `afterDatasetDraw` and the next dataset see for every chart type with `clip: false`. Today they see the last point's styles; after it, the defaults. That reaches past bars.
-- **One save/restore in `BarController.draw`.** This is bar-local. The file is held by five open pull requests and is renamed by rework-bar-chart P4, so the piece would wait for all of them.
+Alternatives:
+- **Nothing beyond the dataset clip, as points do.** This was the recommendation. With `clip: false`, `fillStyle` would leak to `afterDatasetDraw`.
+- **`_drawDataset` saves and restores also with `clip: false`.** This changes what `afterDatasetDraw` and the next dataset see for every chart type with `clip: false`. Today they see the last point's styles; after it, the defaults (review).
 - **Keep the per-bar save:** 27 % of a plain frame.
 
 ### D4. Geometry is not allocated in `draw`
@@ -153,17 +152,19 @@ The spec does not promise anything about seams between stacked segments. The `bo
 
 ### D7. What the plan review changed
 
-- The core `_drawDataset` change was dropped (D3). It would have changed context state for every chart type with `clip: false`.
-- The spec no longer states a context-state requirement. It also no longer writes the leftover `fillStyle` into a SHALL, or promises the seam.
+- The core `_drawDataset` change was dropped (D3). It would have changed context state for every chart type with `clip: false`. The user chose the bar controller instead.
+- The spec's context-state requirement now covers bar datasets only. The spec no longer writes the leftover `fillStyle` of direct callers into a SHALL, and no longer promises the seam.
 - D3 now says the current path changes for plain bars.
 - The release lines name `BarElement` subclasses.
 - Keeping the per-bar save, and keeping the allocating geometry, were both measured (D3, D4) before deciding.
+- The controller's save/restore is its own piece (P2), so that the element pieces do not wait on the controller file longer than they must.
 - The bench was cut to one runner and one collection counter.
 
 ## Risks / Trade-offs
 
 - **Visible edge change.** The outer edge of a bordered bar is darker than before, by an antialiasing step. P3's release line says so.
-- **Leftover context state.** With `clip: false`, and for direct `draw(ctx)` callers and `BarElement` subclasses, the bar leaves `fillStyle` set (P2, P3), and a plain bar leaves the previous path current (P2). P2's release line says so. No reader in this repository or in the sibling repositories depends on either.
+- **Leftover context state.** Direct `draw(ctx)` callers and `BarElement` subclasses find `fillStyle` set (P3, P4), and a plain bar leaves the previous path current (P3). P3's release line says so. No reader in this repository or in the sibling repositories depends on either.
+- **The controller file is contended.** P2 waits on rework-bar-chart P4. After that, rework-bar-chart P5 and later pieces keep editing `controller.bar.ts`; P2 is a few lines in `draw`, which none of them changes, so whichever lands second rebases.
 - **rework-bar-chart P16** edits `element.bar.ts` in another region. Whichever lands second rebases. `getBarBounds` keeps its contract (D4), and `tooltipPosition` is not touched here.
 - **Measurement coverage.** The numbers come from headless and headed Chromium and from Firefox on macOS. Safari was not measured. The builder repeats `bench/` before and after each piece on its own machine and puts the numbers in the pull request.
 
@@ -172,10 +173,11 @@ The spec does not promise anything about seams between stacked segments. The `bo
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes |
 |---|---|---|---|---|---|---|---|
 | P1 | refactor: bar draw geometry without allocation; `writeBarBounds` shared with `getBarBounds` (D4) | `src/elements/element.bar.ts`, `test/specs/element.bar.unit.spec.js` | None, since this is a refactor. A new "draw calls" spec on the mock context asserts exact call names and arguments for six cases: plain, rounded, bordered with `borderSkipped: {bottom: true}`, bordered and rounded, partial `borderWidth: {top: 2}`, object radius. It gives the same result on master and after, and every fixture is unchanged. `bench/gc.cjs` gives 0 collections over 300 frames of 5000 bordered bars (master: about 340). | ~200 | | | |
-| P2 | perf: bars without a border are one fill, without save/restore (D2, D3) | `element.bar.ts`, unit spec | Plain bar (x 10, y 0, base 20, width 10, `inflateAmount` 0.5): master records `save, beginPath, rect(4.5, -0.5, 11, 21), setFillStyle, fill, restore`; expect `setFillStyle, fillRect(4.5, -0.5, 11, 21)`. Rounded bar without a border: master's calls without `save` and `restore`. No fixture changes. | ~40 | P1, Q1 | | |
-| P3 | perf: bordered bars without a clip per bar (D1, D5) | `element.bar.ts`, unit spec, `test/specs/controller.bar.spec.js`, 7 `test/fixtures/controller.bar` images, `border-radius-stacked-number-with-order.js`, `docs/general/performance.md` | (1) The bordered bar of P1's spec: master records `save, beginPath, rect, clip, rect, setFillStyle, fill('evenodd'), beginPath, rect, setFillStyle, fill, restore`; expect the ring calls without `save`, `clip` and `restore`, then the background on the bordered sides only. (2) The clip spec with `borderWidth: 2`, `clip: false` and 3 bars: 3 `clip` calls on master; expect 0. | ~80 | P2 | | |
+| P2 | refactor: the bar controller saves and restores the context once around its bars (D3) | `src/controllers/controller.bar.ts`, `test/specs/controller.bar.spec.js` | A bar dataset with `clip: false` on a real canvas. The spec wraps `BarElement.prototype.draw` so that it sets `ctx.fillStyle = '#ff0000'` after the original draw, as a bar without its own save does. A plugin's `afterDatasetDraw` reads `chart.ctx.fillStyle`: `'#ff0000'` on master; expect `'#000000'`. No fixture changes. | ~40 | rework-bar-chart P4 | | |
+| P3 | perf: bars without a border are one fill, without save/restore (D2, D3) | `element.bar.ts`, unit spec | Plain bar (x 10, y 0, base 20, width 10, `inflateAmount` 0.5): master records `save, beginPath, rect(4.5, -0.5, 11, 21), setFillStyle, fill, restore`; expect `setFillStyle, fillRect(4.5, -0.5, 11, 21)`. Rounded bar without a border: master's calls without `save` and `restore`. P2's spec still passes. No fixture changes. | ~40 | P1, P2 | | |
+| P4 | perf: bordered bars without a clip per bar (D1, D5) | `element.bar.ts`, unit spec, `test/specs/controller.bar.spec.js`, 7 `test/fixtures/controller.bar` images, `border-radius-stacked-number-with-order.js`, `docs/general/performance.md` | (1) The bordered bar of P1's spec: master records `save, beginPath, rect, clip, rect, setFillStyle, fill('evenodd'), beginPath, rect, setFillStyle, fill, restore`; expect the ring calls without `save`, `clip` and `restore`, then the background on the bordered sides only. (2) The clip spec with `borderWidth: 2`, `clip: false` and 3 bars: 3 `clip` calls on master; expect 0. | ~80 | P3 | | |
 
-P3 regenerates 7 images with `pnpm fixtures:update`, all under `controller.bar/`:
+P4 regenerates 7 images with `pnpm fixtures:update`, all under `controller.bar/`:
 - `borderRadius/border-radius`
 - `borderSkipped/middle`
 - `horizontal-borders`
@@ -184,25 +186,23 @@ P3 regenerates 7 images with `pnpm fixtures:update`, all under `controller.bar/`
 - `minBarLength/vertical-neg`
 - `minBarLength/vertical-pos`
 
-**Parallel.** Nothing; each piece edits `element.bar.ts`. P1 can start now.
+**Parallel.** P1 (element) and P2 (controller) can be built in parallel; P1 can start now, and P2 once rework-bar-chart P4 has merged. P3 waits on both, and P4 on P3.
 
-**Release lines.** All three are patch lines.
-- **P1:** none; it is a refactor.
-- **P2:** bars without a border draw about twice as fast. With `clip: false`, a direct `draw(ctx)` call or a `BarElement` subclass, a bar leaves `fillStyle` set and no longer leaves its rectangle as the current path.
-- **P3:** bordered bars draw about twice as fast. Their outer edge is antialiased once, so it is slightly darker than before.
+**Release lines.** All are patch lines.
+- **P1 and P2:** none; they are refactors.
+- **P3:** bars without a border draw about twice as fast. Direct `draw(ctx)` callers and `BarElement` subclasses find `fillStyle` set to the bar's last fill colour, and a plain bar no longer leaves its rectangle as the current path.
+- **P4:** bordered bars draw about twice as fast. Their outer edge is antialiased once, so it is slightly darker than before.
 
 ## Contracts
 
-- **P1 → P2, P3:**
+- **P1 → P3, P4:**
   - the geometry storage and `writeBarBounds(bar, final, out)`;
   - `getBarBounds(bar, final)` returns a new `{left, top, right, bottom}`, as before;
-  - the "draw calls" spec lists every case P2 and P3 change.
+  - the "draw calls" spec lists every case P3 and P4 change.
+- **P2 → P3, P4:** `BarController.draw` saves the context before drawing its bars and restores it after, so a bar need not.
+- **rework-bar-chart P4 → P2:** `src/controllers/controller.bar.ts` exists.
 - **This change → rework-bar-chart P16:** `getBarBounds` keeps its signature and result, and `tooltipPosition` is not changed.
 
 ## Open Questions
 
-- **Q1 (P2, P3).** Where is the context restored once the bar stops saving it?
-  - A: nowhere beyond what the dataset clip already does, as points do. Recommended (D3).
-  - B: one save/restore in `BarController.draw`. P2 then waits on the five open pull requests that hold the file and on rework-bar-chart P4.
-  - C: `_drawDataset` also with `clip: false`. This changes context state for every chart type, and adds a core piece before P2.
-  - D: keep the per-bar save. P2 and P3 keep it, which costs 27 % of a plain frame.
+None. Q1 (where the context is restored) was answered: the bar controller (D3).

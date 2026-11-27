@@ -16,9 +16,8 @@ Drawing bars is slower than it needs to be:
   - With 5000 bars a frame takes 29 to 33 ms instead of 55 to 65 ms, and 31 to 38 ms instead of 77 to 101 ms with a radius.
 - **Visible change.** The outer edge of a bordered bar is antialiased once, as the edge of a bar without a border is. Before, the clip applied the edge coverage twice, so the edge came out lighter. Seven bar reference images are regenerated for this.
 - **Context state.**
-  - A bar no longer saves and restores the canvas context.
-  - Inside a chart with the dataset clip on (the default), the chart's clip already restores the context after each dataset.
-  - With `clip: false`, or when code calls a bar's `draw(ctx)` directly, the bar leaves `fillStyle` set to its last fill colour, as points already do.
+  - A bar no longer saves and restores the canvas context. The bar controller saves it once before drawing its bars and restores it once after, so a chart's context is left as it was, with or without the dataset clip.
+  - Code that calls a bar's `draw(ctx)` directly, or a `BarElement` subclass that draws after `super.draw(ctx)`, finds `fillStyle` set to the bar's last fill colour.
   - A plain bar no longer leaves its rectangle as the current path.
 - **Compatibility.** No option or type changes. The edge antialiasing and the context state above are the behaviour users can notice; each is named in its piece's release line.
 
@@ -26,7 +25,7 @@ Drawing bars is slower than it needs to be:
 
 ### New Capabilities
 
-- `bar-drawing`: which areas a bar's border and background cover, and how the outer edge of a bordered bar is antialiased.
+- `bar-drawing`: which areas a bar's border and background cover, how the outer edge of a bordered bar is antialiased, and what the canvas context holds after bars are drawn.
 
 ### Modified Capabilities
 
@@ -34,7 +33,7 @@ None.
 
 ## Impact
 
-- Code: `src/elements/element.bar.ts`.
+- Code: `src/elements/element.bar.ts`, and `draw` in the bar controller (`src/controllers/controller.bar.ts` after rework-bar-chart P4).
 - Tests:
   - `test/specs/element.bar.unit.spec.js` and `test/specs/controller.bar.spec.js`;
   - seven `test/fixtures/controller.bar` images;

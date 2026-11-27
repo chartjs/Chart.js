@@ -1,6 +1,6 @@
 ## Purpose
 
-How a bar is painted: which areas its border and background cover, and how the outer edge of a bordered bar is antialiased.
+How a bar is painted: which areas its border and background cover, how the outer edge of a bordered bar is antialiased, and what the canvas context holds after bars are drawn.
 
 ## ADDED Requirements
 
@@ -27,3 +27,12 @@ The outer edge of a bar with a border SHALL be antialiased once, the same as the
 
 - **WHEN** a bar with a border is drawn
 - **THEN** no clip region is set for the bar, and its outer edge is antialiased by its own fill only
+
+### Requirement: Drawing a bar dataset leaves the context as it was
+
+After the bars of a dataset are drawn, the context's fill style, clip region and transform SHALL be what they were before, whether the dataset clip is on or off.
+
+#### Scenario: A bar dataset with the clip off
+
+- **WHEN** a bar dataset with `clip: false` is drawn
+- **THEN** a plugin's `afterDatasetDraw` sees the fill style the context had before the dataset was drawn
