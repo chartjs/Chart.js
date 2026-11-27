@@ -3,12 +3,11 @@ import {_createBoundaryLine} from './filler.helper.js';
 import {_getTargetPixel, _getTargetValue} from './filler.options.js';
 import {_buildStackLine} from './filler.target.stack.js';
 import {simpleArc} from './simpleArc.js';
+import type Chart from '../../core/core.controller.js';
+import type Scale from '../../core/core.scale.js';
+import type PointElement from '../../elements/element.point.js';
 
-/**
- * @typedef { import('../../core/core.controller.js').default } Chart
- * @typedef { import('../../core/core.scale.js').default } Scale
- * @typedef { import('../../elements/element.point.js').default } PointElement
- */
+export type {Chart, Scale, PointElement};
 
 export function _getTarget(source) {
   const {chart, fill, line} = source;
@@ -34,11 +33,7 @@ export function _getTarget(source) {
   return _createBoundaryLine(boundary, line);
 }
 
-/**
- * @param {Chart} chart
- * @param {number} index
- */
-function getLineByIndex(chart, index) {
+function getLineByIndex(chart: Chart, index: number) {
   const meta = chart.getDatasetMeta(index);
   const visible = meta && chart.isDatasetVisible(index);
   return visible ? meta.dataset : null;

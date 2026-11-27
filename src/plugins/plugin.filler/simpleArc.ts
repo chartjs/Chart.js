@@ -2,6 +2,10 @@ import {TAU} from '../../helpers/index.js';
 
 // TODO: use elements.ArcElement instead
 export class simpleArc {
+  declare x: any;
+  declare y: any;
+  declare radius: any;
+
   constructor(opts) {
     this.x = opts.x;
     this.y = opts.y;
