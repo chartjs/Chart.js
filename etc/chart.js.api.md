@@ -168,23 +168,23 @@ export const animator: Animator_2;
 
 // @public
 class Animator_2 {
-    add(chart: Chart_6, items: Animation_3[]): void;
+    add(chart: Chart_5, items: Animation_3[]): void;
     // (undocumented)
     _charts: Map<any, any>;
-    has(chart: Chart_6): boolean;
+    has(chart: Chart_5): boolean;
     // (undocumented)
     _lastDate: number;
     // (undocumented)
-    listen(chart: Chart_6, event: string, cb: Function): void;
-    remove(chart: Chart_6): boolean;
+    listen(chart: Chart_5, event: string, cb: Function): void;
+    remove(chart: Chart_5): boolean;
     // (undocumented)
     _request: any;
     // (undocumented)
     running(chart: any): boolean;
     // (undocumented)
     _running: boolean;
-    start(chart: Chart_6): void;
-    stop(chart: Chart_6): void;
+    start(chart: Chart_5): void;
+    stop(chart: Chart_5): void;
 }
 
 // @public (undocumented)
@@ -1046,9 +1046,6 @@ type Chart_5 = Chart_3;
 
 // @public (undocumented)
 type Chart_6 = Chart_3;
-
-// @public (undocumented)
-type Chart_7 = Chart_3;
 
 // @public (undocumented)
 export interface ChartArea {
@@ -2336,7 +2333,7 @@ export class DomPlatform extends BasePlatform {}
 // @public
 class DomPlatform_2 extends BasePlatform_2 {
     // (undocumented)
-    removeEventListener(chart: Chart_7, type: string): void;
+    removeEventListener(chart: Chart_6, type: string): void;
 }
 
 // @public (undocumented)
@@ -3431,15 +3428,21 @@ declare namespace plugins {
 }
 export { plugins }
 
-// @public
+// @public (undocumented)
 class PluginService {
+    constructor();
     // (undocumented)
     _cache: {
         plugin: any;
         options: any;
     }[];
     // (undocumented)
-    _createDescriptors(chart: any, all: any): {
+    _createDescriptors(chart: Chart_3, all?: boolean): {
+        plugin: any;
+        options: any;
+    }[];
+    // @internal (undocumented)
+    _descriptors(chart: Chart_3): {
         plugin: any;
         options: any;
     }[];
@@ -3450,7 +3453,14 @@ class PluginService {
     }[];
     // (undocumented)
     invalidate(): void;
-    notify(chart: Chart_5, hook: string, args?: object, filter?: filterCallback): boolean;
+    notify(chart: Chart_3, hook: string, args?: object, filter?: filterCallback): boolean;
+    // @internal (undocumented)
+    _notify(descriptors: {
+        plugin: any;
+        options: any;
+    }[], chart: Chart_3, hook: string, args?: any): boolean;
+    // @internal (undocumented)
+    _notifyStateChanges(chart: Chart_3): void;
     // (undocumented)
     _oldCache: {
         plugin: any;
@@ -3885,6 +3895,7 @@ export const registry: Registry;
 
 // @public
 class Registry_2 {
+    constructor();
     // (undocumented)
     add(...args: any[]): void;
     // (undocumented)
@@ -3897,14 +3908,22 @@ class Registry_2 {
     addScales(...args: (typeof Scale_2)[]): void;
     // (undocumented)
     controllers: TypedRegistry_2;
+    // @internal (undocumented)
+    _each(method: 'register' | 'unregister', args: any[], typedRegistry?: TypedRegistry_2): void;
     // (undocumented)
     elements: TypedRegistry_2;
+    // @internal (undocumented)
+    _exec(method: 'register' | 'unregister', registry: TypedRegistry_2, component: any): void;
+    // @internal (undocumented)
+    _get(id: string, typedRegistry: TypedRegistry_2, type: string): any;
     // (undocumented)
     getController(id: string): typeof DatasetController_2;
     // (undocumented)
     getElement(id: string): typeof Element_2;
     // (undocumented)
     getPlugin(id: string): object;
+    // @internal (undocumented)
+    _getRegistryForType(type: any): TypedRegistry_2;
     // (undocumented)
     getScale(id: string): typeof Scale_2;
     // (undocumented)
@@ -4957,9 +4976,9 @@ export interface TypedRegistry<T> {
     unregister(item: ChartComponent): void;
 }
 
-// @public
+// @public (undocumented)
 class TypedRegistry_2 {
-    constructor(type: any, scope: any, override: any);
+    constructor(type: any, scope: string, override?: boolean);
     // (undocumented)
     get(id: string): object | null;
     // (undocumented)

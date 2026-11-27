@@ -782,9 +782,6 @@ type Chart_3 = Chart_2;
 type Chart_4 = Chart;
 
 // @public (undocumented)
-type Chart_5 = Chart_2;
-
-// @public (undocumented)
 interface ChartArea {
     // (undocumented)
     bottom: number;
@@ -2763,15 +2760,21 @@ interface PluginOptionsByType<TType extends ChartType> {
     tooltip: TooltipOptions<TType>;
 }
 
-// @public
+// @public (undocumented)
 class PluginService {
+    constructor();
     // (undocumented)
     _cache: {
         plugin: any;
         options: any;
     }[];
     // (undocumented)
-    _createDescriptors(chart: any, all: any): {
+    _createDescriptors(chart: Chart_2, all?: boolean): {
+        plugin: any;
+        options: any;
+    }[];
+    // @internal (undocumented)
+    _descriptors(chart: Chart_2): {
         plugin: any;
         options: any;
     }[];
@@ -2782,7 +2785,14 @@ class PluginService {
     }[];
     // (undocumented)
     invalidate(): void;
-    notify(chart: Chart_5, hook: string, args?: object, filter?: filterCallback): boolean;
+    notify(chart: Chart_2, hook: string, args?: object, filter?: filterCallback): boolean;
+    // @internal (undocumented)
+    _notify(descriptors: {
+        plugin: any;
+        options: any;
+    }[], chart: Chart_2, hook: string, args?: any): boolean;
+    // @internal (undocumented)
+    _notifyStateChanges(chart: Chart_2): void;
     // (undocumented)
     _oldCache: {
         plugin: any;
@@ -3063,6 +3073,7 @@ interface Registry {
 
 // @public
 class Registry_2 {
+    constructor();
     // (undocumented)
     add(...args: any[]): void;
     // (undocumented)
@@ -3075,14 +3086,22 @@ class Registry_2 {
     addScales(...args: (typeof Scale_3)[]): void;
     // (undocumented)
     controllers: TypedRegistry_2;
+    // @internal (undocumented)
+    _each(method: 'register' | 'unregister', args: any[], typedRegistry?: TypedRegistry_2): void;
     // (undocumented)
     elements: TypedRegistry_2;
+    // @internal (undocumented)
+    _exec(method: 'register' | 'unregister', registry: TypedRegistry_2, component: any): void;
+    // @internal (undocumented)
+    _get(id: string, typedRegistry: TypedRegistry_2, type: string): any;
     // (undocumented)
     getController(id: string): typeof DatasetController_2;
     // (undocumented)
     getElement(id: string): typeof Element_2;
     // (undocumented)
     getPlugin(id: string): object;
+    // @internal (undocumented)
+    _getRegistryForType(type: any): TypedRegistry_2;
     // (undocumented)
     getScale(id: string): typeof Scale_3;
     // (undocumented)
@@ -4168,9 +4187,9 @@ interface TypedRegistry<T> {
     unregister(item: ChartComponent): void;
 }
 
-// @public
+// @public (undocumented)
 class TypedRegistry_2 {
-    constructor(type: any, scope: any, override: any);
+    constructor(type: any, scope: string, override?: boolean);
     // (undocumented)
     get(id: string): object | null;
     // (undocumented)

@@ -9,6 +9,12 @@ import {callback as call, _capitalize} from '../helpers/helpers.core.js';
  * Note: class is exported for typedoc
  */
 export class Registry {
+  declare controllers: TypedRegistry;
+  declare elements: TypedRegistry;
+  declare plugins: TypedRegistry;
+  declare scales: TypedRegistry;
+  declare _typedRegistries: TypedRegistry[];
+
   constructor() {
     this.controllers = new TypedRegistry(DatasetController, 'datasets', true);
     this.elements = new TypedRegistry(Element, 'elements');
@@ -19,109 +25,66 @@ export class Registry {
     this._typedRegistries = [this.controllers, this.scales, this.elements];
   }
 
-  /**
-	 * @param  {...any} args
-	 */
-  add(...args) {
+  add(...args: any[]): void {
     this._each('register', args);
   }
 
-  remove(...args) {
+  remove(...args: any[]): void {
     this._each('unregister', args);
   }
 
-  /**
-	 * @param  {...typeof DatasetController} args
-	 */
-  addControllers(...args) {
+  addControllers(...args: (typeof DatasetController)[]): void {
     this._each('register', args, this.controllers);
   }
 
-  /**
-	 * @param  {...typeof Element} args
-	 */
-  addElements(...args) {
+  addElements(...args: (typeof Element)[]): void {
     this._each('register', args, this.elements);
   }
 
-  /**
-	 * @param  {...any} args
-	 */
-  addPlugins(...args) {
+  addPlugins(...args: any[]): void {
     this._each('register', args, this.plugins);
   }
 
-  /**
-	 * @param  {...typeof Scale} args
-	 */
-  addScales(...args) {
+  addScales(...args: (typeof Scale)[]): void {
     this._each('register', args, this.scales);
   }
 
-  /**
-	 * @param {string} id
-	 * @returns {typeof DatasetController}
-	 */
-  getController(id) {
+  getController(id: string): typeof DatasetController {
     return this._get(id, this.controllers, 'controller');
   }
 
-  /**
-	 * @param {string} id
-	 * @returns {typeof Element}
-	 */
-  getElement(id) {
+  getElement(id: string): typeof Element {
     return this._get(id, this.elements, 'element');
   }
 
-  /**
-	 * @param {string} id
-	 * @returns {object}
-	 */
-  getPlugin(id) {
+  getPlugin(id: string): object {
     return this._get(id, this.plugins, 'plugin');
   }
 
-  /**
-	 * @param {string} id
-	 * @returns {typeof Scale}
-	 */
-  getScale(id) {
+  getScale(id: string): typeof Scale {
     return this._get(id, this.scales, 'scale');
   }
 
-  /**
-	 * @param  {...typeof DatasetController} args
-	 */
-  removeControllers(...args) {
+  removeControllers(...args: (typeof DatasetController)[]): void {
     this._each('unregister', args, this.controllers);
   }
 
-  /**
-	 * @param  {...typeof Element} args
-	 */
-  removeElements(...args) {
+  removeElements(...args: (typeof Element)[]): void {
     this._each('unregister', args, this.elements);
   }
 
-  /**
-	 * @param  {...any} args
-	 */
-  removePlugins(...args) {
+  removePlugins(...args: any[]): void {
     this._each('unregister', args, this.plugins);
   }
 
-  /**
-	 * @param  {...typeof Scale} args
-	 */
-  removeScales(...args) {
+  removeScales(...args: (typeof Scale)[]): void {
     this._each('unregister', args, this.scales);
   }
 
   /**
-	 * @private
-	 */
-  _each(method, args, typedRegistry) {
+   * @internal
+   */
+  _each(method: 'register' | 'unregister', args: any[], typedRegistry?: TypedRegistry): void {
     [...args].forEach(arg => {
       const reg = typedRegistry || this._getRegistryForType(arg);
       if (typedRegistry || reg.isForType(arg) || (reg === this.plugins && arg.id)) {
@@ -148,9 +111,9 @@ export class Registry {
   }
 
   /**
-	 * @private
-	 */
-  _exec(method, registry, component) {
+   * @internal
+   */
+  _exec(method: 'register' | 'unregister', registry: TypedRegistry, component: any): void {
     const camelMethod = _capitalize(method);
     call(component['before' + camelMethod], [], component); // beforeRegister / beforeUnregister
     registry[method](component);
@@ -158,9 +121,9 @@ export class Registry {
   }
 
   /**
-	 * @private
-	 */
-  _getRegistryForType(type) {
+   * @internal
+   */
+  _getRegistryForType(type: any): TypedRegistry {
     for (let i = 0; i < this._typedRegistries.length; i++) {
       const reg = this._typedRegistries[i];
       if (reg.isForType(type)) {
@@ -172,9 +135,9 @@ export class Registry {
   }
 
   /**
-	 * @private
-	 */
-  _get(id, typedRegistry, type) {
+   * @internal
+   */
+  _get(id: string, typedRegistry: TypedRegistry, type: string): any {
     const item = typedRegistry.get(id);
     if (item === undefined) {
       throw new Error('"' + id + '" is not a registered ' + type + '.');

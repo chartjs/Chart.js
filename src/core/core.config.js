@@ -57,7 +57,7 @@ function axisFromFirstLetter(id, scaleClass) {
  * when the type is radial.
  */
 function axisFromType(id, type) {
-  const scaleClass = registry.scales.get(type);
+  const scaleClass = /** @type {{prototype: {getPointPositionForValue?: unknown}} | undefined} */ (registry.scales.get(type));
   const typeDefaults = defaults.scales[type] || {};
   return axisFromFirstLetter(id, scaleClass)
     || typeDefaults.axis
