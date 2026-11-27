@@ -45,10 +45,10 @@
 
 ## 8. P8: Legend docs
 
-- [ ] 8.1 legend.md: the custom `onClick` example for dataset charts and for doughnut, pie and polarArea (`toggleDataVisibility(legendItem.index)`).
-- [ ] 8.2 legend.md: `onLeave` and `onHover` run on pointer events. Scrolling the page under a still pointer sends none.
-- [ ] 8.3 samples/legend/html.md: a TypeScript note with the module augmentation for `htmlLegend`, and a container option that accepts an element, so it works in a shadow root.
-- [ ] 8.4 The pull request says `Closes #12144`, `Closes #11877`, `Closes #10624` and `Closes #10384`.
+- [x] 8.1 legend.md: the custom `onClick` example for dataset charts and for doughnut, pie and polarArea (`toggleDataVisibility(legendItem.index)`).
+- [x] 8.2 legend.md: `onLeave` and `onHover` run on pointer events. Scrolling the page under a still pointer sends none.
+- [x] 8.3 samples/legend/html.md: a TypeScript note with the module augmentation for `htmlLegend`, and a container option that accepts an element, so it works in a shadow root.
+- [x] 8.4 The pull request says `Closes #12144`, `Closes #11877`, `Closes #10624` and `Closes #10384`.
 
 ## 9. P19: The legend plugin in TypeScript (refactor)
 
