@@ -14,7 +14,7 @@
 
 ## 4. P4: The bar controller in TypeScript
 
-- [ ] 4.1 Wait until P1, P2, #12334 and #12331 have merged. If rework-legend P18 has merged, convert its hook too. Close #12222 and #12335 with credit as superseded by P6 and P10 (design D9).
+- [ ] 4.1 Wait until P1, P2, #12334, #12331 and #12566 have merged. If rework-legend P18 has merged, convert its hook too. Close #12222 and #12335 with credit as superseded by P6 and P10 (design D9).
 - [ ] 4.2 `git mv src/controllers/controller.bar.js src/controllers/controller.bar.ts`. Export `BarMeta`, `BarParsed` and `BarRuler` for sibling modules. Drop the unused `center` from `_calculateBarValuePixels`. Make no other change.
 - [ ] 4.3 `tsc`, `pnpm lint-types`, every bar spec and fixture pass unchanged.
 

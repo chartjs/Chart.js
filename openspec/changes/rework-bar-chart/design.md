@@ -171,7 +171,7 @@ Rejected: recomputing `_top`/`_bottom` in core on hide and show (PR #12335's dir
 - #12222: closed with credit as superseded by P6. Its category-labels half is on master (`isolate-category-scale-labels`). Its sample becomes P6's fixture.
 - #12335: closed with credit as superseded by P10; its spec cases move in. Its `start === 0` test is wrong when `base` is set, and it still fails after the top dataset is hidden.
 - #11898: adopted as P19 with `Co-authored-by`, after the conversion.
-- #12334 and #12331 merge before P4.
+- #12334, #12331 and #12566 merge before P4. #12566 looks up `skipNull` values by position or binary search in sorted data (3-16× faster `skipNull` updates in 4.6.x); P5 then replaces the lookup with the layout's values.
 
 ### D10. Shared files and other designs
 
@@ -244,7 +244,7 @@ The samples could not be opened, so the causes were found by running master f92c
 | P1 | fix: only bar datasets count as index axes (adopts #12263) | `src/controllers/controller.bar.js`, `test/specs/controller.bar.spec.js` | labels a, b, c; bars on `x`, a line on a category `x2`: bar width 0.36 × category on master, expect 0.72 × | ~40 | #12505 | | #12262 |
 | P2 | refactor: `element.bar.js` in TypeScript | `src/elements/element.bar.js` → `.ts` | none: `tsc`, `pnpm lint-types` and every bar fixture unchanged | ~150 | | | |
 | P3 | docs: bar borders are fills; `borderDash` does not apply | `docs/charts/bar.md` | none (docs) | ~10 | | | #11341 |
-| P4 | refactor: `controller.bar.js` in TypeScript | `src/controllers/controller.bar.js` → `.ts` | none: `tsc`, every bar spec and fixture unchanged | ~350 | P1, P2, #12334, #12331 | | |
+| P4 | refactor: `controller.bar.js` in TypeScript | `src/controllers/controller.bar.js` → `.ts` | none: `tsc`, every bar spec and fixture unchanged | ~350 | P1, P2, #12334, #12331, #12566 | | |
 | P5 | perf: the index layout module; the private methods read it with today's results | `controller.bar.layout.ts` (new), `controller.bar.ts`, `test/specs/controller.bar.layout.spec.js` (new) | 1000 datasets of one point each: `getMatchingVisibleMetas` called 2003 times and `_getAxis` 2000 times per update on master, expect at most a few per scale; 3 datasets × 1000 points with `skipNull`: `meta._parsed.find` called 18 000 times on master, expect 0; a spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` as financial does; #12331's specs (hidden datasets keep the stack order, also with `skipNull`) and all fixtures unchanged | ~300 | P4; rework-ticks P16 if it is in flight (D10) | | #12000 |
 | P21 | fix: each bar type finds its own smallest gap (D2, D14) | `controller.bar.layout.ts`, layout spec | a `bar` dataset with points 1 h apart and a bar-derived type (registered in the spec) with points 1 day apart on one time scale: the second type's bars are as thin as the first's on master, expect a day's width | ~40 | P5 | | |
 | P6 | fix: index scales with the same range share the slots | `controller.bar.layout.ts`, `controller.bar.ts`, layout spec, 3 fixtures | stacked `x`/`x2` (`stack: 'g'`), one bar each: 0.36 × own category, off-centre on master, expect 0.72 ×; overlaid `x` {a, b} + `x2` {c}: the x2 bar twice as wide on master, expect equal; overlaid category `x` [a, b, c] and `x2` [c, b, a], one bar each: two slots per category, each bar at its own label; `stacked-and-multiple-axis` unchanged; `stacked: true`, datasets `[{}, {stack: 'a'}, {}]`: the third bar in `a`'s slot on master, expect it in the first dataset's slot (D15) | ~170 | P21 | | |
