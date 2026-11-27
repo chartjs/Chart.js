@@ -1,4 +1,4 @@
-import {existsSync, readdirSync} from 'node:fs';
+import {readdirSync} from 'node:fs';
 import {sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createSaveFixtureImage} from 'chartjs-test-utils/node';
@@ -23,35 +23,12 @@ if (unconverted.length) {
   );
 }
 
-// The unit specs: they need no DOM and run in Node (the `unit` project, with
-// test/setup.node.js) instead of the browsers. Every other spec runs in the
-// `browser` project. See "Unit specs and browser specs" in
+// The unit specs, `*.unit.spec.js`: they need no DOM and run in Node (the
+// `unit` project, with test/setup.node.js) instead of the browsers. Every other
+// spec runs in the `browser` project. The same glob feeds both, so a file is in
+// exactly one. See "Unit specs and browser specs" in
 // docs/developers/contributing.md.
-const unitSpecs = [
-  'test/specs/core.animation.spec.js',
-  'test/specs/core.defaults.spec.js',
-  'test/specs/core.element.spec.js',
-  'test/specs/core.registry.spec.js',
-  'test/specs/element.bar.spec.js',
-  'test/specs/global.namespace.spec.js',
-  'test/specs/helpers.collection.spec.js',
-  'test/specs/helpers.config.spec.js',
-  'test/specs/helpers.core.spec.js',
-  'test/specs/helpers.easing.spec.js',
-  'test/specs/helpers.interpolation.spec.js',
-  'test/specs/helpers.math.spec.js',
-  'test/specs/helpers.options.spec.js',
-  'test/specs/helpers.segment.spec.js',
-  'test/specs/vitest.setup.node.spec.js'
-];
-
-// An entry that names no file would leave the spec it meant in the browsers,
-// or nowhere; stop instead.
-const stale = unitSpecs.filter((file) => !existsSync(fileURLToPath(new URL(file, import.meta.url))));
-
-if (stale.length) {
-  throw new Error(`These unitSpecs entries in vitest.config.js name no file:\n  ${stale.join('\n  ')}`);
-}
+const unitGlob = 'test/specs/**/*.unit.spec.js';
 
 export default defineConfig({
   plugins: [commonjsFixtures()],
@@ -111,7 +88,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'node',
-          include: unitSpecs,
+          include: [unitGlob],
           setupFiles: ['test/setup.node.js']
         }
       },
@@ -120,7 +97,7 @@ export default defineConfig({
         test: {
           name: 'browser',
           include: ['test/specs/**/*.spec.js'],
-          exclude: unitSpecs,
+          exclude: [unitGlob],
           setupFiles: ['test/setup.js'],
           // One spec file at a time: animation and resize specs need a page
           // that is not throttled.

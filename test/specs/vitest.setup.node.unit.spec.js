@@ -1,6 +1,6 @@
-// Pins what test/setup.node.js and the unit project of vitest.config.js promise
-// to the specs on `unitSpecs`: each test fails when the setting it names is
-// removed.
+// Pins what test/setup.node.js and the `unit` project of vitest.config.js
+// promise to the unit specs, `*.unit.spec.js`: each test fails when the setting
+// it names is removed.
 import Element from '../../src/core/core.element.js';
 
 describe('Vitest setup in Node', function() {
@@ -38,7 +38,7 @@ describe('Vitest setup in Node', function() {
   });
 
   it('makes the chart helpers fail with a hint', function() {
-    const hint = (name) => `${name} needs a browser: take test/specs/vitest.setup.node.spec.js off unitSpecs in vitest.config.js`;
+    const hint = (name) => `${name} needs a browser: rename test/specs/vitest.setup.node.unit.spec.js to drop .unit from its name`;
 
     expect(() => acquireChart({type: 'line'})).toThrow(hint('acquireChart'));
     expect(() => releaseChart()).toThrow(hint('releaseChart'));

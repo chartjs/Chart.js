@@ -1,6 +1,6 @@
 // Pins what test/setup.js and the `browser` project of vitest.config.js promise
 // to the browser specs: each test fails when the setting it names is removed.
-// test/specs/vitest.setup.node.spec.js pins the unit specs' setup in Node.
+// test/specs/vitest.setup.node.unit.spec.js pins the unit specs' setup in Node.
 import * as controllers from '../../src/controllers/index.js';
 import * as elements from '../../src/elements/index.js';
 import * as plugins from '../../src/plugins/index.js';

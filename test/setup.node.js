@@ -1,7 +1,7 @@
-// Setup of the unit specs, the files on `unitSpecs` in vitest.config.js. They
-// run in Node, without a DOM: the Chart built from source, the Chart.js
-// matchers and the globals that need no browser. Pinned by
-// test/specs/vitest.setup.node.spec.js.
+// Setup of the unit specs, the files named `*.unit.spec.js` (the `unit`
+// project of vitest.config.js). They run in Node, without a DOM: the Chart
+// built from source, the Chart.js matchers and the globals that need no
+// browser. Pinned by test/specs/vitest.setup.node.unit.spec.js.
 //
 // No `window` is defined: src/helpers/helpers.dom.ts and src/index.umd.ts take
 // its presence for a browser.
@@ -19,12 +19,12 @@ global.createMockContext = createMockContext;
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 
-// The chart helpers need a canvas in a page. In a unit spec they fail with a
-// pointer to the list, instead of a bare ReferenceError.
+// The chart helpers need a canvas in a page. In a unit spec they fail with the
+// rename that moves the file to the browsers, instead of a bare ReferenceError.
 function needsBrowser(name) {
   return function() {
     const file = relative(root, expect.getState().testPath).split(sep).join('/');
-    throw new Error(`${name} needs a browser: take ${file} off unitSpecs in vitest.config.js`);
+    throw new Error(`${name} needs a browser: rename ${file} to drop .unit from its name`);
   };
 }
 
