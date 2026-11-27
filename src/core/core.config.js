@@ -472,7 +472,8 @@ export default class Config {
     if (needContext(resolver, names)) {
       result.$shared = false;
       context = isFunction(context) ? context() : context;
-      // subResolver is passed to scriptable options. It should not resolve to hover options.
+      // subResolver is passed to scriptable options. It should not resolve to hover options:
+      // the rule `setContext(ctx, prefixes)` follows (rework-options design, D2).
       const subResolver = this.createResolver(scopes, context, subPrefixes);
       options = _attachContext(resolver, context, subResolver);
     }

@@ -18,11 +18,11 @@
 
 ## 4. P4: Prefixes for nested options (#11105)
 
-- [ ] 4.1 Add specs that fail on master: `hoverTest` resolves in a static sub-object, in an object returned by a function, in an item of an array and two levels down; `hoverColor: (ctx, opts) => opts.color + '+dark'` gives `'red+dark'` at the root and one level down; `setContext(ctx, [])` keeps the prefixes and `['']` resets them; after `['point', '']` and then `['pointHover', 'point', '']` a scriptable's second argument reads `pointColor`; `activeColor: (ctx, opts) => opts.color + '+dark'` under `['active', '']` gives `'red+dark'`; an active bar with `borderWidth: () => ({top: 1, hoverTop: 9})` has top 9.
-- [ ] 4.2 Ask the author for the changes of the review on #11105: the resolver stores its prefixes and `createSubResolver` reads them; `setContext(ctx, prefixes?)` gives scriptables the options as they were before the call; no prefix argument on `override`; the types make the argument optional and `overridePrefixes(prefixes: string[]): ResolverProxy<T, R>`.
-- [ ] 4.3 Rebase onto P3 and keep its contract: `setContext(ctx)` on prefixed options gives scriptables the new context.
-- [ ] 4.4 A type test: `setContext(ctx)` and `override(scope)` with one argument compile.
-- [ ] 4.5 The pull request says `Closes #11104` and has a release-note line: nested keys named `hover<Key>` or `<elementType><Key>` now take effect.
+- [x] 4.1 Add specs that fail on master: `hoverTest` resolves in a static sub-object, in an object returned by a function, in an item of an array and two levels down; `hoverColor: (ctx, opts) => opts.color + '+dark'` gives `'red+dark'` at the root and one level down; `setContext(ctx, [])` keeps the prefixes and `['']` resets them; after `['point', '']` and then `['pointHover', 'point', '']` a scriptable's second argument reads `pointColor`; `activeColor: (ctx, opts) => opts.color + '+dark'` under `['active', '']` gives `'red+dark'`; an active bar with `borderWidth: () => ({top: 1, hoverTop: 9})` has top 9.
+- [x] 4.2 Ask the author for the changes of the review on #11105: the resolver stores its prefixes and `createSubResolver` reads them; `setContext(ctx, prefixes?)` gives scriptables the options as they were before the call; no prefix argument on `override`; the types make the argument optional and `overridePrefixes(prefixes: string[]): ResolverProxy<T, R>`.
+- [x] 4.3 Rebase onto P3 and keep its contract: `setContext(ctx)` on prefixed options gives scriptables the new context.
+- [x] 4.4 A type test: `setContext(ctx)` and `override(scope)` with one argument compile.
+- [x] 4.5 The pull request says `Closes #11104` and has a release-note line: nested keys named `hover<Key>` or `<elementType><Key>` now take effect.
 
 ## 5. P5: A block of options applies by its key with one override
 

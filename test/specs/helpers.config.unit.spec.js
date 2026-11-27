@@ -854,7 +854,7 @@ describe('Chart.helpers.config', function() {
       expect(opts.test).toEqual(1);
       expect(opts.setContext({ctx: 2}, ['hover', '']).test).toEqual(2);
       expect(opts.test).toEqual(1);
-      expect(opts.override('', ['hover', '']).test).toEqual(2);
+      expect(opts.override({}).setContext({ctx: 2}, ['hover', '']).test).toEqual(2);
     });
 
     it('should support prefixes to subnodes', function() {
@@ -1014,6 +1014,183 @@ describe('Chart.helpers.config', function() {
         expect(opts.array).toEqual([1, 2, 3]);
         expect(opts.func).toEqual('test');
         expect(opts.array2).toEqual('b');
+      });
+    });
+  });
+
+  describe('prefixes', function() {
+    const hover = ['hover', ''];
+
+    describe('in nested options', function() {
+      it('should apply to a static object', function() {
+        const res = _createResolver([{node: {test: 1, hoverTest: 2}}], hover);
+        expect(res.node.test).toEqual(2);
+      });
+
+      it('should apply two levels down', function() {
+        const res = _createResolver([{a: {b: {test: 1, hoverTest: 2}}}], hover);
+        expect(res.a.b.test).toEqual(2);
+      });
+
+      it('should apply to an object returned by a function', function() {
+        const opts = _attachContext(_createResolver([{node: () => ({test: 1, hoverTest: 2})}], hover), {});
+        expect(opts.node.test).toEqual(2);
+      });
+
+      it('should apply to the items of an array', function() {
+        const opts = _attachContext(_createResolver([{nodes: [{test: 1, hoverTest: 2}]}], hover), {});
+        expect(opts.nodes[0].test).toEqual(2);
+      });
+
+      it('should apply to the item an indexable array gives for the context index', function() {
+        const nodes = [{test: 1, hoverTest: 2}, {test: 3, hoverTest: 4}];
+        const opts = _attachContext(_createResolver([{nodes}], hover), {index: 1});
+        expect(opts.nodes.test).toEqual(4);
+      });
+
+      it('should resolve as before when no nested key has a prefix', function() {
+        const res = _createResolver([{node: {test: 1, other: 2}}], hover);
+        expect(res.node.test).toEqual(1);
+        expect(res.node.other).toEqual(2);
+      });
+    });
+
+    describe('setContext', function() {
+      it('should resolve every level with the prefixes and keep the original options', function() {
+        const options = {color: 'red', hoverColor: 'blue', label: {color: 'black', hoverColor: 'white'}};
+        const opts = _attachContext(_createResolver([options]), {});
+        const hovered = opts.setContext({}, hover);
+
+        expect(hovered.color).toEqual('blue');
+        expect(hovered.label.color).toEqual('white');
+        expect(opts.color).toEqual('red');
+        expect(opts.label.color).toEqual('black');
+      });
+
+      it('should keep the prefixes when they are left out or empty, and reset them with [\'\']', function() {
+        const options = {color: 'red', hoverColor: 'blue', label: {color: 'black', hoverColor: 'white'}};
+        const hovered = _attachContext(_createResolver([options]), {}).setContext({}, hover);
+
+        expect(hovered.setContext({}).color).toEqual('blue');
+        expect(hovered.setContext({}).label.color).toEqual('white');
+        expect(hovered.setContext({}, []).color).toEqual('blue');
+        expect(hovered.setContext({}, []).label.color).toEqual('white');
+        expect(hovered.setContext({}, ['']).color).toEqual('red');
+        expect(hovered.setContext({}, ['']).label.color).toEqual('black');
+      });
+
+      it('should not detect recursion when a hover option reads its option from the second argument', function() {
+        const hoverColor = (ctx, opts) => opts.color + '+dark';
+        const options = {color: 'red', hoverColor, label: {color: 'red', hoverColor}};
+        const hovered = _attachContext(_createResolver([options]), {}).setContext({}, hover);
+
+        expect(hovered.color).toEqual('red+dark');
+        expect(hovered.label.color).toEqual('red+dark');
+      });
+
+      it('should not detect recursion in an item of an array', function() {
+        const options = {nodes: [{color: 'red', hoverColor: (ctx, opts) => opts.color + '+dark'}]};
+        const hovered = _attachContext(_createResolver([options]), {}).setContext({}, hover);
+
+        expect(hovered.nodes[0].color).toEqual('red+dark');
+      });
+
+      it('should not detect recursion for a prefix that is not named hover', function() {
+        const options = {color: 'red', activeColor: (ctx, opts) => opts.color + '+dark'};
+        const active = _attachContext(_createResolver([options]), {}).setContext({}, ['active', '']);
+
+        expect(active.color).toEqual('red+dark');
+      });
+
+      it('should give scriptable options the prefixes in effect before the call', function() {
+        const options = {
+          color: 'red',
+          pointColor: 'green',
+          pointHoverColor: (ctx, opts) => opts.color + '+dark'
+        };
+        const point = _attachContext(_createResolver([options]), {}).setContext({}, ['point', '']);
+        expect(point.color).toEqual('green');
+
+        // Each call with prefixes wraps the options it is called on as the second proxy,
+        // so chained calls nest the second proxies
+        const pointHover = point.setContext({}, ['pointHover', 'point', '']);
+        expect(pointHover.color).toEqual('green+dark');
+      });
+
+      it('should give scriptable options and the second proxy the new context', function() {
+        const options = {
+          a: (ctx, opts) => ctx.n + ':' + opts.b,
+          b: ctx => ctx.n,
+          hoverB: ctx => 'h' + ctx.n
+        };
+        const opts = _attachContext(_createResolver([options]), {n: 1});
+        const hovered = opts.setContext({n: 2}, hover);
+
+        expect(hovered.b).toEqual('h2');
+        expect(hovered.a).toEqual('2:2');
+        expect(hovered.setContext({n: 3}).a).toEqual('3:3');
+        expect(opts.a).toEqual('1:1');
+      });
+
+      it('should give an item of an array the same item without the prefixes as the second argument', function() {
+        // The prefixed key picks another array than the second proxy resolves
+        const options = {
+          nodes: [{a: 1, hoverA: 5, b: (ctx, opts) => opts.a}],
+          hoverNodes: [{a: 2, hoverA: 6, b: (ctx, opts) => opts.a}]
+        };
+        const hovered = _attachContext(_createResolver([options]), {}).setContext({}, hover);
+
+        expect(hovered.nodes[0].a).toEqual(6);
+        expect(hovered.nodes[0].b).toEqual(2);
+      });
+
+      it('should build the second argument of an item of an array from the scopes of the second proxy', function() {
+        // One level down, so that the scopes of the second proxy are not its root scopes
+        const main = _createResolver([{wrapper: {nodes: [{b: (ctx, opts) => opts.a}]}}], hover);
+        const second = _attachContext(_createResolver([{wrapper: {nodes: [{}]}}, {wrapper: {nodes: {a: 'second'}}}]), {});
+        const opts = _attachContext(main, {}, second);
+
+        expect(opts.wrapper.nodes[0].b).toEqual('second');
+      });
+
+      it('should give an item of an array the plain object override as the second argument', function() {
+        const options = {nodes: [{type: 'box'}]};
+        const hovered = _attachContext(_createResolver([options]), {}).setContext({}, hover);
+        const overridden = hovered.override({
+          nodes: [{type: 'label', hoverType: 'hovered label', kind: (ctx, opts) => opts.type}]
+        });
+
+        expect(overridden.nodes[0].type).toEqual('hovered label');
+        expect(overridden.nodes[0].kind).toEqual('label');
+      });
+
+      it('should set a value where it is set without the prefixes', function() {
+        const defaults = {label: {color: 'red'}};
+        const options = {};
+        const opts = _attachContext(_createResolver([options, defaults]), {});
+
+        const hovered = opts.label.setContext({}, hover);
+        hovered.color = 'blue';
+        expect(options.label.color).toEqual('blue');
+        expect(defaults.label.color).toEqual('red');
+      });
+
+      it('should fall back to the root scopes the options fall back to without the prefixes', function() {
+        const defaults = {other: {b: 2}, label: {sub: {_fallback: 'other'}}};
+        const options = {label: {sub: {a: 1}}};
+        const opts = _attachContext(_createResolver([options, defaults]), {});
+
+        expect(opts.label.sub.b).toEqual(2);
+        expect(opts.label.setContext({}, hover).sub.b).toEqual(2);
+      });
+
+      it('should keep the fallback of the options it is called on', function() {
+        const descriptors = {_fallback: (prop) => (prop === 'label' ? 'other' : undefined)};
+        const options = {label: {sub: {a: 1}}, other: {b: 2}};
+        const opts = _attachContext(_createResolver([options, descriptors]), {});
+
+        expect(opts.label.sub.b).toEqual(2);
+        expect(opts.label.setContext({}, hover).sub.b).toEqual(2);
       });
     });
   });

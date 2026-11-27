@@ -18,8 +18,17 @@ export interface ResolverCache<
   _allKeys?: boolean;
   _storage?: T[number];
   _getTarget(): T[number];
+  /**
+   * The prefixes the options are resolved with. Every sub-resolver is created with them.
+   * @private
+   */
+  _prefixes: string[];
   override<S extends AnyObject>(scope: S): ResolverProxy<(T[number] | S)[], T | R>
-  overridePrefixes<S extends AnyObject>(pref: string[]): ResolverProxy<(T[number] | S)[], T | R>
+  /**
+   * The same options, resolved with other prefixes.
+   * @private
+   */
+  overridePrefixes(prefixes: string[]): ResolverProxy<T, R>
 }
 
 export type ResolverProxy<
@@ -51,8 +60,14 @@ export interface ContextCache<
   _subProxy: ContextProxy<T, R>;
   _stack: Set<string>;
   _descriptors: Descriptor
-  setContext(ctx: AnyObject, prefixes: string[]): ContextProxy<T, R>
-  override<S extends AnyObject>(scope: S, prefixes: string[]): ContextProxy<(T[number] | S)[], T | R>
+  /**
+   * The same options with another context. With a non-empty list of prefixes, the options are
+   * resolved with those prefixes at every depth, and a scriptable option gets the options as
+   * they were before the call as its second argument. Left out or empty, the prefixes in effect
+   * stay; `['']` resets them.
+   */
+  setContext(ctx: AnyObject, prefixes?: string[]): ContextProxy<T, R>
+  override<S extends AnyObject>(scope: S): ContextProxy<(T[number] | S)[], T | R>
 }
 
 export type ContextProxy<

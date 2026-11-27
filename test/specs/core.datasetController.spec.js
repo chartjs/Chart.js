@@ -1222,6 +1222,37 @@ describe('Chart.DatasetController', function() {
   });
 
   describe('resolveDataElementOptions', function() {
+    describe('with hover keys in nested options', function() {
+      function resolveBar(dataset, mode) {
+        const chart = acquireChart({
+          type: 'bar',
+          data: {
+            datasets: [Object.assign({data: [10, 15]}, dataset)],
+            labels: ['a', 'b']
+          }
+        });
+        return chart.getDatasetMeta(0).controller.resolveDataElementOptions(0, mode);
+      }
+
+      it('should apply to an active bar when the border width is an object', function() {
+        const borderWidth = {top: 1, hoverTop: 9};
+        expect(resolveBar({borderWidth}, 'active').borderWidth.top).toBe(9);
+        expect(resolveBar({borderWidth}, 'default').borderWidth.top).toBe(1);
+      });
+
+      it('should apply to an active bar when the border width is returned by a function', function() {
+        const borderWidth = () => ({top: 1, hoverTop: 9});
+        expect(resolveBar({borderWidth}, 'active').borderWidth.top).toBe(9);
+        expect(resolveBar({borderWidth}, 'default').borderWidth.top).toBe(1);
+      });
+
+      it('should apply to an active bar when the border radius is an item of an indexable array', function() {
+        const borderRadius = [{topLeft: 4, hoverTopLeft: 8}, {topLeft: 2, hoverTopLeft: 6}];
+        expect(resolveBar({borderRadius}, 'active').borderRadius.topLeft).toBe(8);
+        expect(resolveBar({borderRadius}, 'default').borderRadius.topLeft).toBe(4);
+      });
+    });
+
     it('should cache options when possible', function() {
       const chart = acquireChart({
         type: 'line',
