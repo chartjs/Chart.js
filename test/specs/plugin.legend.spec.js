@@ -1531,6 +1531,124 @@ describe('Legend block tests', function() {
     }
   });
 
+  ['top', 'bottom'].forEach(function(position) {
+    it('should start the row after a three-line label below its third line in a ' + position + ' legend', function() {
+      const fillText = vi.spyOn(CanvasRenderingContext2D.prototype, 'fillText');
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['A'],
+          datasets: [
+            {label: ['line 1', 'line 2', 'line 3'], data: [1]},
+            {label: 'next row', data: [2]}
+          ]
+        },
+        options: {animation: false, plugins: {legend: {position}}}
+      }, {canvas: {width: 120, height: 300}});
+      // The y each text was drawn at.
+      const drawn = {};
+      fillText.mock.calls.forEach(function(args) {
+        drawn[args[0]] = args[2];
+      });
+      fillText.mockRestore();
+      const {legend} = chart;
+      const [multi, next] = legend.legendHitBoxes;
+      const {lineHeight} = legend._labelLayout.font;
+
+      expect(next.row).toBe(1);
+      // The text of the next row is below the third line, and so is its hit box.
+      expect(drawn['next row'] - lineHeight / 2).toBeGreaterThanOrEqual(drawn['line 3'] + lineHeight / 2);
+      expect(multi.height).toBeCloseTo(3 * lineHeight, 5);
+      expect(next.top).toBeGreaterThanOrEqual(multi.top + multi.height);
+      // The legend is tall enough for both rows.
+      expect(legend.bottom).toBeGreaterThanOrEqual(next.top + next.height);
+    });
+  });
+
+  ['top', 'left'].forEach(function(position) {
+    it('should make a multi-line item as tall as a box taller than its lines in a ' + position + ' legend', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['A'],
+          datasets: [
+            {label: ['a', 'b'], data: [1]},
+            {label: 'next', data: [2]}
+          ]
+        },
+        options: {animation: false, plugins: {legend: {position, labels: {boxHeight: 40}}}}
+      }, {canvas: {width: 120, height: 300}});
+      const [multi, next] = chart.legend.legendHitBoxes;
+
+      expect(multi.height).toBe(40);
+      // The next item, in the next row or below in the column, starts below the box.
+      expect(next.top).toBeGreaterThanOrEqual(multi.top + 40);
+    });
+  });
+
+  it('should make each row of a top legend as tall as its own tallest item', function() {
+    const long = 'a label long enough to take a row of its own';
+    const chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels: ['A'],
+        datasets: [
+          {label: ['three', 'line', 'label'], data: [1]},
+          {label: 'short', data: [1]},
+          {label: long, data: [1]},
+          {label: long + '!', data: [1]}
+        ]
+      },
+      options: {animation: false, plugins: {legend: {position: 'top'}}}
+    }, {canvas: {width: 320, height: 400}});
+    const {legendHitBoxes: boxes, _labelLayout: {font, itemHeight}, options: {labels: {padding}}} = chart.legend;
+
+    expect(boxes.map(box => box.row)).toEqual([0, 0, 1, 2]);
+    // The short item keeps its height; the row takes the three lines.
+    expect(boxes[1].height).toBe(itemHeight);
+    expect(boxes[1].top).toBe(boxes[0].top);
+    expect(boxes[2].top - boxes[0].top).toBeCloseTo(3 * font.lineHeight + padding, 5);
+    // The row after it is a one-line row again.
+    expect(boxes[3].top - boxes[2].top).toBeCloseTo(itemHeight + padding, 5);
+  });
+
+  it('should keep the height of an empty top legend', function() {
+    const chart = window.acquireChart({
+      type: 'bar',
+      data: {labels: ['A'], datasets: [{data: [1]}]},
+      options: {plugins: {legend: {
+        labels: {generateLabels: () => []},
+        title: {display: true, text: 'Title'}
+      }}}
+    });
+    const {legend} = chart;
+
+    expect(legend.legendHitBoxes.length).toBe(0);
+    // Only the title and the legend's fixed 10 pixels.
+    expect(legend.height).toBe(legend._computeTitleHeight() + 10);
+  });
+
+  it('should make an array label in a top legend as wide as its widest line', function() {
+    const chart = window.acquireChart({
+      type: 'bar',
+      data: {labels: ['A'], datasets: [{label: ['WWWW', 'i'], data: [1]}]},
+      options: {plugins: {legend: {position: 'top'}}}
+    });
+    const {legend} = chart;
+    const {font, boxWidth} = legend._labelLayout;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.font = font.string;
+    const widest = ctx.measureText('WWWW').width;
+    // The array as one string, which is what was measured before.
+    expect(widest).toBeLessThan(ctx.measureText('WWWW,i').width);
+    ctx.restore();
+
+    const width = boxWidth + font.size / 2 + widest;
+    expect(legend.legendHitBoxes[0].width).toBeCloseTo(width, 5);
+    expect(legend.lineWidths).toEqual([width + legend.options.labels.padding]);
+  });
+
   it('should draw the labels in the font they were laid out with', function() {
     const defaultSize = Chart.defaults.font.size;
     const chart = acquireChart({
