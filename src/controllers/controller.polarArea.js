@@ -106,6 +106,14 @@ export default class PolarAreaController extends DatasetController {
     };
   }
 
+  /**
+   * An arc hidden by `chart.toggleDataVisibility` has no radius.
+   * @protected
+   */
+  _isDataVisible(index) {
+    return this.chart.getDataVisibility(index) && super._isDataVisible(index);
+  }
+
   parseObjectData(meta, data, start, count) {
     return _parseObjectDataRadialScale.bind(this)(meta, data, start, count);
   }

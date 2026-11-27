@@ -159,7 +159,7 @@ chart.isDatasetVisible(1);
 
 ## setDatasetVisibility(datasetIndex, visibility)
 
-Sets the visibility for a given dataset. This can be used to build a chart legend in HTML. During click on one of the HTML items, you can call `setDatasetVisibility` to change the appropriate dataset.
+Sets the visibility for a given dataset. The chart shows the change on the next `update()`, without the hide and show animations. To animate the change, as the built-in legend does, use [`hide()`](#hide-datasetindex-dataindex) and [`show()`](#show-datasetindex-dataindex).
 
 ```javascript
 chart.setDatasetVisibility(1, false); // hides dataset at index 1
@@ -208,6 +208,8 @@ chart.show(0, 2); // shows the data element at index 2 of the first dataset.
 ## setActiveElements(activeElements)
 
 Sets the active (hovered) elements for the chart. See the "Programmatic Events" sample file to see this in action.
+
+Hidden data is never active: an element of a hidden dataset, or a data item hidden by [`hide(datasetIndex, dataIndex)`](#hide-datasetindex-dataindex) or by [`toggleDataVisibility()`](#toggledatavisibility-index) in a chart type that uses it, is left out here, and drops out of the active elements when it is hidden.
 
 ```javascript
 chart.setActiveElements([
