@@ -41,7 +41,7 @@ These read or decide where a spec runs:
 - Run the specs that need no DOM in Node, fast, with no browser installed.
 - Every spec runs in exactly one project. No spec can silently run in neither.
 - One Vitest run in CI with one merged coverage report, so Coveralls does not change.
-- No spec file moves or is renamed. About 40 open pull requests edit `test/specs/*.spec.js`.
+- A spec moves between the projects by a rename alone, with no list to keep in step.
 
 **Non-Goals:**
 
@@ -52,16 +52,18 @@ These read or decide where a spec runs:
 
 ## Decisions
 
-1. **One explicit list decides the project.** `const unitSpecs = [...]` in `vitest.config.js` is the `include` of the `unit` project and the `exclude` of the `browser` project. Because the same constant feeds both, a file is in exactly one project, and a new spec defaults to the browsers.
-   - **Stale entries:** the config refuses to start when an entry names a file that does not exist, in the same way as the `.tests.js` guard. A typo cannot quietly send a file elsewhere.
-   - *A `// @vitest-environment node` marker:* rejected. It edits 14 held spec files, and Vitest ignores the marker in browser mode, so the config would have to scan file heads anyway.
-   - *A naming rule (`*.unit.spec.js`) or a `test/unit` directory:* rejected, because both need renames.
-   - *A lint override with `env.browser: false` for the unit specs:* rejected. It would be a second copy of the list. The root ESLint config enables both the browser and Node environments, so lint cannot catch `window` in a unit spec. The runtime failure does that instead (Decision 4).
+1. **The file name decides the project.** A spec named `test/specs/<name>.unit.spec.js` runs in the `unit` project; every other `*.spec.js` runs in the `browser` project. In `vitest.config.js` one glob, `test/specs/**/*.unit.spec.js`, is the `include` of the `unit` project and the `exclude` of the `browser` project. Because the same glob feeds both, a file is in exactly one project, and a new spec defaults to the browsers.
+   - The name is checked where it is read: a file list shows which specs run in Node, and moving a spec is one `git mv`.
+   - The rename cost is small. Three pull requests that were open when this was decided edited the renamed files, and a rebase follows a rename: an edit to `a.spec.js` on such a branch lands in `a.unit.spec.js` (checked by rebasing a branch that edits a spec onto its rename). The three landed before P1, and P1's rebase onto them followed the renames without a conflict. The renames are a commit of their own, with no content change, so git's rename detection stays exact.
+   - *One explicit list of paths in `vitest.config.js`:* rejected. It is a second place to keep in step with the files, by hand, and it needs a guard so that an entry naming no file stops the run instead of quietly sending the spec elsewhere. This was the first design; the user chose the suffix (Decision 9).
+   - *A `// @vitest-environment node` marker:* rejected. Vitest ignores the marker in browser mode, so the config would have to scan file heads anyway.
+   - *A `test/unit` directory:* rejected. It moves the files away from the specs they sit beside, and the relative imports of `src/` change with it.
+   - *A lint override with `env.browser: false` for the unit specs:* not done. The root ESLint config enables both the browser and Node environments, so lint cannot catch `window` in a unit spec. The runtime failure does that instead (Decision 4).
 2. **Unit specs run only in Node.** Node and Chromium are both V8. The one thing the browser copies add is Firefox's engine on pure helpers, which every chart spec in Firefox already exercises indirectly. The browser copies cost about 4 s.
    - *Also run them in both browsers:* not chosen. It doubles the work for little gain.
 3. **One config with two projects.** The root `test` keeps what both projects share: `globals`, `restoreMocks`, `sequence.shuffle` and `coverage`. The projects are:
-   - `{extends: true, test: {name: 'unit', environment: 'node', include: unitSpecs, setupFiles: ['test/setup.node.js']}}`;
-   - `{extends: true, test: {name: 'browser', include: ['test/specs/**/*.spec.js'], exclude: unitSpecs, setupFiles: ['test/setup.js'], fileParallelism: false, browser: {...}}}`. The browser instances are named explicitly `chromium` and `firefox`, so `--project chromium` keeps selecting one instance.
+   - `{extends: true, test: {name: 'unit', environment: 'node', include: ['test/specs/**/*.unit.spec.js'], setupFiles: ['test/setup.node.js']}}`;
+   - `{extends: true, test: {name: 'browser', include: ['test/specs/**/*.spec.js'], exclude: ['test/specs/**/*.unit.spec.js'], setupFiles: ['test/setup.js'], fileParallelism: false, browser: {...}}}`. The browser instances are named explicitly `chromium` and `firefox`, so `--project chromium` keeps selecting one instance.
    - `extends: true` carries the `chart.js` alias, `oxc` (es2022, `useDefineForClassFields`) and the plugins into the Node project, so class fields compile as they do in the build.
    - The unit project keeps Vitest's default file parallelism. Its files are pure, and the throttling concern behind `fileParallelism: false` is about browser pages.
    - *A second config file* would need a second run and two lcov files to merge. Rejected.
@@ -69,9 +71,9 @@ These read or decide where a spec runs:
    - registers `expect.extend(matchers)` from `chartjs-test-utils`;
    - sets `globalThis.Chart` from `../src/index.umd.ts` and disables the colors plugin;
    - sets `globalThis.createMockContext` from `chartjs-test-utils`, which needs no DOM (checked: `createMockContext().fillRect(0, 0, 1, 1)` records the call in Node);
-   - defines `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize` and `triggerMouseEvent` as functions that throw `<name> needs a browser: take <file> off unitSpecs in vitest.config.js`.
+   - defines `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize` and `triggerMouseEvent` as functions that throw `<name> needs a browser: rename <file> to drop .unit from its name`, with `<file>` computed from the test path and written with `/`.
 
-   It does not define `window`, because `_isDomSupported` (`src/helpers/helpers.dom.ts`) and `src/index.umd.ts` read its presence as a browser. It loads no moment or date adapter, because no listed spec uses them. `test/specs/vitest.setup.node.spec.js` is on the list and pins the setup:
+   It does not define `window`, because `_isDomSupported` (`src/helpers/helpers.dom.ts`) and `src/index.umd.ts` read its presence as a browser. It loads no moment or date adapter, because no unit spec uses them. `test/specs/vitest.setup.node.unit.spec.js` pins the setup:
    - `typeof window === 'undefined'`;
    - `Chart` comes from source, with class fields as own properties;
    - both matchers are registered;
@@ -84,22 +86,25 @@ These read or decide where a spec runs:
    - New `test-unit` = `vitest run --project unit` and `dev:unit` = `vitest --project unit`. They launch no browser. They are named so that they do not match `test-ci-*`; otherwise `pnpm test-ci` would run the unit specs twice and split the coverage.
    - `fixtures:update` adds `--project chromium`.
    - `test-ci-vitest` is unchanged: one run over all projects and one merged lcov.
-6. **The partly passing specs stay in the browsers.** Splitting the DOM tests out of `helpers.color`, `core.ticks`, `core.animations` and the others would move about 20 tests into new files. Some of those files are held by open pull requests ([#12383](https://github.com/chartjs/Chart.js/pull/12383), [#12332](https://github.com/chartjs/Chart.js/pull/12332), [#11173](https://github.com/chartjs/Chart.js/pull/11173)). The docs say how to put a spec on the list when it becomes DOM-free.
+6. **The partly passing specs stay in the browsers.** Splitting the DOM tests out of `helpers.color`, `core.ticks`, `core.animations` and the others would move about 20 tests into new files. Some of those files are held by open pull requests ([#12383](https://github.com/chartjs/Chart.js/pull/12383), [#12332](https://github.com/chartjs/Chart.js/pull/12332), [#11173](https://github.com/chartjs/Chart.js/pull/11173)). The docs say how to rename a spec to `*.unit.spec.js` when it becomes DOM-free.
 7. **Words.** The Vitest projects are `unit` (Node) and `browser` (Chromium, Firefox). The docs say "unit specs" and "browser specs". "Integration" keeps meaning the consumer packages in `test/integration`.
 
 8. **Plan review (architecture, complexity, scope) found no defect.** Two notes changed the design:
    - `createMockContext` was neither provided nor stubbed in Node. It works without a DOM, so the Node setup provides it (Decision 4) instead of leaving it as a bare `ReferenceError`.
-   - The docs task now also extends the sentence at `contributing.md:52`, which lists the commands the `.tests.js` guard stops, to the stale-entry guard.
+   - The docs task extended the sentence at `contributing.md:52`, which lists the commands the `.tests.js` guard stops, to the stale-entry guard of the list. With the suffix (Decision 9) there is no list and no such guard.
 
 9. **The user's answers (2026-11-26).**
    - The Windows CI job runs the unit specs: P3 is in.
    - Unit specs run only in Node (Decision 2).
    - The names are `unit` and `browser`, with the scripts `test-unit` and `dev:unit` (Decision 7).
 
+   **The user's choice (2026-11-27):** unit specs are named `*.unit.spec.js` and chosen by a glob, not listed in `vitest.config.js` (Decision 1).
+
 ## Risks / Trade-offs
 
 - **A test that guards itself** with `it.skipIf(typeof window === 'undefined')` would run nowhere. → The docs forbid it, and a reviewer sees it.
-- **The list must be maintained by hand.** A DOM-free spec that is never added just runs in the browsers as before. That costs time, not correctness.
+- **A DOM-free spec that is never renamed** just runs in the browsers as before. That costs time, not correctness.
+- **Open pull requests that edit a renamed spec** must rebase. Git follows the rename, so their edits land in the `*.unit.spec.js` file; an edit that adds DOM use there then fails in the unit project and has to move to a browser spec.
 - **Watch mode with two projects** was not tried interactively. → P1's checks include running `pnpm dev`, saving a unit and a browser spec, and seeing each rerun.
 - **`setup()` of `chartjs-test-utils`** might later register more than the matchers. The Node setup would then lack it. → The pin spec covers the matchers; a new global in `setup()` shows up as a failing unit spec.
 
@@ -109,15 +114,15 @@ Commit types `test:` and `ci:` release nothing. No issue is open for this work, 
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes |
 |---|---|---|---|---|---|---|---|
-| P1 | `test: run the DOM-free specs in Node`: two projects, `unitSpecs` (14 specs and the pin spec), the stale-entry guard, the Node setup and its pin spec, the scripts, the lint override, and the contributing docs | `vitest.config.js`, `test/setup.node.js` (new), `test/specs/vitest.setup.node.spec.js` (new), `package.json` (scripts only), `test/.eslintrc.yml`, `docs/developers/contributing.md` | `pnpm exec vitest run --project unit` exits 1 on master with `No projects matched the filter "unit"`; with P1 it runs 15 files in Node and the pin spec passes | ~150 | | | |
-| P2 | `test: run core.helpers and helpers.curve in Node` | `test/specs/core.helpers.spec.js`, `test/specs/helpers.curve.spec.js` (`window.Chart.helpers` → `Chart.helpers`), `vitest.config.js` (2 entries) | `pnpm test-unit core.helpers` finds no file | ~4 | P1 (the list; both change `vitest.config.js`) | | |
+| P1 | `test: run the DOM-free specs in Node`: two projects split by the `*.unit.spec.js` glob, the 14 specs renamed to it, the Node setup and its pin spec, the scripts, the lint override, and the contributing docs | `vitest.config.js`, the 14 specs (renamed to `*.unit.spec.js`), `test/setup.node.js` (new), `test/specs/vitest.setup.node.unit.spec.js` (new), `package.json` (scripts only), `test/.eslintrc.yml`, `docs/developers/contributing.md` | `pnpm exec vitest run --project unit` exits 1 on master with `No projects matched the filter "unit"`; with P1 it runs 15 files in Node and the pin spec passes | ~150 | | | |
+| P2 | `test: run core.helpers and helpers.curve in Node` | `test/specs/core.helpers.spec.js`, `test/specs/helpers.curve.spec.js` (renamed to `*.unit.spec.js`, and `window.Chart.helpers` → `Chart.helpers`) | `pnpm test-unit core.helpers` finds no file | ~4 | P1 (the `unit` project) | | |
 | P3 | `ci: run the unit specs on Windows` | `.github/workflows/ci.yml` (a step `pnpm run test-unit` with `if: runner.os == 'Windows'` and the src/test filter) | the Windows job runs no test; a failure that only shows on Windows goes unseen | ~8 | P1 (`test-unit`) | | |
 
-P2 and P3 can be built in parallel after P1. No open pull request holds a file of any piece: `vitest.config.js`, `package.json`, `test/.eslintrc.yml`, `docs/developers/contributing.md`, `.github/workflows/ci.yml` and the two specs appear in none of the 70 open pull requests.
+P2 and P3 can be built in parallel after P1. `vitest.config.js`, `package.json`, `test/.eslintrc.yml`, `docs/developers/contributing.md`, `.github/workflows/ci.yml` and P2's two specs appear in none of the 70 open pull requests. Three pull requests edited specs that P1 renames, and all three landed before P1: [#12521](https://github.com/chartjs/Chart.js/pull/12521) (`helpers.core`), [#12527](https://github.com/chartjs/Chart.js/pull/12527) (`helpers.config`) and [#12530](https://github.com/chartjs/Chart.js/pull/12530) (`helpers.segment`). P1 is rebased onto them, and their edits are in the renamed files. #12521 added two `acquireChart` tests to `helpers.core`, so P1 moves those two tests to `test/specs/core.config.spec.js`, next to the chart tests #12521 added there.
 
 ## Contracts
 
-- **`unitSpecs`:** an array of repository-relative paths, `test/specs/<name>.spec.js`, exported from nowhere and read only in `vitest.config.js`. P2 appends to it.
+- **The unit suffix:** a spec named `test/specs/<name>.unit.spec.js` runs in the `unit` project, and no other does. P2 renames two specs to it.
 - **Project names:** `unit`, `browser`, and the instances `chromium` and `firefox`.
 - **Scripts:** `test-unit` and `dev:unit`, the names P3 and the docs use.
 

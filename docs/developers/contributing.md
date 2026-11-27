@@ -29,11 +29,13 @@ The following commands are now available from the repository root:
 ```bash
 > pnpm run build             // build dist files in ./dist
 > pnpm run autobuild         // build and watch for source changes
-> pnpm run dev               // run the specs in Chromium and watch for source and test changes
-> pnpm run dev:ff            // the same in Firefox
+> pnpm run dev               // run the unit specs in Node and the browser specs in Chromium, and watch for source and test changes
+> pnpm run dev:ff            // the same with the browser specs in Firefox
+> pnpm run dev:unit          // run only the unit specs, in Node, and watch; no browser needed
+> pnpm run test-unit         // run the unit specs once, in Node; no browser needed
 > pnpm run lint              // lint the code and Markdown (ESLint), check src/**/*.ts with the TypeScript transition flags, then build and check the types (API reports, tsc)
 > pnpm test                  // perform code linting and run all tests with coverage
-> pnpm run test-ci-vitest    // run the specs once, in Chromium and Firefox
+> pnpm run test-ci-vitest    // run the specs once: the unit specs in Node, the browser specs in Chromium and Firefox
 > pnpm run test-ci-umd       // run the smoke suite against dist/chart.umd.min.js, in Chromium and Firefox
 > pnpm run api-report        // compare the built types in ./dist with the API reports in ./etc
 > pnpm api-report --local    // rewrite the API reports in ./etc from the built types
@@ -41,21 +43,30 @@ The following commands are now available from the repository root:
 
 The files `etc/chart.js.api.md` and `etc/chart.js-helpers.api.md` record the public types of `chart.js` and `chart.js/helpers`, as [API Extractor](https://api-extractor.com/) reads them from the built `dist/types.d.ts` and `dist/helpers/index.d.ts`. `pnpm run lint` (through `lint-types`) builds, then fails when the built types differ from these reports, and API Extractor leaves the report it generated in `node_modules/.cache/api-extractor/` for comparison. When a change is meant to change the published types, run `pnpm run build`, then `pnpm api-report --local`, and commit the rewritten reports with the change. Their diff is part of the pull request: within a major version it should only add, so a removed member or a type that turns into `any` needs a reason.
 
-The specs, `test/specs/*.spec.js`, run in [Vitest](https://vitest.dev/) browser mode, in Chromium and Firefox through Playwright. They run against the source in `src/` with no build step and use Vitest's API (`vi.spyOn`, `expect.objectContaining`, ...). The suite no longer offers local Safari or Edge runs, and watch mode no longer stops at the first failing spec; pass `--bail=1` to stop a run after the first failure.
+The specs, `test/specs/*.spec.js`, run in [Vitest](https://vitest.dev/): the unit specs in Node, and the browser specs in Vitest browser mode, in Chromium and Firefox through Playwright (see [Unit specs and browser specs](#unit-specs-and-browser-specs)). They run against the source in `src/` with no build step and use Vitest's API (`vi.spyOn`, `expect.objectContaining`, ...). The suite no longer offers local Safari or Edge runs, and watch mode no longer stops at the first failing spec; pass `--bail=1` to stop a run after the first failure.
 
 A small smoke suite in `test/umd` checks the built bundle instead of the source: that `dist/chart.umd.min.js` loads, has the whole `Chart` namespace, renders a few of the image fixtures and creates a chart in a web worker (`test/umd/worker.js`). Its config is `vitest.umd.config.js`. It, and the packages in `test/integration`, use the files in `dist`, so run `pnpm run build` before `pnpm test` or `pnpm run test-ci`, and again after changing the source; without a build the smoke suite stops and says so.
 
 The TypeScript packages in `test/integration` compile the published types as a consumer does, with `skipLibCheck` off. `typescript-node` and `typescript-node-next` pin TypeScript 4.7.4, the oldest version the published types support; `typescript-latest` follows the newest TypeScript release. A declaration that needs newer syntax than 4.7 fails the first two.
 
-`pnpm run dev`, `pnpm run dev:ff` and `pnpm run test-ci-vitest` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugin` will start watch mode for the `*.spec.js` files whose path contains `plugin`. `pnpm test` takes no such string.
+`pnpm run dev`, `pnpm run dev:ff`, `pnpm run dev:unit`, `pnpm run test-unit` and `pnpm run test-ci-vitest` can be appended with a string that is used to match the spec filenames. For example: `pnpm run dev plugin` will start watch mode for the `*.spec.js` files whose path contains `plugin`, each in the project it belongs to. `pnpm test` takes no such string.
 
 All image-based tests run from the one file `test/specs/fixtures.spec.js`, so a file name does not select them. Filter by test name with `-t` instead. Each fixture test is named after its path under `test/fixtures` without the extension (`scale.time/ticks-round`), in a group named after its top-level directory. `-t` takes a regular expression and runs every test whose full name contains a match, so `-t scale.time` runs `scale.timeseries` too. Include the slash to select one directory: `pnpm run dev fixtures -t "scale\.time/"` runs the fixtures in `test/fixtures/scale.time` and its subdirectories, and `-t "controller\.bar/stacking/"` only those in `test/fixtures/controller.bar/stacking`. End with `$` to select one fixture: `-t "scale\.time/ticks-round$"`.
 
 Vitest runs the tests in a random order and prints the seed it used (`Running tests with seed "..."`). To repeat an order, pass the seed: `pnpm run test-ci-vitest --sequence.seed=<seed>`.
 
+### Unit specs and browser specs
+
+`vitest.config.js` has two projects, and each spec runs in exactly one of them:
+
+- **Unit specs** are the files named `*.unit.spec.js`. They run in the `unit` project, in Node, with no DOM or canvas, so `pnpm run test-unit` needs no browser installed. Their setup, `test/setup.node.js`, provides `Chart`, the Chart.js matchers (`toEqualOptions`, `toBeCloseToPoint`, ...) and `createMockContext`.
+- **Browser specs** are every other `*.spec.js` file. They run in the `browser` project, in Chromium and Firefox, with `test/setup.js`.
+
+The name alone decides, so moving a spec is a rename. A spec that needs nothing of the browser becomes a unit spec with `git mv test/specs/x.spec.js test/specs/x.unit.spec.js`; run `pnpm run test-unit` afterwards. A unit spec that uses the DOM fails, and is not skipped: `window`, `document` or `Image` throw a `ReferenceError` that names them, and `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize` and `triggerMouseEvent` throw `acquireChart needs a browser: rename test/specs/x.unit.spec.js to drop .unit from its name`. Rename such a file back instead of guarding its tests with `it.skipIf(typeof window === 'undefined')`, which would run them nowhere.
+
 ### Converting a Jasmine spec
 
-The specs used to run under Karma and Jasmine and were named `test/specs/*.tests.js`. If a branch still has such a file, the main Vitest config (`vitest.config.js`) refuses to start and names the file, so `pnpm test`, `pnpm run test-ci`, `pnpm run test-ci-vitest`, `pnpm run dev`, `pnpm run dev:ff` and `pnpm run fixtures:update` fail. Rename it with `git mv test/specs/x.tests.js test/specs/x.spec.js` and replace the Jasmine idioms as in the table below. The globals `Chart`, `moment`, `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize`, `createMockContext` and `triggerMouseEvent` still exist, so a converted spec needs no imports.
+The specs used to run under Karma and Jasmine and were named `test/specs/*.tests.js`. If a branch still has such a file, the main Vitest config (`vitest.config.js`) refuses to start and names the file, so `pnpm test`, `pnpm run test-ci`, `pnpm run test-ci-vitest`, `pnpm run test-unit`, `pnpm run dev`, `pnpm run dev:ff`, `pnpm run dev:unit` and `pnpm run fixtures:update` fail. Rename the file with `git mv test/specs/x.tests.js test/specs/x.spec.js` and replace the Jasmine idioms as in the table below. The globals `Chart`, `moment`, `acquireChart`, `releaseChart`, `afterEvent`, `waitForResize`, `createMockContext` and `triggerMouseEvent` still exist in the browser specs, so a converted spec needs no imports. In the unit specs `moment` does not exist and the chart helpers throw (see [Unit specs and browser specs](#unit-specs-and-browser-specs)).
 
 | Jasmine | Vitest |
 | --- | --- |

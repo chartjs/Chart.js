@@ -23,6 +23,13 @@ if (unconverted.length) {
   );
 }
 
+// The unit specs, `*.unit.spec.js`: they need no DOM and run in Node (the
+// `unit` project, with test/setup.node.js) instead of the browsers. Every other
+// spec runs in the `browser` project. The same glob feeds both, so a file is in
+// exactly one. See "Unit specs and browser specs" in
+// docs/developers/contributing.md.
+const unitGlob = 'test/specs/**/*.unit.spec.js';
+
 export default defineConfig({
   plugins: [commonjsFixtures()],
   resolve: {
@@ -53,14 +60,9 @@ export default defineConfig({
     // default zone test/setup.js sets; pre-bundling it shares one instance.
     include: ['@vitest/coverage-istanbul/browser', 'moment']
   },
+  // What both projects share. One run of all of them (`pnpm run test-ci-vitest`)
+  // writes one coverage report, merged over Node, Chromium and Firefox.
   test: {
-    browser: {
-      enabled: true,
-      instances: updating ? [{browser: 'chromium'}] : [{browser: 'chromium'}, {browser: 'firefox'}],
-      commands: updating ? {saveFixtureImage: createSaveFixtureImage()} : {},
-      provider: browserProvider,
-      viewport
-    },
     // Istanbul, not v8: v8 coverage is refused once a non-Chromium browser is
     // configured. The Coveralls step in .github/workflows/ci.yml uploads
     // coverage/vitest/lcov.info.
@@ -72,16 +74,46 @@ export default defineConfig({
       reporter: ['lcov', 'html', 'text-summary'],
       reportsDirectory: 'coverage/vitest'
     },
-    // One spec file at a time: animation and resize specs need a page that is
-    // not throttled.
-    fileParallelism: false,
     globals: true,
-    include: ['test/specs/**/*.spec.js'],
     // Spies never leak from one test into the next.
     restoreMocks: true,
     // Random order, so that specs cannot depend on each other; the seed is
     // printed and can be replayed with --sequence.seed=<seed>.
     sequence: {shuffle: true},
-    setupFiles: ['test/setup.js']
+    projects: [
+      {
+        // `extends: true` also carries the alias, `oxc` and the plugins above,
+        // so the specs compile as they do in the browsers.
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: [unitGlob],
+          setupFiles: ['test/setup.node.js']
+        }
+      },
+      {
+        extends: true,
+        test: {
+          name: 'browser',
+          include: ['test/specs/**/*.spec.js'],
+          exclude: [unitGlob],
+          setupFiles: ['test/setup.js'],
+          // One spec file at a time: animation and resize specs need a page
+          // that is not throttled.
+          fileParallelism: false,
+          browser: {
+            enabled: true,
+            // Named, so that `--project chromium` selects one browser.
+            instances: updating
+              ? [{browser: 'chromium', name: 'chromium'}]
+              : [{browser: 'chromium', name: 'chromium'}, {browser: 'firefox', name: 'firefox'}],
+            commands: updating ? {saveFixtureImage: createSaveFixtureImage()} : {},
+            provider: browserProvider,
+            viewport
+          }
+        }
+      }
+    ]
   }
 });
