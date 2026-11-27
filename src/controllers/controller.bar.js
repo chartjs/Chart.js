@@ -28,8 +28,11 @@ function getGroupedMetas(chart, iScale, type, hasBar) {
   const metasets = chart._getSortedDatasetMetas()
     .filter(meta => meta[axisID] === iScale.id && meta.type === type && meta.controller.options.grouped);
 
-  if (iScale.options.stacked === false || metasets.every(meta => meta.visible)) {
+  if (iScale.options.stacked === false) {
     return metasets.filter(meta => meta.visible);
+  }
+  if (metasets.every(meta => meta.visible)) {
+    return metasets;
   }
 
   const visibleStacks = new Set(metasets.filter(meta => meta.visible && hasBar(meta)).map(meta => meta.stack));
