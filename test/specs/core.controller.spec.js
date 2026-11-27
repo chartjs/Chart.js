@@ -3168,6 +3168,76 @@ describe('Chart', function() {
         expect(chart.getDatasetMeta(0).data[1].active).toBe(false);
       });
     });
+
+    it('should fade a hovered point out when onClick hides its dataset and the click moves the active index', async function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{
+            data: [1, 2, 3],
+            pointBorderColor: 'rgba(255, 0, 0, 0.9)',
+            pointHoverBorderColor: 'rgba(255, 0, 0, 0.5)',
+          }, {
+            data: [3, 2, 1],
+          }]
+        },
+        options: {
+          animation: {duration: 1000},
+          interaction: {mode: 'index', intersect: false},
+          onClick: () => chart.hide(0)
+        }
+      });
+      chart.stop();
+      const point = chart.getDatasetMeta(0).data[1];
+      const other = chart.getDatasetMeta(1).data[2];
+
+      await triggerMouseEvent(chart, 'mousemove', point);
+      expect(chart.getActiveElements().map(({datasetIndex, index}) => [datasetIndex, index])).toEqual([[0, 1], [1, 1]]);
+      // Finish the hover animation ('active', 400 ms by default).
+      Chart.animator._update(Date.now() + 1000);
+      const start = alphaOf(point.options.borderColor);
+      expect(start).toBeCloseTo(0.5, 2);
+
+      // The click finds index 2, so the event changes the active elements after onClick hid dataset 0.
+      await triggerMouseEvent(chart, 'click', chart.getDatasetMeta(0).data[2]);
+
+      // 200 ms into the hide, before an un-hover animation (400 ms) would end.
+      Chart.animator._update(Date.now() + 200);
+      expect(alphaOf(point.options.borderColor)).toBeLessThan(start);
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 1, index: 2, element: other}]);
+      expect(other.active).toBe(true);
+      chart.stop();
+    });
+
+    it('should not throw when a bar dataset active in hover mode \'dataset\' is hidden', function() {
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}, {data: [3, 2, 1]}]
+        },
+        options: {
+          hover: {mode: 'dataset'}
+        }
+      });
+
+      chart.setActiveElements(chart.getDatasetMeta(0).data.map((element, index) => ({datasetIndex: 0, index})));
+
+      expect(() => chart.hide(0)).not.toThrow();
+      expect(chart.getActiveElements()).toEqual([]);
+    });
+
+    it('should not make a meta for a removed dataset that was active in hover mode \'dataset\'', function() {
+      const chart = acquireDatasetModeChart();
+
+      chart.setActiveElements(chart.getDatasetMeta(1).data.map((element, index) => ({datasetIndex: 1, index})));
+      chart.data.datasets.splice(1, 1);
+
+      expect(() => chart.update()).not.toThrow();
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(chart._metasets.length).toBe(chart.data.datasets.length);
+    });
   });
 
   it('should not replace the user set active elements by event replay', async function() {
