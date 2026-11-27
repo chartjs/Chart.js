@@ -923,6 +923,46 @@ describe('Legend block tests', function() {
   });
 
   ['top', 'left'].forEach(function(position) {
+    it('should center a point style at the right-to-left start of the items in a ' + position + ' legend', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: [], datasets: [{label: 'first', data: []}, {label: 'second', data: []}]},
+        options: {plugins: {legend: {position, rtl: true, labels: {usePointStyle: true, textAlign: 'left'}}}}
+      });
+      const centers = [];
+      vi.spyOn(chart.ctx, 'arc').mockImplementation(function(x, y) {
+        centers.push({x, y});
+      });
+
+      chart.draw();
+
+      const {legendHitBoxes, _labelLayout: {boxWidth}} = chart.legend;
+      expect(centers.length).toBe(2);
+      centers.forEach(function(center, i) {
+        // In right-to-left the symbol sits at the right end of the item.
+        const hitbox = legendHitBoxes[i];
+        expect(center.x).toBeCloseTo(hitbox.left + hitbox.width - boxWidth / 2, 5);
+      });
+    });
+
+    it('should keep the symbol of the layout when usePointStyle changes without an update in a ' + position + ' legend', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: [], datasets: [{label: 'first', data: []}]},
+        options: {animation: false, plugins: {legend: {position}}}
+      });
+      const {symbols: laidOut} = drawLegendItems(chart);
+      vi.restoreAllMocks();
+      const arc = vi.spyOn(chart.ctx, 'arc');
+
+      // The legend's resolved options, which the next update replaces.
+      chart.legend.options.labels.usePointStyle = true;
+      const {symbols} = drawLegendItems(chart);
+
+      expect(arc).not.toHaveBeenCalled();
+      expect(symbols).toEqual(laidOut);
+    });
+
     it('should center a box lower than the font on the text in a ' + position + ' legend', function() {
       const chart = window.acquireChart({
         type: 'line',

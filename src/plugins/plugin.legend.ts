@@ -55,8 +55,8 @@ type LegendLabelOptions = LegendOpts['labels'];
 type LegendFont = ReturnType<typeof toFont>;
 
 /**
- * What every legend item shares: the label font and the symbol size, resolved
- * once in `fit()` so that drawing uses the font the items were measured with.
+ * What every legend item shares: the label font and the symbol, resolved once
+ * in `fit()` so that drawing uses what the items were laid out with.
  */
 interface LegendLabelLayout {
   font: LegendFont;
@@ -64,6 +64,9 @@ interface LegendLabelLayout {
   boxHeight: number;
   /** The height of a one-line item. */
   itemHeight: number;
+  /** The symbol is a point style, else a box. */
+  usePointStyle: boolean;
+  pointStyleWidth: number;
 }
 
 /**
@@ -79,6 +82,9 @@ interface LegendHitBox {
   height: number;
   row?: number;
   col?: number;
+  /**
+   * @private
+   */
   _text: {
     /** The width `fit()` measured. */
     width: number;
@@ -90,6 +96,7 @@ interface LegendHitBox {
   /**
    * The symbol's top left corner, or its center when the labels use point
    * styles, after right-to-left mirroring.
+   * @private
    */
   _symbol: {
     x: number;
@@ -128,10 +135,10 @@ function getAlignedHitBox(x: number, textWidth: number, boxWidth: number, fontSi
 }
 
 /**
- * The text alignment of an item: its own, or else the labels' one, which the
- * item then keeps.
+ * The text alignment of an item: its own, or else the labels' one, which is
+ * written back to the item because users read `legendItems[i].textAlign`.
  */
-function itemTextAlign(item: LegendItem | undefined, labelAlign: TextAlign): TextAlign {
+function applyItemTextAlign(item: LegendItem | undefined, labelAlign: TextAlign): TextAlign {
   // The labels are built again after fit(), so there can be fewer items than hit boxes.
   if (!item) {
     return labelAlign;
@@ -146,7 +153,6 @@ interface ItemPlacement {
   layout: LegendLabelLayout;
   rtlHelper: ReturnType<typeof getRtlAdapter>;
   rtl: boolean;
-  usePointStyle: boolean;
 }
 
 /**
@@ -157,7 +163,7 @@ interface ItemPlacement {
  * @param x - the left edge of the item, before right-to-left mirroring
  * @param right - the right end of the item's text area, before mirroring
  */
-function placeItem({layout: {font, boxWidth, boxHeight, itemHeight}, rtlHelper, rtl, usePointStyle}: ItemPlacement, hitbox: LegendHitBox, textAlign: TextAlign, x: number, right: number) {
+function placeItem({layout: {font, boxWidth, boxHeight, itemHeight, usePointStyle}, rtlHelper, rtl}: ItemPlacement, hitbox: LegendHitBox, textAlign: TextAlign, x: number, right: number) {
   const halfFontSize = font.size / 2;
   const y = hitbox.top;
   const realX = rtlHelper.x(x);
@@ -179,6 +185,20 @@ function placeItem({layout: {font, boxWidth, boxHeight, itemHeight}, rtlHelper, 
   text.y = y + itemHeight / 2;
 }
 
+/**
+ * Widen and move the hit box of a vertical legend item so that it covers the
+ * symbol and the aligned text, then mirror it for right-to-left.
+ * @param placement - what every item shares
+ * @param hitbox - the item's hit box
+ * @param textAlign - the alignment of the item's text
+ * @param x - the left edge of the item, before right-to-left mirroring
+ * @param right - the right end of the item's text area, before mirroring
+ */
+function coverAlignedText({layout: {font, boxWidth}, rtlHelper}: ItemPlacement, hitbox: LegendHitBox, textAlign: TextAlign, x: number, right: number) {
+  const aligned = getAlignedHitBox(x, hitbox._text.width, boxWidth, font.size, textAlign, right);
+  hitbox.width = aligned.width;
+  hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
+}
 export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem {
 
   _added: boolean;
@@ -297,7 +317,12 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     const labelOpts = options.labels;
     const font = toFont(labelOpts.font);
     const titleHeight = this._computeTitleHeight();
-    const layout: LegendLabelLayout = this._labelLayout = {font, ...getBoxSize(labelOpts, font.size)};
+    const layout: LegendLabelLayout = this._labelLayout = {
+      font,
+      ...getBoxSize(labelOpts, font.size),
+      usePointStyle: labelOpts.usePointStyle,
+      pointStyleWidth: labelOpts.pointStyleWidth
+    };
 
     let width: number, height: number;
 
@@ -411,10 +436,9 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       return;
     }
     const titleHeight = this._computeTitleHeight();
-    const {legendHitBoxes: hitboxes, legendItems, options: {align, labels, rtl}} = this;
-    const {padding, textAlign: labelAlign} = labels;
+    const {legendHitBoxes: hitboxes, legendItems, options: {align, rtl, labels: {padding, textAlign: labelAlign}}} = this;
     const rtlHelper = getRtlAdapter(rtl, this.left, this.width);
-    const placement: ItemPlacement = {layout: this._labelLayout, rtlHelper, rtl, usePointStyle: labels.usePointStyle};
+    const placement: ItemPlacement = {layout: this._labelLayout, rtlHelper, rtl};
     if (this.isHorizontal()) {
       let row = 0;
       let left = _alignStartEnd(align, this.left + padding, this.right - this.lineWidths[row]);
@@ -425,12 +449,11 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
           left = _alignStartEnd(align, this.left + padding, this.right - this.lineWidths[row]);
         }
         hitbox.top += this.top + titleHeight + padding;
-        placeItem(placement, hitbox, itemTextAlign(legendItems[i], labelAlign), left, left + hitbox.width);
+        placeItem(placement, hitbox, applyItemTextAlign(legendItems[i], labelAlign), left, left + hitbox.width);
         hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(left), hitbox.width);
         left += hitbox.width + padding;
       }
     } else {
-      const {boxWidth, font: {size: fontSize}} = this._labelLayout;
       let col = 0;
       let top = _alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
       for (let i = 0; i < hitboxes.length; i++) {
@@ -443,11 +466,9 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
         // The left edge from fit(), before the aligned text moves the hit box.
         const x = hitbox.left + this.left + padding;
         const right = this._columnRight(x, col);
-        const textAlign = itemTextAlign(legendItems[i], labelAlign);
+        const textAlign = applyItemTextAlign(legendItems[i], labelAlign);
         placeItem(placement, hitbox, textAlign, x, right);
-        const aligned = getAlignedHitBox(x, hitbox._text.width, boxWidth, fontSize, textAlign, right);
-        hitbox.width = aligned.width;
-        hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(aligned.left), hitbox.width);
+        coverAlignedText(placement, hitbox, textAlign, x, right);
         top += hitbox.height + padding;
       }
     }
@@ -484,8 +505,8 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
    * @private
    */
   _draw() {
-    const {options: opts, ctx, legendHitBoxes: hitboxes, _labelLayout: {font: labelFont, boxWidth, boxHeight}} = this;
-    const {usePointStyle, pointStyleWidth} = opts.labels;
+    const {options: opts, ctx, legendHitBoxes: hitboxes} = this;
+    const {font: labelFont, boxWidth, boxHeight, usePointStyle, pointStyleWidth} = this._labelLayout;
     const defaultColor = defaults.color;
     const rtlHelper = getRtlAdapter(opts.rtl, this.left, this.width);
 

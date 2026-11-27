@@ -2909,6 +2909,9 @@ interface LegendLabelLayout {
     // (undocumented)
     font: LegendFont;
     itemHeight: number;
+    // (undocumented)
+    pointStyleWidth: number;
+    usePointStyle: boolean;
 }
 
 // @public (undocumented)
