@@ -2,6 +2,7 @@ import {isObject, isFinite, valueOrDefault} from '../../helpers/helpers.core.js'
 import type Scale from '../../core/core.scale.js';
 import type LineElement from '../../elements/element.line.js';
 import type {FillTarget, ComplexFillTarget} from '../../types/index.js';
+import type {AnyObject} from '../../types/basic.js';
 
 export type {Scale, LineElement, FillTarget, ComplexFillTarget};
 
@@ -98,7 +99,8 @@ export function _getTargetValue(
 }
 
 function parseFillOption(line: LineElement) {
-  const options = line.options;
+  // `fill` is a number, a string, a boolean or an object, told apart at runtime here and in `_decodeFill`
+  const options: AnyObject = line.options;
   const fillOption = options.fill;
   let fill = valueOrDefault(fillOption && fillOption.target, fillOption);
 
