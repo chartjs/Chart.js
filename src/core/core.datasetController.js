@@ -1,4 +1,4 @@
-import Animations from './core.animations.js';
+import Animations, {_animationsNeedContext} from './core.animations.js';
 import defaults from './core.defaults.js';
 import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core.js';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection.js';
@@ -863,14 +863,22 @@ export default class DatasetController {
       return cached;
     }
     let options;
+    let cacheable = true;
     if (chart.options.animation !== false) {
       const config = this.chart.config;
       const scopeKeys = config.datasetAnimationScopeKeys(this._type, transition);
       const scopes = config.getOptionScopes(this.getDataset(), scopeKeys);
-      options = config.createResolver(scopes, this.getContext(index, active, transition));
+      options = config.createResolver(scopes);
+      // Only animations that read the context differ from one element to the next.
+      // The answer is the same for every element: `false` in the cache saves checking it again.
+      if (cached === false || _animationsNeedContext(options)) {
+        cacheable = false;
+        cache[cacheKey] = false;
+        options = config.createResolver(scopes, this.getContext(index, active, transition));
+      }
     }
     const animations = new Animations(chart, options && options.animations);
-    if (options && options._cacheable) {
+    if (cacheable) {
       cache[cacheKey] = Object.freeze(animations);
     }
     return animations;
