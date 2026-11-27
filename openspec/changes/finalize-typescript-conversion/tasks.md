@@ -95,11 +95,11 @@
 
 ## 13. P13: Convert the segment helpers to TypeScript
 
-- [ ] 13.1 Rename the modules to `.ts`. Show the gate's errors for the segment helpers before the fix.
-- [ ] 13.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 13.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 13.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 13.5 Run the whole test suite; no fixture changes.
+- [x] 13.1 Rename the modules to `.ts`. Show the gate's errors for the segment helpers before the fix.
+- [x] 13.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 13.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 13.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 13.5 Run the whole test suite; no fixture changes.
 
 ## 14. P14: Convert LineElement to TypeScript
 
