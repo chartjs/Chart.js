@@ -1703,110 +1703,180 @@ describe('Chart.controllers.bar', function() {
     });
   });
 
-  it('should not crash with skipNull and uneven datasets', function() {
-    function unevenChart() {
-      window.acquireChart({
+  describe('skipNull', function() {
+    it('should not crash with skipNull and uneven datasets', function() {
+      function unevenChart() {
+        window.acquireChart({
+          type: 'bar',
+          data: {
+            labels: [1, 2],
+            datasets: [
+              {data: [1, 2]},
+              {data: [1, 2, 3]},
+            ]
+          },
+          options: {
+            skipNull: true,
+          }
+        });
+      }
+
+      expect(unevenChart).not.toThrow();
+    });
+
+    it('should correctly count the number of stacks when skipNull and different order datasets', function() {
+
+      const chart = window.acquireChart({
         type: 'bar',
         data: {
-          labels: [1, 2],
           datasets: [
-            {data: [1, 2]},
-            {data: [1, 2, 3]},
+            {
+              id: '1',
+              label: 'USA',
+              data: [
+                {
+                  xScale: 'First',
+                  Country: 'USA',
+                  yScale: 524
+                },
+                {
+                  xScale: 'Second',
+                  Country: 'USA',
+                  yScale: 325
+                }
+              ],
+
+              yAxisID: 'yScale',
+              xAxisID: 'xScale',
+
+              parsing: {
+                yAxisKey: 'yScale',
+                xAxisKey: 'xScale'
+              }
+            },
+            {
+              id: '2',
+              label: 'BRA',
+              data: [
+                {
+                  xScale: 'Second',
+                  Country: 'BRA',
+                  yScale: 183
+                },
+                {
+                  xScale: 'First',
+                  Country: 'BRA',
+                  yScale: 177
+                }
+              ],
+
+              yAxisID: 'yScale',
+              xAxisID: 'xScale',
+
+              parsing: {
+                yAxisKey: 'yScale',
+                xAxisKey: 'xScale'
+              }
+            },
+            {
+              id: '3',
+              label: 'DEU',
+              data: [
+                {
+                  xScale: 'First',
+                  Country: 'DEU',
+                  yScale: 162
+                }
+              ],
+
+              yAxisID: 'yScale',
+              xAxisID: 'xScale',
+
+              parsing: {
+                yAxisKey: 'yScale',
+                xAxisKey: 'xScale'
+              }
+            }
           ]
         },
         options: {
-          skipNull: true,
+          skipNull: true
         }
       });
-    }
 
-    expect(unevenChart).not.toThrow();
-  });
+      var meta = chart.getDatasetMeta(0);
+      expect(meta.controller._getStackCount(0)).toBe(3);
+      expect(meta.controller._getStackCount(1)).toBe(2);
 
-  it('should correctly count the number of stacks when skipNull and different order datasets', function() {
-
-    const chart = window.acquireChart({
-      type: 'bar',
-      data: {
-        datasets: [
-          {
-            id: '1',
-            label: 'USA',
-            data: [
-              {
-                xScale: 'First',
-                Country: 'USA',
-                yScale: 524
-              },
-              {
-                xScale: 'Second',
-                Country: 'USA',
-                yScale: 325
-              }
-            ],
-
-            yAxisID: 'yScale',
-            xAxisID: 'xScale',
-
-            parsing: {
-              yAxisKey: 'yScale',
-              xAxisKey: 'xScale'
-            }
-          },
-          {
-            id: '2',
-            label: 'BRA',
-            data: [
-              {
-                xScale: 'Second',
-                Country: 'BRA',
-                yScale: 183
-              },
-              {
-                xScale: 'First',
-                Country: 'BRA',
-                yScale: 177
-              }
-            ],
-
-            yAxisID: 'yScale',
-            xAxisID: 'xScale',
-
-            parsing: {
-              yAxisKey: 'yScale',
-              xAxisKey: 'xScale'
-            }
-          },
-          {
-            id: '3',
-            label: 'DEU',
-            data: [
-              {
-                xScale: 'First',
-                Country: 'DEU',
-                yScale: 162
-              }
-            ],
-
-            yAxisID: 'yScale',
-            xAxisID: 'xScale',
-
-            parsing: {
-              yAxisKey: 'yScale',
-              xAxisKey: 'xScale'
-            }
-          }
-        ]
-      },
-      options: {
-        skipNull: true
-      }
     });
 
-    var meta = chart.getDatasetMeta(0);
-    expect(meta.controller._getStackCount(0)).toBe(3);
-    expect(meta.controller._getStackCount(1)).toBe(2);
+    it('should look up the other datasets by position with skipNull and sorted data', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c', 'd'],
+          datasets: [
+            {data: [1, null, 3, 4]},
+            {data: [1, 2, null, 4]},
+            {data: [null, 2, 3, 4]}
+          ]
+        },
+        options: {
+          skipNull: true
+        }
+      });
 
+      const spies = chart.data.datasets.map((_, i) => vi.spyOn(chart.getDatasetMeta(i)._parsed, 'find'));
+      chart.update();
+
+      spies.forEach(spy => expect(spy).not.toHaveBeenCalled());
+      expect(chart.getDatasetMeta(0).controller._getStackCount(1)).toBe(2);
+      expect(chart.getDatasetMeta(0).controller._getStackCount(2)).toBe(2);
+      expect(chart.getDatasetMeta(0).controller._getStackCount(3)).toBe(3);
+    });
+
+    it('should take the first entry at an index value with skipNull', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [
+            {data: [{x: 'a', y: 1}, {x: 'b', y: 1}, {x: 'b', y: 1}]},
+            {data: [{x: 'a', y: 1}, {x: 'b', y: null}, {x: 'b', y: 2}]}
+          ]
+        },
+        options: {
+          skipNull: true
+        }
+      });
+
+      const controller = chart.getDatasetMeta(0).controller;
+      expect(controller._getStackCount(0)).toBe(2);
+      expect(controller._getStackCount(1)).toBe(1);
+      expect(controller._getStackCount(2)).toBe(1);
+    });
+
+    it('should find the entry of a dataset that starts later with skipNull', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [
+            {data: [1, 2, 3]},
+            {data: [{x: 'b', y: null}, {x: 'c', y: 2}]}
+          ]
+        },
+        options: {
+          skipNull: true
+        }
+      });
+
+      const spy = vi.spyOn(chart.getDatasetMeta(1)._parsed, 'find');
+      const controller = chart.getDatasetMeta(0).controller;
+      expect(controller._getStackCount(1)).toBe(1);
+      expect(controller._getStackCount(2)).toBe(2);
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   it('should not override tooltip title and label callbacks', async() => {
