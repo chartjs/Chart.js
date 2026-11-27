@@ -353,8 +353,8 @@
 ## 45. P45: Defaults, interaction, layouts, registry and ticks come from the source (v5)
 
 - [ ] 45.1 Replace the hand-kept `declare class`/`declare const` of defaults, interaction, layouts, registry and ticks in `src/types/` with re-exports from the source, and drop those names from `src/types.ts`.
-- [ ] 45.1a In `src/core/core.defaults.ts`, merge the public `Defaults` interface into the class (`export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, PluginChartOptions<ChartType>`, with `scale` and `scales`), retype the 12 members of row L13 to the public types so that the merge compiles (TS2430 without it), and replace `set(scope: string | object, values?: object)` with the overloads `set(values: AnyObject)` and `set(scope: string, values: AnyObject)`.
-- [ ] 45.2 Regenerate the reports. Every diff line maps to an accepted ledger row (L6, L7, and the new row L13 once the user accepts it).
+- [ ] 45.1a In `src/core/core.defaults.ts`, merge the public `Defaults` interface into the class (`export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, PluginChartOptions<ChartType>`, with `scale` and `scales`), retype the 12 members of row L14 to the public types so that the merge compiles (TS2430 without it), and replace `set(scope: string | object, values?: object)` with the overloads `set(values: AnyObject)` and `set(scope: string, values: AnyObject)`.
+- [ ] 45.2 Regenerate the reports. Every diff line maps to an accepted ledger row (L6, L7, and the new row L14 once the user accepts it).
 - [ ] 45.3 Run `lint-types`, the 4.7.4 floor (P2) and the integration packages.
 - [ ] 45.4 Add each consumer-visible change to the v5 migration guide.
 
