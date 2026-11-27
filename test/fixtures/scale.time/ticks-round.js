@@ -1,5 +1,4 @@
 module.exports = {
-  threshold: 0.05,
   config: {
     type: 'line',
     data: {
