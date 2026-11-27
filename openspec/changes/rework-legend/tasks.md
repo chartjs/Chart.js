@@ -94,7 +94,7 @@
 ## 15. P14: labels.boxYOffset (#12242)
 
 - [ ] 15.1 #12242's spec fails on master. The author renames the option to `labels.boxYOffset` and declares it in the types instead of `datasetRadiusBuffer`.
-- [ ] 15.2 The offset moves the symbol's y (the hit box's `_symbol` offset) for boxes and point styles; text stays.
+- [ ] 15.2 The offset moves the symbol's y (`_symbol.y`) for boxes and point styles; text stays.
 - [ ] 15.3 Docs and the point-style sample. Commit type `feat`. The pull request says `Closes #11884`.
 
 ## 16. P15: Text decoration
