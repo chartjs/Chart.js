@@ -3629,12 +3629,16 @@ export const PolarAreaController: ChartComponent & {
 
 // @public (undocumented)
 class PolarAreaController_2 extends DatasetController_2 {
-    constructor(chart: any, datasetIndex: any);
+    constructor(chart: Chart_3, datasetIndex: number);
+    // @internal (undocumented)
+    _computeAngle(index: number, mode: UpdateMode, defaultAngle: number): number;
     // (undocumented)
     countVisibleElements(): number;
     // (undocumented)
-    getLabelAndValue(index: any): {
-        label: any;
+    static defaults: any;
+    // (undocumented)
+    getLabelAndValue(index: number): {
+        label: string;
         value: string;
     };
     // (undocumented)
@@ -3646,16 +3650,21 @@ class PolarAreaController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
-    protected _isDataVisible(index: any): boolean;
+    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     outerRadius: number;
+    // (undocumented)
     static overrides: any;
     // (undocumented)
-    parseObjectData(meta: any, data: any, start: any, count: any): {
+    parseObjectData(meta: ChartMeta<'polarArea'>, data: AnyObject[], start: number, count: number): {
         r: unknown;
     }[];
     // (undocumented)
-    update(mode: any): void;
+    update(mode: UpdateMode): void;
+    // (undocumented)
+    updateElements(arcs: ArcElement[], start: number, count: number, mode: UpdateMode): void;
+    // @internal (undocumented)
+    _updateRadius(): void;
 }
 
 // @public (undocumented)
@@ -3690,19 +3699,24 @@ export const RadarController: ChartComponent & {
 // @public (undocumented)
 class RadarController_2 extends DatasetController_2 {
     // (undocumented)
-    protected getLabelAndValue(index: any): {
-        label: any;
+    static defaults: any;
+    // (undocumented)
+    protected getLabelAndValue(index: number): {
+        label: string;
         value: string;
     };
     // (undocumented)
     static id: string;
+    // (undocumented)
     static overrides: any;
     // (undocumented)
-    parseObjectData(meta: any, data: any, start: any, count: any): {
+    parseObjectData(meta: ChartMeta<'radar'>, data: AnyObject[], start: number, count: number): {
         r: unknown;
     }[];
     // (undocumented)
-    update(mode: any): void;
+    update(mode: UpdateMode): void;
+    // (undocumented)
+    updateElements(points: PointElement[], start: number, count: number, mode: UpdateMode): void;
 }
 
 // @public (undocumented)

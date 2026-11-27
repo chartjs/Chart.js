@@ -1,14 +1,14 @@
 import DatasetController from '../core/core.datasetController.js';
 import {_parseObjectDataRadialScale} from '../helpers/index.js';
+import type {AnyObject} from '../types/basic.js';
+import type {ChartMeta, UpdateMode} from '../types/index.js';
+import type PointElement from '../elements/element.point.js';
 
 export default class RadarController extends DatasetController {
 
   static id = 'radar';
 
-  /**
-   * @type {any}
-   */
-  static defaults = {
+  static override defaults: any = {
     datasetElementType: 'line',
     dataElementType: 'point',
     indexAxis: 'r',
@@ -20,10 +20,7 @@ export default class RadarController extends DatasetController {
     },
   };
 
-  /**
-   * @type {any}
-   */
-  static overrides = {
+  static overrides: any = {
     aspectRatio: 1,
 
     scales: {
@@ -33,10 +30,7 @@ export default class RadarController extends DatasetController {
     }
   };
 
-  /**
-	 * @protected
-	 */
-  getLabelAndValue(index) {
+  protected override getLabelAndValue(index: number): {label: string; value: string} {
     const vScale = this._cachedMeta.vScale;
     const parsed = this.getParsed(index);
 
@@ -46,11 +40,11 @@ export default class RadarController extends DatasetController {
     };
   }
 
-  parseObjectData(meta, data, start, count) {
+  override parseObjectData(meta: ChartMeta<'radar'>, data: AnyObject[], start: number, count: number) {
     return _parseObjectDataRadialScale.bind(this)(meta, data, start, count);
   }
 
-  update(mode) {
+  override update(mode: UpdateMode): void {
     const meta = this._cachedMeta;
     const line = meta.dataset;
     const points = meta.data || [];
@@ -78,7 +72,7 @@ export default class RadarController extends DatasetController {
     this.updateElements(points, 0, points.length, mode);
   }
 
-  updateElements(points, start, count, mode) {
+  override updateElements(points: PointElement[], start: number, count: number, mode: UpdateMode): void {
     const scale = this._cachedMeta.rScale;
     const reset = mode === 'reset';
 
