@@ -2783,6 +2783,125 @@ describe('Chart', function() {
     });
   });
 
+  // https://github.com/chartjs/Chart.js/issues/10882
+  describe('hidden data is not active', function() {
+    const alphaOf = (value) => Chart.helpers.color(value).rgb.a;
+
+    // The hover colour is less opaque than the normal one, so an un-hover
+    // animation that takes over the hide animation makes the line more opaque.
+    function acquireLineChart() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{
+            data: [1, 2, 3],
+            borderColor: 'rgba(255, 0, 0, 0.9)',
+            hoverBorderColor: 'rgba(255, 0, 0, 0.5)',
+          }, {
+            data: [3, 2, 1],
+          }]
+        },
+        options: {
+          animation: {duration: 1000},
+          interaction: {mode: 'dataset', intersect: false},
+          transitions: {active: {animation: {duration: 0}}},
+        }
+      });
+      // End the initial animation, which a hover would otherwise retarget.
+      chart.stop();
+      return chart;
+    }
+
+    // The border colour of the line half way through the hide animation.
+    function borderAlphaAtMidHide(line) {
+      const animation = line.options.$animations.borderColor;
+      animation.tick(animation._start + animation._duration / 2);
+      return alphaOf(line.options.borderColor);
+    }
+
+    function legendItemCenter(chart, index) {
+      const hitBox = chart.legend.legendHitBoxes[index];
+      return {x: hitBox.left + hitBox.width / 2, y: hitBox.top + hitBox.height / 2};
+    }
+
+    it('should fade a hovered line out when it is hidden', async function() {
+      const chart = acquireLineChart();
+      const meta = chart.getDatasetMeta(0);
+      const line = meta.dataset;
+
+      await triggerMouseEvent(chart, 'mousemove', meta.data[1]);
+      expect(line.active).toBe(true);
+      const start = alphaOf(line.options.borderColor);
+      expect(start).toBeCloseTo(0.5, 2);
+
+      chart.hide(0);
+
+      expect(borderAlphaAtMidHide(line)).toBeLessThan(start);
+      expect(line.active).toBe(false);
+      // The pointer is still over the chart, so the other dataset may become active.
+      expect(chart.getActiveElements().filter(({datasetIndex}) => datasetIndex === 0)).toEqual([]);
+      chart.stop();
+    });
+
+    it('should fade a line set active by code out when it is hidden from the legend', async function() {
+      const chart = acquireLineChart();
+      const meta = chart.getDatasetMeta(0);
+      const line = meta.dataset;
+
+      chart.setActiveElements(meta.data.map((element, index) => ({datasetIndex: 0, index})));
+      expect(line.active).toBe(true);
+      const start = alphaOf(line.options.borderColor);
+      expect(start).toBeCloseTo(0.5, 2);
+
+      await triggerMouseEvent(chart, 'click', legendItemCenter(chart, 0));
+      expect(chart.isDatasetVisible(0)).toBe(false);
+
+      expect(borderAlphaAtMidHide(line)).toBeLessThan(start);
+      expect(line.active).toBe(false);
+      expect(chart.getActiveElements()).toEqual([]);
+      chart.stop();
+    });
+
+    it('should not draw a line that is shown again in its hover style', async function() {
+      const chart = acquireLineChart();
+      const meta = chart.getDatasetMeta(0);
+      const line = meta.dataset;
+
+      chart.setActiveElements(meta.data.map((element, index) => ({datasetIndex: 0, index})));
+      await triggerMouseEvent(chart, 'click', legendItemCenter(chart, 0));
+      chart.stop();
+      await triggerMouseEvent(chart, 'click', legendItemCenter(chart, 0));
+      expect(chart.isDatasetVisible(0)).toBe(true);
+
+      expect(line.active).toBe(false);
+      expect(meta.data.some((element) => element.active)).toBe(false);
+      expect(chart.getActiveElements()).toEqual([]);
+      chart.stop();
+    });
+
+    it('should not keep a pie slice hidden from the legend active', async function() {
+      const chart = acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}]
+        }
+      });
+      const meta = chart.getDatasetMeta(0);
+      const slice = meta.data[0];
+
+      await triggerMouseEvent(chart, 'mousemove', slice.getCenterPoint());
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: slice}]);
+
+      await triggerMouseEvent(chart, 'click', legendItemCenter(chart, 0));
+      expect(chart.getDataVisibility(0)).toBe(false);
+
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(slice.active).toBe(false);
+    });
+  });
+
   it('should not replace the user set active elements by event replay', async function() {
     var chart = acquireChart({
       type: 'line',
