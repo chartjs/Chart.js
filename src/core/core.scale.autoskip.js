@@ -1,4 +1,3 @@
-import {isNullOrUndef, valueOrDefault} from '../helpers/helpers.core.js';
 import {_factorize} from '../helpers/helpers.math.js';
 
 
@@ -30,19 +29,35 @@ export function autoSkip(scale, ticks) {
     return newTicks;
   }
 
-  const spacing = calculateSpacing(majorIndices, ticks, ticksLimit);
+  const step = Math.ceil(calculateSpacing(majorIndices, ticks, ticksLimit));
 
-  if (numMajorIndices > 0) {
-    let i, ilen;
-    const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
-    skip(ticks, newTicks, spacing, isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
-    for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
-      skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
-    }
-    skip(ticks, newTicks, spacing, last, isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+  if (numMajorIndices === 0) {
+    skip(ticks, newTicks, step, 0, ticks.length - 1);
     return newTicks;
   }
-  skip(ticks, newTicks, spacing);
+
+  // The same whole step is repeated from each major, and a tick closer than
+  // one step to the next major is dropped. Before the first and after the last
+  // major, majors are assumed at the average major spacing.
+  let avgMajorSpacing = null;
+  if (numMajorIndices > 1) {
+    avgMajorSpacing = Math.round((last - first) / (numMajorIndices - 1));
+  }
+
+  const headStart = avgMajorSpacing === null ? 0 : Math.max(first - avgMajorSpacing, 0);
+  skip(ticks, newTicks, step, first - Math.floor((first - headStart) / step) * step, first - step);
+  for (let i = 0; i < numMajorIndices; i++) {
+    const major = majorIndices[i];
+    let next;
+    if (i < numMajorIndices - 1) {
+      next = majorIndices[i + 1];
+    } else if (avgMajorSpacing === null) {
+      next = ticks.length;
+    } else {
+      next = last + avgMajorSpacing;
+    }
+    skip(ticks, newTicks, step, major, Math.max(next - step, major));
+  }
   return newTicks;
 }
 
@@ -69,9 +84,7 @@ function calculateSpacing(majorIndices, ticks, ticksLimit) {
     return Math.max(spacing, 1);
   }
 
-  const factors = _factorize(evenMajorSpacing);
-  for (let i = 0, ilen = factors.length - 1; i < ilen; i++) {
-    const factor = factors[i];
+  for (const factor of _factorize(evenMajorSpacing)) {
     if (factor > spacing) {
       return factor;
     }
@@ -115,40 +128,19 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
 }
 
 /**
+ * Keeps the ticks from `start` to `end`, both included, `step` apart.
  * @param {Tick[]} ticks
  * @param {Tick[]} newTicks
- * @param {number} spacing
- * @param {number} [majorStart]
- * @param {number} [majorEnd]
+ * @param {number} step - a whole number of ticks
+ * @param {number} start
+ * @param {number} end
  */
-function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
-  const start = valueOrDefault(majorStart, 0);
-  const end = Math.min(valueOrDefault(majorEnd, ticks.length), ticks.length);
-  let count = 0;
-  let length, i, next;
-
-  spacing = Math.ceil(spacing);
-  if (majorEnd) {
-    length = majorEnd - majorStart;
-    spacing = length / Math.floor(length / spacing);
-  }
-
-  next = start;
-
-  while (next < 0) {
-    count++;
-    next = Math.round(start + count * spacing);
-  }
-
-  for (i = Math.max(start, 0); i < end; i++) {
-    if (i === next) {
-      newTicks.push(ticks[i]);
-      count++;
-      next = Math.round(start + count * spacing);
-    }
+function skip(ticks, newTicks, step, start, end) {
+  const stop = Math.min(end, ticks.length - 1);
+  for (let i = start; i <= stop; i += step) {
+    newTicks.push(ticks[i]);
   }
 }
-
 
 /**
  * @param {number[]} arr

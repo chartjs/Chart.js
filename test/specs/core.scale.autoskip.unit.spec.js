@@ -68,6 +68,40 @@ describe('Core.scale.autoskip', function() {
     expect(keptTicks(60, [25], 10)).toEqual([1, 7, 13, 19, 25, 31, 37, 43, 49]);
   });
 
+  it('should keep a major that is closer than one step to the next major', function() {
+    // 40 / 10 = 4 ticks per label, but 0 and 3 are both majors.
+    expect(keptTicks(40, [0, 3, 20], 10)).toEqual([0, 3, 7, 11, 15, 20, 24]);
+  });
+
+  it('should keep the ticks around the majors within one major spacing', function() {
+    // Majors 10 apart: nothing is kept before 20 or from 60 on.
+    expect(keptTicks(80, [30, 40, 50], 20)).toEqual([20, 25, 30, 35, 40, 45, 50, 55]);
+  });
+
+  it('should take a factor larger than the ticks per label, not equal to it', function() {
+    // 120 / 60 = 2 ticks per label; of the factors 1, 2, 3, 4 and 6 of 12, 3 is taken.
+    const kept = keptTicks(120, [0, 12, 24, 36, 48, 60, 72, 84, 96, 108], 60);
+
+    expect(new Set(gaps(kept))).toEqual(new Set([3]));
+  });
+
+  it('should keep no tick past the last one when the next major would be beyond it', function() {
+    expect(keptTicks(40, [0, 30], 10)).toEqual([0, 5, 10, 15, 20, 25, 30, 35]);
+  });
+
+  it('should round the average major spacing', function() {
+    // (32 - 11) / 2 = 10.5 is rounded to 11, so the ticks from 0 are kept.
+    const kept = keptTicks(40, [11, 21, 32], 40);
+
+    expect(kept[0]).toBe(0);
+    expect(kept.length).toBe(40);
+  });
+
+  it('should keep every step-th tick up to the last one without majors', function() {
+    // 7 / 3 = 2.33 ticks per label: a step of 3.
+    expect(keptTicks(7, [], 3)).toEqual([0, 3, 6]);
+  });
+
   // Unevenly spaced majors are not divided by a factor: 120 / 30 = 4 ticks per
   // label, repeated from each major.
   it('should not treat majors as evenly spaced when only the second gap differs', function() {
