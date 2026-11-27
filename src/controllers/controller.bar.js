@@ -28,7 +28,7 @@ function getGroupedMetas(chart, iScale, type, hasBar) {
   const metasets = chart._getSortedDatasetMetas()
     .filter(meta => meta[axisID] === iScale.id && meta.type === type && meta.controller.options.grouped);
 
-  if (iScale.options.stacked === false) {
+  if (iScale.options.stacked === false || metasets.every(meta => meta.visible)) {
     return metasets.filter(meta => meta.visible);
   }
 
@@ -476,7 +476,7 @@ export default class BarController extends DatasetController {
     const metasets = getGroupedMetas(this.chart, iScale, this._type, meta => dataIndex === undefined || !skipNull(meta));
 
     for (const meta of metasets) {
-      if (meta.visible && dataIndex !== undefined && skipNull(meta)) {
+      if (dataIndex !== undefined && skipNull(meta)) {
         continue;
       }
 
