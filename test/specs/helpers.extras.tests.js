@@ -1,3 +1,4 @@
+/* eslint-env jasmine */
 describe('Chart.helpers.extras', function() {
   it('should pass all arguments to a debounced function', async function() {
     var received;
