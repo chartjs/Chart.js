@@ -1,6 +1,6 @@
 import DatasetController from '../core/core.datasetController.js';
 import {
-  _arrayUnique, isArray, isNullOrUndef,
+  _arrayUnique, _lookupByKey, isArray, isNullOrUndef,
   valueOrDefault, resolveObjectKey, sign, defined
 } from '../helpers/index.js';
 
@@ -15,6 +15,30 @@ function getAllScaleValues(scale, type) {
     scale._cache.$bar = _arrayUnique(values.sort((a, b) => a - b));
   }
   return scale._cache.$bar;
+}
+
+/**
+ * Returns the first parsed item of the meta whose index-axis value is `value`.
+ * Sorted data (category labels, time series) is looked up by position or binary search.
+ * @private
+ */
+function findParsed(meta, axis, value, dataIndex) {
+  const parsed = meta._parsed;
+  if (!meta._sorted) {
+    return parsed.find(item => item[axis] === value);
+  }
+  const guess = parsed[dataIndex];
+  const isFirst = dataIndex === 0 || (parsed[dataIndex - 1] && parsed[dataIndex - 1][axis] !== value);
+  if (guess && guess[axis] === value && isFirst) {
+    return guess;
+  }
+  const {lo, hi} = _lookupByKey(parsed, axis, value);
+  for (const item of [parsed[lo], parsed[hi]]) {
+    if (item && item[axis] === value) {
+      return item;
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -449,7 +473,7 @@ export default class BarController extends DatasetController {
     const iScaleValue = currentParsed && currentParsed[iScale.axis];
 
     const skipNull = (meta) => {
-      const parsed = meta._parsed.find(item => item[iScale.axis] === iScaleValue);
+      const parsed = findParsed(meta, iScale.axis, iScaleValue, dataIndex);
       const val = parsed && parsed[meta.vScale.axis];
 
       if (isNullOrUndef(val) || isNaN(val)) {
