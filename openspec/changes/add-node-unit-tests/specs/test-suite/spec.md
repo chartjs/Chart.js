@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Every spec runs under Vitest
-The repository SHALL run every spec file under `test/specs` under Vitest, each in exactly one Vitest project. A file on the unit list in `vitest.config.js` runs in the unit project, in Node. Every other file runs in the browser project. The combined test command SHALL fail when any of its suites fails.
+The repository SHALL run every spec file under `test/specs` under Vitest, each in exactly one Vitest project. A file named `*.unit.spec.js` runs in the unit project, in Node. Every other file runs in the browser project. The combined test command SHALL fail when any of its suites fails.
 
 #### Scenario: Combined run
 - **WHEN** a contributor runs `pnpm test-ci`
@@ -9,16 +9,12 @@ The repository SHALL run every spec file under `test/specs` under Vitest, each i
 - **AND** the command fails if any of them fails
 
 #### Scenario: Spec file
-- **WHEN** a file named `*.spec.js` exists under `test/specs` and is not on the unit list
+- **WHEN** a file named `*.spec.js` exists under `test/specs` and is not named `*.unit.spec.js`
 - **THEN** it runs under Vitest in the browser project and not in Node
 
-#### Scenario: Unit-listed spec
-- **WHEN** a spec file is on the unit list
+#### Scenario: Unit spec
+- **WHEN** a spec file is named `*.unit.spec.js`
 - **THEN** it runs in Node and in no browser
-
-#### Scenario: Stale unit list entry
-- **WHEN** the unit list names a file that does not exist
-- **THEN** Vitest refuses to start and names the entry, so `pnpm test`, `pnpm test-ci` and `pnpm run dev` fail
 
 #### Scenario: Unconverted spec
 - **WHEN** a file named `*.tests.js` exists under `test/specs`
@@ -40,7 +36,7 @@ Both projects of the Vitest suite SHALL exercise the code under `src/` directly,
 - **THEN** only spec files whose path contains that string run, each in the project it belongs to
 
 ### Requirement: Specs run in Chromium and Firefox
-The browser project MUST run, in CI, every spec that is not on the unit list and every image fixture, in both Chromium and Firefox.
+The browser project MUST run, in CI, every spec that is not named `*.unit.spec.js` and every image fixture, in both Chromium and Firefox.
 
 #### Scenario: Failure in one browser
 - **WHEN** a browser spec or fixture fails in either browser in CI
@@ -63,23 +59,23 @@ The lint command SHALL cover the specs, the Vitest setup files for the browsers 
 ## ADDED Requirements
 
 ### Requirement: DOM-free specs run in Node
-The unit project SHALL run the specs on the unit list in Node, with no browser, DOM or canvas, against source, and with the Chart.js test matchers registered. A test in a unit spec that uses the DOM SHALL fail; it SHALL NOT be skipped.
+The unit project SHALL run the specs named `*.unit.spec.js` in Node, with no browser, DOM or canvas, against source, and with the Chart.js test matchers registered. A test in a unit spec that uses the DOM SHALL fail; it SHALL NOT be skipped.
 
 #### Scenario: Without a browser
 - **WHEN** a contributor who has not installed the Playwright browsers runs `pnpm run test-unit`
 - **THEN** the unit specs run and no browser starts
 
 #### Scenario: DOM in a unit spec
-- **WHEN** a test in a unit-listed spec uses `window`, `document`, `acquireChart` or another browser-only global
+- **WHEN** a test in a spec named `*.unit.spec.js` uses `window`, `document`, `acquireChart` or another browser-only global
 - **THEN** that test fails with an error naming the global
-- **AND** for the chart helpers the error says to take the file off the unit list
+- **AND** for the chart helpers the error says to rename the file without `.unit`
 
 #### Scenario: Matchers
 - **WHEN** a unit spec uses `toEqualOptions` or `toBeCloseToPoint`
 - **THEN** the assertion behaves as it does in the browser project
 
 #### Scenario: New spec
-- **WHEN** a spec file is added and not put on the unit list
+- **WHEN** a spec file is added and not named `*.unit.spec.js`
 - **THEN** it runs in the browser project
 
 #### Scenario: Node setup pinned
