@@ -204,11 +204,11 @@
 
 ## 26. P26: Convert Defaults to TypeScript
 
-- [ ] 26.1 Rename the modules to `.ts`. Show the gate's errors for Defaults before the fix.
-- [ ] 26.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 26.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 26.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 26.5 Run the whole test suite; no fixture changes.
+- [x] 26.1 Rename the modules to `.ts`. Show the gate's errors for Defaults before the fix.
+- [x] 26.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 26.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 26.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 26.5 Run the whole test suite; no fixture changes.
 
 ## 27. P27: Convert Config to TypeScript
 
@@ -353,7 +353,8 @@
 ## 45. P45: Defaults, interaction, layouts, registry and ticks come from the source (v5)
 
 - [ ] 45.1 Replace the hand-kept `declare class`/`declare const` of defaults, interaction, layouts, registry and ticks in `src/types/` with re-exports from the source, and drop those names from `src/types.ts`.
-- [ ] 45.2 Regenerate the reports. Every diff line maps to an accepted ledger row (L6, L7).
+- [ ] 45.1a In `src/core/core.defaults.ts`, merge the public `Defaults` interface into the class (`export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, PluginChartOptions<ChartType>`, with `scale` and `scales`), retype the 12 members of row L14 to the public types so that the merge compiles (TS2430 without it), and replace `set(scope: string | object, values?: object)` with the overloads `set(values: AnyObject)` and `set(scope: string, values: AnyObject)`.
+- [ ] 45.2 Regenerate the reports. Every diff line maps to an accepted ledger row (L6, L7, and the new row L14 once the user accepts it).
 - [ ] 45.3 Run `lint-types`, the 4.7.4 floor (P2) and the integration packages.
 - [ ] 45.4 Add each consumer-visible change to the v5 migration guide.
 

@@ -3,6 +3,7 @@ import {_merger, isObject, merge, valueOrDefault} from '../helpers/helpers.core.
 import {applyAnimationsDefaults} from './core.animations.defaults.js';
 import {applyLayoutsDefaults} from './core.layouts.defaults.js';
 import {applyScaleDefaults} from './core.scale.defaults.js';
+import type {AnyObject} from '../types/basic.js';
 
 export const overrides = Object.create(null);
 export const descriptors = Object.create(null);
@@ -12,21 +13,23 @@ export const descriptors = Object.create(null);
 // prototype on any node.
 const UNSAFE_KEYS = ['__proto__', 'prototype', 'constructor'];
 
-const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+const hasOwn = (object: object, key: string) => Object.prototype.hasOwnProperty.call(object, key);
+
+export type DefaultsRoute = {scope: string, name: string, targetScope: string, targetName: string};
 
 /**
- * @typedef {{scope: string, name: string, targetScope: string, targetName: string}} DefaultsRoute
- * @typedef {(() => *) & {route?: DefaultsRoute}} RoutedGetter The getter `route` defines, tagged with its route
+ * The getter `route` defines, tagged with its route
  */
+export type RoutedGetter = (() => any) & {route?: DefaultsRoute};
 
 /**
  * A key may name an own property of the node or one it does not have yet, never
  * one it inherits: the walk would leave the defaults through it.
- * @param {*} node The node the key is read from, undefined when it does not exist yet
- * @param {string} key
- * @param {string} path The path to report
+ * @param node The node the key is read from, undefined when it does not exist yet
+ * @param key
+ * @param path The path to report
  */
-function assertOwnOrNew(node, key, path) {
+function assertOwnOrNew(node: any, key: string, path: string) {
   // `in` throws on a primitive, such as the string a path `color.length` reads
   // `length` from; Object() wraps it.
   if (UNSAFE_KEYS.includes(key) || (node && !hasOwn(node, key) && key in Object(node))) {
@@ -37,25 +40,17 @@ function assertOwnOrNew(node, key, path) {
 /**
  * Checks every key of a path before anything is created, so that a rejected
  * path leaves no empty scope behind.
- * @param {object} node
- * @param {string[]} keys
- * @param {string} path
  */
-function assertPath(node, keys, path) {
+function assertPath(node: any, keys: string[], path: string) {
   for (const key of keys) {
     assertOwnOrNew(node, key, path);
     node = node && node[key];
   }
 }
 
-const splitScope = (scope) => (scope ? scope.split('.') : []);
+const splitScope = (scope: string): string[] => (scope ? scope.split('.') : []);
 
-/**
- * @param {object} node
- * @param {string} key
- * @return {object}
- */
-function getScope(node, key) {
+function getScope(node: any, key: string): any {
   const keys = splitScope(key);
   assertPath(node, keys, key);
   for (const k of keys) {
@@ -68,13 +63,13 @@ function getScope(node, key) {
  * Merges like `merge()`, but skips a key that the target inherits and does not
  * own, so that the values cannot replace a method of the defaults.
  */
-function skipInherited(key, target, source, options) {
+function skipInherited(key: string, target: AnyObject, source: AnyObject, options?: AnyObject) {
   if (hasOwn(target, key) || !(key in target)) {
     _merger(key, target, source, options);
   }
 }
 
-function set(root, scope, values) {
+function set(root: object, scope: string | object, values?: object): any {
   if (typeof scope === 'string') {
     return merge(getScope(root, scope), values, {merger: skipInherited});
   }
@@ -86,7 +81,50 @@ function set(root, scope, values) {
  * Note: class is exported for typedoc
  */
 export class Defaults {
-  constructor(_descriptors, _appliers) {
+  // The fields keep the types they are published with. The `{}` scopes are
+  // filled at runtime; the public `Defaults` interface types them.
+  declare animation: any;
+  declare backgroundColor: string;
+  declare borderColor: string;
+  declare color: string;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  declare datasets: {};
+  declare devicePixelRatio: (context: any) => any;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  declare elements: {};
+  declare events: string[];
+  declare font: {
+    family: string;
+    size: number;
+    style: string;
+    lineHeight: number;
+    weight: any;
+  };
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  declare hover: {};
+  declare hoverBackgroundColor: (ctx: any, options: any) => CanvasGradient;
+  declare hoverBorderColor: (ctx: any, options: any) => CanvasGradient;
+  declare hoverColor: (ctx: any, options: any) => CanvasGradient;
+  declare indexAxis: string;
+  declare interaction: {
+    mode: string;
+    intersect: boolean;
+    includeInvisible: boolean;
+  };
+  declare maintainAspectRatio: boolean;
+  declare onHover: any;
+  declare onClick: any;
+  declare parsing: boolean;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  declare plugins: {};
+  declare responsive: boolean;
+  declare scale: any;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  declare scales: {};
+  declare showLine: boolean;
+  declare drawActiveElementsOnTop: boolean;
+
+  constructor(_descriptors: object, _appliers: Array<(defaults: Defaults) => void>) {
     this.animation = undefined;
     this.backgroundColor = 'rgba(0,0,0,0.1)';
     this.borderColor = 'rgba(0,0,0,0.1)';
@@ -109,9 +147,9 @@ export class Defaults {
       weight: null
     };
     this.hover = {};
-    this.hoverBackgroundColor = (ctx, options) => getHoverColor(options.backgroundColor);
-    this.hoverBorderColor = (ctx, options) => getHoverColor(options.borderColor);
-    this.hoverColor = (ctx, options) => getHoverColor(options.color);
+    this.hoverBackgroundColor = (_ctx, options) => getHoverColor(options.backgroundColor);
+    this.hoverBorderColor = (_ctx, options) => getHoverColor(options.borderColor);
+    this.hoverColor = (_ctx, options) => getHoverColor(options.color);
     this.indexAxis = 'x';
     this.interaction = {
       mode: 'nearest',
@@ -133,30 +171,19 @@ export class Defaults {
     this.apply(_appliers);
   }
 
-  /**
-	 * @param {string|object} scope
-	 * @param {object} [values]
-	 */
-  set(scope, values) {
+  set(scope: string | object, values?: object): any {
     return set(this, scope, values);
   }
 
-  /**
-	 * @param {string} scope
-	 */
-  get(scope) {
+  get(scope: string): any {
     return getScope(this, scope);
   }
 
-  /**
-	 * @param {string|object} scope
-	 * @param {object} [values]
-	 */
-  describe(scope, values) {
+  describe(scope: string | object, values?: object): any {
     return set(descriptors, scope, values);
   }
 
-  override(scope, values) {
+  override(scope: string | object, values?: object): any {
     return set(overrides, scope, values);
   }
 
@@ -171,13 +198,13 @@ export class Defaults {
 	 * 	defaults.route('elements.arc', 'backgroundColor', '', 'color')
 	 *   - reads the backgroundColor from defaults.color when undefined locally
 	 *
-	 * @param {string} scope Scope this route applies to.
-	 * @param {string} name Property name that should be routed to different namespace when not defined here.
-	 * @param {string} targetScope The namespace where those properties should be routed to.
+	 * @param scope Scope this route applies to.
+	 * @param name Property name that should be routed to different namespace when not defined here.
+	 * @param targetScope The namespace where those properties should be routed to.
 	 * Empty string ('') is the root of defaults.
-	 * @param {string} targetName The target name in the target scope the property should be routed to.
+	 * @param targetName The target name in the target scope the property should be routed to.
 	 */
-  route(scope, name, targetScope, targetName) {
+  route(scope: string, name: string, targetScope: string, targetName: string): void {
     // The properties defined below cannot be removed, so check every name first.
     const privateName = '_' + name;
     const paths = [
@@ -190,8 +217,7 @@ export class Defaults {
     const scopeObject = getScope(this, scope);
     const targetScopeObject = getScope(this, targetScope);
 
-    /** @type {RoutedGetter} */
-    const get = function() {
+    const get: RoutedGetter = function() {
       const local = this[privateName];
       const target = targetScopeObject[targetName];
       if (isObject(local)) {
@@ -219,7 +245,7 @@ export class Defaults {
     });
   }
 
-  apply(appliers) {
+  apply(appliers: Array<(defaults: Defaults) => void>): void {
     appliers.forEach((apply) => apply(this));
   }
 }
@@ -244,12 +270,10 @@ export default defaults;
  * scope object, so a scope that was removed or replaced has none. `local`
  * returns the value set for the routed option itself, without its target: the
  * stored value, not a copy.
- * @param {string} scope
- * @return {Array<DefaultsRoute & {local: () => *}>}
  * @private
  */
-export function getRoutes(scope) {
-  let node = defaults;
+export function getRoutes(scope: string): Array<DefaultsRoute & {local: () => any}> {
+  let node: any = defaults;
   for (const key of splitScope(scope)) {
     // Own properties only, and never create a scope.
     node = isObject(node) && hasOwn(node, key) ? node[key] : undefined;
@@ -260,7 +284,7 @@ export function getRoutes(scope) {
   const scopeObject = node;
   const routes = [];
   for (const descriptor of Object.values(Object.getOwnPropertyDescriptors(scopeObject))) {
-    const route = descriptor.get && /** @type {RoutedGetter} */ (descriptor.get).route;
+    const route = descriptor.get && (descriptor.get as RoutedGetter).route;
     if (route) {
       routes.push({...route, local: () => scopeObject['_' + route.name]});
     }
