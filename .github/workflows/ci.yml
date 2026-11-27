@@ -51,6 +51,7 @@ jobs:
               - 'src/**'
               - 'package.json'
             test:
+              - '.github/workflows/ci.yml'
               - 'test/**'
               - 'rollup.config.js'
               - 'vitest*.config.js'
@@ -79,6 +80,13 @@ jobs:
         run: |
           pnpm run build
           pnpm run test-ci
+      # No browsers on Windows: run the unit specs, which need none, in Node.
+      - name: Test unit specs
+        if: |
+          (steps.changes.outputs.src == 'true' ||
+          steps.changes.outputs.test == 'true') &&
+          runner.os == 'Windows'
+        run: pnpm run test-unit
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |

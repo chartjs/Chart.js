@@ -100,6 +100,9 @@ These read or decide where a spec runs:
 
    **The user's choice (2026-11-27):** unit specs are named `*.unit.spec.js` and chosen by a glob, not listed in `vitest.config.js` (Decision 1).
 
+10. **`.github/workflows/ci.yml` joins the `test` paths filter.** Found while building P3: a change to the workflow alone matched neither the `src` nor the `test` filter, so the test steps were skipped on the very change that edits them, and P3's own pull request could not show its new step running. With the workflow in the `test` filter, a CI-only change runs the tests on both systems. This follows the earlier choice to list `vitest*.config.js` and `rollup.config.js` there, so that a change to the test configuration alone runs the tests.
+   - *Prove the step with a temporary change to a `test/` file:* rejected. It needs a revert commit, and the next edit to the workflow would again run no test.
+
 ## Risks / Trade-offs
 
 - **A test that guards itself** with `it.skipIf(typeof window === 'undefined')` would run nowhere. → The docs forbid it, and a reviewer sees it.
@@ -116,7 +119,7 @@ Commit types `test:` and `ci:` release nothing. No issue is open for this work, 
 |---|---|---|---|---|---|---|---|
 | P1 | `test: run the DOM-free specs in Node`: two projects split by the `*.unit.spec.js` glob, the 14 specs renamed to it, the Node setup and its pin spec, the scripts, the lint override, and the contributing docs | `vitest.config.js`, the 14 specs (renamed to `*.unit.spec.js`), `test/setup.node.js` (new), `test/specs/vitest.setup.node.unit.spec.js` (new), `package.json` (scripts only), `test/.eslintrc.yml`, `docs/developers/contributing.md` | `pnpm exec vitest run --project unit` exits 1 on master with `No projects matched the filter "unit"`; with P1 it runs 15 files in Node and the pin spec passes | ~150 | | | |
 | P2 | `test: run core.helpers and helpers.curve in Node` | `test/specs/core.helpers.spec.js`, `test/specs/helpers.curve.spec.js` (renamed to `*.unit.spec.js`, and `window.Chart.helpers` → `Chart.helpers`) | `pnpm test-unit core.helpers` finds no file | ~4 | P1 (the `unit` project) | | |
-| P3 | `ci: run the unit specs on Windows` | `.github/workflows/ci.yml` (a step `pnpm run test-unit` with `if: runner.os == 'Windows'` and the src/test filter) | the Windows job runs no test; a failure that only shows on Windows goes unseen | ~8 | P1 (`test-unit`) | | |
+| P3 | `ci: run the unit specs on Windows`: a Windows step that runs the unit specs, and `ci.yml` in the `test` paths filter (Decision 10) | `.github/workflows/ci.yml` (a step `pnpm run test-unit` with `if: runner.os == 'Windows'` and the src/test filter; `.github/workflows/ci.yml` added to the `test` filter) | the Windows job runs no test; a failure that only shows on Windows goes unseen | ~8 | P1 (`test-unit`) | | |
 
 P2 and P3 can be built in parallel after P1. `vitest.config.js`, `package.json`, `test/.eslintrc.yml`, `docs/developers/contributing.md`, `.github/workflows/ci.yml` and P2's two specs appear in none of the 70 open pull requests. Three pull requests edited specs that P1 renames, and all three landed before P1: [#12521](https://github.com/chartjs/Chart.js/pull/12521) (`helpers.core`), [#12527](https://github.com/chartjs/Chart.js/pull/12527) (`helpers.config`) and [#12530](https://github.com/chartjs/Chart.js/pull/12530) (`helpers.segment`). P1 is rebased onto them, and their edits are in the renamed files. #12521 added two `acquireChart` tests to `helpers.core`, so P1 moves those two tests to `test/specs/core.config.spec.js`, next to the chart tests #12521 added there.
 
