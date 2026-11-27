@@ -761,9 +761,9 @@ describe('Chart.Config', function() {
       expect(record(chart, 'y1')).toEqual({implied: false});
     });
 
-    // The merge after the first treats every stored id as given, so the
-    // derived object of y1 then also holds the chart type's defaults; the
-    // copies in the stored entry mask them.
+    // The keys of the derived object of one scale: those of its sources.
+    const keysOf = (...sources) => Array.from(new Set(sources.flatMap((source) => Object.keys(source)))).sort();
+
     it('should derive the defaults of the chart and dataset types for each scale', function() {
       const chart = window.acquireChart(impliedScaleConfig());
       const derived = chart.config._derivedOptions.scales;
@@ -775,6 +775,42 @@ describe('Chart.Config', function() {
       expect(derived.y1.type).toBe('linear');
       expect(derived.y1.ticks.callback).toBe(Chart.defaults.scales.linear.ticks.callback);
       expect(chart.config.options.scales.y1.beginAtZero).toBe(false);
+    });
+
+    it('should derive for a given scale the chart type, dataset type and scale type defaults, not defaults.scale', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a', 'b', 'c'], datasets: [{type: 'line', data: [10, 11, 12]}]},
+        options: {scales: {y: {}}}
+      });
+      const {bar, line} = Chart.overrides;
+
+      for (let i = 0; i < 2; i++) {
+        const derived = chart.config._derivedOptions.scales.y;
+        expect(Object.keys(derived).sort()).toEqual(
+          keysOf(bar.scales._value_, line.scales._value_, Chart.defaults.scales.linear)
+        );
+        expect(derived.beginAtZero).toBe(true);
+        expect(derived.ticks.callback).toBe(Chart.defaults.scales.linear.ticks.callback);
+        expect(derived.grid).toBeUndefined();
+        expect(derived.display).toBeUndefined();
+        expect(chart.config.options.scales.y.display).toBe(true);
+        expect(chart.config.options.scales.y.grid.color).toBe(Chart.defaults.scale.grid.color);
+        chart.update();
+      }
+    });
+
+    it('should derive for an implied scale the dataset type defaults only, also after updates', function() {
+      const chart = window.acquireChart(impliedScaleConfig());
+      const {line} = Chart.overrides;
+
+      for (let i = 0; i < 3; i++) {
+        const derived = chart.config._derivedOptions.scales.y1;
+        expect(Object.keys(derived).sort()).toEqual(keysOf(line.scales._value_, Chart.defaults.scales.linear));
+        expect(derived.beginAtZero).toBeUndefined();
+        expect(chart.config.options.scales.y1.beginAtZero).toBe(false);
+        chart.update();
+      }
     });
 
     it('should derive defaults only, not what the chart or the merge sets', function() {
@@ -802,30 +838,64 @@ describe('Chart.Config', function() {
       expect(chart.config._derivedOptions).toEqual(derived);
     });
 
+    it('should follow a changed chart type at update', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a', 'b', 'c'], datasets: [{data: [10, 11, 12]}]},
+        options: {scales: {x: {}, y: {}}}
+      });
+      expect(chart.config._derivedOptions.scales.x.offset).toBe(true);
+      expect(chart.config._derivedOptions.scales.y.beginAtZero).toBe(true);
+
+      chart.config.type = 'line';
+      chart.update();
+
+      expect(chart.config._derivedOptions.scales.x.offset).toBeUndefined();
+      expect(chart.config._derivedOptions.scales.y.beginAtZero).toBeUndefined();
+    });
+
+    it('should follow a changed dataset type at update', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: ['a', 'b', 'c'], datasets: [{data: [10, 11, 12]}]}
+      });
+      expect(chart.config._derivedOptions.scales.y.beginAtZero).toBeUndefined();
+
+      chart.data.datasets[0].type = 'bar';
+      chart.update();
+
+      expect(chart.config._derivedOptions.scales.x.offset).toBe(true);
+      expect(chart.config._derivedOptions.scales.y.beginAtZero).toBe(true);
+    });
+
     it('should hold clones, so that a write through the options reaches no defaults', function() {
       const chart = window.acquireChart(impliedScaleConfig());
       const derived = chart.config._derivedOptions.scales;
       const defaultColor = Chart.defaults.scale.grid.color;
-      const defaultTitlePadding = Chart.defaults.scale.title.padding;
+      const linearTicks = Chart.defaults.scales.linear.ticks;
+      const callback = linearTicks.callback;
 
-      expect(derived.y.grid).not.toBe(Chart.defaults.scale.grid);
-      expect(derived.y.title.padding).not.toBe(defaultTitlePadding);
       expect(derived.x.grid).not.toBe(Chart.overrides.bar.scales._index_.grid);
-      expect(derived.y.grid).not.toBe(chart.config.options.scales.y.grid);
+      expect(derived.x.grid).not.toBe(chart.config.options.scales.x.grid);
+      expect(derived.y.ticks).not.toBe(linearTicks);
+      expect(derived.y.ticks).not.toBe(chart.config.options.scales.y.ticks);
 
       chart.options.scales.y.grid.color = 'red';
       chart.options.scales.y.title.padding.top = 20;
       chart.options.scales.x.grid.offset = false;
+      chart.options.scales.y.ticks.callback = () => '';
 
       expect(chart.config.options.scales.y.grid.color).toBe('red');
-      expect(derived.y.grid.color).toBe(defaultColor);
       expect(Chart.defaults.scale.grid.color).toBe(defaultColor);
       expect(Chart.defaults.scale.title.padding.top).toBe(4);
       expect(Chart.overrides.bar.scales._index_.grid.offset).toBe(true);
+      expect(derived.x.grid.offset).toBe(true);
+      expect(linearTicks.callback).toBe(callback);
+      expect(derived.y.ticks.callback).toBe(callback);
 
       chart.update();
 
-      expect(chart.config._derivedOptions.scales.y.grid.color).toBe(defaultColor);
+      expect(chart.config._derivedOptions.scales.x.grid.offset).toBe(true);
       expect(chart.config.options.scales.y.grid.color).toBe('red');
     });
   });
