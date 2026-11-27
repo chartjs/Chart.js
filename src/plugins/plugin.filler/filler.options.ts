@@ -1,11 +1,9 @@
 import {isObject, isFinite, valueOrDefault} from '../../helpers/helpers.core.js';
+import type Scale from '../../core/core.scale.js';
+import type LineElement from '../../elements/element.line.js';
+import type {FillTarget, ComplexFillTarget} from '../../types/index.js';
 
-/**
- * @typedef { import('../../core/core.scale.js').default } Scale
- * @typedef { import('../../elements/element.line.js').default } LineElement
- * @typedef { import('../../types/index.js').FillTarget } FillTarget
- * @typedef { import('../../types/index.js').ComplexFillTarget } ComplexFillTarget
- */
+export type {Scale, LineElement, FillTarget, ComplexFillTarget};
 
 export function _resolveTarget(sources, index, propagate) {
   const source = sources[index];
@@ -38,14 +36,8 @@ export function _resolveTarget(sources, index, propagate) {
   return false;
 }
 
-/**
- * @param {LineElement} line
- * @param {number} index
- * @param {number} count
- */
-export function _decodeFill(line, index, count) {
-  /** @type {string | {value: number}} */
-  const fill = parseFillOption(line);
+export function _decodeFill(line: LineElement, index: number, count: number) {
+  const fill: string | {value: number} = parseFillOption(line);
 
   if (isObject(fill)) {
     return isNaN(fill.value) ? false : fill;
@@ -72,52 +64,40 @@ function decodeTargetIndex(firstCh, index, target, count) {
   return target;
 }
 
-/**
- * @param {FillTarget | ComplexFillTarget} fill
- * @param {Scale} scale
- * @returns {number | null}
- */
-export function _getTargetPixel(fill, scale) {
+export function _getTargetPixel(fill: FillTarget | ComplexFillTarget, scale: Scale): number | null {
   let pixel = null;
   if (fill === 'start') {
     pixel = scale.bottom;
   } else if (fill === 'end') {
     pixel = scale.top;
   } else if (isObject(fill)) {
-    // @ts-ignore
-    pixel = scale.getPixelForValue(fill.value);
+    pixel = scale.getPixelForValue((fill as {value: number}).value);
   } else if (scale.getBasePixel) {
     pixel = scale.getBasePixel();
   }
   return pixel;
 }
 
-/**
- * @param {FillTarget | ComplexFillTarget} fill
- * @param {Scale} scale
- * @param {number} startValue
- * @returns {number | undefined}
- */
-export function _getTargetValue(fill, scale, startValue) {
-  let value;
+export function _getTargetValue(
+  fill: FillTarget | ComplexFillTarget,
+  scale: Scale,
+  startValue: number
+): number | undefined {
+  let value: number | undefined;
 
   if (fill === 'start') {
     value = startValue;
   } else if (fill === 'end') {
     value = scale.options.reverse ? scale.min : scale.max;
   } else if (isObject(fill)) {
-    // @ts-ignore
-    value = fill.value;
+    value = (fill as {value: number}).value;
   } else {
     value = scale.getBaseValue();
   }
   return value;
 }
 
-/**
- * @param {LineElement} line
- */
-function parseFillOption(line) {
+function parseFillOption(line: LineElement) {
   const options = line.options;
   const fillOption = options.fill;
   let fill = valueOrDefault(fillOption && fillOption.target, fillOption);

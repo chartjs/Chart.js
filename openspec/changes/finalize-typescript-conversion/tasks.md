@@ -111,12 +111,12 @@
 
 ## 15. P15: Convert the filler options, targets and entry to TypeScript
 
-- [ ] 15.1 Rename the modules to `.ts`. Show the gate's errors for the filler options, targets and entry before the fix.
-- [ ] 15.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 15.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 15.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 15.5 Run the whole test suite; no fixture changes.
-- [ ] 15.6 Update the source link in `docs/charts/area.md:6`.
+- [x] 15.1 Rename the modules to `.ts`. Show the gate's errors for the filler options, targets and entry before the fix.
+- [x] 15.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 15.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 15.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 15.5 Run the whole test suite; no fixture changes.
+- [x] 15.6 Update the source link in `docs/charts/area.md:6`.
 
 ## 16. P16: Convert the radar and polar area controllers to TypeScript
 

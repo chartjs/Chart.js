@@ -1929,25 +1929,17 @@ namespace _default {
 }
 
 // @public (undocumented)
-namespace _default_2 {
-    const // (undocumented)
+const _default_2: {
     id: string;
-    // (undocumented)
-    function afterDatasetsUpdate(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    function beforeDatasetDraw(chart: any, args: any, options: any): void;
-    // (undocumented)
-    function beforeDatasetsDraw(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    function beforeDraw(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    namespace defaults {
-        const // (undocumented)
+    afterDatasetsUpdate(chart: any, _args: any, options: any): void;
+    beforeDraw(chart: any, _args: any, options: any): void;
+    beforeDatasetsDraw(chart: any, _args: any, options: any): void;
+    beforeDatasetDraw(chart: any, args: any, options: any): void;
+    defaults: {
         propagate: boolean;
-        const // (undocumented)
         drawTime: string;
-    }
-}
+    };
+};
 
 // @public (undocumented)
 const _default_3: {
