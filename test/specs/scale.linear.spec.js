@@ -1190,6 +1190,33 @@ describe('Linear Scale', function() {
     expect(getLabels(chart.scales.y)).toEqual(['0', '1', '2', '3', '4', '5']);
   });
 
+  it('Should keep every spacing tick below a data max that is not a multiple of the spacing', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{
+          data: [0, 3200]
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            bounds: 'data',
+            ticks: {
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([
+      0, 500, 1000, 1500, 2000, 2500, 3000, 3200
+    ]);
+  });
+
   it('Should build labels using the user supplied callback', function() {
     var chart = window.acquireChart({
       type: 'bar',
