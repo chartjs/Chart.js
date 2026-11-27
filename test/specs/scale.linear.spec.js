@@ -1349,6 +1349,65 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(4))).toEqual([1.6284, 1.6287]);
   });
 
+  function expectFiniteIncreasing(values) {
+    expect(values.length).toBeGreaterThan(1);
+    expect(values.every(value => isFinite(value))).toBe(true);
+    for (let i = 1; i < values.length; i++) {
+      expect(values[i]).toBeGreaterThan(values[i - 1]);
+    }
+  }
+
+  [[0, Number.MAX_VALUE], [-Number.MAX_VALUE, 0]].forEach(function(data) {
+    it('Should generate finite ticks for data ' + JSON.stringify(data) + ' at the end of the number range', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data}]
+        }
+      });
+      var scale = chart.scales.y;
+      var values = scale.ticks.map(tick => tick.value);
+
+      expectFiniteIncreasing(values);
+      expect(values[0]).toBe(data[0]);
+      expect(values[values.length - 1]).toBe(data[1]);
+      expect(scale.min).toBe(data[0]);
+      expect(scale.max).toBe(data[1]);
+    });
+  });
+
+  it('Should generate the two data bounds as ticks when the range is not finite', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [-Number.MAX_VALUE, Number.MAX_VALUE]}]
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([-Number.MAX_VALUE, Number.MAX_VALUE]);
+  });
+
+  ['ticks', 'data'].forEach(function(bounds) {
+    it('Should generate finite ticks when the spacing has too many decimals to count with bounds: ' + bounds, function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [0, 1e-310]}]
+        },
+        options: {
+          scales: {
+            y: {bounds, min: 0}
+          }
+        }
+      });
+
+      expectFiniteIncreasing(chart.scales.y.ticks.map(tick => tick.value));
+    });
+  });
+
   it('Should build labels using the user supplied callback', function() {
     var chart = window.acquireChart({
       type: 'bar',
