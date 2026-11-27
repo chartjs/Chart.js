@@ -1397,6 +1397,28 @@ describe('Linear Scale', function() {
     });
   });
 
+  // 1.7e306 * 100 is finite, but its nice maximum 1.8e306 * 100 is not.
+  [1e307, 1.7e306].forEach(function(max) {
+    it('Should generate finite ticks when precision scales data up to ' + max + ' beyond the largest number', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data: [0, max]}]
+        },
+        options: {
+          scales: {
+            y: {ticks: {precision: 2}}
+          }
+        }
+      });
+      var scale = chart.scales.y;
+
+      expectFiniteIncreasing(scale.ticks.map(tick => tick.value));
+      expect(isFinite(scale.max)).toBe(true);
+    });
+  });
+
   ['ticks', 'data'].forEach(function(bounds) {
     it('Should generate finite ticks when the spacing has too many decimals to count with bounds: ' + bounds, function() {
       var chart = window.acquireChart({

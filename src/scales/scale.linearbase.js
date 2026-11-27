@@ -76,6 +76,11 @@ function generateTicks(generationOptions, dataRange) {
   if (!isNullOrUndef(precision)) {
     // If the user specified a precision, round to that number of decimal places
     factor = Math.pow(10, precision);
+    // The ticks reach at most a spacing beyond the data. If those values cannot be
+    // scaled by the factor, they cannot be rounded to the precision.
+    if (!isFinite((Math.max(Math.abs(rmin), Math.abs(rmax)) + spacing) * factor)) {
+      return [{value: rmin}, {value: rmax}];
+    }
     spacing = Math.ceil(spacing * factor) / factor;
   }
 
