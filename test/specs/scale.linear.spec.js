@@ -1867,4 +1867,41 @@ describe('Linear Scale', function() {
 
     expect(createChart).not.toThrow();
   });
+
+  // https://github.com/chartjs/Chart.js/issues/9614
+  it('should fit the labels into the part of the axis the ticks cover', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{x: 0, y: 0}, {x: 1000, y: 1}]
+        }]
+      },
+      options: {
+        plugins: {legend: false},
+        scales: {
+          x: {
+            min: 0,
+            max: 1000,
+            ticks: {stepSize: 10, maxRotation: 0},
+            afterBuildTicks: function(scale) {
+              scale.ticks = scale.ticks.filter((tick) => tick.value <= 500);
+            }
+          },
+          y: {display: false}
+        }
+      }
+    }, {
+      canvas: {width: 620, height: 100}
+    });
+
+    var scale = chart.scales.x;
+    var room = scale._getLabelSizes().widest.width + scale.options.ticks.autoSkipPadding;
+    var pixels = scale.ticks.map((tick) => scale.getPixelForValue(tick.value));
+
+    expect(scale.ticks.length).toBeGreaterThan(1);
+    for (var i = 1; i < pixels.length; i++) {
+      expect(pixels[i] - pixels[i - 1]).toBeGreaterThanOrEqual(room);
+    }
+  });
 });

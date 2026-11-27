@@ -119,6 +119,35 @@ describe('Test the radial linear scale', function() {
     expect(chart.scales.r.max).toBe(150);
   });
 
+  // The radial scale has no pixel for a value, so the labels that fit are
+  // counted from its values. Every ring is drawn on a kept tick.
+  it('should keep the same ticks and rings when it skips ticks', function() {
+    var chart = window.acquireChart({
+      type: 'radar',
+      data: {
+        datasets: [{
+          data: [10, 20, 100, 40, 50, 0]
+        }],
+        labels: ['label1', 'label2', 'label3', 'label4', 'label5', 'label6']
+      },
+      options: {
+        plugins: {legend: false},
+        scales: {
+          r: {
+            min: 0,
+            max: 100,
+            ticks: {stepSize: 1}
+          }
+        }
+      }
+    }, {
+      canvas: {width: 300, height: 300}
+    });
+
+    var scale = chart.scales.r;
+    expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98]);
+  });
+
   it('Should correctly determine the max & min data values when there is NaN data', function() {
     var chart = window.acquireChart({
       type: 'radar',

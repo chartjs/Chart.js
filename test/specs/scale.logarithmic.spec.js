@@ -1205,4 +1205,32 @@ describe('Logarithmic Scale tests', function() {
     expect(chart.scales.y.min).toEqual(1.1);
     expect(chart.scales.y.max).toEqual(99);
   });
+
+  // The value range of a logarithmic scale is in decades, not in tick values.
+  it('should fit the labels over the decades its ticks cover', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{x: 0.001, y: 0}, {x: 0.01, y: 1}]
+        }]
+      },
+      options: {
+        plugins: {legend: false},
+        scales: {
+          x: {
+            type: 'logarithmic',
+            min: 0.001,
+            max: 0.01,
+            ticks: {maxRotation: 0}
+          },
+          y: {display: false}
+        }
+      }
+    }, {
+      canvas: {width: 200, height: 100}
+    });
+
+    expect(chart.scales.x.ticks.map((tick) => tick.value)).toEqual([0.001, 0.0015, 0.002, 0.01]);
+  });
 });
