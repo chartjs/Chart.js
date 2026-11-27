@@ -1377,16 +1377,24 @@ describe('Linear Scale', function() {
     });
   });
 
-  it('Should generate the two data bounds as ticks when the range is not finite', function() {
-    var chart = window.acquireChart({
-      type: 'line',
-      data: {
-        labels: ['a', 'b'],
-        datasets: [{data: [-Number.MAX_VALUE, Number.MAX_VALUE]}]
-      }
-    });
+  [
+    {data: [-Number.MAX_VALUE, Number.MAX_VALUE], y: {}, expected: [-Number.MAX_VALUE, Number.MAX_VALUE]},
+    {data: [1, 2], y: {min: -1e308, max: 1e308, ticks: {count: 5}}, expected: [-1e308, 1e308]}
+  ].forEach(function({data, y, expected}) {
+    it('Should generate the two bounds as ticks when the range is not finite with ' + JSON.stringify(y), function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data}]
+        },
+        options: {
+          scales: {y}
+        }
+      });
 
-    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([-Number.MAX_VALUE, Number.MAX_VALUE]);
+      expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual(expected);
+    });
   });
 
   ['ticks', 'data'].forEach(function(bounds) {

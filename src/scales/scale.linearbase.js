@@ -1,4 +1,4 @@
-import {isNullOrUndef} from '../helpers/helpers.core.js';
+import {finiteOrDefault, isFinite, isNullOrUndef} from '../helpers/helpers.core.js';
 import {almostEquals, almostWhole, niceNum, _decimalPlaces, _setMinAndMaxByKey, sign, toRadians} from '../helpers/helpers.math.js';
 import Scale from '../core/core.scale.js';
 import {formatNumber} from '../helpers/helpers.intl.js';
@@ -50,6 +50,10 @@ function generateTicks(generationOptions, dataRange) {
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
+  if (!isFinite(rmax - rmin)) {
+    // The range is wider than the largest number, so no spacing can be computed
+    return [{value: rmin}, {value: rmax}];
+  }
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
   const countDefined = !isNullOrUndef(count);
@@ -80,9 +84,11 @@ function generateTicks(generationOptions, dataRange) {
     // spacing itself. Round the floating point error off here, otherwise
     // _decimalPlaces below reports it as significant and the factor grows large
     // enough that rounding the tick values becomes a no-op.
+    // A nice bound beyond the largest number (or one that cannot be rounded) falls
+    // back to the data bound.
     const spacingFactor = Math.pow(10, _decimalPlaces(spacing));
-    niceMin = Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor;
-    niceMax = Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor;
+    niceMin = finiteOrDefault(Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor, rmin);
+    niceMax = finiteOrDefault(Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor, rmax);
   } else {
     niceMin = rmin;
     niceMax = rmax;
@@ -119,10 +125,14 @@ function generateTicks(generationOptions, dataRange) {
 
   // The spacing will have changed in cases 1, 2, and 3 so the factor cannot be computed
   // until this point
-  const decimalPlaces = Math.max(
-    _decimalPlaces(spacing),
-    _decimalPlaces(niceMin)
-  );
+  const spacingPlaces = _decimalPlaces(spacing);
+  const minPlaces = _decimalPlaces(niceMin);
+  if (isNullOrUndef(precision) && (spacingPlaces === undefined || minPlaces === undefined)) {
+    // The decimals cannot be counted (a subnormal spacing, for example), so the
+    // ticks cannot be rounded to them.
+    return [{value: niceMin}, {value: niceMax}];
+  }
+  const decimalPlaces = Math.max(spacingPlaces, minPlaces);
   factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
