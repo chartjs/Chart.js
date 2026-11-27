@@ -146,6 +146,27 @@ describe('Test tick generators', function() {
       expect(Chart.Ticks.formatters.numeric.apply(scale, [1, 0, [{value: 1}, {value: 1.01}]])).toEqual('1.00');
     });
 
+    it('should not add a decimal for floating point error in the tick spacing', function() {
+      const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {}}};
+      // 1.4 - 1.3 and 0.0024 - 0.0023 are a little less than the 0.1 and 0.0001 steps
+      const ticks = [1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8].map(value => ({value}));
+      expect(ticks.map((t, i) => Chart.Ticks.formatters.numeric.call(scale, t.value, i, ticks)))
+        .toEqual(['1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8']);
+
+      const small = [0.0022, 0.0023, 0.0024, 0.0025].map(value => ({value}));
+      expect(small.map((t, i) => Chart.Ticks.formatters.numeric.call(scale, t.value, i, small)))
+        .toEqual(['0.0022', '0.0023', '0.0024', '0.0025']);
+    });
+
+    it('should label linear ticks with the decimals of their step', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {labels: ['a', 'b'], datasets: [{data: [1.27, 1.78]}]},
+        options: {locale: 'en-US', scales: {y: {ticks: {maxTicksLimit: 8}}}}
+      });
+      expect(getLabels(chart.scales.y)).toEqual(['1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8']);
+    });
+
     it('should not fail when the format sets only one fraction digits bound', function() {
       const scale = {chart: {options: {locale: 'en-US'}}, options: {ticks: {format: {style: 'percent', maximumFractionDigits: 0}}}};
       expect(Chart.Ticks.formatters.numeric.apply(scale, [0.15, 1, [{value: 0.1}, {value: 0.15}, {value: 0.2}]])).toEqual('15%');
