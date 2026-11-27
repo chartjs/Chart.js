@@ -145,7 +145,7 @@ The style of each bar can be controlled with the following properties:
 All these values, if `undefined`, fallback to the associated [`elements.bar.*`](../configuration/elements.md#bar-configuration) options.
 
 :::tip Borders are filled, not stroked
-The border of a bar is drawn by filling the area between the bar's outer rectangle and an inner one that is [`borderWidth`](#borderwidth) smaller on each side, not with a canvas stroke. Options that only shape a stroke, such as `borderDash`, `borderDashOffset`, `borderCapStyle` and `borderJoinStyle`, therefore have no effect on the bars; only the dataset's legend box, which is stroked, uses them. A dashed bar outline needs a [plugin](../developers/plugins.md) that strokes the bars itself.
+The border of a bar is drawn by filling the area between the bar's outer rectangle and an inner one that is [`borderWidth`](#borderwidth) smaller on each side, not with a canvas stroke. Options that only shape a stroke, such as `borderDash`, `borderDashOffset`, `borderCapStyle` and `borderJoinStyle`, therefore have no effect on bars, and bar datasets do not pass them to the legend box either. A dashed bar outline needs a [plugin](../developers/plugins.md) that strokes the bars itself.
 :::
 
 #### borderSkipped
