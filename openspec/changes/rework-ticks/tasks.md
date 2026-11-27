@@ -147,6 +147,7 @@
 ## 19. P19: Tick spacing without subtraction noise (#12543)
 
 - [ ] 19.1 Confirm #12543's specs fail on master: data [1.27, 1.78] with `maxTicksLimit: 8` gives "1.20", …, "1.80", and ticks 0.0022..0.0025 give "0.00220", ….
-- [ ] 19.2 Ask the author to count places with `_decimalPlaces` from `helpers.math` instead of the loop in `difference`, falling back to `a - b` when it returns `undefined` (after P1). If the author does not answer, make the change with `Co-authored-by`.
+- [ ] 19.2 The author adds the spec asked for in the review: `min: 4.1`, `max: 9`, `stepSize: 1` gives "4.1", "5", …, "9" (master and the PR with its second `difference` call reverted: "4.10"). If the author does not answer, add it with `Co-authored-by`.
 - [ ] 19.3 Regenerate `scale.logarithmic/large-values-small-range.png` if P6 merged first.
 - [ ] 19.4 The pull request says `Part of #12382`.
+- [ ] 19.5 Follow-up, optional, after P1: `difference` counts places with `_decimalPlaces` instead of its own loop.
