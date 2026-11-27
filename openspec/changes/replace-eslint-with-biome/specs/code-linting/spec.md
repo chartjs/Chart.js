@@ -54,7 +54,7 @@ The repository SHALL list the commit that reformatted the tree in a blame-ignore
 - **THEN** the line shows the commit that last changed it before the reformat
 
 ### Requirement: Library and test code stay within the syntax the build does not lower
-The lint command SHALL fail when library, test or documentation-script code uses the syntax or built-ins that the ES2018 guard of `eslint-plugin-es` rejects today, such as optional chaining, nullish coalescing, optional catch binding, BigInt, `globalThis` and newer regular-expression features, including in `RegExp` calls with literal arguments. It SHALL also fail on later syntax that the build does not lower. Code of the documentation site, which is not shipped, SHALL be exempt.
+The lint command SHALL fail when library code, test JavaScript or documentation scripts use syntax or built-ins newer than ES2018 that the build does not lower, as the ES2018 guard of `eslint-plugin-es` rejects them today, including in `RegExp` calls with literal arguments. The documentation site, the type tests and the integration checks' TypeScript SHALL be exempt.
 
 #### Scenario: Optional chaining in library code
 - **WHEN** a library source file uses `a?.[b]`
@@ -76,6 +76,10 @@ The lint command SHALL fail when library, test or documentation-script code uses
 - **WHEN** a documentation site file uses `a ?? b`
 - **THEN** `pnpm lint` reports no ES-version finding for it
 
+#### Scenario: Type tests are exempt
+- **WHEN** a type test uses `a?.b`
+- **THEN** `pnpm lint` reports no ES-version finding for it
+
 ### Requirement: The ES2018 guard checks itself
 The lint command SHALL fail when the ES2018 guard stops detecting a known sample of the syntax it rejects, or starts reporting a known ES2018 sample.
 
@@ -87,20 +91,21 @@ The lint command SHALL fail when the ES2018 guard stops detecting a known sample
 - **WHEN** the guard reports `catch (e)` in its negative sample
 - **THEN** `pnpm lint` fails
 
-### Requirement: Test globals match the test runner
-The lint command SHALL accept the globals of the runner each test file runs under, and SHALL report the other runner's globals as undeclared. It SHALL fail when a spec focuses a test or suite.
-
-#### Scenario: Karma spec
-- **WHEN** a Karma spec uses `describe`, `expect`, `spyOn`, `jasmine` or `acquireChart`
-- **THEN** `pnpm lint` reports no undeclared variable
+### Requirement: Test globals match where the file runs
+The lint command SHALL accept, in each test file, the globals that its environment provides: the test runner's globals in specs and setups, the fixture helpers in image fixtures, and the worker globals in the smoke suite's web worker. It SHALL report any other global as undeclared. It SHALL fail when a spec focuses a test or suite.
 
 #### Scenario: Vitest spec
-- **WHEN** a Vitest spec uses `vi`, `describe` or `createMockContext`
+- **WHEN** a spec uses `vi`, `describe`, `createMockContext` or `acquireChart`
 - **THEN** `pnpm lint` reports no undeclared variable
 - **AND** **WHEN** it uses `jasmine`, **THEN** `pnpm lint` fails
 
+#### Scenario: Image fixture
+- **WHEN** an image fixture uses `triggerMouseEvent`
+- **THEN** `pnpm lint` reports no undeclared variable
+- **AND** **WHEN** it uses `vi`, **THEN** `pnpm lint` fails
+
 #### Scenario: Focused test
-- **WHEN** any spec uses `fit` or `fdescribe`
+- **WHEN** any spec uses `it.only` or `describe.only`
 - **THEN** `pnpm lint` fails
 
 ### Requirement: Inline suppressions name a rule and a reason
