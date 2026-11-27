@@ -830,6 +830,9 @@ describe('Plugin.Tooltip', function() {
 
   it('should hide the tooltip and not run content callbacks when all items are filtered out', async function() {
     var titleCallback = vi.fn();
+    var beforeBodyCallback = vi.fn();
+    var labelCallback = vi.fn();
+    var footerCallback = vi.fn();
     var chart = window.acquireChart({
       type: 'line',
       data: {
@@ -847,7 +850,10 @@ describe('Plugin.Tooltip', function() {
               return false;
             },
             callbacks: {
-              title: titleCallback
+              title: titleCallback,
+              beforeBody: beforeBodyCallback,
+              label: labelCallback,
+              footer: footerCallback
             }
           }
         }
@@ -860,6 +866,9 @@ describe('Plugin.Tooltip', function() {
     await triggerMouseEvent(chart, 'mousemove', point);
 
     expect(titleCallback).not.toHaveBeenCalled();
+    expect(beforeBodyCallback).not.toHaveBeenCalled();
+    expect(labelCallback).not.toHaveBeenCalled();
+    expect(footerCallback).not.toHaveBeenCalled();
     expect(chart.tooltip.opacity).toBe(0);
   });
 
@@ -879,6 +888,20 @@ describe('Plugin.Tooltip', function() {
             mode: 'index',
             filter: function(item) {
               return item.dataIndex !== 2;
+            },
+            callbacks: {
+              title: function() {
+                return 'Title';
+              },
+              beforeBody: function() {
+                return 'Before body';
+              },
+              afterBody: function() {
+                return 'After body';
+              },
+              footer: function() {
+                return 'Footer';
+              }
             }
           }
         }
@@ -892,9 +915,44 @@ describe('Plugin.Tooltip', function() {
     expect(chart.tooltip.body.length).toBe(1);
     await triggerMouseEvent(chart, 'mousemove', meta.data[2]);
 
-    expect(chart.tooltip.body.length).toBe(0);
+    expect(chart.tooltip.title).toEqual([]);
+    expect(chart.tooltip.beforeBody).toEqual([]);
+    expect(chart.tooltip.body).toEqual([]);
+    expect(chart.tooltip.afterBody).toEqual([]);
+    expect(chart.tooltip.footer).toEqual([]);
 
     // Drawing mid fade-out must not throw with the cleared label colors
+    chart.tooltip.opacity = 0.5;
+    expect(function() {
+      chart.tooltip.draw(chart.ctx);
+    }).not.toThrow();
+  });
+
+  it('should keep the content while fading out after leaving the chart', async function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index'
+          }
+        }
+      }
+    });
+
+    await triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[1]);
+    await triggerMouseEvent(chart, 'mouseout', {x: 0, y: 0});
+
+    expect(chart.tooltip.body.length).toBe(1);
+
+    // Drawing mid fade-out must not throw with the kept content
     chart.tooltip.opacity = 0.5;
     expect(function() {
       chart.tooltip.draw(chart.ctx);
