@@ -535,6 +535,27 @@ describe('Chart.helpers.core', function() {
     });
   });
 
+  describe('_hasOwn', function() {
+    it('should be true for an own property, also one whose value is undefined', function() {
+      expect(helpers._hasOwn({a: 1}, 'a')).toBe(true);
+      expect(helpers._hasOwn({a: undefined}, 'a')).toBe(true);
+    });
+
+    it('should be false for an inherited or a missing property', function() {
+      expect(helpers._hasOwn({}, 'toString')).toBe(false);
+      expect(helpers._hasOwn(Object.create({a: 1}), 'a')).toBe(false);
+      expect(helpers._hasOwn({}, 'a')).toBe(false);
+    });
+
+    it('should work on an object without a prototype', function() {
+      const object = Object.create(null);
+      object.a = 1;
+
+      expect(helpers._hasOwn(object, 'a')).toBe(true);
+      expect(helpers._hasOwn(object, 'b')).toBe(false);
+    });
+  });
+
   describe('_isRadialScale', function() {
     // The tests that build a chart are in test/specs/core.config.spec.js: a
     // unit spec runs in Node, without a canvas.

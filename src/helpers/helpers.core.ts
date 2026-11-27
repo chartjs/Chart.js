@@ -425,6 +425,15 @@ export function _isClickEvent(e: ChartEvent, events?: string[]) {
 }
 
 /**
+ * Whether `key` is an own property of `object`, also for an object without a
+ * prototype.
+ * @private
+ */
+export function _hasOwn(object: object, key: PropertyKey): boolean {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+/**
  * Whether a scale is radial: it has a `getPointPositionForValue` method,
  * whatever class it extends.
  * @param scale - A scale, or the prototype of a scale class

@@ -1,5 +1,5 @@
 import {getHoverColor} from '../helpers/helpers.color.js';
-import {_merger, isObject, merge, valueOrDefault} from '../helpers/helpers.core.js';
+import {_hasOwn, _merger, isObject, merge, valueOrDefault} from '../helpers/helpers.core.js';
 import {applyAnimationsDefaults} from './core.animations.defaults.js';
 import {applyLayoutsDefaults} from './core.layouts.defaults.js';
 import {applyScaleDefaults} from './core.scale.defaults.js';
@@ -12,8 +12,6 @@ export const descriptors = Object.create(null);
 // function or class stored in the defaults, and the other two lead to a
 // prototype on any node.
 const UNSAFE_KEYS = ['__proto__', 'prototype', 'constructor'];
-
-const hasOwn = (object: object, key: string) => Object.prototype.hasOwnProperty.call(object, key);
 
 export type DefaultsRoute = {scope: string, name: string, targetScope: string, targetName: string};
 
@@ -32,7 +30,7 @@ export type RoutedGetter = (() => any) & {route?: DefaultsRoute};
 function assertOwnOrNew(node: any, key: string, path: string) {
   // `in` throws on a primitive, such as the string a path `color.length` reads
   // `length` from; Object() wraps it.
-  if (UNSAFE_KEYS.includes(key) || (node && !hasOwn(node, key) && key in Object(node))) {
+  if (UNSAFE_KEYS.includes(key) || (node && !_hasOwn(node, key) && key in Object(node))) {
     throw new Error(`Invalid defaults scope: ${path}`);
   }
 }
@@ -64,7 +62,7 @@ function getScope(node: any, key: string): any {
  * own, so that the values cannot replace a method of the defaults.
  */
 function skipInherited(key: string, target: AnyObject, source: AnyObject, options?: AnyObject) {
-  if (hasOwn(target, key) || !(key in target)) {
+  if (_hasOwn(target, key) || !(key in target)) {
     _merger(key, target, source, options);
   }
 }
@@ -276,7 +274,7 @@ export function getRoutes(scope: string): Array<DefaultsRoute & {local: () => an
   let node: any = defaults;
   for (const key of splitScope(scope)) {
     // Own properties only, and never create a scope.
-    node = isObject(node) && hasOwn(node, key) ? node[key] : undefined;
+    node = isObject(node) && _hasOwn(node, key) ? node[key] : undefined;
   }
   if (!isObject(node)) {
     return [];
