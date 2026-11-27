@@ -536,27 +536,8 @@ describe('Chart.helpers.core', function() {
   });
 
   describe('_isRadialScale', function() {
-    it('should be true for a radial scale and its prototype', function() {
-      const chart = window.acquireChart({
-        type: 'radar',
-        data: {labels: ['a', 'b', 'c'], datasets: [{data: [1, 2, 3]}]}
-      });
-
-      expect(helpers._isRadialScale(chart.scales.r)).toBe(true);
-      expect(helpers._isRadialScale(Chart.RadialLinearScale.prototype)).toBe(true);
-    });
-
-    it('should be false for a cartesian scale and its prototype', function() {
-      const chart = window.acquireChart({
-        type: 'line',
-        data: {labels: ['a', 'b', 'c'], datasets: [{data: [1, 2, 3]}]}
-      });
-
-      expect(helpers._isRadialScale(chart.scales.y)).toBe(false);
-      expect(helpers._isRadialScale(Chart.LinearScale.prototype)).toBe(false);
-      expect(helpers._isRadialScale(Chart.CategoryScale.prototype)).toBe(false);
-    });
-
+    // The tests that build a chart are in test/specs/core.config.spec.js: a
+    // unit spec runs in Node, without a canvas.
     it('should be true for a scale class written from scratch that has getPointPositionForValue', function() {
       class FreeRadialScale extends Chart.Scale {
         getPointPositionForValue() {
