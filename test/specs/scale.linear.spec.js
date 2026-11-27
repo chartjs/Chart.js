@@ -1377,11 +1377,36 @@ describe('Linear Scale', function() {
     });
   });
 
+  const MAX = Number.MAX_VALUE;
   [
-    {data: [-Number.MAX_VALUE, Number.MAX_VALUE], y: {}, expected: [-Number.MAX_VALUE, Number.MAX_VALUE]},
-    {data: [1, 2], y: {min: -1e308, max: 1e308, ticks: {count: 5}}, expected: [-1e308, 1e308]}
+    // the range is wider than the largest number
+    {data: [-MAX, MAX], y: {}, expected: [-MAX, MAX]},
+    {data: [1, 2], y: {min: -1e308, max: 1e308, ticks: {count: 5}}, expected: [-1e308, 1e308]},
+    // the range between the nice bounds is wider than the largest number
+    {data: [-1, MAX], y: {}, expected: [-2e307, MAX]},
+    {data: [-MAX, 1], y: {}, expected: [-MAX, 2e307]},
+    {data: [-1, MAX], y: {ticks: {stepSize: 0.5}}, expected: [-2.4999999999999997e305, MAX]},
+    // (with count the spacing is not finite; precision 0 leaves no other guard)
+    {data: [-1, MAX], y: {ticks: {count: 5, precision: 0}}, expected: [-2e307, MAX]},
+    // the range is subnormal, so the spacing is 0
+    {data: [0, 5e-324], y: {min: 0}, expected: [0, 5e-324]},
+    // the decimals of the spacing cannot be counted
+    {data: [0, 1e-310], y: {bounds: 'ticks', min: 0}, expected: [0, 1e-310]},
+    {data: [0, 1e-310], y: {bounds: 'data', min: 0}, expected: [0, 1e-310]},
+    // the decimals of the minimum cannot be counted
+    {data: [1e-310, 1], y: {bounds: 'data'}, expected: [1e-310, 1]},
+    // the nice bounds times the rounding factor are beyond the largest number:
+    // from precision,
+    {data: [0, 1e307], y: {ticks: {precision: 2}}, expected: [0, 1e307]},
+    {data: [-1e307, 0], y: {ticks: {precision: 2}}, expected: [-1e307, 0]},
+    // (1.7e306 * 100 is finite, but its nice bound 1.8e306 * 100 is not)
+    {data: [0, 1.7e306], y: {ticks: {precision: 2}}, expected: [0, 1.7999999999999998e306]},
+    {data: [-1.7e306, 0], y: {ticks: {precision: 2}}, expected: [-1.7999999999999998e306, 0]},
+    // or from the decimals of the minimum (0.5 needs a factor of 10)
+    {data: [0.5, 1e308], y: {bounds: 'data'}, expected: [0.5, 1e308]},
+    {data: [0.001, 1e307], y: {bounds: 'data', ticks: {count: 5}}, expected: [0.001, 1e307]}
   ].forEach(function({data, y, expected}) {
-    it('Should generate the two bounds as ticks when the range is not finite with ' + JSON.stringify(y), function() {
+    it('Should generate the two bounds as ticks for data ' + JSON.stringify(data) + ' with ' + JSON.stringify(y), function() {
       var chart = window.acquireChart({
         type: 'line',
         data: {
@@ -1397,49 +1422,21 @@ describe('Linear Scale', function() {
     });
   });
 
-  // 1.7e306 * 100 is finite, but its nice maximum 1.8e306 * 100 is not.
-  [1e307, 1.7e306].forEach(function(max) {
-    it('Should generate finite ticks when precision scales data up to ' + max + ' beyond the largest number', function() {
-      var chart = window.acquireChart({
-        type: 'line',
-        data: {
-          labels: ['a', 'b'],
-          datasets: [{data: [0, max]}]
-        },
-        options: {
-          scales: {
-            y: {ticks: {precision: 2}}
-          }
+  it('Should round to the precision when the decimals of the minimum cannot be counted', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [1e-310, 1]}]
+      },
+      options: {
+        scales: {
+          y: {bounds: 'data', ticks: {precision: 2}}
         }
-      });
-      var scale = chart.scales.y;
-
-      expectFiniteIncreasing(scale.ticks.map(tick => tick.value));
-      expect(isFinite(scale.max)).toBe(true);
+      }
     });
-  });
 
-  [
-    // the decimals of the spacing cannot be counted
-    {data: [0, 1e-310], y: {bounds: 'ticks', min: 0}},
-    {data: [0, 1e-310], y: {bounds: 'data', min: 0}},
-    // the decimals of the minimum cannot be counted
-    {data: [1e-310, 1], y: {bounds: 'data'}}
-  ].forEach(function({data, y}) {
-    it('Should generate the bounds as ticks when the decimals cannot be counted with ' + JSON.stringify({data, y}), function() {
-      var chart = window.acquireChart({
-        type: 'line',
-        data: {
-          labels: ['a', 'b'],
-          datasets: [{data}]
-        },
-        options: {
-          scales: {y}
-        }
-      });
-
-      expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual(data);
-    });
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
   });
 
   it('Should build labels using the user supplied callback', function() {

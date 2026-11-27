@@ -72,11 +72,6 @@ function generateTicks(generationOptions, dataRange) {
   if (!isNullOrUndef(precision)) {
     // If the user specified a precision, round to that number of decimal places
     factor = Math.pow(10, precision);
-    // The ticks reach at most a spacing beyond the data. If those values cannot be
-    // scaled by the factor, they cannot be rounded to the precision.
-    if (!isFinite((Math.max(Math.abs(rmin), Math.abs(rmax)) + spacing) * factor)) {
-      return [{value: rmin}, {value: rmax}];
-    }
     spacing = Math.ceil(spacing * factor) / factor;
   }
 
@@ -124,18 +119,29 @@ function generateTicks(generationOptions, dataRange) {
     }
   }
 
+  if (!isFinite(numSpaces) || !isFinite(spacing)) {
+    // The ticks cannot be counted or spaced: the nice range or the range itself is
+    // wider than the largest number, or the spacing is 0 because the range is
+    // subnormal.
+    return [{value: niceMin}, {value: niceMax}];
+  }
+
   // The spacing will have changed in cases 1, 2, and 3 so the factor cannot be computed
   // until this point
   const spacingPlaces = _decimalPlaces(spacing);
   const minPlaces = _decimalPlaces(niceMin);
   if (isNullOrUndef(precision) && (spacingPlaces === undefined || minPlaces === undefined)) {
-    // The decimals cannot be counted, so the ticks cannot be rounded to them: the
-    // spacing is subnormal, or it is not finite because the range is wider than
-    // the largest number.
+    // The decimals of the spacing or of the minimum cannot be counted (they are
+    // subnormal, for example), so the ticks cannot be rounded to them.
     return [{value: niceMin}, {value: niceMax}];
   }
   const decimalPlaces = Math.max(spacingPlaces, minPlaces);
   factor = Math.pow(10, isNullOrUndef(precision) ? decimalPlaces : precision);
+  if (!isFinite(Math.max(Math.abs(niceMin), Math.abs(niceMax)) * factor)) {
+    // Every tick lies between the nice bounds. If they cannot be scaled by the
+    // factor, the ticks cannot be rounded to it.
+    return [{value: niceMin}, {value: niceMax}];
+  }
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
 
