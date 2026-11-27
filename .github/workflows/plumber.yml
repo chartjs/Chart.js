@@ -1,0 +1,40 @@
+name: Plumber
+
+on:
+  push:
+    branches:
+      - master
+  # Only pull requests that change what is checked. Other pull requests
+  # never run this, so a finding cannot turn an unrelated one red.
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/**"
+      - ".plumber.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    permissions:
+      actions: read  # for getplumber/plumber to read the workflow states and one run log
+      contents: read  # for actions/checkout to fetch code
+      security-events: write  # for getplumber/plumber to list its findings under code scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Reads the workflow files and the repository settings. No code from
+      # the repository is run.
+      - uses: getplumber/plumber@ec8cb3a7edd6a324b33e85109b627b2df6023d94 # v0.7.23
+        with:
+          # Fail under 85 points. The default is 100, where any finding fails.
+          min-points: 85
+          # Findings go to code scanning from master only: pull requests from
+          # forks and from Dependabot get a read-only token. The report is
+          # kept as a run artifact either way.
+          upload-sarif: ${{ github.event_name == 'push' }}

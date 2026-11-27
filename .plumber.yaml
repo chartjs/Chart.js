@@ -1,0 +1,17 @@
+# Plumber overlay: inherits every control from the CLI's built-in
+# baseline, only the differences for this repository are written here.
+# Run 'plumber config resolve' to see the full effective config.
+extends: plumber:default
+version: "2.0"
+
+github:
+  controls:
+    githubActionMustComeFromAuthorizedSources:
+      # Keep the default trust list and add the four third-party actions
+      # the CI, size and release drafter workflows use.
+      includePlumberDefaults: true
+      trustedGithubActions:
+        - coverallsapp/github-action
+        - dorny/paths-filter
+        - preactjs/compressed-size-action
+        - release-drafter/release-drafter
