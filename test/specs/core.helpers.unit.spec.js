@@ -3,7 +3,7 @@ describe('Core helper tests', function() {
   var helpers;
 
   beforeAll(function() {
-    helpers = window.Chart.helpers;
+    helpers = Chart.helpers;
   });
 
   it('should generate integer ids', function() {
