@@ -795,6 +795,59 @@ describe('Chart.helpers.config', function() {
       expect(opts.fn).toEqual(1);
     });
 
+    describe('with a second proxy for scriptable options', function() {
+      // As Config.resolveNamedOptions builds them: the second proxy resolves the same
+      // scopes without the hover prefixes, in the same context
+      function attachWithSubProxy(scopes, context, prefixes = ['']) {
+        const subPrefixes = prefixes.filter(p => !p.toLowerCase().includes('hover'));
+        const subProxy = _attachContext(_createResolver(scopes, subPrefixes), context);
+        return _attachContext(_createResolver(scopes, prefixes), context, subProxy);
+      }
+
+      it('should give scriptable options the new context after setContext', function() {
+        const options = {
+          a: (ctx, opts) => ctx.n + ':' + opts.b,
+          b: ctx => ctx.n
+        };
+        const opts = attachWithSubProxy([options], {n: 1});
+
+        expect(opts.a).toEqual('1:1');
+        expect(opts.setContext({n: 2}).a).toEqual('2:2');
+        expect(opts.a).toEqual('1:1');
+      });
+
+      it('should give scriptable options the plain object override', function() {
+        const options = {
+          label: {
+            type: 'box',
+            kind: (ctx, opts) => opts.type
+          }
+        };
+
+        const opts = attachWithSubProxy([options], {});
+        expect(opts.label.kind).toEqual('box');
+        expect(opts.label.override({type: 'label'}).kind).toEqual('label');
+
+        const hovered = attachWithSubProxy([options], {}, ['hover', '']);
+        expect(hovered.label.override({type: 'label'}).kind).toEqual('label');
+      });
+
+      it('should give scriptable options in an item of an array the options of that item', function() {
+        const options = {
+          items: [
+            {a: 1, b: (ctx, opts) => Array.isArray(opts), c: (ctx, opts) => opts.a},
+            {a: 2, b: (ctx, opts) => Array.isArray(opts), c: (ctx, opts) => opts.a}
+          ]
+        };
+        const opts = attachWithSubProxy([options], {});
+
+        expect(opts.items[0].b).toBe(false);
+        expect(opts.items[0].c).toBe(1);
+        expect(opts.items[1].b).toBe(false);
+        expect(opts.items[1].c).toBe(2);
+      });
+    });
+
     it('should support common object methods', function() {
       const defaults = {
         option1: 'defaults'
