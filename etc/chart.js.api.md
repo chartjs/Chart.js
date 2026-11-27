@@ -2270,11 +2270,11 @@ export const defaults: Defaults;
 
 // @public
 class Defaults_2 {
-    constructor(_descriptors: any, _appliers: any);
+    constructor(_descriptors: object, _appliers: Array<(defaults: Defaults_2) => void>);
     // (undocumented)
     animation: any;
     // (undocumented)
-    apply(appliers: any): void;
+    apply(appliers: Array<(defaults: Defaults_2) => void>): void;
     // (undocumented)
     backgroundColor: string;
     // (undocumented)
@@ -2326,7 +2326,7 @@ class Defaults_2 {
     // (undocumented)
     onHover: any;
     // (undocumented)
-    override(scope: any, values: any): any;
+    override(scope: string | object, values?: object): any;
     // (undocumented)
     parsing: boolean;
     // (undocumented)
