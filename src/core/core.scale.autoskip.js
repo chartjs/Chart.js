@@ -30,30 +30,44 @@ export function autoSkip(scale, ticks) {
   const step = Math.ceil(calculateSpacing(majorIndices, ticks, ticksLimit));
 
   if (numMajorIndices === 0) {
-    skip(ticks, newTicks, step, 0, ticks.length - 1, false);
+    skip(ticks, newTicks, step, 0, ticks.length - 1);
     return newTicks;
   }
 
-  // The same whole step is repeated from each major, and a tick closer than
-  // one step to the next major is dropped. Before the first and after the last
-  // major, majors are assumed at the average major spacing; a single major
-  // runs to the first and the last tick. Descending ticks (a reversed axis)
-  // are walked mirrored, so that each step counts from the major its stretch
-  // starts with.
-  const reversed = isDescending(ticks);
-  const majors = reversed ? mirror(majorIndices, ticks.length) : majorIndices;
-  const first = majors[0];
-  const last = majors[numMajorIndices - 1];
+  // Descending ticks (a reversed axis) are walked in ascending order, so that
+  // each step counts from the major its stretch starts with.
+  if (isDescending(ticks)) {
+    const ascending = ticks.slice().reverse();
+    keepFromMajors(ascending, newTicks, getMajorIndices(ascending), step);
+    return newTicks.reverse();
+  }
+  keepFromMajors(ticks, newTicks, majorIndices, step);
+  return newTicks;
+}
+
+/**
+ * Repeats the same whole step from each major, and drops a tick closer than
+ * one step to the next major. Before the first and after the last major,
+ * majors are assumed at the average major spacing; a single major runs to the
+ * first and the last tick.
+ * @param {Tick[]} ticks - in ascending order
+ * @param {Tick[]} newTicks
+ * @param {number[]} majorIndices
+ * @param {number} step - a whole number of ticks
+ */
+function keepFromMajors(ticks, newTicks, majorIndices, step) {
+  const numMajorIndices = majorIndices.length;
+  const first = majorIndices[0];
+  const last = majorIndices[numMajorIndices - 1];
   const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
   const headStart = avgMajorSpacing === null ? 0 : Math.max(first - avgMajorSpacing, 0);
   const tailEnd = avgMajorSpacing === null ? ticks.length - 1 : last + avgMajorSpacing - step;
 
-  skip(ticks, newTicks, step, first - Math.floor((first - headStart) / step) * step, first - step, reversed);
+  skip(ticks, newTicks, step, first - Math.floor((first - headStart) / step) * step, first - step);
   for (let i = 0; i < numMajorIndices; i++) {
-    const end = i < numMajorIndices - 1 ? majors[i + 1] - step : tailEnd;
-    skip(ticks, newTicks, step, majors[i], Math.max(end, majors[i]), reversed);
+    const end = i < numMajorIndices - 1 ? majorIndices[i + 1] - step : tailEnd;
+    skip(ticks, newTicks, step, majorIndices[i], Math.max(end, majorIndices[i]));
   }
-  return reversed ? newTicks.reverse() : newTicks;
 }
 
 /**
@@ -65,19 +79,6 @@ function isDescending(ticks) {
   const first = ticks[0].value;
   const last = ticks[ticks.length - 1].value;
   return typeof first === 'number' && typeof last === 'number' && first > last;
-}
-
-/**
- * Counts the indexes from the other end, in place, and keeps them ascending.
- * @param {number[]} indices
- * @param {number} length
- */
-function mirror(indices, length) {
-  indices.reverse();
-  for (let i = 0; i < indices.length; i++) {
-    indices[i] = length - 1 - indices[i];
-  }
-  return indices;
 }
 
 function determineMaxTicks(scale) {
@@ -147,20 +148,17 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
 }
 
 /**
- * Keeps the ticks from `start` to `end`, both included, `step` apart. When
- * `reversed`, the indexes are counted from the last tick.
+ * Keeps the ticks from `start` to `end`, both included, `step` apart.
  * @param {Tick[]} ticks
  * @param {Tick[]} newTicks
  * @param {number} step - a whole number of ticks
  * @param {number} start
  * @param {number} end
- * @param {boolean} reversed
  */
-function skip(ticks, newTicks, step, start, end, reversed) {
-  const lastIndex = ticks.length - 1;
-  const stop = Math.min(end, lastIndex);
+function skip(ticks, newTicks, step, start, end) {
+  const stop = Math.min(end, ticks.length - 1);
   for (let i = start; i <= stop; i += step) {
-    newTicks.push(ticks[reversed ? lastIndex - i : i]);
+    newTicks.push(ticks[i]);
   }
 }
 

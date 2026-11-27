@@ -80,6 +80,8 @@ describe('Core.scale.autoskip', function() {
   it('should run to the last tick after a single major', function() {
     // 40 / 7 = 5.7: a step of 6, and no major after 0 to stop before.
     expect(keptTicks(40, [0], 7)).toEqual([0, 6, 12, 18, 24, 30, 36]);
+    // 37 / 7 = 5.3: a step of 6 lands on the last tick, 36.
+    expect(keptTicks(37, [0], 7)).toEqual([0, 6, 12, 18, 24, 30, 36]);
   });
 
   it('should assume majors at the average spacing around two majors', function() {
