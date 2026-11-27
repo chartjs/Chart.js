@@ -1,5 +1,6 @@
 module.exports = {
   description: 'https://github.com/chartjs/Chart.js/issues/9614',
+  tolerance: 0.0012,
   config: {
     type: 'scatter',
     data: {

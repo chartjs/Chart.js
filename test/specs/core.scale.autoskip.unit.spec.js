@@ -216,6 +216,32 @@ describe('Core.scale.autoskip', function() {
       expect(kept.map((tick) => tick.value)).toEqual(valueTicks(0, 480, 40).map((tick) => tick.value));
     });
 
+    // Ticks `count` evenly over `from` to `to`.
+    function evenTicks(count, from, to) {
+      const ticks = [];
+      for (let i = 0; i < count; i++) {
+        ticks.push({value: from + (to - from) * i / (count - 1)});
+      }
+      return ticks;
+    }
+
+    it('should not count a label that only partly fits', function() {
+      // 312 px / 21 = 14.9: 15 labels fit, not 16. One tick in five is kept.
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+      const kept = autoSkip(scale, evenTicks(64, 0, 520));
+
+      expect(kept.length).toBe(13);
+      expect(closest(scale, kept)).toBeGreaterThanOrEqual(21);
+    });
+
+    it('should count the span from the first tick', function() {
+      // 300 px / 20 = 15: 16 labels fit, one tick in four of 61. A span from
+      // the second tick (294 px) fits 15, one tick in five.
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 20});
+
+      expect(autoSkip(scale, evenTicks(61, 0, 500)).length).toBe(16);
+    });
+
     it('should be counted the same when the ticks descend', function() {
       const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
       const ascending = autoSkip(scale, valueTicks(0, 500, 10)).map((tick) => tick.value);
