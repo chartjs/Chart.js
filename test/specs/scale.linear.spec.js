@@ -855,6 +855,49 @@ describe('Linear Scale', function() {
     ]);
   });
 
+  it('Should use stepSize when a negative range is divisible within the precision of min and max', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: -8089.66,
+            max: -8089.45,
+            ticks: {
+              stepSize: 0.03
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(2))).toEqual([
+      -8089.66, -8089.63, -8089.6, -8089.57, -8089.54, -8089.51, -8089.48, -8089.45
+    ]);
+  });
+
+  it('Should not treat a step count a fraction of a step from whole as whole', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 3.0005,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+
+    // 3 is replaced by max, because the two labels would overlap.
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([0, 1, 2, 3.0005]);
+  });
+
   it('Should not generate any ticks > max if max is specified', function() {
     var chart = window.acquireChart({
       type: 'line',
