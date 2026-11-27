@@ -1416,6 +1416,38 @@ describe('Chart.controllers.bar', function() {
     });
   });
 
+  it('should not give a slot to an untyped dataset of a line chart on a second index axis', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b', 'c'],
+        datasets: [{
+          type: 'bar',
+          data: [1, 2, 3]
+        }, {
+          xAxisID: 'x2',
+          data: [3, 2, 1]
+        }]
+      },
+      options: {
+        scales: {
+          x: {type: 'category'},
+          x2: {type: 'category', position: 'top'}
+        }
+      }
+    });
+    var xScale = chart.scales.x;
+    var options = Chart.defaults.datasets.bar;
+    var categoryWidth = xScale.width / 3;
+    var expectedWidth = categoryWidth * options.categoryPercentage * options.barPercentage;
+
+    expect(chart.scales.x2.width).toBe(xScale.width);
+    chart.getDatasetMeta(0).data.forEach(function(bar, i) {
+      expect(bar.width).toBeCloseToPixel(expectedWidth);
+      expect(bar.x).toBeCloseToPixel(xScale.getPixelForValue(i));
+    });
+  });
+
   describe('Bar height (horizontal type)', function() {
     let data;
     let config;
