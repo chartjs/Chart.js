@@ -66,8 +66,10 @@
 
 ## 11. P10: Rows as tall as their tallest item
 
-- [ ] 11.1 Spec: a top legend with a three-line label; the next row starts below its third line, and the legend is tall enough. It fails on master.
-- [ ] 11.2 Row height is the tallest item's height. The pull request says `Closes #11824`.
+- [x] 11.1 Spec: a top legend with a three-line label; the next row starts below its third line, and the legend is tall enough. It fails on master.
+- [x] 11.2 Row height is the tallest item's height. The pull request says `Closes #11824`.
+- [x] 11.3 An item is at least as tall as its symbol, also with an array label (spec: `boxHeight: 40` and a two-line label in a top and a left legend).
+- [x] 11.4 An array label in a top or bottom legend is as wide as its widest line, as in a left or right legend (spec: hit box and `lineWidths` follow the widest line).
 
 ## 12. P11: Wrap within maxWidth and maxHeight
 
