@@ -1950,79 +1950,44 @@ namespace _default_2 {
 }
 
 // @public (undocumented)
-namespace _default_3 {
-    const // (undocumented)
+const _default_3: {
     id: string;
-    export { Legend as _element };
-    // (undocumented)
-    function afterEvent(chart: any, args: any): void;
-    // (undocumented)
-    function afterUpdate(chart: any): void;
-    // (undocumented)
-    function beforeUpdate(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    namespace defaults {
-        const // (undocumented)
+    _element: typeof Legend_2;
+    start(chart: any, _args: any, options: any): void;
+    stop(chart: any): void;
+    beforeUpdate(chart: any, _args: any, options: any): void;
+    afterUpdate(chart: any): void;
+    afterEvent(chart: any, args: any): void;
+    defaults: {
         display: boolean;
-        const // (undocumented)
         position: string;
-        const // (undocumented)
         align: string;
-        const // (undocumented)
         fullSize: boolean;
-        const // (undocumented)
         reverse: boolean;
-        const // (undocumented)
         weight: number;
-        // (undocumented)
-        namespace labels {
-            // (undocumented)
-            function color(ctx: any): any;
-            const // (undocumented)
-            boxWidth: number;
-            const // (undocumented)
-            padding: number;
-            // (undocumented)
-            function generateLabels(chart: any): any;
-        }
-        const // (undocumented)
+        onClick(_e: any, legendItem: any, legend: any): void;
         onHover: any;
-        const // (undocumented)
         onLeave: any;
-        // (undocumented)
-        function onClick(e: any, legendItem: any, legend: any): void;
-        // (undocumented)
-        namespace title {
-            // (undocumented)
-            function color_1(ctx: any): any;
-            export { color_1 as color };
-            const // (undocumented)
-            display_1: boolean;
-            export { display_1 as display };
-            const // (undocumented)
-            position_1: string;
-            export { position_1 as position };
-            const // (undocumented)
+        labels: {
+            color: (ctx: any) => any;
+            boxWidth: number;
+            padding: number;
+            generateLabels(chart: any): any;
+        };
+        title: {
+            color: (ctx: any) => any;
+            display: boolean;
+            position: string;
             text: string;
-        }
-    }
-    // (undocumented)
-    namespace descriptors {
-        // (undocumented)
-        namespace labels_1 {
-            // (undocumented)
-            function _scriptable_1(name: any): boolean;
-            export { _scriptable_1 as _scriptable };
-        }
-        // (undocumented)
-        function _scriptable(name: any): boolean;
-        export { labels_1 as labels };
-    }
-    // (undocumented)
-    function start(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    function stop(chart: any): void;
-}
+        };
+    };
+    descriptors: {
+        _scriptable: (name: any) => boolean;
+        labels: {
+            _scriptable: (name: any) => boolean;
+        };
+    };
+};
 
 // @public (undocumented)
 namespace _default_4 {
@@ -2791,6 +2756,98 @@ export const layouts: {
 export const Legend: Plugin_2;
 
 // @public (undocumented)
+class Legend_2 extends Element_2<AnyObject, LegendOpts> implements LayoutItem {
+    constructor(config: {
+        ctx: CanvasRenderingContext2D;
+        options: LegendOpts;
+        chart: Chart;
+    });
+    // (undocumented)
+    _added: boolean;
+    // (undocumented)
+    adjustHitBoxes(): void;
+    // (undocumented)
+    bottom: number;
+    // (undocumented)
+    buildLabels(): void;
+    // (undocumented)
+    chart: Chart;
+    _columnRight(x: number, col: number): number;
+    // (undocumented)
+    columnSizes: LegendColumnSize[];
+    // (undocumented)
+    _computeTitleHeight(): number;
+    // (undocumented)
+    _computeTitleWidth(): number;
+    // (undocumented)
+    ctx: CanvasRenderingContext2D;
+    // (undocumented)
+    doughnutMode: boolean;
+    // (undocumented)
+    draw(): void;
+    // (undocumented)
+    _draw(): void;
+    // (undocumented)
+    drawTitle(): void;
+    // (undocumented)
+    fit(): void;
+    // (undocumented)
+    _fitCols(titleHeight: number, labelFont: LegendFont, boxWidth: number, _itemHeight: number): number;
+    // (undocumented)
+    _fitRows(titleHeight: number, fontSize: number, boxWidth: number, itemHeight: number): number;
+    // (undocumented)
+    fullSize: boolean;
+    // (undocumented)
+    _getLegendItemAt(x: number, y: number): LegendItem | null;
+    handleEvent(e: ChartEvent): void;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    _hoveredItem: LegendItem | null;
+    // (undocumented)
+    isHorizontal(): boolean;
+    // (undocumented)
+    left: number;
+    // (undocumented)
+    legendHitBoxes: LegendHitBox[];
+    // (undocumented)
+    legendItems: LegendItem[];
+    // (undocumented)
+    lineWidths: number[];
+    // (undocumented)
+    _margins: ChartArea;
+    // (undocumented)
+    maxHeight: number;
+    // (undocumented)
+    maxWidth: number;
+    // (undocumented)
+    position: LayoutPosition;
+    // (undocumented)
+    right: number;
+    // (undocumented)
+    setDimensions(): void;
+    // (undocumented)
+    top: number;
+    // (undocumented)
+    update(maxWidth: number, maxHeight: number, margins: ChartArea): void;
+    // (undocumented)
+    weight: number;
+    // (undocumented)
+    width: number;
+}
+
+// @public (undocumented)
+type LegendCallback<R = void> = (this: Legend_2, ...args: unknown[]) => R;
+
+// @public (undocumented)
+interface LegendColumnSize {
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    width: number;
+}
+
+// @public (undocumented)
 export interface LegendElement<TType extends ChartType> extends Element_2<AnyObject, LegendOptions<TType>>, LayoutItem {
     // (undocumented)
     chart: Chart<TType>;
@@ -2802,6 +2859,25 @@ export interface LegendElement<TType extends ChartType> extends Element_2<AnyObj
     legendItems?: LegendItem[];
     // (undocumented)
     options: LegendOptions<TType>;
+}
+
+// @public (undocumented)
+type LegendFont = ReturnType<typeof toFont>;
+
+// @public
+interface LegendHitBox {
+    // (undocumented)
+    col?: number;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    left: number;
+    // (undocumented)
+    row?: number;
+    // (undocumented)
+    top: number;
+    // (undocumented)
+    width: number;
 }
 
 // @public (undocumented)
@@ -2885,6 +2961,28 @@ export interface LegendOptions<TType extends ChartType> {
         position: 'center' | 'start' | 'end';
         padding?: number | ChartArea;
         text: string;
+    };
+}
+
+// @public
+interface LegendOpts extends Omit<PublicLegendOptions, 'labels' | 'title' | 'onClick' | 'onHover' | 'onLeave' | 'textDirection'> {
+    // (undocumented)
+    events?: string[];
+    // (undocumented)
+    labels: WithResolvedFont<Omit<PublicLegendOptions['labels'], 'generateLabels'>> & {
+        generateLabels: LegendCallback<LegendItem[]>;
+    };
+    // (undocumented)
+    onClick: LegendCallback;
+    // (undocumented)
+    onHover: LegendCallback;
+    // (undocumented)
+    onLeave: LegendCallback;
+    // (undocumented)
+    textDirection: 'ltr' | 'rtl';
+    // (undocumented)
+    title: WithResolvedFont<Omit<PublicLegendOptions['title'], 'text'>> & {
+        text: string | string[];
     };
 }
 
@@ -3550,6 +3648,9 @@ export interface PolarAreaControllerChartOptions {
 export interface PolarAreaControllerDatasetOptions extends DoughnutControllerDatasetOptions {
     angle: number;
 }
+
+// @public (undocumented)
+type PublicLegendOptions = LegendOptions<ChartType>;
 
 // @public (undocumented)
 export type RadarController = DatasetController
@@ -4564,6 +4665,16 @@ export interface TitleOptions {
     text: string | string[];
 }
 
+// @public
+function toFont(options: Partial<FontSpec>, fallback?: Partial<FontSpec>): {
+    family: string;
+    lineHeight: number;
+    size: number;
+    style: "normal" | "inherit" | "italic" | "oblique" | "initial";
+    weight: number | "bold" | "normal" | "lighter" | "bolder";
+    string: string;
+};
+
 // @public (undocumented)
 export interface Tooltip extends Plugin_2 {
     // (undocumented)
@@ -4929,6 +5040,11 @@ export interface VisualElement {
     // (undocumented)
     inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
 }
+
+// @public (undocumented)
+type WithResolvedFont<T> = Omit<T, 'font'> & {
+    font: Partial<FontSpec>;
+};
 
 // (No @packageDocumentation comment for this package)
 

@@ -52,10 +52,10 @@
 
 ## 9. P19: The legend plugin in TypeScript (refactor)
 
-- [ ] 9.1 Rename `src/plugins/plugin.legend.js` to `src/plugins/plugin.legend.ts` in the same commit as its annotations, so git records a rename. Imports keep the `.js` extension.
-- [ ] 9.2 Declare the class fields, type the method signatures and the helper functions, and add an internal interface for a hit box. Import `LegendItem`, `LegendOptions` and the chart types from `src/types` as types; do not move public types out of `src/types/index.d.ts`.
-- [ ] 9.3 `tsc --noEmit` reports no errors in the file (a plain rename gives 124), `pnpm lint-types` passes, and the legend specs and fixtures pass unchanged.
-- [ ] 9.4 Commit type `refactor`. The pull request asks #11825 and #12242 to rebase onto it.
+- [x] 9.1 Rename `src/plugins/plugin.legend.js` to `src/plugins/plugin.legend.ts` in the same commit as its annotations, so git records a rename. Imports keep the `.js` extension.
+- [x] 9.2 Declare the class fields, type the method signatures and the helper functions, and add an internal interface for a hit box. Import `LegendItem`, `LegendOptions` and the chart types from `src/types` as types; do not move public types out of `src/types/index.d.ts`.
+- [x] 9.3 `tsc --noEmit` reports no errors in the file (a plain rename gives 124), `pnpm lint-types` passes, and the legend specs and fixtures pass unchanged.
+- [x] 9.4 Commit type `refactor`. The pull request asks #11825 and #12242 to rebase onto it.
 
 ## 10. P9: Drawing reads the hit boxes (refactor)
 
