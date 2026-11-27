@@ -344,7 +344,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
    * @private
    */
   _fitRows(titleHeight: number, layout: LegendLabelLayout) {
-    const {ctx, maxWidth, options: {labels: {padding}}} = this;
+    const {ctx, maxWidth, legendItems, options: {labels: {padding}}} = this;
     const {font, boxWidth, itemHeight: lineItemHeight} = layout;
     const fontSize = font.size;
     const hitboxes: LegendHitBox[] = this.legendHitBoxes = [];
@@ -358,10 +358,15 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
     let row = 0;
     let top = 0;
     let rowHeight = 0;
-    this.legendItems.forEach((legendItem, i) => {
-      const textWidth = calculateTextWidth(legendItem, ctx);
+    // A loop, not forEach: the row height changes with every item, and a
+    // closure would keep it as an allocated number.
+    for (let i = 0; i < legendItems.length; i++) {
+      const legendItem = legendItems[i];
+      // A one-line label is measured here: the helpers cost time and an allocation per item.
+      const multiLine = isArray(legendItem.text);
+      const textWidth = multiLine ? calculateTextWidth(legendItem, ctx) : ctx.measureText(legendItem.text as string).width;
       const itemWidth = boxWidth + (fontSize / 2) + textWidth;
-      const itemHeight = calculateItemHeight(lineItemHeight, legendItem, font.lineHeight);
+      const itemHeight = multiLine ? calculateItemHeight(lineItemHeight, legendItem, font.lineHeight) : lineItemHeight;
 
       if (i > 0 && lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
         lineWidths.push(0);
@@ -379,9 +384,9 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       };
 
       lineWidths[lineWidths.length - 1] += itemWidth + padding;
-    });
+    }
 
-    return titleHeight + (this.legendItems.length ? top + rowHeight + padding : 0);
+    return titleHeight + (legendItems.length ? top + rowHeight + padding : 0);
   }
 
   /**
@@ -742,9 +747,14 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
  */
 function calculateTextWidth(legendItem: LegendItem, ctx: CanvasRenderingContext2D) {
   const legendItemText = legendItem.text;
-  return isArray<string>(legendItemText)
-    ? Math.max(0, ...legendItemText.map(line => ctx.measureText(line).width))
-    : ctx.measureText(legendItemText).width;
+  if (!isArray<string>(legendItemText)) {
+    return ctx.measureText(legendItemText).width;
+  }
+  let width = 0;
+  for (const line of legendItemText) {
+    width = Math.max(width, ctx.measureText(line).width);
+  }
+  return width;
 }
 
 /**
