@@ -3440,7 +3440,7 @@ export type TimeScaleTimeOptions = {
   /**
    * Custom parser for dates.
    */
-  parser: string | ((v: unknown) => number);
+  parser?: string | ((v: unknown) => number);
   /**
    * If defined, dates will be rounded to the start of this unit. See Time Units below for the allowed units.
    */
@@ -3460,7 +3460,7 @@ export type TimeScaleTimeOptions = {
   /**
    * The format string to use for the tooltip.
    */
-  tooltipFormat: string;
+  tooltipFormat?: string;
   /**
    * If defined, will force the unit to be a certain type. See Time Units section below for details.
    * @default false
