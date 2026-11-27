@@ -10,12 +10,12 @@
 
 ## 3. P3: Step counts within machine precision (#12225)
 
-- [ ] 3.1 Confirm #12225's spec fails on master (0/3333/500 gives 476.14 steps).
-- [ ] 3.2 Add two specs:
+- [x] 3.1 Confirm #12225's spec fails on master (0/3333/500 gives 476.14 steps).
+- [x] 3.2 Add two specs:
   - `bounds: 'data'` with [0, 3200] includes 3000 (on master it is missing);
   - `min: 0, max: 0.3, stepSize: 0.1` gives 0, 0.1, 0.2, 0.3.
-- [ ] 3.3 Apply the same count tolerance to the case-4 rounding. Ask the author first, or add the change with `Co-authored-by`.
-- [ ] 3.4 Rebase onto P2. The pull request says `Closes #12165`.
+- [x] 3.3 Apply the same count tolerance to the case-4 rounding. Ask the author first, or add the change with `Co-authored-by`.
+- [x] 3.4 Rebase onto P2. The pull request says `Closes #12165`.
 
 ## 4. P4: The step-size limit is counted on the generation range
 

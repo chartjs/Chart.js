@@ -98,8 +98,10 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 ### Values
 
-- **Step counts are compared within machine precision**, in both the step-size test (#12225) and the case-4 rounding: `|n - round(n)| <= max(|n| * ε, 1e-14)`.
+- **Step counts are compared within the precision of the bounds**, in both the step-size test (#12225) and the case-4 rounding: `n = (hi - lo) / step` is whole when `|n - round(n)| <= max((|hi| + |lo|) / step * 2ε, 1e-14)`. In the step-size test `hi`, `lo` and `step` are `max`, `min` and `stepSize`; in the case-4 rounding they are `niceMax`, `niceMin` and the spacing.
+  - The bounds and the step are each the double nearest a decimal, so a decimally whole count is off by about `(|hi| + |lo|) / step` epsilons, more than `|n| * ε` when the range is narrow for its distance from 0.
   - Alternative: a tolerance relative to the spacing. That is what fails today.
+  - Alternative: `max(|n| * ε, 1e-14)`. It repeats the last tick of data [1.6285, 1.6287] with `stepSize: 0.003` (n is 0.99999999999996), and leaves the step grid for `min: 8089.45, max: 8089.66, stepSize: 0.03`.
 - **The step-size limit is counted on the generation range** (`this._range || this`), the same range in every layout pass.
   - Alternative: dropping the limit. It guards against 1000+ ticks, so it stays.
 - **No repeated final tick** (#12288 as is). In 4.6.x the last tick of [0, 10.3] stays 10. The data maximum gets its own tick in 4.7.0, with the data-bounds rule.
@@ -176,6 +178,12 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - #12543 (opened 2026-11-27) fixes the noisy spacing that P7's grid rule also removes, in the same file. It becomes P19, ahead of P7, so P7 builds on it instead of superseding it. It needs one more test: a `min: 4.1` bound with `stepSize: 1` (master: "4.10"), the only case that pins its integer-part call. Its private `difference` repeats the loop of `_decimalPlaces`. You decided (2026-11-27) that reusing `_decimalPlaces` is optional, a follow-up once P1 makes it always return, so P19 does not wait on P1.
 - Karma was removed (#12516). Test files are named `*.spec.js` throughout, and the time-scale line numbers follow #12489.
 - The math helper spec moved to `helpers.math.unit.spec.js` (#12542).
+
+### Changed by building
+
+- P3: the step-count tolerance counts the bounds, `max((|hi| + |lo|) / step * 2ε, 1e-14)`, instead of `max(|n| * ε, 1e-14)`. A sweep of 56,730 `generateTicks` inputs (magnitudes 1e-9 to 1e12, both `bounds`, with and without `min`, `max` and `stepSize`):
+  - near-duplicate ticks (closer than 1e-6 of a gap): 6 on master, 44 with the count-only rule, 0 with the bounds rule;
+  - decimally divisible `min`/`max`/`stepSize` inputs that miss the step grid: 201 on master, 440 with the count-only rule, 144 with the bounds rule. The 144 remaining are case 1 spacing the ticks evenly when `maxTicks` cuts the step count, which master does as well.
 
 ## Risks / Trade-offs
 
