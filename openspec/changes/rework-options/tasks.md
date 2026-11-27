@@ -51,8 +51,8 @@
 
 ## 8. P8: Refactor the scale merge into stored and derived parts
 
-- [ ] 8.1 Add guard specs that pass on master: the resolved scale options, min, max and one point pixel after create and after two updates, for line, bar, horizontal bar, stacked, scatter, bubble, radar, polar area, doughnut, mixed in both orders, multi-axis, an implied second axis, logarithmic, linear x, unbound extra axes, and a time scale.
-- [ ] 8.2 Compute the stored entry (user values, `axis`) and the derived object (`{scales: {[id]: …}}`) separately, then merge the derived object into the stored entry as today. Record per entry object (a `WeakMap`) whether a dataset implied it.
+- [x] 8.1 Add guard specs that pass on master: the resolved scale options, min, max and one point pixel after create and after two updates, for line, bar, horizontal bar, stacked, scatter, bubble, radar, polar area, doughnut, mixed in both orders, multi-axis, an implied second axis, logarithmic, linear x, unbound extra axes, and a time scale.
+- [x] 8.2 Compute the stored entry (user values, `axis`) and the derived object (`{scales: {[id]: …}}`) separately, then merge the derived object into the stored entry as today. Record per entry object (a `WeakMap`) whether a dataset implied it.
 - [ ] 8.3 The suite and the image fixtures pass unchanged. The pull request says `Part of #11096` and `Part of #11910` in a sentence.
 
 ## 9. P9: Scale defaults are a scope

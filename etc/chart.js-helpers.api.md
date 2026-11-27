@@ -1206,6 +1206,12 @@ class Config {
     datasetAnimationScopeKeys(datasetType: string, transition: string): string[][];
     datasetElementScopeKeys(datasetType: string, elementType: string): string[][];
     datasetScopeKeys(datasetType: string): string[][];
+    _derived: {
+        scales: object;
+    };
+    get _derivedOptions(): {
+        scales: object;
+    };
     getOptionScopes(mainScope: object, keyLists: string[][], resetCache?: boolean): any;
     set options(arg: any);
     // (undocumented)
@@ -1222,6 +1228,10 @@ class Config {
     resolveNamedOptions(scopes: object[], names: string[], context: Function | object, prefixes?: string[]): object;
     // (undocumented)
     _resolverCache: Map<any, any>;
+    _scaleRecords: WeakMap<any, {
+        implied: boolean;
+    }>;
+    _scaleSources: object;
     // (undocumented)
     _scopeCache: Map<any, any>;
     set type(arg: any);
@@ -2091,6 +2101,9 @@ interface GridLineOptions {
 
 // @public (undocumented)
 export const HALF_PI: number;
+
+// @public
+export function _hasOwn(object: object, key: PropertyKey): boolean;
 
 // @public (undocumented)
 type IChartComponent = {

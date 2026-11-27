@@ -55,6 +55,8 @@ All image-based tests run from the one file `test/specs/fixtures.spec.js`, so a 
 
 Vitest runs the tests in a random order and prints the seed it used (`Running tests with seed "..."`). To repeat an order, pass the seed: `pnpm run test-ci-vitest --sequence.seed=<seed>`.
 
+A spec can compare a value with a stored [snapshot](https://vitest.dev/guide/snapshot.html) (`toMatchSnapshot`), kept in `test/specs/__snapshots__`. Chromium and Firefox compare with the same file, so a snapshot holds only values that are equal in both and on every machine: no pixel positions that depend on the width of text. A local run writes a snapshot that is missing; on CI (`CI` set) a missing one fails. When a change is meant to change a snapshot, rewrite it with `pnpm exec vitest run -u --browser.headless test/specs/x.spec.js` and read its diff before committing it.
+
 ### Unit specs and browser specs
 
 `vitest.config.js` has two projects, and each spec runs in exactly one of them:
