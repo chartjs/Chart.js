@@ -859,9 +859,11 @@ export default class DatasetController {
       const scopeKeys = config.datasetAnimationScopeKeys(this._type, transition);
       const scopes = config.getOptionScopes(this.getDataset(), scopeKeys);
       options = config.createResolver(scopes);
-      // Only animations that read the context differ from one element to the next
-      if (_animationsNeedContext(options)) {
+      // Only animations that read the context differ from one element to the next.
+      // The answer is the same for every element: `false` in the cache saves checking it again.
+      if (cached === false || _animationsNeedContext(options)) {
         cacheable = false;
+        cache[cacheKey] = false;
         options = config.createResolver(scopes, this.getContext(index, active, transition));
       }
     }
