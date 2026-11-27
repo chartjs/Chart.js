@@ -117,7 +117,7 @@ export function _decimalPlaces(x: number) {
     e *= 10;
     p++;
     if (!isFinite(e)) {
-      return;
+      return undefined;
     }
   }
   return p;
