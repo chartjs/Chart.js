@@ -30,18 +30,19 @@ export function autoSkip(scale, ticks) {
   const step = Math.ceil(calculateSpacing(majorIndices, ticks, ticksLimit));
 
   if (numMajorIndices === 0) {
-    skip(ticks, newTicks, step, 0, ticks.length - 1);
+    skip((i) => newTicks.push(ticks[i]), step, 0, ticks.length - 1);
     return newTicks;
   }
 
-  // Descending ticks (a reversed axis) are walked in ascending order, so that
+  // Descending ticks (a reversed axis) are walked as if ascending, so that
   // each step counts from the major its stretch starts with.
   if (isDescending(ticks)) {
-    const ascending = ticks.slice().reverse();
-    keepFromMajors(ascending, newTicks, getMajorIndices(ascending), step);
+    const lastIndex = ticks.length - 1;
+    mirror(majorIndices, ticks.length);
+    keepFromMajors(ticks.length, majorIndices, step, (i) => newTicks.push(ticks[lastIndex - i]));
     return newTicks.reverse();
   }
-  keepFromMajors(ticks, newTicks, majorIndices, step);
+  keepFromMajors(ticks.length, majorIndices, step, (i) => newTicks.push(ticks[i]));
   return newTicks;
 }
 
@@ -50,23 +51,35 @@ export function autoSkip(scale, ticks) {
  * one step to the next major. Before the first and after the last major,
  * majors are assumed at the average major spacing; a single major runs to the
  * first and the last tick.
- * @param {Tick[]} ticks - in ascending order
- * @param {Tick[]} newTicks
- * @param {number[]} majorIndices
+ * @param {number} count - the number of ticks
+ * @param {number[]} majorIndices - ascending
  * @param {number} step - a whole number of ticks
+ * @param {(index: number) => void} keep - called with each kept index, ascending
  */
-function keepFromMajors(ticks, newTicks, majorIndices, step) {
+function keepFromMajors(count, majorIndices, step, keep) {
   const numMajorIndices = majorIndices.length;
   const first = majorIndices[0];
   const last = majorIndices[numMajorIndices - 1];
   const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
   const headStart = avgMajorSpacing === null ? 0 : Math.max(first - avgMajorSpacing, 0);
-  const tailEnd = avgMajorSpacing === null ? ticks.length - 1 : last + avgMajorSpacing - step;
+  const tailEnd = avgMajorSpacing === null ? count - 1 : last + avgMajorSpacing - step;
 
-  skip(ticks, newTicks, step, first - Math.floor((first - headStart) / step) * step, first - step);
+  skip(keep, step, first - Math.floor((first - headStart) / step) * step, first - step);
   for (let i = 0; i < numMajorIndices; i++) {
     const end = i < numMajorIndices - 1 ? majorIndices[i + 1] - step : tailEnd;
-    skip(ticks, newTicks, step, majorIndices[i], Math.max(end, majorIndices[i]));
+    skip(keep, step, majorIndices[i], Math.min(Math.max(end, majorIndices[i]), count - 1));
+  }
+}
+
+/**
+ * Counts the indexes from the other end, in place, and keeps them ascending.
+ * @param {number[]} indices
+ * @param {number} length
+ */
+function mirror(indices, length) {
+  indices.reverse();
+  for (let i = 0; i < indices.length; i++) {
+    indices[i] = length - 1 - indices[i];
   }
 }
 
@@ -148,17 +161,15 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
 }
 
 /**
- * Keeps the ticks from `start` to `end`, both included, `step` apart.
- * @param {Tick[]} ticks
- * @param {Tick[]} newTicks
+ * Keeps the indexes from `start` to `end`, both included, `step` apart.
+ * @param {(index: number) => void} keep
  * @param {number} step - a whole number of ticks
  * @param {number} start
  * @param {number} end
  */
-function skip(ticks, newTicks, step, start, end) {
-  const stop = Math.min(end, ticks.length - 1);
-  for (let i = start; i <= stop; i += step) {
-    newTicks.push(ticks[i]);
+function skip(keep, step, start, end) {
+  for (let i = start; i <= end; i += step) {
+    keep(i);
   }
 }
 
