@@ -20,6 +20,15 @@ describe('Core.scale.autoskip', function() {
     return autoSkip(scaleFitting(fit), ticks).map((tick) => tick.value);
   }
 
+  // The same, with the ticks in descending order as a reversed axis builds them.
+  function keptTicksReversed(count, majors, fit) {
+    const ticks = [];
+    for (let i = count - 1; i >= 0; i--) {
+      ticks.push({value: i, major: majors.includes(i)});
+    }
+    return autoSkip(scaleFitting(fit), ticks).map((tick) => tick.value);
+  }
+
   function gaps(indices) {
     const result = [];
     for (let i = 1; i < indices.length; i++) {
@@ -65,7 +74,44 @@ describe('Core.scale.autoskip', function() {
 
   it('should step back from the first major and forward from a single major', function() {
     // One major: no major spacing; 60 / 10 = 6 ticks per label, counted from 25.
-    expect(keptTicks(60, [25], 10)).toEqual([1, 7, 13, 19, 25, 31, 37, 43, 49]);
+    expect(keptTicks(60, [25], 10)).toEqual([1, 7, 13, 19, 25, 31, 37, 43, 49, 55]);
+  });
+
+  it('should run to the last tick after a single major', function() {
+    // 40 / 7 = 5.7: a step of 6, and no major after 0 to stop before.
+    expect(keptTicks(40, [0], 7)).toEqual([0, 6, 12, 18, 24, 30, 36]);
+  });
+
+  it('should assume majors at the average spacing around two majors', function() {
+    // 50 / 8 = 6.25: a step of 7. The majors before 10 and after 20 are assumed
+    // at 0 and 30, so 3 is kept and nothing after 20.
+    expect(keptTicks(50, [10, 20], 8)).toEqual([3, 10, 20]);
+  });
+
+  it('should round an average major spacing below one half down', function() {
+    // (72 - 20) / 5 = 10.4 is rounded to 10: majors assumed at 10 and 82.
+    const kept = keptTicks(90, [20, 30, 41, 51, 62, 72], 90);
+
+    expect(kept[0]).toBe(10);
+    expect(kept[kept.length - 1]).toBe(81);
+  });
+
+  it('should keep the reverse of the ascending result when the ticks descend', function() {
+    const majors = [0, 31, 59, 90, 120, 151];
+
+    expect(keptTicksReversed(181, majors, 30)).toEqual(keptTicks(181, majors, 30).reverse());
+    expect(keptTicksReversed(60, [25], 10)).toEqual(keptTicks(60, [25], 10).reverse());
+  });
+
+  it('should walk ticks without numeric values in the order given', function() {
+    // String values are not compared: the step counts from the first major in the array.
+    const ticks = [];
+    for (let i = 0; i < 40; i++) {
+      ticks.push({value: String.fromCharCode(122 - i), major: i === 0 || i === 13});
+    }
+    const kept = autoSkip(scaleFitting(10), ticks).map((tick) => ticks.indexOf(tick));
+
+    expect(kept).toEqual([0, 4, 8, 13, 17, 21]);
   });
 
   it('should keep a major that is closer than one step to the next major', function() {
