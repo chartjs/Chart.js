@@ -165,7 +165,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 ### Changed by the review
 
 - P3 also fixes the case-4 tolerance. Data [0, 3200] with `bounds: 'data'` lost its 3000 tick through the same cause.
-- P5 dropped its `Number.MIN_VALUE` scenario and the decimal cap. On master both return two ticks at once (early return at line 46), so nothing failed without them.
+- P5 dropped its `Number.MIN_VALUE` scenario and the decimal cap. On master both return two ticks at once (the `MIN_SPACING` early return), but only when neither `min` nor `max` is set. With a user bound, or a minimum whose decimals cannot be counted, master gives NaN ticks (see "Changed by building").
 - The on-grid tolerance gained the float-spacing term.
 - The off-grid digit rule is stated as "grid + 1, or fewer". The earlier "digits of the offset" contradicted its own scenario ("0.1234567" against "0.12").
 - The kept-index refactor was dropped. Offset grid lines read the generated list, which P12 keeps; the label callback no longer needs indexes once it runs on every tick.
@@ -190,6 +190,11 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - `calculateSpacing` never tried the largest proper factor of the major gap: `_factorize` already drops the value itself, and the loop stopped one factor short. P10 loops over all factors.
 - A default log axis has majors on, and its decades are uneven: after significand 10 it emits 15, so every decade after the first has 10 ticks (1..1e5 gives 50 ticks with majors at 0, 9, 19, 29, 39, 49). P10's rule therefore changes log axes too (see "Log axes change in a patch").
 - The time autoskip-major fixture does not change: its unit is year, so it has no majors. P10 adds `scale.time/autoskip-major-uneven` instead: 181 days with unit day and majors on each month.
+- P5:
+  - Decimals that cannot be counted return the two bounds when `precision` is not set, instead of skipping the rounding. Data [0, 1e-310] with `min: 0` (either `bounds`) and data [1e-310, 1] with `bounds: 'data'` gave NaN ticks on master. Now they give their two bounds.
+  - The same guard covers a range that is not finite, because the spacing is then NaN. No separate range check was kept, since no test could tell it apart. User bounds whose span overflows (`min: -1e308, max: 1e308` with `count: 5`) gave NaN ticks between the bounds on master.
+  - With `precision`, ticks are rounded through `value * 10^precision`. When `(max(|min|, |max|) + spacing) * 10^precision` is not finite, the two data bounds are returned. Data [0, 1e307] and [0, 1.7e306] with `precision: 2` gave NaN ticks on master. The second case overflows only at its nice maximum, which is one spacing above the data.
+  - Data [-MAX_VALUE, 0] falls back to the data minimum, and the ticks after it are spaced from there. That means they are not on multiples of the spacing (-1.5977e308, …).
 
 ## Risks / Trade-offs
 

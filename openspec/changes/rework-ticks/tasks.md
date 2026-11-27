@@ -27,11 +27,11 @@
 
 ## 5. P5: Tick values are finite
 
-- [ ] 5.1 Add two specs:
+- [x] 5.1 Add two specs:
   - [0, MAX_VALUE] builds with finite ticks (on master it runs out of memory, so run it with a timeout);
   - [-MAX_VALUE, MAX_VALUE] gives two ticks.
-- [ ] 5.2 Look in `src/helpers` for an existing finite check before adding one.
-- [ ] 5.3 Make three changes:
+- [x] 5.2 Look in `src/helpers` for an existing finite check before adding one.
+- [x] 5.3 Make three changes:
   - a non-finite nice bound falls back to the data bound;
   - a non-finite range returns the two data bounds;
   - both `_decimalPlaces` callers in `generateTicks` treat `undefined` as "no rounding".
