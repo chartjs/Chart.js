@@ -1516,6 +1516,38 @@ describe('Legend block tests', function() {
     });
   });
 
+  ['top', 'left'].forEach(function(position) {
+    it('should not measure text when drawing a ' + position + ' legend', function() {
+      // fit() measures every item, so draw() only reads the hit boxes. A hidden
+      // item is struck through, and that decoration still measures its line.
+      const chart = acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['A'],
+          datasets: [
+            {label: 'first', data: [1]},
+            {label: ['second', 'on two lines'], data: [2]},
+            {label: 'third', data: [3]}
+          ]
+        },
+        options: {
+          animation: false,
+          plugins: {
+            legend: {
+              position,
+              title: {display: true, text: 'Title'}
+            }
+          }
+        }
+      });
+      const measureText = vi.spyOn(chart.ctx, 'measureText');
+
+      chart.draw();
+
+      expect(measureText).not.toHaveBeenCalled();
+    });
+  });
+
   describe('config update', function() {
     it('should update the options', function() {
       var chart = acquireChart({
