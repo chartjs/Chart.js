@@ -1,3 +1,4 @@
+/* eslint-env jasmine */
 const {overrideTextDirection, restoreTextDirection} = Chart.helpers;
 
 describe('helpers.rtl', function() {
