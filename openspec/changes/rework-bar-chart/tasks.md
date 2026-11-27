@@ -5,8 +5,8 @@
 
 ## 2. P2: The bar element in TypeScript
 
-- [ ] 2.1 `git mv src/elements/element.bar.js src/elements/element.bar.ts`; type `BarProps` and the element fields as `element.arc.ts` does. Public types stay in `src/types/index.d.ts`.
-- [ ] 2.2 `tsc`, `pnpm lint-types`, the bar specs and every `controller.bar` fixture pass unchanged.
+- [x] 2.1 `git mv src/elements/element.bar.js src/elements/element.bar.ts`; type `BarProps` and the element fields as `element.arc.ts` does. Public types stay in `src/types/index.d.ts`.
+- [x] 2.2 `tsc`, `pnpm lint-types`, the bar specs and every `controller.bar` fixture pass unchanged.
 
 ## 3. P3: Bar borders are fills
 
