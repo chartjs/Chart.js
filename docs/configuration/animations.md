@@ -127,7 +127,7 @@ These paths are valid under `defaults` for global configuration and `options` fo
 
 ## animation
 
-The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.defaults.js" target="_blank">core.animations.defaults.js</a>
+The default configuration is defined here: <a href="https://github.com/chartjs/Chart.js/blob/master/src/core/core.animations.defaults.ts" target="_blank">core.animations.defaults.ts</a>
 
 Namespace: `options.animation`
 

@@ -47,7 +47,7 @@ export interface ContextCache<
   _cacheable: boolean;
   _proxy: ResolverProxy<T, R>;
   _context: AnyObject;
-  _subProxy: ResolverProxy<T, R>;
+  _subProxy: ContextProxy<T, R>;
   _stack: Set<string>;
   _descriptors: Descriptor
   setContext(ctx: AnyObject): ContextProxy<T, R>

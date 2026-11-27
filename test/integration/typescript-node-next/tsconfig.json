@@ -3,6 +3,7 @@
     "target": "ES6",
     "moduleResolution": "NodeNext",
     "noEmit": true,
+    "skipLibCheck": false,
     "lib": ["es2018", "DOM"]
   },
   "include": [

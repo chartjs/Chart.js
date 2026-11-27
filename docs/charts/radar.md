@@ -65,7 +65,7 @@ module.exports = {
 Namespaces:
 
 * `data.datasets[index]` - options for this dataset only
-* `options.datasets.line` - options for all line datasets
+* `options.datasets.radar` - options for all radar datasets
 * `options.elements.line` - options for all [line elements](../configuration/elements.md#line-configuration)
 * `options.elements.point` - options for all [point elements](../configuration/elements.md#point-configuration)
 * `options` - options for the whole chart
@@ -162,6 +162,17 @@ The interaction with each point can be controlled with the following properties:
 | `pointHoverBorderColor` | Point border color when hovered.
 | `pointHoverBorderWidth` | Border width of point when hovered.
 | `pointHoverRadius` | The radius of the point when hovered.
+
+Point options have two spellings. In a dataset and in `options.datasets.radar`, they carry the `point` prefix: `pointBorderWidth`, `pointHoverBorderWidth`. In `options.elements.point`, the same options are written without it: `borderWidth`, `hoverBorderWidth`. A dataset's own `hover*` options, such as `hoverBorderWidth`, are meant for the line.
+
+A hovered point looks for `pointHoverBorderWidth`, then `hoverBorderWidth`, then `pointBorderWidth`, then `borderWidth`. It checks each name in the dataset, `options.datasets.radar`, `options.elements.point`, `options` and the defaults before it tries the next name. So:
+
+* the dataset's `hoverBorderWidth: 10`, meant for the line, also gives hovered points a 10 pixel border, even when `pointBorderWidth` is set;
+* `pointBorderWidth` and `pointRadius` never apply to a hovered point, because `Chart.defaults.elements.point` sets `hoverBorderWidth: 1` and `hoverRadius: 4`;
+* the default hover colors come from `Chart.defaults.hoverBackgroundColor` and `Chart.defaults.hoverBorderColor`, which return a darker shade of the point's `pointBackgroundColor` and `pointBorderColor`; the dataset's `hoverBackgroundColor` and `hoverBorderColor`, like its `hoverBorderWidth`, also reach hovered points;
+* options without a hover form, such as `pointStyle`, `pointRotation` and `pointHitRadius`, apply as usual.
+
+To style only hovered points, set the `pointHover*` options. In the [`'dataset'` interaction mode](../configuration/interactions.md#dataset) the `hover*` options also style the line.
 
 ## Scale Options
 

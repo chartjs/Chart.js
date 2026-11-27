@@ -28,7 +28,7 @@ export default class PointElement extends Element<PointProps, PointOptions & Poi
   /**
    * @type {any}
    */
-  static defaults = {
+  static override defaults = {
     borderWidth: 1,
     hitRadius: 1,
     hoverBorderWidth: 1,
@@ -41,7 +41,7 @@ export default class PointElement extends Element<PointProps, PointOptions & Poi
   /**
    * @type {any}
    */
-  static defaultRoutes = {
+  static override defaultRoutes = {
     backgroundColor: 'backgroundColor',
     borderColor: 'borderColor'
   };

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {DeepPartial, DistributiveArray, UnionToIntersection} from './utils.js';
+import {DeepPartial, DistributiveArray, NoInferType, UnionToIntersection} from './utils.js';
 
 import {TimeUnit} from '../core/core.adapters.js';
 import PointElement from '../elements/element.point.js';
@@ -1733,7 +1733,8 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
   onHover(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
   /**
-   * Called if the event is of type 'mouseup' or 'click'. Passed the event, an array of active elements, and the chart.
+   * Called if the event is of type 'click' or 'contextmenu', or 'mouseup' (also from 'touchend' and 'pointerup')
+   * when `events` does not include 'click'. Passed the event, an array of active elements, and the chart.
    */
   onClick(event: ChartEvent, elements: ActiveElement[], chart: Chart): void;
 
@@ -2459,18 +2460,20 @@ export interface LegendOptions<TType extends ChartType> {
    */
   reverse: boolean;
   /**
-   * A callback that is called when a click event is registered on a label item.
+   * A callback that is called when a 'click' event is registered on a label item, or a 'mouseup'
+   * (also from 'touchend' and 'pointerup') when the legend's events do not include 'click'.
+   * A right-click ('contextmenu') does not call it.
    */
-  onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+  onClick(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered on top of a label item
    */
-  onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+  onHover(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item,
    * or when the pointer leaves the canvas ('mouseout') while a label item is hovered.
    */
-  onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+  onLeave(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
 
   labels: {
     /**
@@ -2614,7 +2617,7 @@ export interface TitleOptions {
   /**
    *   Adds padding above and below the title text if a single number is specified. It is also possible to change top and bottom padding separately.
    */
-  padding: number | { top: number; bottom: number };
+  padding: Scriptable<number | { top: number; bottom: number }, ScriptableChartContext>;
   /**
    *   Title text to display. If specified as an array, text is rendered on multiple lines.
    */
@@ -3287,7 +3290,8 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
   stackWeight?: number;
 
   /**
-   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. If not set, this is inferred from the first character of the ID which should be 'x', 'y' or 'r'.
+   *   Which type of axis this is. Possible values are: 'x', 'y', 'r'. An ID that is exactly 'x', 'y' or 'r' is that axis. Otherwise, if not set, it is decided by `position`, then by the first dataset that names the scale in `xAxisID`, `yAxisID` or `rAxisID`, then by the first character of the ID when the scale's type allows it, then by `axis` or `position` in the defaults of the type, then 'r' for a radial type.
+   *   @see https://www.chartjs.org/docs/latest/axes/#the-axis-of-a-scale
    */
   axis: 'x' | 'y' | 'r';
 

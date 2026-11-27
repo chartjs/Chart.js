@@ -1,5 +1,6 @@
-// Pins what test/setup.js and vitest.config.js promise to every spec: each test
-// fails when the setting it names is removed.
+// Pins what test/setup.js and the `browser` project of vitest.config.js promise
+// to the browser specs: each test fails when the setting it names is removed.
+// test/specs/vitest.setup.node.unit.spec.js pins the unit specs' setup in Node.
 import * as controllers from '../../src/controllers/index.js';
 import * as elements from '../../src/elements/index.js';
 import * as plugins from '../../src/plugins/index.js';
@@ -23,6 +24,18 @@ describe('Vitest setup', function() {
 
   it('registers the moment date adapter', function() {
     expect(new Chart._adapters._date().formats()).toEqual(expect.objectContaining({datetime: 'MMM D, YYYY, h:mm:ss a'}));
+  });
+
+  it('formats dates in the default zone of moment-timezone', function() {
+    // The adapter and the global must share one moment instance (vitest.config.js
+    // `optimizeDeps`). A zone other than UTC tells the two apart on any machine,
+    // including one whose clock is set to UTC.
+    moment.tz.setDefault('Etc/GMT-5');
+    try {
+      expect(new Chart._adapters._date().format(Date.UTC(2015, 0, 1, 12), 'H')).toBe('17');
+    } finally {
+      moment.tz.setDefault('Etc/UTC');
+    }
   });
 
   it('disables the colors plugin', function() {

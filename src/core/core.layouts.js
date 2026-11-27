@@ -259,22 +259,7 @@ function placeBoxes(boxes, chartArea, params, stacks) {
 }
 
 /**
- * @interface LayoutItem
- * @typedef {object} LayoutItem
- * @prop {string} position - The position of the item in the chart layout. Possible values are
- * 'left', 'top', 'right', 'bottom', and 'chartArea'
- * @prop {number} weight - The weight used to sort the item. Higher weights are further away from the chart area
- * @prop {boolean} fullSize - if true, and the item is horizontal, then push vertical boxes down
- * @prop {function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
- * @prop {function} update - Takes two parameters: width and height. Returns size of item
- * @prop {function} draw - Draws the element
- * @prop {function} [getPadding] -  Returns an object with padding on the edges
- * @prop {number} width - Width of item. Must be valid after update()
- * @prop {number} height - Height of item. Must be valid after update()
- * @prop {number} left - Left edge of the item. Set by layout system and cannot be used in update
- * @prop {number} top - Top edge of the item. Set by layout system and cannot be used in update
- * @prop {number} right - Right edge of the item. Set by layout system and cannot be used in update
- * @prop {number} bottom - Bottom edge of the item. Set by layout system and cannot be used in update
+ * @typedef {import('../types/layout.js').LayoutItem} LayoutItem
  */
 
 // The layout service is very self explanatory.  It's responsible for the layout within a chart.

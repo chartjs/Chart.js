@@ -1,9 +1,9 @@
 ## 1. P1: Drawing follows the hit boxes (#12346)
 
-- [ ] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
-- [ ] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
-- [ ] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
-- [ ] 1.4 The pull request says `Closes #12345` and `Closes #12196`. Close #12205 as superseded, with a link.
+- [x] 1.1 #12346's spec fails on master (the second item is drawn at NaN with `align: 'end'`). Take #12205's spec (defaults font changed after render) and confirm it throws on master. Credit its author with `Co-authored-by`.
+- [x] 1.2 Add a spec with a `generateLabels` whose count changes between calls: drawing does not throw.
+- [x] 1.3 Draw each item in `legendHitBoxes[i].row` or `.col`; an item without a hit box is not drawn. Drop the `1e-6` tolerance.
+- [x] 1.4 The pull request says `Closes #12345` and `Closes #12196`. Close #12205 as superseded, with a link.
 
 ## 2. P2: The title's width counts (#12330)
 
@@ -12,50 +12,50 @@
 
 ## 3. P3: The title's padding moves it (#12187)
 
-- [ ] 3.1 Add specs for `position: 'start'` with `padding.left`, `'end'` with `padding.right`, and `'center'` with unequal left and right padding, in a top and a right legend. Each fails on master.
-- [ ] 3.2 Rebase onto P2. The title's x includes the padding. The pull request says `Closes #12066` and that #11280 is answered by the legend `padding` (P16).
+- [x] 3.1 Add specs for `position: 'start'` with `padding.left`, `'end'` with `padding.right`, and `'center'` with unequal left and right padding, in a top and a left legend. Each fails on master.
+- [x] 3.2 Rebase onto P2. The title's x includes the padding. The pull request says `Closes #12066` and that #11280 is answered by the legend `padding` (P16).
 
 ## 4. P4: Hit boxes cover aligned text (#12316)
 
-- [ ] 4.1 #12316's 12 specs fail on master.
-- [ ] 4.2 Add a two-column spec with `textAlign: 'right'`: clicking item 7's symbol and text returns item 7, and each column's text ends at its own column's right edge. It fails on #12316 as it stands.
-- [ ] 4.3 Bound the text area by the next column's left edge minus `labels.padding`, and the last column by the legend's right edge. Do this in the hit box and in drawing.
-- [ ] 4.4 Every single-column legend fixture is unchanged. The pull request says `Closes #12067`.
+- [x] 4.1 #12316's 9 specs fail on master: 8 left/right center/right cases and the per-item alignment.
+- [x] 4.2 Add a two-column spec with `textAlign: 'right'`: clicking item 8's symbol and text returns item 8, and each column's text ends at its own column's right edge. It fails on #12316 as it stands.
+- [x] 4.3 Bound the text area by the next column's left edge minus `labels.padding`, and the last column by the legend's right edge. Do this in the hit box and in drawing.
+- [x] 4.4 Every single-column legend fixture is unchanged. The pull request says `Closes #12067`.
 
 ## 5. P5: Only arrays are multi-line labels
 
-- [ ] 5.1 Specs: a pie chart with labels `[2010, 2011]` and the legend on the right renders, and every hit box's `top`, `height` and drawn `y` is finite (fails on master); a numeric label next to an array label.
-- [ ] 5.2 Use one `isArray` test for multi-line labels in `calculateItemHeight`, `calculateLegendItemHeight`, the width and the draw cursor; any other label is one line. The pull request says `Closes #11594`.
+- [x] 5.1 Specs: a pie chart with labels `[2010, 2011]` and the legend on the right renders, and every hit box's `top`, `height` and drawn `y` is finite (fails on master); a numeric label next to an array label.
+- [x] 5.2 Use one `isArray` test for multi-line labels in `calculateItemHeight`, `calculateLegendItemHeight`, the width and the draw cursor; any other label is one line. The pull request says `Closes #11594`.
 
 ## 6. P6: One press runs onClick once
 
-- [ ] 6.1 Specs:
+- [x] 6.1 Specs:
   - `events: ['click', 'mouseup', 'mousedown', 'mousemove']`, press and release on a legend item: legend `onClick` runs once (master twice);
   - `events: ['mouseup']`: it runs once;
   - the same two cases for the chart's `onClick` on a data element;
   - a click followed by `chart.update()`: the chart's `onClick` has run once in total.
-- [ ] 6.2 `_isClickEvent(e, events)`: with `events` given, `mouseup` counts only when `events` lacks `click`. The legend passes `this.options.events || chart.options.events`, and the chart's `onClick` passes its `events`. The chart passes its `events` to the replay decision too, so a `mouseup` kept as the last event is not replayed as a click.
-- [ ] 6.3 Docs: interactions.md (onClick events), legend.md and the `onClick` doc comment in `index.d.ts`. The pull request says `Closes #11538`.
+- [x] 6.2 `_isClickEvent(e, events)`: with `events` given, `mouseup` counts only when `events` lacks `click`. The legend passes `this.options.events || chart.options.events`, and the chart's `onClick` passes its `events`. The chart passes its `events` to the replay decision too, so a `mouseup` kept as the last event is not replayed as a click.
+- [x] 6.3 Docs: interactions.md (onClick events), legend.md and the `onClick` doc comment in `index.d.ts`. The pull request says `Closes #11538`.
 
 ## 7. P7: The legend callbacks do not infer the chart type
 
-- [ ] 7.1 Add `test/types/plugins/plugin.legend/` snippets: #10442's line chart with `legend: LegendElement<ChartType>` reading `options.scales?.x?.title` (fails on master), and #11666's pie default handler call (passes on master, kept as a guard).
-- [ ] 7.2 Add a no-infer alias that works with TypeScript before 5.4, and wrap `TType` in the three callbacks' `this` and `legend` types.
-- [ ] 7.3 The number of errors over `test/types` is unchanged. The pull request says `Closes #10442`, and `Closes #11666` with a note that it was not reproduced and the snippet guards it.
+- [x] 7.1 Add `test/types/plugins/plugin.legend/` snippets: #10442's line chart with `legend: LegendElement<ChartType>` reading `options.scales?.x?.title` (fails on master), and #11666's pie default handler call (passes on master, kept as a guard).
+- [x] 7.2 Add a no-infer alias that works with TypeScript before 5.4, and wrap `TType` in the three callbacks' `this` and `legend` types.
+- [x] 7.3 The number of errors over `test/types` is unchanged. The pull request says `Closes #10442`, and `Closes #11666` with a note that it was not reproduced and the snippet guards it.
 
 ## 8. P8: Legend docs
 
-- [ ] 8.1 legend.md: the custom `onClick` example for dataset charts and for doughnut, pie and polarArea (`toggleDataVisibility(legendItem.index)`).
-- [ ] 8.2 legend.md: `onLeave` and `onHover` run on pointer events. Scrolling the page under a still pointer sends none.
-- [ ] 8.3 samples/legend/html.md: a TypeScript note with the module augmentation for `htmlLegend`, and a container option that accepts an element, so it works in a shadow root.
-- [ ] 8.4 The pull request says `Closes #12144`, `Closes #11877`, `Closes #10624` and `Closes #10384`.
+- [x] 8.1 legend.md: the custom `onClick` example for dataset charts and for doughnut, pie and polarArea (`toggleDataVisibility(legendItem.index)`).
+- [x] 8.2 legend.md: `onLeave` and `onHover` run on pointer events. Scrolling the page under a still pointer sends none.
+- [x] 8.3 samples/legend/html.md: a TypeScript note with the module augmentation for `htmlLegend`, and a container option that accepts an element, so it works in a shadow root.
+- [x] 8.4 The pull request says `Closes #12144`, `Closes #11877`, `Closes #10624` and `Closes #10384`.
 
 ## 9. P19: The legend plugin in TypeScript (refactor)
 
-- [ ] 9.1 Rename `src/plugins/plugin.legend.js` to `src/plugins/plugin.legend.ts` in the same commit as its annotations, so git records a rename. Imports keep the `.js` extension.
-- [ ] 9.2 Declare the class fields, type the method signatures and the helper functions, and add an internal interface for a hit box. Import `LegendItem`, `LegendOptions` and the chart types from `src/types` as types; do not move public types out of `src/types/index.d.ts`.
-- [ ] 9.3 `tsc --noEmit` reports no errors in the file (a plain rename gives 124), `pnpm lint-types` passes, and the legend specs and fixtures pass unchanged.
-- [ ] 9.4 Commit type `refactor`. The pull request asks #11825 and #12242 to rebase onto it.
+- [x] 9.1 Rename `src/plugins/plugin.legend.js` to `src/plugins/plugin.legend.ts` in the same commit as its annotations, so git records a rename. Imports keep the `.js` extension.
+- [x] 9.2 Declare the class fields, type the method signatures and the helper functions, and add an internal interface for a hit box. Import `LegendItem`, `LegendOptions` and the chart types from `src/types` as types; do not move public types out of `src/types/index.d.ts`.
+- [x] 9.3 `tsc --noEmit` reports no errors in the file (a plain rename gives 124), `pnpm lint-types` passes, and the legend specs and fixtures pass unchanged.
+- [x] 9.4 Commit type `refactor`. The pull request asks #11825 and #12242 to rebase onto it.
 
 ## 10. P9: Drawing reads the hit boxes (refactor)
 

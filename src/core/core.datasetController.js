@@ -1,4 +1,4 @@
-import Animations from './core.animations.js';
+import Animations, {_animationsNeedContext} from './core.animations.js';
 import defaults from './core.defaults.js';
 import {isArray, isFinite, isObject, valueOrDefault, resolveObjectKey, defined} from '../helpers/helpers.core.js';
 import {listenArrayEvents, unlistenArrayEvents} from '../helpers/helpers.collection.js';
@@ -214,7 +214,9 @@ function clearStacks(meta, items) {
   }
 
   items = items || meta._parsed;
-  for (const parsed of items) {
+  // Indexed loop: `for...of` allocates an iterator result per item until optimized
+  for (let i = 0, ilen = items.length; i < ilen; ++i) {
+    const parsed = items[i];
     // An element inserted but not yet parsed has no entry and nothing to clear
     if (parsed) {
       clearItemStack(parsed._stacks, axis, datasetIndex);
@@ -230,6 +232,10 @@ function clearItemStack(stacks, axis, datasetIndex) {
   if (stacks[axis]._visualValues !== undefined && stacks[axis]._visualValues[datasetIndex] !== undefined) {
     delete stacks[axis]._visualValues[datasetIndex];
   }
+}
+
+function isNotInOrder(cur, prev, iAxis) {
+  return cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
 }
 
 const isDirectUpdateMode = (mode) => mode === 'reset' || mode === 'none';
@@ -476,11 +482,15 @@ export default class DatasetController {
         parsed = this.parsePrimitiveData(meta, data, start, count);
       }
 
-      const isNotInOrderComparedToPrev = () => cur[iAxis] === null || (prev && cur[iAxis] < prev[iAxis]);
+      const _parsed = meta._parsed;
+      if (_parsed.length < start + count) {
+        // Grow once, instead of on every assignment below
+        _parsed.length = start + count;
+      }
       for (i = 0; i < count; ++i) {
-        meta._parsed[i + start] = cur = parsed[i];
+        _parsed[i + start] = cur = parsed[i];
         if (sorted) {
-          if (isNotInOrderComparedToPrev()) {
+          if (isNotInOrder(cur, prev, iAxis)) {
             sorted = false;
           }
           prev = cur;
@@ -853,14 +863,22 @@ export default class DatasetController {
       return cached;
     }
     let options;
+    let cacheable = true;
     if (chart.options.animation !== false) {
       const config = this.chart.config;
       const scopeKeys = config.datasetAnimationScopeKeys(this._type, transition);
       const scopes = config.getOptionScopes(this.getDataset(), scopeKeys);
-      options = config.createResolver(scopes, this.getContext(index, active, transition));
+      options = config.createResolver(scopes);
+      // Only animations that read the context differ from one element to the next.
+      // The answer is the same for every element: `false` in the cache saves checking it again.
+      if (cached === false || _animationsNeedContext(options)) {
+        cacheable = false;
+        cache[cacheKey] = false;
+        options = config.createResolver(scopes, this.getContext(index, active, transition));
+      }
     }
     const animations = new Animations(chart, options && options.animations);
-    if (options && options._cacheable) {
+    if (cacheable) {
       cache[cacheKey] = Object.freeze(animations);
     }
     return animations;

@@ -36,7 +36,7 @@ module.exports = {
         x: chart.chartArea.left + chart.chartArea.width / 2,
         y: chart.chartArea.top + chart.chartArea.height / 2,
       };
-      await jasmine.triggerMouseEvent(chart, 'click', point);
+      await triggerMouseEvent(chart, 'click', point);
     }
   }
 };

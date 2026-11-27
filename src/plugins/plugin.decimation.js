@@ -154,7 +154,7 @@ function minMaxDecimation(data, start, count, availableWidth) {
 }
 
 function cleanDecimatedDataset(dataset) {
-  if (dataset._decimated) {
+  if (dataset._decimated && !Object.isSealed(dataset)) {
     const data = dataset._data;
     delete dataset._decimated;
     delete dataset._data;
@@ -216,6 +216,10 @@ export default {
       const {_data, indexAxis} = dataset;
       const meta = chart.getDatasetMeta(datasetIndex);
       const data = _data || dataset.data;
+
+      if (!Object.isExtensible(dataset)) {
+        return;
+      }
 
       if (resolve([indexAxis, chart.options.indexAxis]) === 'y') {
         // Decimation is only supported for lines that have an X indexAxis
@@ -281,7 +285,7 @@ export default {
     });
   },
 
-  destroy(chart) {
+  stop(chart) {
     cleanDecimatedData(chart);
   }
 };
