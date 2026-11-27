@@ -345,29 +345,31 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
    */
   _fitRows(titleHeight: number, layout: LegendLabelLayout) {
     const {ctx, maxWidth, options: {labels: {padding}}} = this;
-    const {font, boxWidth, itemHeight} = layout;
+    const {font, boxWidth, itemHeight: lineItemHeight} = layout;
     const fontSize = font.size;
     const hitboxes: LegendHitBox[] = this.legendHitBoxes = [];
     // Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
     const lineWidths = this.lineWidths = [0];
-    const lineHeight = itemHeight + padding;
-    let totalHeight = titleHeight;
 
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
-    let row = -1;
-    let top = -lineHeight;
+    // A row is as tall as its tallest item; its items keep their own height.
+    let row = 0;
+    let top = 0;
+    let rowHeight = 0;
     this.legendItems.forEach((legendItem, i) => {
       const textWidth = ctx.measureText(legendItem.text).width;
       const itemWidth = boxWidth + (fontSize / 2) + textWidth;
+      const itemHeight = calculateItemHeight(lineItemHeight, legendItem, font.lineHeight);
 
-      if (i === 0 || lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
-        totalHeight += lineHeight;
-        lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
-        top += lineHeight;
+      if (i > 0 && lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
+        lineWidths.push(0);
+        top += rowHeight + padding;
+        rowHeight = 0;
         row++;
       }
+      rowHeight = Math.max(rowHeight, itemHeight);
 
       // adjustHitBoxes() writes the positions; they start at 0 so that every hit box has one shape.
       hitboxes[i] = {
@@ -379,7 +381,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       lineWidths[lineWidths.length - 1] += itemWidth + padding;
     });
 
-    return totalHeight;
+    return titleHeight + (this.legendItems.length ? top + rowHeight + padding : 0);
   }
 
   /**
@@ -746,11 +748,13 @@ function calculateTextWidth(legendItem: LegendItem, ctx: CanvasRenderingContext2
 }
 
 /**
- * Height of an item's label: one line for anything but an array, which has one line per element.
+ * Height of an item: the larger of its symbol and its label, which is one line
+ * for anything but an array, and one line per element for an array.
+ * @param _itemHeight - the height of a one-line item, which covers the symbol
  */
 function calculateItemHeight(_itemHeight: number, legendItem: LegendItem, fontLineHeight: number) {
   const text = legendItem.text;
-  return isArray(text) ? fontLineHeight * text.length : _itemHeight;
+  return isArray(text) ? Math.max(_itemHeight, fontLineHeight * text.length) : _itemHeight;
 }
 
 function isListened(e: ChartEvent, opts: LegendOpts, chart: Chart) {
