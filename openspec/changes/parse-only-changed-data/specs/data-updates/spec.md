@@ -32,6 +32,11 @@ An update SHALL show every change made through the data array's `push`, `pop`, `
 - **WHEN** values are spliced into the middle of the data and the chart is updated
 - **THEN** every point is at its value and the nearest-mode tooltip finds the point under the pointer
 
+#### Scenario: Rolling window under fixed labels
+
+- **WHEN** a chart has fixed `labels` and plain number data, and the code runs `data.shift(); data.push(v)` before each update
+- **THEN** every value is drawn at the label of its new position
+
 #### Scenario: Sort in place
 
 - **WHEN** the data array is sorted or reversed in place and the chart is updated
@@ -52,8 +57,13 @@ From 5.0.0, a value changed by assignment SHALL be shown only after `markDataCha
 
 #### Scenario: Assignment without the signal (5.0.0)
 
-- **WHEN** `data[1] = 39` is assigned and the chart is updated
+- **WHEN** on a line chart with `labels` given and plain number data `data[1] = 39` is assigned and the chart is updated
 - **THEN** point 1 keeps its old position and the tooltip shows the old value
+
+#### Scenario: Not relied on
+
+- **WHEN** code assigns in place without the signal on a chart where something else made the update read all data (a category axis that finds its labels in the data, a replaced array in another dataset's plugin)
+- **THEN** the change may be shown, and the docs say not to rely on it
 
 #### Scenario: Assignment with the signal
 
@@ -75,6 +85,11 @@ From 5.0.0, a value changed by assignment SHALL be shown only after `markDataCha
 - **WHEN** on 4.7.0 a value changes through an array method, or in place with the signal
 - **THEN** there is no warning
 
+#### Scenario: No warning for label and scale changes
+
+- **WHEN** on 4.7.0 a label is assigned or a scale's type changes and the chart is updated
+- **THEN** there is no warning
+
 #### Scenario: Signal on 4.7.0
 
 - **WHEN** on 4.7.0 `markDataChanged` is called before an update
@@ -93,6 +108,11 @@ An update SHALL show labels that were pushed, removed, replaced or assigned (`la
 
 - **WHEN** `chart.data.labels[2]` is assigned and the chart is updated
 - **THEN** the axis shows the new label and the points of a dataset with `{x: label}` data follow it
+
+#### Scenario: Labels replaced in a plugin hook
+
+- **WHEN** a plugin's `beforeUpdate` replaces the labels of a category axis that has `min` set, and the chart is updated
+- **THEN** the axis and the points follow the new labels
 
 #### Scenario: Labels found in the data
 
@@ -138,5 +158,19 @@ A bubble chart's radius SHALL follow its `radius` option on every update, and a 
 
 #### Scenario: Radius changed
 
-- **WHEN** the `radius` option changes and the data does not, and the chart is updated
-- **THEN** the bubbles change size
+- **WHEN** the `radius` option changes from 3 to 10 and the data does not, and the chart is updated
+- **THEN** the bubbles of points without `r` are drawn with radius 10
+
+#### Scenario: Parsed radius
+
+- **WHEN** a tooltip callback reads `parsed._custom` of a bubble without `r`
+- **THEN** it is the radius the bubble is drawn with
+
+### Requirement: Third-party controllers keep working
+
+From 5.0.0, a dataset controller that does not declare that its parse is local to each item SHALL read all its data on an update after any change to it, and none when nothing changed.
+
+#### Scenario: Controller that parses across items
+
+- **WHEN** a controller whose parse lays out all items together (as a sankey's links) has a link pushed and the chart is updated
+- **THEN** every item is laid out again with the new link
