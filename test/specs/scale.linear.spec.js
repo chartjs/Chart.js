@@ -833,6 +833,28 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(1))).toEqual([0, 0.1, 0.2, 0.3]);
   });
 
+  it('Should use stepSize when the range is divisible within the precision of min and max', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 8089.45,
+            max: 8089.66,
+            ticks: {
+              stepSize: 0.03
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(2))).toEqual([
+      8089.45, 8089.48, 8089.51, 8089.54, 8089.57, 8089.6, 8089.63, 8089.66
+    ]);
+  });
+
   it('Should not generate any ticks > max if max is specified', function() {
     var chart = window.acquireChart({
       type: 'line',
@@ -1215,6 +1237,31 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([
       0, 500, 1000, 1500, 2000, 2500, 3000, 3200
     ]);
+  });
+
+  it('Should not repeat the last tick when the tick count is whole within the precision of the bounds', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{
+          data: [1.6285, 1.6287]
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            ticks: {
+              stepSize: 0.003,
+              includeBounds: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(4))).toEqual([1.6284, 1.6287]);
   });
 
   it('Should build labels using the user supplied callback', function() {
