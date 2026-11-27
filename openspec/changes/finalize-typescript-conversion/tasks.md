@@ -46,12 +46,12 @@
 
 ## 7. P7: Convert the barrel modules and the defaults modules to TypeScript
 
-- [ ] 7.1 Rename the modules to `.ts`. Show the gate's errors for the barrel modules and the defaults modules before the fix.
-- [ ] 7.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 7.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 7.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 7.5 Run the whole test suite; no fixture changes.
-- [ ] 7.6 Update the source link in `docs/configuration/animations.md:130`.
+- [x] 7.1 Rename the modules to `.ts`. Show the report's failure before the fix: `pnpm api-report` exits 1 on the reshaped `plugins.SubTitle` (Decision 30). The gate is clean after the rename, because these modules have no fields, overrides, unused parameters or implicit returns.
+- [x] 7.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 7.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 7.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 7.5 Run the whole test suite; no fixture changes.
+- [x] 7.6 Update the source link in `docs/configuration/animations.md:130`.
 
 ## 8. P8: Convert BasePlatform to TypeScript
 

@@ -1990,51 +1990,31 @@ const _default_3: {
 };
 
 // @public (undocumented)
-namespace _default_4 {
-    const // (undocumented)
+const _default_4: {
     id: string;
-    // (undocumented)
-    function beforeUpdate(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    namespace defaultRoutes {
-        const // (undocumented)
-        color: string;
-    }
-    // (undocumented)
-    namespace defaults {
-        const // (undocumented)
+    start(chart: Chart_3, _args: EmptyObject, options: TitleOptions): void;
+    stop(chart: Chart_3): void;
+    beforeUpdate(chart: Chart_3, _args: any, options: TitleOptions): void;
+    defaults: {
         align: string;
-        const // (undocumented)
         display: boolean;
-        // (undocumented)
-        namespace font {
-            const // (undocumented)
+        font: {
             weight: string;
-        }
-        const // (undocumented)
+        };
         fullSize: boolean;
-        const // (undocumented)
         padding: number;
-        const // (undocumented)
         position: string;
-        const // (undocumented)
         text: string;
-        const // (undocumented)
-        weight_1: number;
-        export { weight_1 as weight };
-    }
-    // (undocumented)
-    namespace descriptors {
-        const // (undocumented)
+        weight: number;
+    };
+    defaultRoutes: {
+        color: string;
+    };
+    descriptors: {
         _scriptable: boolean;
-        const // (undocumented)
         _indexable: boolean;
-    }
-    // (undocumented)
-    function start(chart: any, _args: any, options: any): void;
-    // (undocumented)
-    function stop(chart: any): void;
-}
+    };
+};
 
 // @public (undocumented)
 namespace _default_5 {
