@@ -23,7 +23,7 @@
 - [ ] 5.1 New `test/specs/controller.bar.layout.spec.js`. With 1000 datasets of one point each, `getMatchingVisibleMetas` and `_getAxis` are called at most a few times per scale in an update; master calls them 2003 and 2000 times. With 3 datasets × 1000 points and `skipNull`, `meta._parsed.find` is called 0 times; it fails on master (18 000). A spec calls `_getRuler()` and `_calculateBarIndexPixels(i, ruler, options)` the way chartjs-chart-financial does.
 - [ ] 5.2 The pull request says `Closes #12000`; its closing comment explains sub-pixel slots and an explicit `barThickness` (design D13).
 - [ ] 5.3 New `src/controllers/controller.bar.layout.ts` with `ScaleLayout`, `BandLayout`, `getScaleLayout` and `getBandLayout` (design D2); move `getAllScaleValues` and `computeMinSampleSize` there, with rework-ticks P16's change if it has merged. Values stay shared by every bar type on the scale, as master's `$bar` (P21 keys them by type). Cache it in `scale._cache.$barLayout` and drop it in `configure()`.
-- [ ] 5.4 `_getStacks`, `_getStackCount`, `_getStackIndex`, `_getRuler` and `_calculateBarIndexPixels` read the layout and return what they returned before, including today's `_getAxis` count. All bar specs and fixtures are unchanged.
+- [ ] 5.4 `_getStacks`, `_getStackCount`, `_getStackIndex`, `_getRuler` and `_calculateBarIndexPixels` read the layout and return what they returned before, including today's `_getAxis` count. All bar specs and fixtures are unchanged, including #12331's stack-order specs: a hidden dataset holds the place of a stack that still has a visible bar at that index (design D15).
 
 ## 21. P21: Each bar type finds its own smallest gap
 
@@ -34,7 +34,7 @@ Built after P5 and before P6; the number was added after the design's pull reque
 
 ## 6. P6: Index scales with the same range share the slots
 
-- [ ] 6.1 Layout specs: stacked `x`/`x2` with one bar each (0.72 × own category, centred); overlaid `x` {a, b} and `x2` {c} (three equal slots a, b, c); overlaid category `x` [a, b, c] and `x2` [c, b, a] with one bar each (each bar at its own label, two slots). The first two fail on master. Add fixtures for both, using #12222's sample for the first.
+- [ ] 6.1 Layout specs: stacked `x`/`x2` with one bar each (0.72 × own category, centred); overlaid `x` {a, b} and `x2` {c} (three equal slots a, b, c); overlaid category `x` [a, b, c] and `x2` [c, b, a] with one bar each (each bar at its own label, two slots). With `stacked: true` and datasets `[{}, {stack: 'a'}, {}]`, the first and third bars share a slot and the second has the other (design D15). The first two and the last fail on master. Add fixtures for the first two, using #12222's sample for the first.
 - [ ] 6.2 Implement the band rule (design D4). Remove `_getAxis` and `_getAxisCount`. `stacking/stacked-and-multiple-axis` is unchanged.
 - [ ] 6.3 Add a release-note line: `_getAxis` and `_getAxisCount` are removed.
 

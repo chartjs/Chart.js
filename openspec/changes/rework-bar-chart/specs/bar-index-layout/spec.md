@@ -33,6 +33,29 @@ The bars at an index value SHALL be divided among the visible, grouped bar datas
 - **WHEN** three index axes cover the same range and each holds one stack group
 - **THEN** each category has three slots, as in 4.5
 
+### Requirement: Hiding a dataset keeps the stack order
+
+Stacks SHALL be ordered by all grouped datasets of the type on the index scale, visible or hidden. A hidden dataset SHALL hold the place of its stack only where that stack still has a visible bar, and a stack without visible bars SHALL take no space.
+
+#### Scenario: Hiding the first dataset of a stack
+
+- **WHEN** a stacked chart has datasets in stacks `a`, `b`, `a`, `b` and the first dataset is hidden
+- **THEN** stack `a` stays left of stack `b`
+
+#### Scenario: A hidden dataset with a null
+
+- **WHEN** a stacked chart with `skipNull` has datasets `[1, null]` in stack `a`, `[1, 2]` in stack `b` and `[1, 2]` in stack `a`, and the first dataset is hidden
+- **THEN** at the second label the stacks keep the order they had before the hide
+
+### Requirement: Unnamed datasets share a slot on a stacked index axis
+
+On an index axis with `stacked: true`, datasets without a `stack` name SHALL share one slot, as their values share one stack.
+
+#### Scenario: Unnamed datasets beside a named stack
+
+- **WHEN** the index axis is stacked and the datasets are `[{}, {stack: 'a'}, {}]`
+- **THEN** the first and third bars are drawn in one slot and the second in the other
+
 ### Requirement: Flex bars take their neighbours from all bars
 
 With `barThickness: 'flex'`, the region of a bar SHALL reach halfway to the previous and the next index value at which any bar dataset of the same type on that scale has data. The first and last values SHALL mirror their only neighbour; a single value overall SHALL use the whole scale.
