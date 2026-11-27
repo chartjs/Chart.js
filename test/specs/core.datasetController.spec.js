@@ -1246,6 +1246,12 @@ describe('Chart.DatasetController', function() {
         expect(resolveBar({borderWidth}, 'default').borderWidth.top).toBe(1);
       });
 
+      it('should apply the element type prefix to a bar when the border radius is an object', function() {
+        const borderRadius = {topLeft: 3, barTopLeft: 8};
+        expect(resolveBar({borderRadius}, 'default').borderRadius.topLeft).toBe(8);
+        expect(resolveBar({borderRadius}, 'active').borderRadius.topLeft).toBe(8);
+      });
+
       it('should apply to an active bar when the border radius is an item of an indexable array', function() {
         const borderRadius = [{topLeft: 4, hoverTopLeft: 8}, {topLeft: 2, hoverTopLeft: 6}];
         expect(resolveBar({borderRadius}, 'active').borderRadius.topLeft).toBe(8);
