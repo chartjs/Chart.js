@@ -38,7 +38,7 @@ src/scales/scale.time.js:406-412, 422-446 (offsetAfterAutoskip: offsets from the
 Other readers:
 - No plugin in `src` reads the generation options.
 - `Ticks` is public (`src/core/index.ts:15`, `src/types/index.d.ts:1542`), so the formatter's signature stays.
-- `helpers.math._decimalPlaces` is tested directly (`test/specs/helpers.math.spec.js:5`).
+- `helpers.math._decimalPlaces` is tested directly (`test/specs/helpers.math.unit.spec.js:5`).
 - `radialLinear` has no pixel positions for its ticks: `getPixelForValue` is the empty base method (`core.scale.js:893`).
 
 The bar controller, the time scale's offsets and the linear offset padding read the kept ticks. So autoskip keeps its output shape: an array of the original tick objects, in order.
@@ -173,8 +173,9 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 ### Changed after the design PR opened
 
-- #12543 (opened 2026-11-27) fixes the noisy spacing that P7's grid rule also removes, in the same file. It becomes P19, ahead of P7, so P7 builds on it instead of superseding it. P19 counts places with `_decimalPlaces` (`helpers.math.ts:110`) rather than adding a second copy of that loop, so it waits on P1, which makes `_decimalPlaces` always return.
+- #12543 (opened 2026-11-27) fixes the noisy spacing that P7's grid rule also removes, in the same file. It becomes P19, ahead of P7, so P7 builds on it instead of superseding it. It needs one more test: a `min: 4.1` bound with `stepSize: 1` (master: "4.10"), the only case that pins its integer-part call. Its private `difference` repeats the loop of `_decimalPlaces`. You decided (2026-11-27) that reusing `_decimalPlaces` is optional, a follow-up once P1 makes it always return, so P19 does not wait on P1.
 - Karma was removed (#12516). Test files are named `*.spec.js` throughout, and the time-scale line numbers follow #12489.
+- The math helper spec moved to `helpers.math.unit.spec.js` (#12542).
 
 ## Risks / Trade-offs
 
@@ -191,7 +192,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - **Callback cost (P14).** The label callback runs once per generated tick (measured above).
 - **Test files.**
   - Karma was removed in #12516; every test is a `*.spec.js` file that Vitest runs.
-  - The contributor PRs taken here (#12266, #12288, #12225, #12390, #12383, #12401, #12287) still add their tests to the deleted `*.tests.js` files. Each piece moves them to the `.spec.js` file of the same name when it rebases.
+  - The contributor PRs taken here (#12266, #12288, #12225, #12390, #12383, #12401, #12287) still add their tests to the deleted `*.tests.js` files. Each piece moves them to the `.spec.js` file of the same name when it rebases; for #12266 that is `helpers.math.unit.spec.js`, which runs in Node (#12542).
 - **Shared image.** P6 and P19 both regenerate `scale.logarithmic/large-values-small-range.png`. Whichever merges second regenerates it again.
 - **Held lines.** `core.scale.js` is also held by #12203, #12244, #11188 and #12327, on other lines. P8, P12 and P14 rebase over whichever merges first.
 
@@ -199,7 +200,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 | Piece | Builds | Files | Fails without it | Size | Waits on | Advances | Completes | Release |
 |---|---|---|---|---|---|---|---|---|
-| P1 | #12266 as is: `_decimalPlaces` returns `undefined` instead of looping | `src/helpers/helpers.math.ts`, `test/specs/helpers.math.spec.js` | #12266's spec (never returns on master) | ~10 | | #12184 | | 4.6.x |
+| P1 | #12266 as is: `_decimalPlaces` returns `undefined` instead of looping | `src/helpers/helpers.math.ts`, `test/specs/helpers.math.unit.spec.js` | #12266's spec (never returns on master) | ~10 | | #12184 | | 4.6.x |
 | P2 | #12288 as is: no repeated final tick | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.spec.js` | `bounds: 'data'`, [0, 5.4]: 0..5, 5 | ~30 | | | | 4.6.x |
 | P3 | #12225 with one change: both step-count tests within machine precision | same | 0/3333/500 gives 476.14 steps; `bounds: 'data'` [0, 3200] has no 3000 | ~50 | P2 (same file) | | #12165 | 4.6.x |
 | P4 | The step-size tick limit is counted on the generation range | same | [10, 20, 80], `grace: '10%'`, `stepSize: 10`: max 100, last tick 90 | ~40 | P3 (same lines) | | #11864 | 4.6.x |
@@ -217,13 +218,13 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 | P16 | feat: `ticks.autoSkipKeepEnds` keeps the last tick when skipping | `src/core/core.scale.autoskip.js`, `src/core/core.scale.defaults.js`, `src/types/index.d.ts`, `src/controllers/controller.bar.js` (skip the end gap), `docs/axes/cartesian/_common_ticks.md`, spec, a bar-on-time fixture | 20 labels, `maxTicksLimit: 7`: L19 missing | ~130 | P11 (same file) | | #11816, #6154 | 4.7.0 |
 | P17 | feat: skipping keeps round multiples of the step on linear axes; supersedes #12237 | `src/core/core.scale.autoskip.js`, `src/scales/scale.linearbase.js`, `docs/axes/cartesian/_common_ticks.md`, spec | 0..100 `stepSize: 1` at 400 px: 0, 6, …, 96 | ~150 | P16 (same file), P15 (same file) | | #4048, #9973 | 4.7.0 |
 | P18 | `ticks.autoSkipKeepEnds` on by default; migration note | `src/core/core.scale.defaults.js`, `docs/axes/cartesian/_common_ticks.md`, the v5 migration guide, `test/specs/core.scale.spec.js` ("should not display the last tick if it does not fit evenly") | that spec expects the last tick missing | ~30 + baselines | P16 | | | 5.0.0 |
-| P19 | #12543 with one change: the tick spacing and the integer-part offset are read without subtraction noise, counting places with `_decimalPlaces` instead of a second copy of its loop | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js`, `scale.logarithmic/large-values-small-range.png` | data [1.27, 1.78], `maxTicksLimit: 8`: "1.20", …, "1.80"; ticks 0.0022..0.0025: "0.00220", … | ~25 + png | P1 (`_decimalPlaces` returns) | #12382 | | 4.6.x |
+| P19 | #12543 plus one test: the tick spacing and the integer-part offset are read without subtraction noise | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js`, `scale.logarithmic/large-values-small-range.png` | data [1.27, 1.78], `maxTicksLimit: 8`: "1.20", …, "1.80"; ticks 0.0022..0.0025: "0.00220", …; `min: 4.1`, `stepSize: 1`: "4.10" | ~30 + png | | #12382 | | 4.6.x |
 
 **In parallel:**
 - Five chains start at once:
   - values: P1 and P2, then P3 → P4 → P5;
   - log: P6;
-  - labels: P19 (after P1) → P7;
+  - labels: P19 → P7;
   - removal and grid lines: P8 → P12;
   - majors and fit: P9 → P10 → P11.
 - In 4.7.0: P13 needs P7; P14 needs P12; P15 needs P5; P16 needs P11; P17 needs P15 and P16.
@@ -231,7 +232,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 ## Contracts
 
-- **P1 → P5, P19:** `_decimalPlaces(x)` returns `undefined` when it cannot count the decimals, and never loops.
+- **P1 → P5:** `_decimalPlaces(x)` returns `undefined` when it cannot count the decimals, and never loops.
 - **P19 → P7:** the spacing the formatter reads is the difference of two tick values without subtraction noise: `1.4 - 1.3` is read as 0.1.
 - **P2, P3, P5 → P11, P17:** linear tick values are finite and strictly increasing before `reverse`. They are on multiples of the spacing, except a bound tick. No tick repeats.
 - **P5 → P15:** a non-finite range gives the two data bounds as ticks.
