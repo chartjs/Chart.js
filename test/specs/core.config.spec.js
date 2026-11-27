@@ -466,6 +466,205 @@ describe('Chart.Config', function() {
     });
   });
 
+  // Guards for the scale merge (`mergeScaleConfig`): every scale option that
+  // a default, an override or the chart gives, read by name through the
+  // scale's options, with the scale's bounds, after the chart is created and
+  // after each of two updates. The snapshot holds what master resolves; the
+  // point pixels depend on the fonts of the machine, so they are only compared
+  // between the three reads.
+  describe('resolved scale options', function() {
+    const labels = ['a', 'b', 'c', 'd'];
+    const values = [10, 20, 15, 30];
+    const points = [{x: 1, y: 2}, {x: 3, y: 5}, {x: 4, y: 1}, {x: 6, y: 4}];
+    const configurations = {
+      line: () => ({
+        type: 'line',
+        data: {labels, datasets: [{data: values}]}
+      }),
+      bar: () => ({
+        type: 'bar',
+        data: {labels, datasets: [{data: values}]}
+      }),
+      'horizontal bar': () => ({
+        type: 'bar',
+        data: {labels, datasets: [{data: values}]},
+        options: {indexAxis: 'y'}
+      }),
+      stacked: () => ({
+        type: 'bar',
+        data: {labels, datasets: [{data: values}, {data: values}]},
+        options: {scales: {x: {stacked: true}, y: {stacked: true}}}
+      }),
+      scatter: () => ({
+        type: 'scatter',
+        data: {datasets: [{data: points}]}
+      }),
+      bubble: () => ({
+        type: 'bubble',
+        data: {datasets: [{data: points.map((p) => ({...p, r: 5}))}]}
+      }),
+      radar: () => ({
+        type: 'radar',
+        data: {labels, datasets: [{data: values}]}
+      }),
+      'polar area': () => ({
+        type: 'polarArea',
+        data: {labels, datasets: [{data: values}]}
+      }),
+      doughnut: () => ({
+        type: 'doughnut',
+        data: {labels, datasets: [{data: values}]}
+      }),
+      'bar chart with a line dataset first': () => ({
+        type: 'bar',
+        data: {labels, datasets: [{type: 'line', data: values}, {data: values}]}
+      }),
+      'line chart with a bar dataset first': () => ({
+        type: 'line',
+        data: {labels, datasets: [{type: 'bar', data: values}, {data: values}]}
+      }),
+      'multi-axis': () => ({
+        type: 'line',
+        data: {labels, datasets: [{data: values, yAxisID: 'y'}, {data: values, yAxisID: 'y1'}]},
+        options: {
+          scales: {
+            y: {position: 'left'},
+            y1: {position: 'right', grid: {drawOnChartArea: false}}
+          }
+        }
+      }),
+      'second axis only a dataset names': () => ({
+        type: 'bar',
+        data: {labels, datasets: [{data: values}, {type: 'line', data: values, yAxisID: 'y1'}]}
+      }),
+      logarithmic: () => ({
+        type: 'line',
+        data: {labels, datasets: [{data: values}]},
+        options: {scales: {y: {type: 'logarithmic'}}}
+      }),
+      'linear x': () => ({
+        type: 'line',
+        data: {datasets: [{data: points}]},
+        options: {scales: {x: {type: 'linear'}}}
+      }),
+      'extra axes no dataset binds': () => ({
+        type: 'line',
+        data: {labels, datasets: [{data: values}]},
+        options: {scales: {y2: {position: 'right'}, x2: {axis: 'x'}}}
+      }),
+      time: () => ({
+        type: 'line',
+        data: {labels: ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04'], datasets: [{data: values}]},
+        options: {scales: {x: {type: 'time', time: {unit: 'day'}}}}
+      }),
+      'options the chart sets': () => ({
+        type: 'bar',
+        data: {labels, datasets: [{data: values}]},
+        options: {
+          scales: {
+            x: {offset: false, grid: {color: 'red', offset: true}, ticks: {color: 'blue'}},
+            y: {beginAtZero: false, max: 40, title: {display: true, text: 'value'}}
+          }
+        }
+      }),
+      scriptable: () => ({
+        type: 'line',
+        data: {labels, datasets: [{data: values}]},
+        options: {
+          scales: {
+            y: {
+              grid: {color: (ctx) => (ctx.type === 'scale' ? 'green' : 'gray')},
+              ticks: {color: (ctx) => (ctx.scale.id === 'y' ? 'orange' : 'black')}
+            }
+          }
+        }
+      })
+    };
+
+    const isPlainObject = (value) => Object.prototype.toString.call(value) === '[object Object]';
+
+    function serialize(value) {
+      if (typeof value === 'function') {
+        return `[Function ${value.name || 'anonymous'}]`;
+      }
+      if (Array.isArray(value)) {
+        return value.map(serialize);
+      }
+      if (value !== null && typeof value === 'object') {
+        return '[Object]';
+      }
+      return value;
+    }
+
+    // Options that no default names but the merge or the chart sets.
+    const mergedKeys = {axis: true, id: true, position: true, stacked: true, weight: true};
+
+    // The objects whose keys name the options to read for one scale: the
+    // scale defaults, the overrides of the chart's and the datasets' types, and
+    // what the chart gave. Read by these names, the result does not depend on
+    // which keys the chart's stored scale options hold.
+    function keySources(config, scaleType, userScale) {
+      const types = new Set([config.type, ...config.data.datasets.map((d) => d.type).filter(Boolean)]);
+      const sources = [mergedKeys, Chart.defaults.scale, Chart.defaults.scales[scaleType] || {}, userScale || {}];
+      types.forEach((type) => {
+        Object.values((Chart.overrides[type] || {}).scales || {}).forEach((scale) => sources.push(scale));
+      });
+      return sources;
+    }
+
+    function readOptions(resolver, sources, prefix, out) {
+      const keys = new Set();
+      sources.forEach((source) => Object.keys(source).forEach((key) => key.startsWith('_') || keys.add(key)));
+      Array.from(keys).sort().forEach((key) => {
+        const nested = sources.map((source) => source[key]).filter(isPlainObject);
+        if (nested.length) {
+          readOptions(resolver[key], nested, `${prefix}${key}.`, out);
+        } else {
+          out[prefix + key] = serialize(resolver[key]);
+        }
+      });
+      return out;
+    }
+
+    function firstPointPixel(chart) {
+      const element = chart.getDatasetMeta(0).data[0];
+      return element && {x: element.x, y: element.y};
+    }
+
+    function readScales(chart, config) {
+      const scales = {};
+      Object.keys(chart.scales).sort().forEach((id) => {
+        const scale = chart.scales[id];
+        const userScale = ((config.options || {}).scales || {})[id];
+        scales[id] = {
+          min: scale.min,
+          max: scale.max,
+          options: readOptions(scale.options, keySources(config, scale.type, userScale), '', {})
+        };
+      });
+      return scales;
+    }
+
+    Object.keys(configurations).forEach((name) => {
+      it(`should resolve the scale options of the "${name}" configuration, also after updates`, function() {
+        const chart = window.acquireChart(configurations[name]());
+        const config = configurations[name]();
+        const created = readScales(chart, config);
+        const pixel = firstPointPixel(chart);
+
+        chart.update();
+        expect(readScales(chart, config)).toEqual(created);
+        expect(firstPointPixel(chart)).toEqual(pixel);
+
+        chart.update();
+        expect(readScales(chart, config)).toEqual(created);
+        expect(firstPointPixel(chart)).toEqual(pixel);
+
+        expect(created).toMatchSnapshot();
+      });
+    });
+  });
+
   // The chart-building tests of helpers._isRadialScale; the others are in
   // test/specs/helpers.core.unit.spec.js, which runs in Node.
   describe('_isRadialScale', function() {
