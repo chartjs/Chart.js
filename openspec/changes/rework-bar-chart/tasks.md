@@ -1,7 +1,7 @@
 ## 1. P1: Only bar datasets count as index axes (adopts #12263)
 
-- [ ] 1.1 Spec in `test/specs/controller.bar.spec.js` (after #12505): labels a, b, c, a bar dataset on `x` and a line dataset on a category `x2`. The bar width is 0.72 × the category; it fails on master (0.36 ×).
-- [ ] 1.2 Take #12263's change with `Co-authored-by` for its author. The pull request says `Closes #12262` and closes #12263 as adopted.
+- [x] 1.1 Spec in `test/specs/controller.bar.spec.js` (after #12505): labels a, b, c, a bar dataset on `x` and a line dataset on a category `x2`. The bar width is 0.72 × the category; it fails on master (0.36 ×).
+- [x] 1.2 Take #12263's change with `Co-authored-by` for its author. The pull request says `Closes #12262` and closes #12263 as adopted.
 
 ## 2. P2: The bar element in TypeScript
 
