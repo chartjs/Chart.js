@@ -1330,10 +1330,18 @@ describe('Linear Scale', function() {
     expect(scale.ticks.map(tick => tick.value)).toEqual([0.39, 0.5, 0.6, 0.7, 0.8, 0.9, 0.97]);
   });
 
-  it('Should align stepSize ticks to multiples of the step after an off-grid data minimum', function() {
-    var scale = getDataBoundsScale([3, 53], {ticks: {stepSize: 10}});
+  // One bound from the data is enough: only a user min and max together space
+  // stepSize ticks from min.
+  [
+    {data: [3, 53], y: {}},
+    {data: [3, 40], y: {max: 53}},
+    {data: [10, 53], y: {min: 3}}
+  ].forEach(function({data, y}) {
+    it('Should align stepSize ticks to multiples of the step with bounds: data, data ' + JSON.stringify(data) + ' and ' + JSON.stringify(y), function() {
+      var scale = getDataBoundsScale(data, {...y, ticks: {stepSize: 10}});
 
-    expect(scale.ticks.map(tick => tick.value)).toEqual([3, 10, 20, 30, 40, 50, 53]);
+      expect(scale.ticks.map(tick => tick.value)).toEqual([3, 10, 20, 30, 40, 50, 53]);
+    });
   });
 
   function getDataBoundsXScale(data, width) {
@@ -1353,12 +1361,40 @@ describe('Linear Scale', function() {
     return chart.scales.x;
   }
 
-  it('Should keep the tick at the data minimum on a narrow horizontal axis', function() {
-    var data = [1.8100024990071555, 98.81000249900715];
-    var values = getDataBoundsXScale(data, 150).ticks.map(tick => tick.value);
+  [
+    // noise digits made the minimum look as long as the axis
+    [1.8100024990071555, 98.81000249900715],
+    // the labels really are as long as the axis: the max does not replace the min
+    [1000000000001, 1000000000099]
+  ].forEach(function(data) {
+    it('Should keep the tick at the data minimum of ' + JSON.stringify(data) + ' on a narrow horizontal axis', function() {
+      var values = getDataBoundsXScale(data, 120).ticks.map(tick => tick.value);
 
-    expect(values[0]).toBe(data[0]);
-    expect(values[values.length - 1]).toBe(data[1]);
+      expect(values[0]).toBe(data[0]);
+      expect(values[values.length - 1]).toBe(data[1]);
+    });
+  });
+
+  it('Should keep the tick at a user min with noise digits on a narrow horizontal axis', function() {
+    // bounds: 'ticks' with user bounds: the min label is sized from the digits it shows.
+    var min = -0.161490405286425;
+    var max = -0.1614903997258063;
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {datasets: [{data: [{x: min, y: 0}, {x: max, y: 1}]}]},
+      options: {scales: {x: {min, max, ticks: {autoSkip: false}}}}
+    }, {
+      canvas: {width: 150, height: 200}
+    });
+
+    expect(chart.scales.x.ticks.map(tick => tick.value)).toEqual([min, max]);
+  });
+
+  it('Should size a data bound label with one decimal more than the ticks', function() {
+    // "12.5", not "13": the 200 and 800 grid ticks are within one such label of the bounds.
+    var values = getDataBoundsXScale([12.5, 987.5], 240).ticks.map(tick => tick.value);
+
+    expect(values).toEqual([12.5, 400, 600, 987.5]);
   });
 
   it('Should keep the same grid ticks whatever noise digits the data bounds carry', function() {
