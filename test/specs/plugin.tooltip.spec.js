@@ -1306,6 +1306,56 @@ describe('Plugin.Tooltip', function() {
       expect(tooltipModel.caretX).toBe(xPositionSetAverage);
     });
 
+    describe('bars cut off by the chart area', function() {
+      function acquireCutOffChart(position) {
+        return window.acquireChart({
+          type: 'bar',
+          data: {
+            labels: ['a'],
+            datasets: [{data: [100]}, {data: [40]}]
+          },
+          options: {
+            animation: false,
+            interaction: {mode: 'index', intersect: false},
+            scales: {y: {max: 50}},
+            plugins: {
+              tooltip: {animation: false, position}
+            }
+          }
+        });
+      }
+
+      it('average anchors a cut-off bar in its visible part and a bar inside at its head', async function() {
+        const chart = acquireCutOffChart('average');
+        const {chartArea} = chart;
+        const cutOff = chart.getDatasetMeta(0).data[0];
+        const inside = chart.getDatasetMeta(1).data[0];
+
+        await triggerMouseEvent(chart, 'mousemove', {x: (cutOff.x + inside.x) / 2, y: inside.y});
+        const tooltip = chart.tooltip;
+        expect(tooltip.dataPoints.map(item => item.datasetIndex)).toEqual([0, 1]);
+        const cutOffAnchor = (chartArea.top + cutOff.base) / 2;
+        expect(tooltip.caretX).toBeCloseToPixel((cutOff.x + inside.x) / 2);
+        expect(tooltip.caretY).toBeCloseToPixel((cutOffAnchor + inside.y) / 2);
+      });
+
+      it('nearest picks a cut-off bar by its visible part and anchors it there', async function() {
+        const chart = acquireCutOffChart('nearest');
+        const {chartArea} = chart;
+        const y = chart.scales.y;
+        const cutOff = chart.getDatasetMeta(0).data[0];
+        const inside = chart.getDatasetMeta(1).data[0];
+
+        // Nearer the visible centre of the cut-off bar (25) than the centre of the other (20),
+        // but further from the centre of the whole cut-off bar (50).
+        await triggerMouseEvent(chart, 'mousemove', {x: (cutOff.x + inside.x) / 2, y: y.getPixelForValue(27)});
+        const tooltip = chart.tooltip;
+        expect(tooltip.dataPoints.map(item => item.datasetIndex)).toEqual([0, 1]);
+        expect(tooltip.caretX).toBeCloseToPixel(cutOff.x);
+        expect(tooltip.caretY).toBeCloseToPixel((chartArea.top + cutOff.base) / 2);
+      });
+    });
+
     it('Should not fail with all hiden data elements on the average positioner', function() {
       const averagePositioner = tooltipPlugin.positioners.average;
 

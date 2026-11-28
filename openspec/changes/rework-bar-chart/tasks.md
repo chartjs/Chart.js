@@ -89,8 +89,8 @@ Built after P5 and before P6; the number was added after the design's pull reque
 
 ## 16. P16: Bars cut off by the chart area are found
 
-- [ ] 16.1 Interaction specs: the two inputs in the pieces table, including where the tooltip is anchored. They fail on master. The point spec "out-of-range datapoints are not shown in tooltip" still passes.
-- [ ] 16.2 Add a private `BarElement#_getAreaCenter`; `getIntersectItems` and `getNearestCartesianItems` use it when present, and the bar's `tooltipPosition` returns the same point. Say in `docs/configuration/interactions.md` that for bars the distance is to the visible part. The pull request says `Closes #11733`.
+- [x] 16.1 Interaction specs: the two inputs in the pieces table, including where the tooltip is anchored. They fail on master. The point spec "out-of-range datapoints are not shown in tooltip" still passes.
+- [x] 16.2 Add an internal `BarElement#_getAreaCenter`; `getIntersectItems` and `getNearestCartesianItems` use it when present, and the tooltip's `average` and `nearest` positioners anchor a cut-off bar there. A subclass that overrides `getCenterPoint` keeps the generic rule. Say in `docs/configuration/interactions.md` that for bars the distance is to the visible part. The pull request says `Closes #11733`.
 
 ## 17. P17: index mode follows indexAxis
 

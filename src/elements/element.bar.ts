@@ -3,7 +3,7 @@ import {isObject, _isBetween, _limitValue} from '../helpers/index.js';
 import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
 import {toTRBL, toTRBLCorners} from '../helpers/helpers.options.js';
 import type {BarOptions, Point} from '../types/index.js';
-import type {RoundedRect, TRBL, TRBLCorners} from '../types/geometric.js';
+import type {ChartArea, RoundedRect, TRBL, TRBLCorners} from '../types/geometric.js';
 
 export interface BarProps extends Point {
   base: number;
@@ -229,6 +229,30 @@ export default class BarElement extends Element<BarProps, BarOptions> {
       x: horizontal ? (x + base) / 2 : x,
       y: horizontal ? y : (y + base) / 2
     };
+  }
+
+  /**
+   * The centre of the part of the bar inside the chart area, which the interaction modes
+   * measure to and the tooltip points at when the bar is cut off.
+   * Returns `null` when no part of the bar is inside, and `undefined` for a subclass that
+   * defines its own geometry (it overrides `getCenterPoint`), which keeps the generic rule.
+   * @internal
+   */
+  _getAreaCenter(area: ChartArea, useFinalPosition?: boolean): {x: number, y: number} | null | undefined {
+    if (this.getCenterPoint !== BarElement.prototype.getCenterPoint) {
+      return undefined;
+    }
+    const bounds = getBarBounds(this, useFinalPosition);
+    const left = Math.max(bounds.left, area.left);
+    const right = Math.min(bounds.right, area.right);
+    const top = Math.max(bounds.top, area.top);
+    const bottom = Math.min(bounds.bottom, area.bottom);
+    // Inclusive, so that a bar of zero length on the edge of the area is still found.
+    // Written so that NaN bounds count as outside.
+    if (!(left <= right && top <= bottom)) {
+      return null;
+    }
+    return {x: (left + right) / 2, y: (top + bottom) / 2};
   }
 
   getRange(axis: 'x' | 'y') {

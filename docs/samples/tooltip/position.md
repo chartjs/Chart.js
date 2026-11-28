@@ -56,7 +56,7 @@ const data = {
 // <block:positioner:1>
 // Create a custom tooltip positioner to put at the bottom of the chart area
 components.Tooltip.positioners.bottom = function(items) {
-  const pos = components.Tooltip.positioners.average(items);
+  const pos = components.Tooltip.positioners.average.call(this, items);
 
   // Happens when nothing is found
   if (pos === false) {

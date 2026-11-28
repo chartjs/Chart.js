@@ -411,6 +411,11 @@ class BarElement_2 extends Element_2<BarProps_2, BarOptions> {
     static defaults: any;
     // (undocumented)
     draw(ctx: CanvasRenderingContext2D): void;
+    // @internal
+    _getAreaCenter(area: ChartArea, useFinalPosition?: boolean): {
+        x: number;
+        y: number;
+    } | null | undefined;
     // (undocumented)
     getCenterPoint(useFinalPosition?: boolean): {
         x: number;

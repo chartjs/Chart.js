@@ -63,6 +63,8 @@ Possible modes are:
 
 `'average'` mode will place the tooltip at the average position of the items displayed in the tooltip. `'nearest'` will place the tooltip at the position of the element closest to the event position.
 
+A bar cut off by the chart area, for example by the `min` or `max` of its value axis, is placed at the center of the part inside the chart area; other bars at their end.
+
 You can also define [custom position modes](#custom-position-modes).
 
 ### Tooltip Alignment
@@ -438,7 +440,7 @@ new Chart(ctx, {
 })
 ```
 
-See [samples](/samples/tooltip/position.md) for a more detailed example.
+See [samples](/samples/tooltip/position.md) for a more detailed example. A custom positioner that builds on a built-in one calls it with the tooltip as `this`, for example `Tooltip.positioners.average.call(this, elements)`, so that cut-off bars are placed in their visible part.
 
 If you're using TypeScript, you'll also need to register the new mode:
 
