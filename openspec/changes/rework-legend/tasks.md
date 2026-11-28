@@ -66,8 +66,10 @@
 
 ## 11. P10: Rows as tall as their tallest item
 
-- [ ] 11.1 Spec: a top legend with a three-line label; the next row starts below its third line, and the legend is tall enough. It fails on master.
-- [ ] 11.2 Row height is the tallest item's height. The pull request says `Closes #11824`.
+- [x] 11.1 Spec: a top legend with a three-line label; the next row starts below its third line, and the legend is tall enough. It fails on master.
+- [x] 11.2 Row height is the tallest item's height. The pull request says `Closes #11824`.
+- [x] 11.3 An item is at least as tall as its symbol, also with an array label (spec: `boxHeight: 40` and a two-line label in a top and a left legend).
+- [x] 11.4 An array label in a top or bottom legend is as wide as its widest line, as in a left or right legend (spec: hit box and `lineWidths` follow the widest line).
 
 ## 12. P11: Wrap within maxWidth and maxHeight
 
@@ -77,12 +79,14 @@
 
 ## 13. P12: Hidden data is not active
 
-- [ ] 13.1 Specs:
+- [x] 13.1 Specs:
   - a hovered line dataset with mode `'dataset'` and `intersect: false`, `hide(0)`: the border alpha at mid-animation is below its start (master: it goes opaque);
   - the same with the active elements set by `setActiveElements` and the update the legend makes;
-  - a pie slice hidden from the legend is not in `getActiveElements()`.
-- [ ] 13.2 One helper decides whether an active item is allowed. `_updateHoverStyles` drops the rest from the activated set and clears `active` on them without animating. The replay in `update()` moves into a helper that also filters `_active`.
-- [ ] 13.3 samples/legend/html.md uses `hide`/`show` for datasets. The pull request says `Closes #10882`.
+  - a pie slice hidden from the legend is not in `getActiveElements()`;
+  - `hoverRadius` on a hovered or code-set point is back to `radius` after `hide(0)`, and the hover options of a bar or doughnut slice after `toggleDataVisibility(i)`;
+  - bar and line, `toggleDataVisibility(1)`: the line's point 1 can still be active, the bar's item 1 cannot.
+- [x] 13.2 `_filterActive` decides which active items are allowed, with the controller's `_isDataVisible`. `_active` is filtered in `setActiveElements`, in `_handleEvent` and at the start of `update()`. At the start of `update()` the dropped items lose `active` without animating. The replay in `update()` moves into a helper.
+- [x] 13.3 samples/legend/html.md uses `hide`/`show` for datasets. The pull request says `Closes #10882`.
 
 ## 14. P13: The pointer's active elements end outside the chart area
 

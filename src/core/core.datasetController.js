@@ -759,6 +759,18 @@ export default class DatasetController {
   }
 
   /**
+   * Whether the data item at `index` is shown. A hidden data item cannot be active.
+   * Controllers that hide data by `chart.toggleDataVisibility` also check that.
+   * @param {number} index - data index
+   * @returns {boolean}
+   * @protected
+   */
+  _isDataVisible(index) {
+    const element = this._cachedMeta.data[index];
+    return !(element && element.hidden);
+  }
+
+  /**
 	 * Returns a set of predefined style properties that should be used to represent the dataset
 	 * or the data if the index is specified
 	 * @param {number} index - data index
@@ -948,6 +960,28 @@ export default class DatasetController {
       // This way the once hovered element will end up with the same original shared options instance, after animation.
       options: (!active && this.getSharedOptions(options)) || options
     });
+  }
+
+  /**
+   * Ends the hover style of a data element without animating it, before an update
+   * that animates the element in its own mode (for example 'hide'). An element of a
+   * controller that shares its options gets the shared options back, because the
+   * update animates those and leaves the element's own options alone.
+   * @param {import('./core.element.js').default} element - the data element
+   * @param {number} index - data index
+   * @private
+   */
+  _clearHoverStyle(element, index) {
+    element.active = false;
+    if (index >= this._cachedMeta.data.length) {
+      // The data item was removed: its element is gone, and resolving its options
+      // would give scriptable options a context without the data item.
+      return;
+    }
+    const sharedOptions = this.getSharedOptions(this.getStyle(index, false));
+    if (sharedOptions) {
+      element.options = sharedOptions;
+    }
   }
 
   removeHoverStyle(element, datasetIndex, index) {

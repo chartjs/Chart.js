@@ -349,6 +349,7 @@ class BarController_2 extends DatasetController_2 {
     getFirstScaleIdForIndexAxis(): string;
     // (undocumented)
     static id: string;
+    protected _isDataVisible(index: any): boolean;
     static overrides: any;
     protected parseArrayData(meta: any, data: any, start: any, count: any): any[];
     protected parseObjectData(meta: any, data: any, start: any, count: any): any[];
@@ -393,38 +394,46 @@ export const BarElement: ChartComponent & {
 };
 
 // @public (undocumented)
-class BarElement_2 extends Element_2<AnyObject, AnyObject> {
+class BarElement_2 extends Element_2<BarProps_2, BarOptions> {
     constructor(cfg: any);
     // (undocumented)
-    base: any;
+    base: number;
+    // (undocumented)
+    borderSkipped: {
+        top: boolean;
+        right: boolean;
+        bottom: boolean;
+        left: boolean;
+    };
+    // (undocumented)
+    static defaultRoutes: any;
+    // (undocumented)
     static defaults: any;
     // (undocumented)
-    draw(ctx: any): void;
+    draw(ctx: CanvasRenderingContext2D): void;
     // (undocumented)
-    getCenterPoint(useFinalPosition: any): {
+    getCenterPoint(useFinalPosition?: boolean): {
         x: number;
         y: number;
     };
     // (undocumented)
-    getRange(axis: any): number;
+    getRange(axis: 'x' | 'y'): number;
     // (undocumented)
-    height: any;
+    height: number;
     // (undocumented)
-    horizontal: any;
+    horizontal: boolean;
     // (undocumented)
     static id: string;
     // (undocumented)
-    inflateAmount: any;
+    inflateAmount: number;
     // (undocumented)
-    inRange(mouseX: any, mouseY: any, useFinalPosition: any): boolean;
+    inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
     // (undocumented)
-    inXRange(mouseX: any, useFinalPosition: any): boolean;
+    inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
     // (undocumented)
-    inYRange(mouseY: any, useFinalPosition: any): boolean;
+    inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
     // (undocumented)
-    options: any;
-    // (undocumented)
-    width: any;
+    width: number;
 }
 
 // @public (undocumented)
@@ -462,6 +471,18 @@ export interface BarParsedData extends CartesianParsedData {
 
 // @public (undocumented)
 export interface BarProps extends Point {
+    // (undocumented)
+    base: number;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    horizontal: boolean;
+    // (undocumented)
+    width: number;
+}
+
+// @public (undocumented)
+interface BarProps_2 extends Point {
     // (undocumented)
     base: number;
     // (undocumented)
@@ -1812,6 +1833,7 @@ class DatasetController_2 {
     index: number;
     // (undocumented)
     initialize(): void;
+    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     linkScales(): void;
     // (undocumented)
@@ -2399,6 +2421,7 @@ class DoughnutController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
+    protected _isDataVisible(index: any): boolean;
     // (undocumented)
     offsetX: number;
     // (undocumented)
@@ -3626,12 +3649,16 @@ export const PolarAreaController: ChartComponent & {
 
 // @public (undocumented)
 class PolarAreaController_2 extends DatasetController_2 {
-    constructor(chart: any, datasetIndex: any);
+    constructor(chart: Chart_3, datasetIndex: number);
+    // @internal (undocumented)
+    _computeAngle(index: number, mode: UpdateMode, defaultAngle: number): number;
     // (undocumented)
     countVisibleElements(): number;
     // (undocumented)
-    getLabelAndValue(index: any): {
-        label: any;
+    static defaults: any;
+    // (undocumented)
+    getLabelAndValue(index: number): {
+        label: string;
         value: string;
     };
     // (undocumented)
@@ -3643,15 +3670,21 @@ class PolarAreaController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
+    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     outerRadius: number;
+    // (undocumented)
     static overrides: any;
     // (undocumented)
-    parseObjectData(meta: any, data: any, start: any, count: any): {
+    parseObjectData(meta: ChartMeta<'polarArea'>, data: AnyObject[], start: number, count: number): {
         r: unknown;
     }[];
     // (undocumented)
-    update(mode: any): void;
+    update(mode: UpdateMode): void;
+    // (undocumented)
+    updateElements(arcs: ArcElement[], start: number, count: number, mode: UpdateMode): void;
+    // @internal (undocumented)
+    _updateRadius(): void;
 }
 
 // @public (undocumented)
@@ -3686,19 +3719,24 @@ export const RadarController: ChartComponent & {
 // @public (undocumented)
 class RadarController_2 extends DatasetController_2 {
     // (undocumented)
-    protected getLabelAndValue(index: any): {
-        label: any;
+    static defaults: any;
+    // (undocumented)
+    protected getLabelAndValue(index: number): {
+        label: string;
         value: string;
     };
     // (undocumented)
     static id: string;
+    // (undocumented)
     static overrides: any;
     // (undocumented)
-    parseObjectData(meta: any, data: any, start: any, count: any): {
+    parseObjectData(meta: ChartMeta<'radar'>, data: AnyObject[], start: number, count: number): {
         r: unknown;
     }[];
     // (undocumented)
-    update(mode: any): void;
+    update(mode: UpdateMode): void;
+    // (undocumented)
+    updateElements(points: PointElement[], start: number, count: number, mode: UpdateMode): void;
 }
 
 // @public (undocumented)

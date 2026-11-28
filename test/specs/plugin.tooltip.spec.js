@@ -828,6 +828,170 @@ describe('Plugin.Tooltip', function() {
     }));
   });
 
+  it('should hide the tooltip and not run content callbacks when all items are filtered out', async function() {
+    var titleCallback = vi.fn();
+    var beforeBodyCallback = vi.fn();
+    var labelCallback = vi.fn();
+    var footerCallback = vi.fn();
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function() {
+              return false;
+            },
+            callbacks: {
+              title: titleCallback,
+              beforeBody: beforeBodyCallback,
+              label: labelCallback,
+              footer: footerCallback
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var point = meta.data[1];
+
+    await triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(titleCallback).not.toHaveBeenCalled();
+    expect(beforeBodyCallback).not.toHaveBeenCalled();
+    expect(labelCallback).not.toHaveBeenCalled();
+    expect(footerCallback).not.toHaveBeenCalled();
+    expect(chart.tooltip.opacity).toBe(0);
+  });
+
+  it('should stay drawable while fading out after all items become filtered', async function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function(item) {
+              return item.dataIndex !== 2;
+            },
+            callbacks: {
+              title: function() {
+                return 'Title';
+              },
+              beforeBody: function() {
+                return 'Before body';
+              },
+              afterBody: function() {
+                return 'After body';
+              },
+              footer: function() {
+                return 'Footer';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+
+    // Show the tooltip on an accepted item, then move to a filtered one
+    await triggerMouseEvent(chart, 'mousemove', meta.data[1]);
+    expect(chart.tooltip.body.length).toBe(1);
+    await triggerMouseEvent(chart, 'mousemove', meta.data[2]);
+
+    expect(chart.tooltip.title).toEqual([]);
+    expect(chart.tooltip.beforeBody).toEqual([]);
+    expect(chart.tooltip.body).toEqual([]);
+    expect(chart.tooltip.afterBody).toEqual([]);
+    expect(chart.tooltip.footer).toEqual([]);
+
+    // Drawing mid fade-out must not throw with the cleared label colors
+    chart.tooltip.opacity = 0.5;
+    expect(function() {
+      chart.tooltip.draw(chart.ctx);
+    }).not.toThrow();
+  });
+
+  it('should keep the content while fading out after leaving the chart', async function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index'
+          }
+        }
+      }
+    });
+
+    await triggerMouseEvent(chart, 'mousemove', chart.getDatasetMeta(0).data[1]);
+    await triggerMouseEvent(chart, 'mouseout', {x: 0, y: 0});
+
+    expect(chart.tooltip.body.length).toBe(1);
+
+    // Drawing mid fade-out must not throw with the kept content
+    chart.tooltip.opacity = 0.5;
+    expect(function() {
+      chart.tooltip.draw(chart.ctx);
+    }).not.toThrow();
+  });
+
+  it('should not report a position change for repeated events on filtered items', async function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Dataset 1',
+          data: [10, 20, 30]
+        }],
+        labels: ['Point 1', 'Point 2', 'Point 3']
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            filter: function() {
+              return false;
+            }
+          }
+        }
+      }
+    });
+
+    var meta = chart.getDatasetMeta(0);
+    var point = meta.data[1];
+
+    await triggerMouseEvent(chart, 'mousemove', point);
+
+    var updateSpy = vi.spyOn(chart.tooltip, 'update');
+    await triggerMouseEvent(chart, 'mousemove', point);
+
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
   it('should set the caretPadding based on a config setting', async function() {
     var chart = window.acquireChart({
       type: 'line',

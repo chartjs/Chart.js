@@ -376,6 +376,14 @@ export default class BarController extends DatasetController {
     };
   }
 
+  /**
+   * A bar hidden by `chart.toggleDataVisibility` collapses to its base.
+   * @protected
+   */
+  _isDataVisible(index) {
+    return this.chart.getDataVisibility(index) && super._isDataVisible(index);
+  }
+
   initialize() {
     this.enableOptionSharing = true;
 
@@ -499,7 +507,13 @@ export default class BarController extends DatasetController {
   _getAxis() {
     const axis = {};
     const firstScaleAxisId = this.getFirstScaleIdForIndexAxis();
+    const chartType = this.chart.config.type;
     for (const dataset of this.chart.data.datasets) {
+      // Only datasets of this controller's type share the index slots. The type
+      // is resolved as the chart resolves it for the dataset's meta.
+      if ((dataset.type || chartType) !== this._type) {
+        continue;
+      }
       axis[valueOrDefault(
         this.chart.options.indexAxis === 'x' ? dataset.xAxisID : dataset.yAxisID, firstScaleAxisId
       )] = true;

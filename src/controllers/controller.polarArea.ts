@@ -1,14 +1,15 @@
 import DatasetController from '../core/core.datasetController.js';
 import {toRadians, PI, formatNumber, _parseObjectDataRadialScale} from '../helpers/index.js';
+import type {AnyObject} from '../types/basic.js';
+import type {ChartMeta, UpdateMode} from '../types/index.js';
+import type ArcElement from '../elements/element.arc.js';
+import type Chart from '../core/core.controller.js';
 
 export default class PolarAreaController extends DatasetController {
 
   static id = 'polarArea';
 
-  /**
-   * @type {any}
-   */
-  static defaults = {
+  static override defaults: any = {
     dataElementType: 'arc',
     animation: {
       animateRotate: true,
@@ -26,10 +27,7 @@ export default class PolarAreaController extends DatasetController {
     spacingMode: 'proportional',
   };
 
-  /**
-   * @type {any}
-   */
-  static overrides = {
+  static overrides: any = {
     aspectRatio: 1,
 
     plugins: {
@@ -62,7 +60,7 @@ export default class PolarAreaController extends DatasetController {
           }
         },
 
-        onClick(e, legendItem, legend) {
+        onClick(_e, legendItem, legend) {
           legend.chart.toggleDataVisibility(legendItem.index);
           legend.chart.update();
         }
@@ -87,14 +85,17 @@ export default class PolarAreaController extends DatasetController {
     }
   };
 
-  constructor(chart, datasetIndex) {
+  declare innerRadius: number;
+  declare outerRadius: number;
+
+  constructor(chart: Chart, datasetIndex: number) {
     super(chart, datasetIndex);
 
     this.innerRadius = undefined;
     this.outerRadius = undefined;
   }
 
-  getLabelAndValue(index) {
+  override getLabelAndValue(index: number): {label: string; value: string} {
     const meta = this._cachedMeta;
     const chart = this.chart;
     const labels = chart.data.labels || [];
@@ -106,25 +107,30 @@ export default class PolarAreaController extends DatasetController {
     };
   }
 
-  parseObjectData(meta, data, start, count) {
+  /**
+   * An arc hidden by `chart.toggleDataVisibility` has no radius.
+   * @protected
+   */
+  protected override _isDataVisible(index: number): boolean {
+    return this.chart.getDataVisibility(index) && super._isDataVisible(index);
+  }
+
+  override parseObjectData(meta: ChartMeta<'polarArea'>, data: AnyObject[], start: number, count: number) {
     return _parseObjectDataRadialScale.bind(this)(meta, data, start, count);
   }
 
-  update(mode) {
+  override update(mode: UpdateMode): void {
     const arcs = this._cachedMeta.data;
 
     this._updateRadius();
     this.updateElements(arcs, 0, arcs.length, mode);
   }
 
-  /**
-   * @protected
-   */
-  getMinMax() {
+  protected override getMinMax(): {min: number; max: number} {
     const meta = this._cachedMeta;
     const range = {min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY};
 
-    meta.data.forEach((element, index) => {
+    meta.data.forEach((_element, index) => {
       const parsed = this.getParsed(index).r;
 
       if (!isNaN(parsed) && this.chart.getDataVisibility(index)) {
@@ -141,10 +147,8 @@ export default class PolarAreaController extends DatasetController {
     return range;
   }
 
-  /**
-	 * @private
-	 */
-  _updateRadius() {
+  /** @internal */
+  _updateRadius(): void {
     const chart = this.chart;
     const chartArea = chart.chartArea;
     const opts = chart.options;
@@ -158,7 +162,7 @@ export default class PolarAreaController extends DatasetController {
     this.innerRadius = this.outerRadius - radiusLength;
   }
 
-  updateElements(arcs, start, count, mode) {
+  override updateElements(arcs: ArcElement[], start: number, count: number, mode: UpdateMode): void {
     const reset = mode === 'reset';
     const chart = this.chart;
     const opts = chart.options;
@@ -213,11 +217,11 @@ export default class PolarAreaController extends DatasetController {
     }
   }
 
-  countVisibleElements() {
+  countVisibleElements(): number {
     const meta = this._cachedMeta;
     let count = 0;
 
-    meta.data.forEach((element, index) => {
+    meta.data.forEach((_element, index) => {
       if (!isNaN(this.getParsed(index).r) && this.chart.getDataVisibility(index)) {
         count++;
       }
@@ -226,10 +230,8 @@ export default class PolarAreaController extends DatasetController {
     return count;
   }
 
-  /**
-	 * @private
-	 */
-  _computeAngle(index, mode, defaultAngle) {
+  /** @internal */
+  _computeAngle(index: number, mode: UpdateMode, defaultAngle: number): number {
     return this.chart.getDataVisibility(index)
       ? toRadians(this.resolveDataElementOptions(index, mode).angle || defaultAngle)
       : 0;

@@ -87,11 +87,11 @@
 
 ## 12. P12: Convert the layout service to TypeScript
 
-- [ ] 12.1 Rename the modules to `.ts`. Show the gate's errors for the layout service before the fix.
-- [ ] 12.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 12.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 12.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 12.5 Run the whole test suite; no fixture changes.
+- [x] 12.1 Rename the modules to `.ts`. Show the gate's errors for the layout service before the fix.
+- [x] 12.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 12.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 12.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 12.5 Run the whole test suite; no fixture changes.
 
 ## 13. P13: Convert the segment helpers to TypeScript
 
@@ -120,11 +120,11 @@
 
 ## 16. P16: Convert the radar and polar area controllers to TypeScript
 
-- [ ] 16.1 Rename the modules to `.ts`. Show the gate's errors for the radar and polar area controllers before the fix.
-- [ ] 16.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 16.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 16.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 16.5 Run the whole test suite; no fixture changes.
+- [x] 16.1 Rename the modules to `.ts`. Show the gate's errors for the radar and polar area controllers before the fix.
+- [x] 16.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 16.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 16.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 16.5 Run the whole test suite; no fixture changes.
 
 ## 17. P17: Convert Animations to TypeScript
 

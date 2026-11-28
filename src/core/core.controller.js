@@ -522,6 +522,7 @@ class Chart {
       });
     }
 
+    this._deactivateHidden();
     this._updateDatasets(mode);
 
     // Do this before render so that any plugins that need final scale updates can use it
@@ -535,15 +536,76 @@ class Chart {
   }
 
   /**
+   * Drops the hidden data from the active elements before the datasets update, so
+   * the update resolves their normal options. Their hover style ends without the
+   * un-hover animation: the update animates them in its own mode, such as 'hide'.
+   * @private
+   */
+  _deactivateHidden() {
+    const lastActive = this._active;
+    if (!lastActive.length) {
+      return;
+    }
+    const isShown = this._activeFilter();
+    const active = [];
+    const dropped = new Set();
+    let datasetIndex, controller;
+    for (const item of lastActive) {
+      if (isShown(item)) {
+        active.push(item);
+        continue;
+      }
+      if (item.datasetIndex !== datasetIndex) {
+        datasetIndex = item.datasetIndex;
+        dropped.add(datasetIndex);
+        // A removed dataset has no meta left, and getDatasetMeta would make one.
+        controller = this.data.datasets[datasetIndex] && this.getDatasetMeta(datasetIndex).controller;
+      }
+      if (controller) {
+        controller._clearHoverStyle(item.element, item.index);
+      } else {
+        item.element.active = false;
+      }
+    }
+    if (active.length === lastActive.length) {
+      return;
+    }
+    this._active = active;
+    if (this.options.hover.mode === 'dataset') {
+      this._deactivateDatasetElements(dropped, active);
+    }
+  }
+
+  /**
+   * In hover mode 'dataset', ends the active state of the dataset elements whose
+   * items were all dropped. A dataset with an item still active keeps its hover style.
+   * @param {Set<number>} dropped - indices of the datasets that lost active items
+   * @param {import('../types/index.js').ActiveElement[]} active - the items kept
+   * @private
+   */
+  _deactivateDatasetElements(dropped, active) {
+    for (const {datasetIndex} of active) {
+      dropped.delete(datasetIndex);
+    }
+    for (const datasetIndex of dropped) {
+      // A removed dataset has no meta left, and getDatasetMeta would make one.
+      const meta = this.data.datasets[datasetIndex] && this.getDatasetMeta(datasetIndex);
+      if (meta && meta.dataset) {
+        meta.dataset.active = false;
+      }
+    }
+  }
+
+  /**
    * Replays the last event from before the update, or sets the hover styles on the active elements.
-   * Active items whose data was removed since they were set are dropped first: resolving options
-   * for an index past the end of the data throws in scriptable options (ctx.raw is undefined),
-   * and the stale item would stay active forever. Element counts are current here, the
-   * controllers were rebuilt above, so this also covers datasets that were removed entirely.
+  * Active items whose data was removed since they were set are dropped first: resolving options
+  * for an index past the end of the data throws in scriptable options (ctx.raw is undefined),
+  * and the stale item would stay active forever. Element counts are current here, the
+  * controllers were rebuilt above, so this also covers datasets that were removed entirely.
    * @private
    */
   _replayActive() {
-    this._active = (this._active || []).filter(({datasetIndex, index}) => {
+    this._active = (this._active || []).filter({datasetIndex, index}) => {
       // A removed dataset has no meta left, and getDatasetMeta would make one.
       const meta = this.data.datasets[datasetIndex] && this.getDatasetMeta(datasetIndex);
       return meta && index < meta.data.length;
@@ -1116,7 +1178,7 @@ class Chart {
 	 */
   setActiveElements(activeElements) {
     const lastActive = this._active || [];
-    const active = activeElements.map(({datasetIndex, index}) => {
+    const active = this._filterActive(activeElements.map(({datasetIndex, index}) => {
       const meta = this.getDatasetMeta(datasetIndex);
       if (!meta) {
         throw new Error('No dataset found at index ' + datasetIndex);
@@ -1127,7 +1189,7 @@ class Chart {
         element: meta.data[index],
         index,
       };
-    }).filter(({element}) => element);
+    }).filter(({element}) => element));
     const changed = !_elementsEqual(active, lastActive);
 
     if (changed) {
@@ -1176,6 +1238,33 @@ class Chart {
     if (activated.length && hoverOptions.mode) {
       this.updateHoverStyle(activated, hoverOptions.mode, true);
     }
+  }
+
+  /**
+   * Returns a test of whether an active item may stay active: its dataset is visible and
+   * its data item is not hidden. The dataset is checked once for each run of its items.
+   * @returns {(item: {datasetIndex: number, index: number}) => boolean}
+   * @private
+   */
+  _activeFilter() {
+    let datasetIndex, controller;
+    return (item) => {
+      if (item.datasetIndex !== datasetIndex) {
+        datasetIndex = item.datasetIndex;
+        controller = this.isDatasetVisible(datasetIndex) && this.getDatasetMeta(datasetIndex).controller;
+      }
+      return !!controller && controller._isDataVisible(item.index);
+    };
+  }
+
+  /**
+   * Leaves out the items whose dataset or data item is hidden: hidden data cannot be active.
+   * @param {import('../types/index.js').ActiveElement[]} items
+   * @returns {import('../types/index.js').ActiveElement[]}
+   * @private
+   */
+  _filterActive(items) {
+    return items.length ? items.filter(this._activeFilter()) : items;
   }
 
   /**
@@ -1231,7 +1320,8 @@ class Chart {
     // This is done so we do not have to evaluate the active elements each animation frame
     // - it would be expensive.
     const useFinalPosition = replay;
-    const active = this._getActiveElements(e, lastActive, inChartArea, useFinalPosition);
+    let active = this._filterActive(this._getActiveElements(e, lastActive, inChartArea, useFinalPosition));
+    let previous = lastActive;
     const isClick = _isClickEvent(e, options.events);
     const lastEvent = determineLastEvent(e, this._lastEvent, inChartArea, isClick);
 
@@ -1246,12 +1336,17 @@ class Chart {
       if (isClick) {
         callCallback(options.onClick, [e, active, this], this);
       }
+
+      // A handler may hide data. If it updates the chart, the update has already
+      // dropped that data from `_active`, so compare with what the update left.
+      active = this._filterActive(active);
+      previous = this._active;
     }
 
-    const changed = !_elementsEqual(active, lastActive);
+    const changed = !_elementsEqual(active, previous);
     if (changed || replay) {
       this._active = active;
-      this._updateHoverStyles(active, lastActive, replay);
+      this._updateHoverStyles(active, previous, replay);
     }
 
     this._lastEvent = lastEvent;

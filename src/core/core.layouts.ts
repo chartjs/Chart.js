@@ -1,21 +1,69 @@
 import {defined, each, isObject} from '../helpers/helpers.core.js';
 import {toPadding} from '../helpers/helpers.options.js';
+import type Chart from './core.controller.js';
+import type {ChartArea, LayoutItem, LayoutPosition, TRBL} from '../types/index.js';
+
+export type {Chart, LayoutItem};
 
 /**
- * @typedef { import('./core.controller.js').default } Chart
+ * A box as the layout service uses it. `update` receives the margins without `width` and `height`.
  */
+interface LayoutBoxItem extends Omit<LayoutItem, 'update'> {
+  axis?: string;
+  options?: {display?: boolean; stack?: string; stackWeight?: number};
+  update(width: number, height: number, margins?: TRBL): void;
+}
 
-const STATIC_POSITIONS = ['left', 'top', 'right', 'bottom'];
+interface LayoutBox {
+  index: number;
+  box: LayoutBoxItem;
+  pos: LayoutPosition;
+  horizontal: boolean;
+  weight: number;
+  stack: string;
+  stackWeight: number;
+  width?: number | false;
+  height?: number | false;
+  size?: number;
+}
 
-function filterByPosition(array, position) {
+interface LayoutStack {
+  count: number;
+  placed?: number;
+  weight?: number;
+  size?: number;
+  start?: number;
+}
+
+interface LayoutParams {
+  outerWidth: number;
+  outerHeight: number;
+  padding: ChartArea;
+  availableWidth: number;
+  availableHeight: number;
+  vBoxMaxWidth: number;
+  hBoxMaxHeight: number;
+}
+
+interface LayoutArea extends ChartArea {
+  maxPadding: ChartArea;
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
+
+const STATIC_POSITIONS: LayoutPosition[] = ['left', 'top', 'right', 'bottom'];
+
+function filterByPosition(array: LayoutBox[], position: LayoutPosition) {
   return array.filter(v => v.pos === position);
 }
 
-function filterDynamicPositionByAxis(array, axis) {
+function filterDynamicPositionByAxis(array: LayoutBox[], axis: string) {
   return array.filter(v => STATIC_POSITIONS.indexOf(v.pos) === -1 && v.box.axis === axis);
 }
 
-function sortByWeight(array, reverse) {
+function sortByWeight(array: LayoutBox[], reverse?: boolean) {
   return array.sort((a, b) => {
     const v0 = reverse ? b : a;
     const v1 = reverse ? a : b;
@@ -25,9 +73,9 @@ function sortByWeight(array, reverse) {
   });
 }
 
-function wrapBoxes(boxes) {
-  const layoutBoxes = [];
-  let i, ilen, box, pos, stack, stackWeight;
+function wrapBoxes(boxes: LayoutBoxItem[]) {
+  const layoutBoxes: LayoutBox[] = [];
+  let i: number, ilen: number, box: LayoutBoxItem, pos: LayoutPosition, stack: string, stackWeight: number;
 
   for (i = 0, ilen = (boxes || []).length; i < ilen; ++i) {
     box = boxes[i];
@@ -45,8 +93,8 @@ function wrapBoxes(boxes) {
   return layoutBoxes;
 }
 
-function buildStacks(layouts) {
-  const stacks = {};
+function buildStacks(layouts: LayoutBox[]) {
+  const stacks: Record<string, LayoutStack> = {};
   for (const wrap of layouts) {
     const {stack, pos, stackWeight} = wrap;
     if (!stack || !STATIC_POSITIONS.includes(pos)) {
@@ -62,10 +110,10 @@ function buildStacks(layouts) {
 /**
  * store dimensions used instead of available chartArea in fitBoxes
  **/
-function setLayoutDims(layouts, params) {
+function setLayoutDims(layouts: LayoutBox[], params: LayoutParams) {
   const stacks = buildStacks(layouts);
   const {vBoxMaxWidth, hBoxMaxHeight} = params;
-  let i, ilen, layout;
+  let i: number, ilen: number, layout: LayoutBox;
   for (i = 0, ilen = layouts.length; i < ilen; ++i) {
     layout = layouts[i];
     const {fullSize} = layout.box;
@@ -82,7 +130,7 @@ function setLayoutDims(layouts, params) {
   return stacks;
 }
 
-function buildLayoutBoxes(boxes) {
+function buildLayoutBoxes(boxes: LayoutBoxItem[]) {
   const layoutBoxes = wrapBoxes(boxes);
   const fullSize = sortByWeight(layoutBoxes.filter(wrap => wrap.box.fullSize), true);
   const left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
@@ -102,18 +150,18 @@ function buildLayoutBoxes(boxes) {
   };
 }
 
-function getCombinedMax(maxPadding, chartArea, a, b) {
+function getCombinedMax(maxPadding: ChartArea, chartArea: LayoutArea, a: keyof TRBL, b: keyof TRBL) {
   return Math.max(maxPadding[a], chartArea[a]) + Math.max(maxPadding[b], chartArea[b]);
 }
 
-function updateMaxPadding(maxPadding, boxPadding) {
+function updateMaxPadding(maxPadding: ChartArea, boxPadding: ChartArea) {
   maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
   maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
   maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
   maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
 }
 
-function updateDims(chartArea, params, layout, stacks) {
+function updateDims(chartArea: LayoutArea, params: LayoutParams, layout: LayoutBox, stacks: Record<string, LayoutStack>) {
   const {pos, box} = layout;
   const maxPadding = chartArea.maxPadding;
 
@@ -146,10 +194,10 @@ function updateDims(chartArea, params, layout, stacks) {
     : {same: heightChanged, other: widthChanged};
 }
 
-function handleMaxPadding(chartArea) {
+function handleMaxPadding(chartArea: LayoutArea) {
   const maxPadding = chartArea.maxPadding;
 
-  function updatePos(pos) {
+  function updatePos(pos: keyof TRBL) {
     const change = Math.max(maxPadding[pos] - chartArea[pos], 0);
     chartArea[pos] += change;
     return change;
@@ -160,10 +208,10 @@ function handleMaxPadding(chartArea) {
   updatePos('bottom');
 }
 
-function getMargins(horizontal, chartArea) {
+function getMargins(horizontal: boolean, chartArea: LayoutArea) {
   const maxPadding = chartArea.maxPadding;
 
-  function marginForPositions(positions) {
+  function marginForPositions(positions: (keyof TRBL)[]) {
     const margin = {left: 0, top: 0, right: 0, bottom: 0};
     positions.forEach((pos) => {
       margin[pos] = Math.max(chartArea[pos], maxPadding[pos]);
@@ -176,9 +224,9 @@ function getMargins(horizontal, chartArea) {
     : marginForPositions(['top', 'bottom']);
 }
 
-function fitBoxes(boxes, chartArea, params, stacks) {
-  const refitBoxes = [];
-  let i, ilen, layout, box, refit, changed;
+function fitBoxes(boxes: LayoutBox[], chartArea: LayoutArea, params: LayoutParams, stacks: Record<string, LayoutStack>): boolean {
+  const refitBoxes: LayoutBox[] = [];
+  let i: number, ilen: number, layout: LayoutBox, box: LayoutBoxItem, refit: number, changed: boolean;
 
   for (i = 0, ilen = boxes.length, refit = 0; i < ilen; ++i) {
     layout = boxes[i];
@@ -206,7 +254,7 @@ function fitBoxes(boxes, chartArea, params, stacks) {
   return refit && fitBoxes(refitBoxes, chartArea, params, stacks) || changed;
 }
 
-function setBoxDims(box, left, top, width, height) {
+function setBoxDims(box: LayoutBoxItem, left: number, top: number, width: number, height: number) {
   box.top = top;
   box.left = left;
   box.right = left + width;
@@ -215,7 +263,7 @@ function setBoxDims(box, left, top, width, height) {
   box.height = height;
 }
 
-function placeBoxes(boxes, chartArea, params, stacks) {
+function placeBoxes(boxes: LayoutBox[], chartArea: LayoutArea, params: LayoutParams, stacks: Record<string, LayoutStack>) {
   const userPadding = params.padding;
   let {x, y} = chartArea;
 
@@ -258,9 +306,7 @@ function placeBoxes(boxes, chartArea, params, stacks) {
   chartArea.y = y;
 }
 
-/**
- * @typedef {import('../types/layout.js').LayoutItem} LayoutItem
- */
+type LayeredItem = LayoutItem & {_layers?(): {z: number; draw(chartArea: ChartArea): void}[]};
 
 // The layout service is very self explanatory.  It's responsible for the layout within a chart.
 // Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
@@ -268,12 +314,12 @@ function placeBoxes(boxes, chartArea, params, stacks) {
 export default {
 
   /**
-	 * Register a box to a chart.
-	 * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
-	 * @param {Chart} chart - the chart to use
-	 * @param {LayoutItem} item - the item to add to be laid out
-	 */
-  addBox(chart, item) {
+   * Register a box to a chart.
+   * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
+   * @param chart - the chart to use
+   * @param item - the item to add to be laid out
+   */
+  addBox(chart: Chart, item: LayoutItem) {
     if (!chart.boxes) {
       chart.boxes = [];
     }
@@ -282,11 +328,10 @@ export default {
     item.fullSize = item.fullSize || false;
     item.position = item.position || 'top';
     item.weight = item.weight || 0;
-    // @ts-ignore
-    item._layers = item._layers || function() {
+    (item as LayeredItem)._layers = (item as LayeredItem)._layers || function() {
       return [{
         z: 0,
-        draw(chartArea) {
+        draw(chartArea: ChartArea) {
           item.draw(chartArea);
         }
       }];
@@ -296,11 +341,11 @@ export default {
   },
 
   /**
-	 * Remove a layoutItem from a chart
-	 * @param {Chart} chart - the chart to remove the box from
-	 * @param {LayoutItem} layoutItem - the item to remove from the layout
-	 */
-  removeBox(chart, layoutItem) {
+   * Remove a layoutItem from a chart
+   * @param chart - the chart to remove the box from
+   * @param layoutItem - the item to remove from the layout
+   */
+  removeBox(chart: Chart, layoutItem: LayoutItem) {
     const index = chart.boxes ? chart.boxes.indexOf(layoutItem) : -1;
     if (index !== -1) {
       chart.boxes.splice(index, 1);
@@ -308,26 +353,26 @@ export default {
   },
 
   /**
-	 * Sets (or updates) options on the given `item`.
-	 * @param {Chart} chart - the chart in which the item lives (or will be added to)
-	 * @param {LayoutItem} item - the item to configure with the given options
-	 * @param {object} options - the new item options.
-	 */
-  configure(chart, item, options) {
+   * Sets (or updates) options on the given `item`.
+   * @param _chart - the chart in which the item lives (or will be added to)
+   * @param item - the item to configure with the given options
+   * @param options - the new item options.
+   */
+  configure(_chart: Chart, item: LayoutItem, options: {fullSize?: boolean; position?: LayoutPosition; weight?: number}) {
     item.fullSize = options.fullSize;
     item.position = options.position;
     item.weight = options.weight;
   },
 
   /**
-	 * Fits boxes of the given chart into the given size by having each box measure itself
-	 * then running a fitting algorithm
-	 * @param {Chart} chart - the chart
-	 * @param {number} width - the width to fit into
-	 * @param {number} height - the height to fit into
-   * @param {number} minPadding - minimum padding required for each side of chart area
-	 */
-  update(chart, width, height, minPadding) {
+   * Fits boxes of the given chart into the given size by having each box measure itself
+   * then running a fitting algorithm
+   * @param chart - the chart
+   * @param width - the width to fit into
+   * @param height - the height to fit into
+   * @param minPadding - minimum padding required for each side of chart area
+   */
+  update(chart: Chart, width: number, height: number, minPadding?: number) {
     if (!chart) {
       return;
     }

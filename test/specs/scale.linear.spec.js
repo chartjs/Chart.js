@@ -761,6 +761,48 @@ describe('Linear Scale', function() {
     expect(ticks).toEqual(ticks.slice().sort((a, b) => a - b));
   });
 
+  [[[10, 20, 80], 90], [[10, 20, 90], 100]].forEach(function([data, last]) {
+    it('should end the axis at its last tick with grace and stepSize for data ' + JSON.stringify(data), function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data}]
+        },
+        options: {
+          scales: {
+            y: {grace: '10%', ticks: {stepSize: 10}}
+          }
+        }
+      });
+      var scale = chart.scales.y;
+      var expected = Array.from({length: last / 10 + 1}, (_, i) => i * 10);
+
+      expect(scale.ticks.map(tick => tick.value)).toEqual(expected);
+      expect(scale.min).toBe(0);
+      expect(scale.max).toBe(last);
+    });
+  });
+
+  it('should count the stepSize limit on min and max when buildTicks runs without a range', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b', 'c'],
+        datasets: [{data: [10, 20, 80]}]
+      },
+      options: {
+        scales: {
+          y: {ticks: {stepSize: 10}}
+        }
+      }
+    });
+    var scale = chart.scales.y;
+    scale._range = undefined;
+
+    expect(scale.buildTicks().map(tick => tick.value)).toEqual([10, 20, 30, 40, 50, 60, 70, 80]);
+  });
+
   it('Should use min, max and stepSize to create fixed spaced ticks', function() {
     var chart = window.acquireChart({
       type: 'bar',
@@ -789,6 +831,113 @@ describe('Linear Scale', function() {
     expect(chart.scales.y.min).toBe(1);
     expect(chart.scales.y.max).toBe(11);
     expect(getLabels(chart.scales.y)).toEqual(['1', '3', '5', '7', '9', '11']);
+  });
+
+  it('Should use stepSize increments and keep max as the final shorter interval', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 3333,
+            ticks: {
+              stepSize: 500
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([
+      0, 500, 1000, 1500, 2000, 2500, 3000, 3333
+    ]);
+  });
+
+  it('Should use stepSize for floating point ranges that are effectively divisible', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 0.3,
+            ticks: {
+              stepSize: 0.1
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(1))).toEqual([0, 0.1, 0.2, 0.3]);
+  });
+
+  it('Should use stepSize when the range is divisible within the precision of min and max', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 8089.45,
+            max: 8089.66,
+            ticks: {
+              stepSize: 0.03
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(2))).toEqual([
+      8089.45, 8089.48, 8089.51, 8089.54, 8089.57, 8089.6, 8089.63, 8089.66
+    ]);
+  });
+
+  it('Should use stepSize when a negative range is divisible within the precision of min and max', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: -8089.66,
+            max: -8089.45,
+            ticks: {
+              stepSize: 0.03
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(2))).toEqual([
+      -8089.66, -8089.63, -8089.6, -8089.57, -8089.54, -8089.51, -8089.48, -8089.45
+    ]);
+  });
+
+  it('Should not treat a step count a fraction of a step from whole as whole', function() {
+    var chart = window.acquireChart({
+      type: 'bar',
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 3.0005,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+
+    // 3 is replaced by max, because the two labels would overlap.
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([0, 1, 2, 3.0005]);
   });
 
   it('Should not generate any ticks > max if max is specified', function() {
@@ -1146,6 +1295,148 @@ describe('Linear Scale', function() {
     });
 
     expect(getLabels(chart.scales.y)).toEqual(['0', '1', '2', '3', '4', '5']);
+  });
+
+  it('Should keep every spacing tick below a data max that is not a multiple of the spacing', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{
+          data: [0, 3200]
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            bounds: 'data',
+            ticks: {
+              autoSkip: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([
+      0, 500, 1000, 1500, 2000, 2500, 3000, 3200
+    ]);
+  });
+
+  it('Should not repeat the last tick when the tick count is whole within the precision of the bounds', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{
+          data: [1.6285, 1.6287]
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            type: 'linear',
+            ticks: {
+              stepSize: 0.003,
+              includeBounds: false
+            }
+          }
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => +tick.value.toFixed(4))).toEqual([1.6284, 1.6287]);
+  });
+
+  function expectFiniteIncreasing(values) {
+    expect(values.length).toBeGreaterThan(1);
+    expect(values.every(value => isFinite(value))).toBe(true);
+    for (let i = 1; i < values.length; i++) {
+      expect(values[i]).toBeGreaterThan(values[i - 1]);
+    }
+  }
+
+  [[0, Number.MAX_VALUE], [-Number.MAX_VALUE, 0]].forEach(function(data) {
+    it('Should generate finite ticks for data ' + JSON.stringify(data) + ' at the end of the number range', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data}]
+        }
+      });
+      var scale = chart.scales.y;
+      var values = scale.ticks.map(tick => tick.value);
+
+      expectFiniteIncreasing(values);
+      expect(values[0]).toBe(data[0]);
+      expect(values[values.length - 1]).toBe(data[1]);
+      expect(scale.min).toBe(data[0]);
+      expect(scale.max).toBe(data[1]);
+    });
+  });
+
+  const MAX = Number.MAX_VALUE;
+  [
+    // the range is wider than the largest number
+    {data: [-MAX, MAX], y: {}, expected: [-MAX, MAX]},
+    {data: [1, 2], y: {min: -1e308, max: 1e308, ticks: {count: 5}}, expected: [-1e308, 1e308]},
+    // the range between the nice bounds is wider than the largest number
+    {data: [-1, MAX], y: {}, expected: [-2e307, MAX]},
+    {data: [-MAX, 1], y: {}, expected: [-MAX, 2e307]},
+    {data: [-1, MAX], y: {ticks: {stepSize: 0.5}}, expected: [-2.4999999999999997e305, MAX]},
+    // (with count the spacing is not finite; precision 0 leaves no other guard)
+    {data: [-1, MAX], y: {ticks: {count: 5, precision: 0}}, expected: [-2e307, MAX]},
+    // the range is subnormal, so the spacing is 0
+    {data: [0, 5e-324], y: {min: 0}, expected: [0, 5e-324]},
+    // the decimals of the spacing cannot be counted
+    {data: [0, 1e-310], y: {bounds: 'ticks', min: 0}, expected: [0, 1e-310]},
+    {data: [0, 1e-310], y: {bounds: 'data', min: 0}, expected: [0, 1e-310]},
+    // the decimals of the minimum cannot be counted
+    {data: [1e-310, 1], y: {bounds: 'data'}, expected: [1e-310, 1]},
+    // the nice bounds times the rounding factor are beyond the largest number:
+    // from precision,
+    {data: [0, 1e307], y: {ticks: {precision: 2}}, expected: [0, 1e307]},
+    {data: [-1e307, 0], y: {ticks: {precision: 2}}, expected: [-1e307, 0]},
+    // (1.7e306 * 100 is finite, but its nice bound 1.8e306 * 100 is not)
+    {data: [0, 1.7e306], y: {ticks: {precision: 2}}, expected: [0, 1.7999999999999998e306]},
+    {data: [-1.7e306, 0], y: {ticks: {precision: 2}}, expected: [-1.7999999999999998e306, 0]},
+    // or from the decimals of the minimum (0.5 needs a factor of 10)
+    {data: [0.5, 1e308], y: {bounds: 'data'}, expected: [0.5, 1e308]},
+    {data: [0.001, 1e307], y: {bounds: 'data', ticks: {count: 5}}, expected: [0.001, 1e307]}
+  ].forEach(function({data, y, expected}) {
+    it('Should generate the two bounds as ticks for data ' + JSON.stringify(data) + ' with ' + JSON.stringify(y), function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data}]
+        },
+        options: {
+          scales: {y}
+        }
+      });
+
+      expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual(expected);
+    });
+  });
+
+  it('Should round to the precision when the decimals of the minimum cannot be counted', function() {
+    var chart = window.acquireChart({
+      type: 'line',
+      data: {
+        labels: ['a', 'b'],
+        datasets: [{data: [1e-310, 1]}]
+      },
+      options: {
+        scales: {
+          y: {bounds: 'data', ticks: {precision: 2}}
+        }
+      }
+    });
+
+    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
   });
 
   it('Should build labels using the user supplied callback', function() {

@@ -90,6 +90,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - **The last tick:** a new option `ticks.autoSkipKeepEnds`, off in 4.7.0 and on by default in 5.0.0. It is one boolean. The first tick is already always kept, and majors already have `ticks.major.enabled`, so an enum such as `autoSkipKeep: 'start' | 'end' | 'majors'` would repeat both.
 - **`stepSize` and skipping:** from 4.7.0, linear axes keep round multiples of the step by default. #12237 is superseded.
 - **Between uneven majors:** the same whole step is repeated from each major, so the same days are labelled every month. There is one longer gap before the next major.
+- **Log axes change in a patch (P10)**, decided 2026-11-27. A default log axis has majors on and uneven decades, so P10 changes which log ticks are drawn: on `min: 1, max: 100000` at 400 px the kept 7·10^k move to 6·10^k in each decade after the first (70,000 is labelled 60,000). The largest proper factor of an even major gap is now tried too: `min: 2, max: 100, maxTicksLimit: 7` keeps 5, 10, 50, 100 instead of 3, 7, 10, 30, 70, 100.
 - **`sampleSize`:** in 4.7.0 the label callback runs on every generated tick. The cost was measured on master with 100,000 category ticks (one update today: about 210 ms):
   - the callback alone adds 2.5 ms (string), 32 ms (`Intl.NumberFormat`) and 64 ms (`toLocaleDateString`) per update;
   - labelling and measuring every tick, the upper bound, adds about 145 ms and 52 garbage collections over the run.
@@ -98,8 +99,10 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 ### Values
 
-- **Step counts are compared within machine precision**, in both the step-size test (#12225) and the case-4 rounding: `|n - round(n)| <= max(|n| * ε, 1e-14)`.
+- **Step counts are compared within the precision of the bounds**, in both the step-size test (#12225) and the case-4 rounding: `n = (hi - lo) / step` is whole when `|n - round(n)| <= max((|hi| + |lo|) / step * 2ε, 1e-14)`. In the step-size test `hi`, `lo` and `step` are `max`, `min` and `stepSize`; in the case-4 rounding they are `niceMax`, `niceMin` and the spacing.
+  - The bounds and the step are each the double nearest a decimal, so a decimally whole count is off by about `(|hi| + |lo|) / step` epsilons, more than `|n| * ε` when the range is narrow for its distance from 0.
   - Alternative: a tolerance relative to the spacing. That is what fails today.
+  - Alternative: `max(|n| * ε, 1e-14)`. It repeats the last tick of data [1.6285, 1.6287] with `stepSize: 0.003` (n is 0.99999999999996), and leaves the step grid for `min: 8089.45, max: 8089.66, stepSize: 0.03`.
 - **The step-size limit is counted on the generation range** (`this._range || this`), the same range in every layout pass.
   - Alternative: dropping the limit. It guards against 1000+ ticks, so it stays.
 - **No repeated final tick** (#12288 as is). In 4.6.x the last tick of [0, 10.3] stays 10. The data maximum gets its own tick in 4.7.0, with the data-bounds rule.
@@ -162,7 +165,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 ### Changed by the review
 
 - P3 also fixes the case-4 tolerance. Data [0, 3200] with `bounds: 'data'` lost its 3000 tick through the same cause.
-- P5 dropped its `Number.MIN_VALUE` scenario and the decimal cap. On master both return two ticks at once (early return at line 46), so nothing failed without them.
+- P5 dropped its `Number.MIN_VALUE` scenario and the decimal cap. On master both return two ticks at once (the `MIN_SPACING` early return), but only when neither `min` nor `max` is set. With a user bound, or a minimum whose decimals cannot be counted, master gives NaN ticks (see "Changed by building").
 - The on-grid tolerance gained the float-spacing term.
 - The off-grid digit rule is stated as "grid + 1, or fewer". The earlier "digits of the offset" contradicted its own scenario ("0.1234567" against "0.12").
 - The kept-index refactor was dropped. Offset grid lines read the generated list, which P12 keeps; the label callback no longer needs indexes once it runs on every tick.
@@ -177,16 +180,38 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - Karma was removed (#12516). Test files are named `*.spec.js` throughout, and the time-scale line numbers follow #12489.
 - The math helper spec moved to `helpers.math.unit.spec.js` (#12542).
 
+### Changed by building
+
+- P3: the step-count tolerance counts the bounds, `max((|hi| + |lo|) / step * 2ε, 1e-14)`, instead of `max(|n| * ε, 1e-14)`. A sweep of 56,730 `generateTicks` inputs (magnitudes 1e-9 to 1e12, both `bounds`, with and without `min`, `max` and `stepSize`):
+  - near-duplicate ticks (closer than 1e-6 of a gap): 6 on master, 44 with the count-only rule, 0 with the bounds rule;
+  - decimally divisible `min`/`max`/`stepSize` inputs that miss the step grid: 201 on master, 440 with the count-only rule, 144 with the bounds rule. The 144 remaining are case 1 spacing the ticks evenly when `maxTicks` cuts the step count, which master does as well.
+- P4: a third spec covers the `|| this` fallback (`buildTicks` with no `_range`), because no other spec failed when the fallback was removed. On master the grace case's first pass gives 0..100 at a spacing of 20 and the second gives 0..90, but `this.max` stays 100, because `_setMinAndMaxByKey` only widens. With P4 both passes give 0..90.
+- The autoskip spec is `test/specs/core.scale.autoskip.unit.spec.js`; it runs in Node.
+- `calculateSpacing` never tried the largest proper factor of the major gap: `_factorize` already drops the value itself, and the loop stopped one factor short. P10 loops over all factors.
+- A default log axis has majors on, and its decades are uneven: after significand 10 it emits 15, so every decade after the first has 10 ticks (1..1e5 gives 50 ticks with majors at 0, 9, 19, 29, 39, 49). P10's rule therefore changes log axes too (see "Log axes change in a patch").
+- The time autoskip-major fixture does not change: its unit is year, so it has no majors. P10 adds `scale.time/autoskip-major-uneven` instead: 181 days with unit day and majors on each month.
+- P5:
+  - When the decimals cannot be counted, the result is two ticks at the bounds, instead of no rounding. When `_decimalPlaces` returns `undefined`, the rounding factor is NaN, and the factor guard below returns the two bounds. Data [0, 1e-310] with `min: 0` (either `bounds`) and data [1e-310, 1] with `bounds: 'data'` gave NaN ticks on master. With `precision` the factor does not depend on the decimals, so [1e-310, 1] with `precision: 2` still rounds to 0, 0.1, …, 1.
+  - The two bounds are returned when the tick count or the spacing is not finite. This covers the following cases:
+    - a range that is not finite: data [-MAX_VALUE, MAX_VALUE], or user bounds `min: -1e308, max: 1e308` with `count: 5`, which gave NaN ticks between the bounds on master;
+    - a range between the nice bounds that is not finite, although the data range is finite: data [-1, MAX_VALUE] or [-MAX_VALUE, 1], with or without `stepSize` or `count`. This never ended, on master as well;
+    - a spacing of 0 from a subnormal range with a user bound: data [0, 5e-324] with `min: 0`. On master this gave [0, NaN].
+    No separate check of the data range was kept: no test could tell it apart from this guard.
+  - When the larger nice bound times the rounding factor is not finite, or the factor is NaN, the two bounds are returned. This applies whether the factor comes from `precision` or from the decimals. All ticks lie between the nice bounds. The cases:
+    - data [0, 1e307], [0, 1.7e306], [-1e307, 0] and [-1.7e306, 0] with `precision: 2`. [0, 1.7e306] overflows only at its nice maximum, 1.8e306;
+    - data [0.5, 1e308] with `bounds: 'data'`, where 0.5 needs a factor of 10. On master this gave NaN or Infinity ticks.
+  - The contract between P2, P3, P5 and P11, P17 now allows ticks off the grid when a nice bound falls back to the data bound. Data [-MAX_VALUE, 0] falls back to the data minimum, so the ticks after it are spaced from there (-1.5977e308, …). No 4.6.x reader depends on the grid: autoskip and the offsets work by index, and `_setMinAndMaxByKey` reads only the ends.
+
 ## Risks / Trade-offs
 
 - **Image baselines change:**
   - `scale.logarithmic/large-values-small-range.png` (P6)
-  - the time autoskip-major fixture (P10)
+  - a new time fixture, `scale.time/autoskip-major-uneven` (P10)
   - bar charts that skip labels with `grid.offset` (P12)
   - `controller.line/stacking/bounds-data.png` (P15)
   Each piece names its baselines, and the reviewer looks at them.
 - **Label text changes in a patch (P7).** Quarter-step axes go from "0.3" to "0.25", bound labels gain digits, and scientific labels gain or lose digits. Every changed label was wrong or a duplicate.
-- **Time axes change in a patch (P9, P10).** Which time ticks are drawn changes when majors are enabled.
+- **Time axes change in a patch (P9, P10).** Which time ticks are drawn changes when majors are enabled. Log axes change with P10 too (decided by the user).
 - **Grid lines move in a patch (P12).** It moves the lines in every bar chart that skips labels with `grid.offset`. That is the bug, but users will see it.
 - **Readers of the kept tick count.** The linear offset padding (`configure`), the time offsets and the bar width read it. P11, P16 and P17 change that count on some charts. Each adds a fixture for a linear axis with `offset`, and P16 adds one for bars on a time axis.
 - **Callback cost (P14).** The label callback runs once per generated tick (measured above).
@@ -208,8 +233,8 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 | P6 | #12390 as is: first log tick from scaled integers | `src/scales/scale.logarithmic.js`, `test/specs/scale.logarithmic.spec.js`, `scale.logarithmic/large-values-small-range.png` | data [7, 10]: min 6.9; `min: 0.3`: 0.3 twice | ~50 + png | | | #12389 | 4.6.x |
 | P7 | #12383 with changes: grid digits from the step's last significant digit, off-grid ticks grid + 1 or fewer, on-grid tolerance with the float-spacing term, steps ≥ 1 by the same rule | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js` | stepSize 0.25 gives "0.3"; "12.000000001"; [1e-5, 1.3e-5] gives "1.0000000E-5"; #12383 as it stands gives "0.310" | ~130 | P19 (same file); (#12386 appends to the same file; rebase) | #11954 | #12382 | 4.6.x |
 | P8 | #12401 as is: null-label ticks removed in one pass | `src/core/core.scale.js`, `test/specs/core.scale.spec.js` | its specs pass on the old loop; the proof is the timing: 100k ticks 3,973 ms → 10 ms, about 6.4 MiB less allocated per update | ~85 | | | | 4.6.x |
-| P9 | #12287 with changes: even majors detected from the first gap; category and log specs instead of its time test | `src/core/core.scale.autoskip.js`, `test/specs/core.scale.autoskip.spec.js` (new) | majors 0/30/60/90 of 120: gaps 4 and 5 | ~45 | | #10373 | | 4.6.x |
-| P10 | The same whole step from each major between uneven majors | `src/core/core.scale.autoskip.js`, same spec, time autoskip-major fixture | majors 0/31/59/90/120/151 of 181: gaps 8, 8, 7, 8, … | ~70 | P9 (same file) | | #10373 | 4.6.x |
+| P9 | #12287 with changes: even majors detected from the first gap; category and log specs instead of its time test | `src/core/core.scale.autoskip.js`, `test/specs/core.scale.autoskip.unit.spec.js` (new) | majors 0/30/60/90 of 120: gaps 4 and 5 | ~45 | | #10373 | | 4.6.x |
+| P10 | The same whole step from each major between uneven majors | `src/core/core.scale.autoskip.js`, same spec, new time autoskip-major-uneven fixture | majors 0/31/59/90/120/151 of 181: gaps 8, 8, 7, 8, … | ~70 | P9 (same file) | | #10373 | 4.6.x |
 | P11 | The number of labels that fit is counted from tick values | same, plus a radar spec | linear 0..1000 at 600 px with ticks over 0..500: labels 11.3 px apart | ~50 | P10 (same file) | #9614 | | 4.6.x |
 | P12 | Offset grid lines on the boundaries of the generated ticks | `src/core/core.scale.js`, `docs/axes/styling.md`, `test/specs/core.scale.grid.spec.js` (new), bar fixtures | 12 categories at 300 px: lines on categories, first cell 33.5 px; the same with a callback returning `null` for odd indexes | ~80 | P8 (same file); #11188 (same lines region) | | #12100, #11278 | 4.6.x |
 | P13 | feat: `ticks.precision` caps label digits | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js`, `docs/axes/cartesian/linear.md` (precision) | `precision: 1` on 0.1234567..0.8765432: edges "0.12", "0.88" | ~30 | P7 (same file) | | #11954 | 4.7.0 |
@@ -234,7 +259,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 
 - **P1 → P5:** `_decimalPlaces(x)` returns `undefined` when it cannot count the decimals, and never loops.
 - **P19 → P7:** the spacing the formatter reads is the difference of two tick values without subtraction noise: `1.4 - 1.3` is read as 0.1.
-- **P2, P3, P5 → P11, P17:** linear tick values are finite and strictly increasing before `reverse`. They are on multiples of the spacing, except a bound tick. No tick repeats.
+- **P2, P3, P5 → P11, P17:** linear tick values are finite and strictly increasing before `reverse`. They are on multiples of the spacing, except a bound tick and, when a nice bound falls back to the data bound, the ticks counted from it. No tick repeats.
 - **P5 → P15:** a non-finite range gives the two data bounds as ticks.
 - **P7 → P13, P14:** the formatter's output depends only on the value and the tick list passed.
 - **P12 → P14:** the scale keeps the generated tick list (after `afterBuildTicks`, before nulls are removed and ticks are skipped) in a private field. `scale.ticks` stays the kept list of original tick objects, in order.

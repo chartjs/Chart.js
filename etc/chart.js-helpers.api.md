@@ -1583,6 +1583,7 @@ class DatasetController_2 {
     index: number;
     // (undocumented)
     initialize(): void;
+    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     linkScales(): void;
     // (undocumented)

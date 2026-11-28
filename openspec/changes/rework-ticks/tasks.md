@@ -10,28 +10,28 @@
 
 ## 3. P3: Step counts within machine precision (#12225)
 
-- [ ] 3.1 Confirm #12225's spec fails on master (0/3333/500 gives 476.14 steps).
-- [ ] 3.2 Add two specs:
+- [x] 3.1 Confirm #12225's spec fails on master (0/3333/500 gives 476.14 steps).
+- [x] 3.2 Add two specs:
   - `bounds: 'data'` with [0, 3200] includes 3000 (on master it is missing);
   - `min: 0, max: 0.3, stepSize: 0.1` gives 0, 0.1, 0.2, 0.3.
-- [ ] 3.3 Apply the same count tolerance to the case-4 rounding. Ask the author first, or add the change with `Co-authored-by`.
-- [ ] 3.4 Rebase onto P2. The pull request says `Closes #12165`.
+- [x] 3.3 Apply the same count tolerance to the case-4 rounding. Ask the author first, or add the change with `Co-authored-by`.
+- [x] 3.4 Rebase onto P2. The pull request says `Closes #12165`.
 
 ## 4. P4: The step-size limit is counted on the generation range
 
-- [ ] 4.1 Add two specs:
+- [x] 4.1 Add two specs:
   - data [10, 20, 80], `grace: '10%'`, `stepSize: 10` gives ticks 0..90 and axis max 90 (master: 100);
   - data [10, 20, 90] gives a top tick and max of 100.
-- [ ] 4.2 Count the steps in `getTickLimit` on `this._range || this`.
-- [ ] 4.3 The pull request says `Closes #11864`. Quote the issue comment that shows `grace` with `stepSize`, because the issue's title is about spacing below the chart title.
+- [x] 4.2 Count the steps in `getTickLimit` on `this._range || this`.
+- [x] 4.3 The pull request says `Closes #11864`. Quote the issue comment that shows `grace` with `stepSize`, because the issue's title is about spacing below the chart title.
 
 ## 5. P5: Tick values are finite
 
-- [ ] 5.1 Add two specs:
+- [x] 5.1 Add two specs:
   - [0, MAX_VALUE] builds with finite ticks (on master it runs out of memory, so run it with a timeout);
   - [-MAX_VALUE, MAX_VALUE] gives two ticks.
-- [ ] 5.2 Look in `src/helpers` for an existing finite check before adding one.
-- [ ] 5.3 Make three changes:
+- [x] 5.2 Look in `src/helpers` for an existing finite check before adding one.
+- [x] 5.3 Make three changes:
   - a non-finite nice bound falls back to the data bound;
   - a non-finite range returns the two data bounds;
   - both `_decimalPlaces` callers in `generateTicks` treat `undefined` as "no rounding".
@@ -68,16 +68,16 @@
 
 ## 9. P9: Even majors from the first gap (#12287)
 
-- [ ] 9.1 Add `test/specs/core.scale.autoskip.spec.js` with two specs:
+- [ ] 9.1 Add `test/specs/core.scale.autoskip.unit.spec.js` with two specs:
   - majors 0/30/60/90 of 120 with 30 fitting gives a gap of 5 everywhere (master: 4 and 5);
   - a log axis 1..1e5 at 400 px keeps the same significands in each decade.
 - [ ] 9.2 Rebase #12287 with these specs in place of its time test, crediting the author. The pull request says `Part of #10373`.
 
 ## 10. P10: The same whole step from each major
 
-- [ ] 10.1 Spec: majors 0/31/59/90/120/151 of 181 with 30 fitting gives 0, 7, 14, 21, 31, 38, …. The gaps are 7, except just before a major.
-- [ ] 10.2 Repeat a whole step from each major, and drop a minor that is closer than one step to the next major.
-- [ ] 10.3 Update the time autoskip-major baseline and say in the pull request that time axes with majors change. It says `Closes #10373`.
+- [x] 10.1 Spec: majors 0/31/59/90/120/151 of 181 with 30 fitting gives 0, 7, 14, 21, 31, 38, …. The gaps are 7, except just before a major.
+- [x] 10.2 Repeat a whole step from each major, and drop a minor that is closer than one step to the next major.
+- [x] 10.3 Add the time fixture `scale.time/autoskip-major-uneven` (autoskip-major has no majors and does not change), and say in the pull request that time and log axes with majors change. It says `Closes #10373`.
 
 ## 11. P11: Fit counted from tick values
 

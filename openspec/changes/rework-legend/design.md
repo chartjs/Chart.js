@@ -55,8 +55,10 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 
 - `_updateVisibility()` in `core.controller.js` animates `visible` and updates the dataset in `'hide'` mode, which sends colours to transparent.
   - When the hidden dataset was active, the update replays the last event, or re-applies `_active` when the pointer is outside the chart area.
-  - Removing or re-applying the hover style starts an `'active'` colour animation, and `Animation.update()` retargets the running hide animation to that colour.
+  - With the pointer over the chart, the replay no longer finds the hidden dataset (`meta.visible` is already false), so it removes its hover style. With the pointer outside, the update re-applies the hover style.
+  - Either one starts an `'active'` colour animation, and `Animation.update()` retargets the running hide animation to that colour: the un-hover on the pointer path, the hover on the other.
   - Probe for #10882: without hover, borderColor goes from `#FF000087` to transparent. With hover it goes from `#F10000` to `#F00`, and then the line vanishes.
+  - Every controller resolves `active ? 'active' : mode` for its elements, so a hidden element that is still active also gets its hover options (`hoverRadius`, `hoverBorderWidth`) in the hide update.
 - There are two hidden states for a data item:
   - `chart._hiddenIndices`, set by `toggleDataVisibility`, keyed by data index and shared by all datasets;
   - `meta.data[i].hidden`, set by `hide(datasetIndex, dataIndex)`.
@@ -135,10 +137,13 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
    Rejected: #11849's extra `update()` parameter. With it, moving back onto the same slice no longer showed the tooltip (found in its review), and it spreads the rule over the update path.
 
    This restores the pointer's behaviour before 3.7.0 and keeps what #9970 wanted for code. The two pinned tests are changed to set their active elements with `setActiveElements`.
-7. **Hidden data cannot be active.** One chart method decides whether an active item is still allowed: its dataset is visible and its element is not hidden.
-   - `_updateHoverStyles` drops failing items from the activated set. It clears `active` on deactivated ones without animating, so the hide transition keeps its colours.
-   - The replay in `update()` moves into a helper that also filters `_active`, so `update()` does not grow. It is at the max-statements limit.
-   - The tooltip calls the same method for its code-set elements in P13. That is a chart method a built-in plugin may call, like `getDatasetMeta`.
+7. **Hidden data cannot be active.** One private chart method, `_filterActive(items)`, leaves out the items whose dataset is not visible or whose data item the dataset's controller does not show.
+   - The data item part is the controller's private `_isDataVisible(index)`: by default the element is not `hidden`. Bar, doughnut and polar area also ask `chart.getDataVisibility(index)`, because they are the controllers that honour `toggleDataVisibility`. A line point at a toggled index is still drawn, so it can still be active.
+   - The dataset part is decided once for each run of a dataset's items, the data item part for each item.
+   - `_active` is filtered where it is assigned: in `setActiveElements` before its "changed" test, in `_handleEvent` before `onHover` and `onClick` get the elements and again after them (a handler may hide data, and its update has then already dropped it, so the event compares with what the update left), and at the start of `update()`, before the datasets update. The datasets then resolve their normal options, not their hover options.
+   - At the start of `update()`, the dropped items only get `active = false` (and in mode `'dataset'` the dataset element too, when none of its items is kept), with no un-hover animation: the update animates them in its own mode, so the hide transition keeps its colours. The controller's private `_clearHoverStyle(element, index)` does it, and gives an element of a controller that shares its options (line points, bars) the shared options back, because the update animates those and leaves an element's own hover options alone. `_updateHoverStyles` stays as it was. Hidden items reach its deactivated set only when visibility changed without an update, and there the un-hover animation is the right one for an element that is still drawn.
+   - The replay at the end of `update()` moves into a helper, and so does the filter at its start, so `update()` does not grow. It is at the max-statements limit.
+   - The tooltip calls the same private method for its code-set elements in P13, as a built-in plugin may.
 8. **Hidden state is re-keyed by label only when the labels array is replaced.** At update, when `data.labels` is a different array and something is hidden:
    - each hidden index is moved to its label's index in the new array;
    - equal labels match by occurrence, and arrays are compared by content;
@@ -183,12 +188,16 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 19. **P14's option is `labels.boxYOffset`.**
 20. **P15 adds `labels.decorationWidth`** (default 2), not a width that scales with the font.
 21. **#11825 rebases onto P19 and P9, and drops its copies of the #11280 and #11824 fixes.** Overflow (#10893, #11397, #12129) is designed next, for 4.8.
-22. **Collapsed hidden bars that hover can still find are a follow-up issue**, not part of P12.
+22. **Collapsed hidden bars that hover can still find are a follow-up issue**, not part of P12. P12 already keeps a bar hidden by `toggleDataVisibility` out of the active elements and out of the `active` that `onHover` and `onClick` get, although the interaction modes still find it. The follow-up is only whether the modes should skip such bars.
 
 ### Decided by the user (2026-11-26)
 
 24. **A right-click never runs the legend's `onClick`.** The legend calls `_isClickEvent(e, events)` for the `mouseup` rule of decision 5, and leaves out `contextmenu`, as it did before P6. The chart's `onClick` still runs on `contextmenu`.
 25. **The open type PRs #12342, #12317, #12313, #12250 and #12221 are not 4.6.3 candidates.** P7 does not wait for them; they rebase onto P7.
+
+### Decided by the user (2026-11-27)
+
+26. **P12 lands before #12547 (the radar/polarArea TypeScript conversion); #12547 rebases over `_isDataVisible` in controller.polarArea.**
 
 ### What the review changed
 
@@ -226,9 +235,9 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
 | P8 | Docs: the custom `onClick` per chart type; the TypeScript note for the HTML legend; a container option in the HTML legend sample that accepts an element (works in a shadow root); `onLeave` and scrolling | `docs/configuration/legend.md`, `docs/samples/legend/html.md` | none (docs) | ~60 | P6 (same doc) | | #12144, #11877, #10624, #10384 |
 | P19 | refactor: `plugin.legend.js` becomes `plugin.legend.ts`; class fields, method signatures and an internal hit-box interface are typed; public types stay in `src/types/index.d.ts` | `src/plugins/plugin.legend.js` → `src/plugins/plugin.legend.ts`; `src/core/core.layouts.js` (JSDoc only) | none (no behaviour change): `tsc` reports no errors in the file (124 on a plain rename), `pnpm lint-types` passes, every legend spec and fixture is unchanged | ~250 | P6 (same file); P8 only for order | | |
 | P9 | refactor: the hit boxes carry what drawing needs; drawing reads them | `src/plugins/plugin.legend.ts`, `test/specs/plugin.legend.spec.js` | `measureText` count during `draw()` is 0 for a legend without hidden or decorated items (master > 0); every legend fixture unchanged | ~220 | P19 (same file) | #9342 | |
-| P10 | Rows as tall as their tallest item | same | three-line label in a top legend: the next row starts below line 3 (master overlaps) | ~40 | P9 | | #11824 |
+| P10 | Rows as tall as their tallest item; an item at least as tall as its symbol; an array label as wide as its widest line in a top or bottom legend | same | three-line label in a top legend: the next row starts below line 3 (master overlaps); `boxHeight: 40` with a two-line label in a left legend: the next item starts below the box (master overlaps); a top legend's array label: hit box and `lineWidths` follow the widest line (master measures the joined string) | ~60 | P9 | | #11824 |
 | P11 | Wrap within `maxWidth` / `maxHeight` | same, plus `docs/configuration/legend.md` | right legend with `maxHeight: 100`: every hit box within 100 px of the first, in two or more columns (master: one column to 400 px); top legend with `maxWidth: 150`: every row within 150 px | ~50 | P10 | | #11805 |
-| P12 | Hidden data is not active | `src/core/core.controller.js`, `test/specs/core.controller.tests.js`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update) | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()` | ~130 | P6 (same file), P8 (same sample); #12391 | | #10882 |
+| P12 | Hidden data is not active | `src/core/core.controller.js`, `src/core/core.datasetController.js`, `src/controllers/controller.bar.js`, `src/controllers/controller.doughnut.js`, `src/controllers/controller.polarArea.js`, `test/specs/core.controller.spec.js`, `docs/developers/api.md`, `docs/samples/legend/html.md` (hide/show instead of setDatasetVisibility + update), `etc/chart.js.api.md`, `etc/chart.js-helpers.api.md` | hovered line, `hide(0)`: border alpha at mid-animation is below its start; a slice hidden from the legend is not in `getActiveElements()`; a code-set point is back to `radius` after `hide(0)` | 176 source lines (+168/−8) | P6 (same file), P8 (same sample); #12391 | | #10882 |
 | P13 | The pointer's active elements end outside the chart area | `src/plugins/plugin.tooltip.js`, `src/core/core.controller.js`, `test/specs/plugin.tooltip.tests.js`, `test/specs/core.controller.tests.js`, `docs/configuration/tooltip.md`, `docs/configuration/interactions.md` | pie: hover a slice, move onto a legend item: tooltip active 0 (master 1); back on the slice: 1; a legend `onHover` that sets the already-active element keeps the tooltip | ~200 | P12 (same file); #12275 (same file, 4.6.3) | | #11801 |
 | P14 | feat: `labels.boxYOffset` (#12242 renamed) | `src/plugins/plugin.legend.ts`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/point-style.md`, fixture | #12242's spec (the symbol moves, the text does not) | ~60 | P11 (same file); the author's rename; 4.7.0 | | #11884 |
 | P15 | feat: `LegendItem.textDecoration`, `labels.decorationWidth`; a legend item styling sample | `src/plugins/plugin.legend.ts`, `src/types/index.d.ts`, `docs/configuration/legend.md`, `docs/samples/legend/item-style.md` | underline drawn; strike width 1 with `decorationWidth: 1` (master always 2); `'none'` on a hidden item draws no line | ~80 | P14 (same file); 4.7.0 | #11571, #11941 | #11692, #11725 |
@@ -280,7 +289,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
   - `_draw()` reads the hit boxes, `_labelLayout` and the styles and text of `legendItems`, and nothing else. It draws `legendItems[i].text`, because `afterUpdate` builds the items again after `fit()`.
   - A row's or column's size comes from the items `fit()` measured; the drawn text comes from the items `afterUpdate` rebuilt.
 - **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. The chart passes its `events` everywhere it calls the helper.
-- **P12 → P13:** one chart method decides whether an active item is still allowed (dataset visible, element not hidden). P13 calls it for the tooltip's code-set elements.
+- **P12 → P13:** the private chart method `_filterActive(items)` leaves out hidden data (dataset not visible, or `controller._isDataVisible(index)` false). P13 calls the same method for the tooltip's code-set elements, and sets its "set by code" flag from the call, before the filter and the "changed" test.
 - **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. A pointer event that changes the set clears it.
 - **P14 → P15:** `labels.boxYOffset` moves only the symbol's y.
 
