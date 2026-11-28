@@ -50,46 +50,43 @@ type Animation_3 = Animation_4;
 
 // @public (undocumented)
 class Animation_4 {
-    constructor(cfg: AnyObject, target: AnyObject, prop: string, to?: unknown);
+    constructor(cfg: any, target: any, prop: any, to: any);
     // (undocumented)
     active(): boolean;
-    // @internal (undocumented)
+    // (undocumented)
     _active: boolean;
     // (undocumented)
     cancel(): void;
-    // @internal (undocumented)
+    // (undocumented)
     _duration: number;
-    // @internal (undocumented)
-    _easing: (t: number) => number;
-    // @internal (undocumented)
-    _fn: (from: unknown, to: unknown, factor: number) => unknown;
-    // @internal (undocumented)
+    // (undocumented)
+    _easing: any;
+    // (undocumented)
+    _fn: any;
+    // (undocumented)
     _from: unknown;
-    // @internal (undocumented)
+    // (undocumented)
     _loop: boolean;
-    // @internal (undocumented)
-    _notify(resolved: boolean): void;
-    // @internal (undocumented)
-    _promises: {
-        res: () => void;
-        rej: () => void;
-    }[];
-    // @internal (undocumented)
-    _prop: string;
-    // @internal (undocumented)
+    // (undocumented)
+    _notify(resolved: any): void;
+    // (undocumented)
+    _promises: any[];
+    // (undocumented)
+    _prop: any;
+    // (undocumented)
     _start: number;
-    // @internal (undocumented)
-    _target: AnyObject;
     // (undocumented)
-    tick(date: number): void;
+    _target: any;
     // (undocumented)
-    _to: unknown;
-    // @internal (undocumented)
+    tick(date: any): void;
+    // (undocumented)
+    _to: any;
+    // (undocumented)
     _total: number;
     // (undocumented)
-    update(cfg: AnyObject, to: unknown, date: number): void;
+    update(cfg: any, to: any, date: any): void;
     // (undocumented)
-    wait(): Promise<void>;
+    wait(): Promise<any>;
 }
 
 // @public (undocumented)
@@ -171,23 +168,23 @@ export const animator: Animator_2;
 
 // @public
 class Animator_2 {
-    add(chart: Chart_5, items: Animation_3[]): void;
+    add(chart: Chart_6, items: Animation_3[]): void;
     // (undocumented)
     _charts: Map<any, any>;
-    has(chart: Chart_5): boolean;
+    has(chart: Chart_6): boolean;
     // (undocumented)
     _lastDate: number;
     // (undocumented)
-    listen(chart: Chart_5, event: string, cb: Function): void;
-    remove(chart: Chart_5): boolean;
+    listen(chart: Chart_6, event: string, cb: Function): void;
+    remove(chart: Chart_6): boolean;
     // (undocumented)
     _request: any;
     // (undocumented)
     running(chart: any): boolean;
     // (undocumented)
     _running: boolean;
-    start(chart: Chart_5): void;
-    stop(chart: Chart_5): void;
+    start(chart: Chart_6): void;
+    stop(chart: Chart_6): void;
 }
 
 // @public (undocumented)
@@ -349,7 +346,6 @@ class BarController_2 extends DatasetController_2 {
     getFirstScaleIdForIndexAxis(): string;
     // (undocumented)
     static id: string;
-    protected _isDataVisible(index: any): boolean;
     static overrides: any;
     protected parseArrayData(meta: any, data: any, start: any, count: any): any[];
     protected parseObjectData(meta: any, data: any, start: any, count: any): any[];
@@ -376,7 +372,6 @@ AnimationOptions<'bar'> {
     maxBarThickness: number;
     minBarLength: number;
     pointStyle: PointStyle;
-    skipNull?: boolean;
     xAxisID: string;
     yAxisID: string;
 }
@@ -394,46 +389,38 @@ export const BarElement: ChartComponent & {
 };
 
 // @public (undocumented)
-class BarElement_2 extends Element_2<BarProps_2, BarOptions> {
+class BarElement_2 extends Element_2<AnyObject, AnyObject> {
     constructor(cfg: any);
     // (undocumented)
-    base: number;
-    // (undocumented)
-    borderSkipped: {
-        top: boolean;
-        right: boolean;
-        bottom: boolean;
-        left: boolean;
-    };
-    // (undocumented)
-    static defaultRoutes: any;
-    // (undocumented)
+    base: any;
     static defaults: any;
     // (undocumented)
-    draw(ctx: CanvasRenderingContext2D): void;
+    draw(ctx: any): void;
     // (undocumented)
-    getCenterPoint(useFinalPosition?: boolean): {
+    getCenterPoint(useFinalPosition: any): {
         x: number;
         y: number;
     };
     // (undocumented)
-    getRange(axis: 'x' | 'y'): number;
+    getRange(axis: any): number;
     // (undocumented)
-    height: number;
+    height: any;
     // (undocumented)
-    horizontal: boolean;
+    horizontal: any;
     // (undocumented)
     static id: string;
     // (undocumented)
-    inflateAmount: number;
+    inflateAmount: any;
     // (undocumented)
-    inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
+    inRange(mouseX: any, mouseY: any, useFinalPosition: any): boolean;
     // (undocumented)
-    inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
+    inXRange(mouseX: any, useFinalPosition: any): boolean;
     // (undocumented)
-    inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
+    inYRange(mouseY: any, useFinalPosition: any): boolean;
     // (undocumented)
-    width: number;
+    options: any;
+    // (undocumented)
+    width: any;
 }
 
 // @public (undocumented)
@@ -482,18 +469,6 @@ export interface BarProps extends Point {
 }
 
 // @public (undocumented)
-interface BarProps_2 extends Point {
-    // (undocumented)
-    base: number;
-    // (undocumented)
-    height: number;
-    // (undocumented)
-    horizontal: boolean;
-    // (undocumented)
-    width: number;
-}
-
-// @public (undocumented)
 interface BaseDecimationOptions {
     // (undocumented)
     enabled: boolean;
@@ -521,8 +496,8 @@ export class BasePlatform {
 
 // @public
 class BasePlatform_2 {
-    acquireContext(_canvas: HTMLCanvasElement, _aspectRatio?: number): CanvasRenderingContext2D | null;
-    addEventListener(_chart: Chart_3, _type: string, _listener: Function): void;
+    acquireContext(canvas: HTMLCanvasElement, aspectRatio?: number): void;
+    addEventListener(chart: Chart_7, type: string, listener: Function): void;
     // (undocumented)
     getDevicePixelRatio(): number;
     getMaximumSize(element: HTMLCanvasElement, width?: number, height?: number, aspectRatio?: number): {
@@ -530,10 +505,10 @@ class BasePlatform_2 {
         height: number;
     };
     // (undocumented)
-    isAttached(_canvas: HTMLCanvasElement): boolean;
-    releaseContext(_context: CanvasRenderingContext2D): boolean;
-    removeEventListener(_chart: Chart_3, _type: string, _listener: Function): void;
-    updateConfig(_config: Config): void;
+    isAttached(canvas: HTMLCanvasElement): boolean;
+    releaseContext(context: CanvasRenderingContext2D): boolean;
+    removeEventListener(chart: Chart_7, type: string, listener: Function): void;
+    updateConfig(config: Config): void;
 }
 
 // @public (undocumented)
@@ -742,14 +717,14 @@ export const CategoryScale: ChartComponent & {
 // @public (undocumented)
 class CategoryScale_2 extends Scale_2 {
     // (undocumented)
+    _addedLabels: any[];
+    // (undocumented)
     buildTicks(): {
         value: any;
     }[];
     static defaults: any;
     // (undocumented)
     getLabelForValue(value: any): any;
-    // (undocumented)
-    getLabels(): any[];
     // (undocumented)
     getPixelForTick(index: any): number;
     // (undocumented)
@@ -760,7 +735,6 @@ class CategoryScale_2 extends Scale_2 {
     static id: string;
     // (undocumented)
     init(scaleOptions: any): void;
-    _labels: any[];
     // (undocumented)
     parse(raw: any, index: any): number;
     _startValue: number;
@@ -946,10 +920,7 @@ class Chart_3 {
     // (undocumented)
     destroy(): void;
     // (undocumented)
-    _doResize: {
-        (mode?: any): number;
-        cancel(): void;
-    };
+    _doResize: (mode?: any) => number;
     // (undocumented)
     draw(): void;
     // (undocumented)
@@ -1070,6 +1041,12 @@ type Chart_5 = Chart_3;
 
 // @public (undocumented)
 type Chart_6 = Chart_3;
+
+// @public (undocumented)
+type Chart_7 = Chart_3;
+
+// @public (undocumented)
+type Chart_8 = Chart_3;
 
 // @public (undocumented)
 export interface ChartArea {
@@ -1477,12 +1454,6 @@ class Config {
     datasetAnimationScopeKeys(datasetType: string, transition: string): string[][];
     datasetElementScopeKeys(datasetType: string, elementType: string): string[][];
     datasetScopeKeys(datasetType: string): string[][];
-    _derived: {
-        scales: object;
-    };
-    get _derivedOptions(): {
-        scales: object;
-    };
     getOptionScopes(mainScope: object, keyLists: string[][], resetCache?: boolean): any;
     set options(arg: any);
     // (undocumented)
@@ -1499,10 +1470,6 @@ class Config {
     resolveNamedOptions(scopes: object[], names: string[], context: Function | object, prefixes?: string[]): object;
     // (undocumented)
     _resolverCache: Map<any, any>;
-    _scaleRecords: WeakMap<any, {
-        implied: boolean;
-    }>;
-    _scaleSources: object;
     // (undocumented)
     _scopeCache: Map<any, any>;
     set type(arg: any);
@@ -1833,11 +1800,8 @@ class DatasetController_2 {
     index: number;
     // (undocumented)
     initialize(): void;
-    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     linkScales(): void;
-    // (undocumented)
-    _newElements: any[];
     // (undocumented)
     _objectData: any;
     // (undocumented)
@@ -1957,88 +1921,151 @@ namespace _default {
         enabled: boolean;
     }
     // (undocumented)
+    function destroy(chart: any): void;
+}
+
+// @public (undocumented)
+namespace _default_2 {
+    const // (undocumented)
+    id: string;
+    // (undocumented)
+    function afterDatasetsUpdate(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    function beforeDatasetDraw(chart: any, args: any, options: any): void;
+    // (undocumented)
+    function beforeDatasetsDraw(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    function beforeDraw(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    namespace defaults {
+        const // (undocumented)
+        propagate: boolean;
+        const // (undocumented)
+        drawTime: string;
+    }
+}
+
+// @public (undocumented)
+namespace _default_3 {
+    const // (undocumented)
+    id: string;
+    export { Legend as _element };
+    // (undocumented)
+    function afterEvent(chart: any, args: any): void;
+    // (undocumented)
+    function afterUpdate(chart: any): void;
+    // (undocumented)
+    function beforeUpdate(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    namespace defaults {
+        const // (undocumented)
+        display: boolean;
+        const // (undocumented)
+        position: string;
+        const // (undocumented)
+        align: string;
+        const // (undocumented)
+        fullSize: boolean;
+        const // (undocumented)
+        reverse: boolean;
+        const // (undocumented)
+        weight: number;
+        // (undocumented)
+        namespace labels {
+            // (undocumented)
+            function color(ctx: any): any;
+            const // (undocumented)
+            boxWidth: number;
+            const // (undocumented)
+            padding: number;
+            // (undocumented)
+            function generateLabels(chart: any): any;
+        }
+        const // (undocumented)
+        onHover: any;
+        const // (undocumented)
+        onLeave: any;
+        // (undocumented)
+        function onClick(e: any, legendItem: any, legend: any): void;
+        // (undocumented)
+        namespace title {
+            // (undocumented)
+            function color_1(ctx: any): any;
+            export { color_1 as color };
+            const // (undocumented)
+            display_1: boolean;
+            export { display_1 as display };
+            const // (undocumented)
+            position_1: string;
+            export { position_1 as position };
+            const // (undocumented)
+            text: string;
+        }
+    }
+    // (undocumented)
+    namespace descriptors {
+        // (undocumented)
+        namespace labels_1 {
+            // (undocumented)
+            function _scriptable_1(name: any): boolean;
+            export { _scriptable_1 as _scriptable };
+        }
+        // (undocumented)
+        function _scriptable(name: any): boolean;
+        export { labels_1 as labels };
+    }
+    // (undocumented)
+    function start(chart: any, _args: any, options: any): void;
+    // (undocumented)
     function stop(chart: any): void;
 }
 
 // @public (undocumented)
-const _default_2: {
+namespace _default_4 {
+    const // (undocumented)
     id: string;
-    afterDatasetsUpdate(chart: any, _args: any, options: any): void;
-    beforeDraw(chart: any, _args: any, options: any): void;
-    beforeDatasetsDraw(chart: any, _args: any, options: any): void;
-    beforeDatasetDraw(chart: any, args: any, options: any): void;
-    defaults: {
-        propagate: boolean;
-        drawTime: string;
-    };
-};
-
-// @public (undocumented)
-const _default_3: {
-    id: string;
-    _element: typeof Legend_2;
-    start(chart: any, _args: any, options: any): void;
-    stop(chart: any): void;
-    beforeUpdate(chart: any, _args: any, options: any): void;
-    afterUpdate(chart: any): void;
-    afterEvent(chart: any, args: any): void;
-    defaults: {
-        display: boolean;
-        position: string;
-        align: string;
-        fullSize: boolean;
-        reverse: boolean;
-        weight: number;
-        onClick(_e: any, legendItem: any, legend: any): void;
-        onHover: any;
-        onLeave: any;
-        labels: {
-            color: (ctx: any) => any;
-            boxWidth: number;
-            padding: number;
-            generateLabels(chart: any): any;
-        };
-        title: {
-            color: (ctx: any) => any;
-            display: boolean;
-            position: string;
-            text: string;
-        };
-    };
-    descriptors: {
-        _scriptable: (name: any) => boolean;
-        labels: {
-            _scriptable: (name: any) => boolean;
-        };
-    };
-};
-
-// @public (undocumented)
-const _default_4: {
-    id: string;
-    start(chart: Chart_3, _args: EmptyObject, options: TitleOptions): void;
-    stop(chart: Chart_3): void;
-    beforeUpdate(chart: Chart_3, _args: any, options: TitleOptions): void;
-    defaults: {
-        align: string;
-        display: boolean;
-        font: {
-            weight: string;
-        };
-        fullSize: boolean;
-        padding: number;
-        position: string;
-        text: string;
-        weight: number;
-    };
-    defaultRoutes: {
+    // (undocumented)
+    function beforeUpdate(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    namespace defaultRoutes {
+        const // (undocumented)
         color: string;
-    };
-    descriptors: {
+    }
+    // (undocumented)
+    namespace defaults {
+        const // (undocumented)
+        align: string;
+        const // (undocumented)
+        display: boolean;
+        // (undocumented)
+        namespace font {
+            const // (undocumented)
+            weight: string;
+        }
+        const // (undocumented)
+        fullSize: boolean;
+        const // (undocumented)
+        padding: number;
+        const // (undocumented)
+        position: string;
+        const // (undocumented)
+        text: string;
+        const // (undocumented)
+        weight_1: number;
+        export { weight_1 as weight };
+    }
+    // (undocumented)
+    namespace descriptors {
+        const // (undocumented)
         _scriptable: boolean;
+        const // (undocumented)
         _indexable: boolean;
-    };
-};
+    }
+    // (undocumented)
+    function start(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    function stop(chart: any): void;
+}
 
 // @public (undocumented)
 namespace _default_5 {
@@ -2274,11 +2301,11 @@ export const defaults: Defaults;
 
 // @public
 class Defaults_2 {
-    constructor(_descriptors: object, _appliers: Array<(defaults: Defaults_2) => void>);
+    constructor(_descriptors: any, _appliers: any);
     // (undocumented)
     animation: any;
     // (undocumented)
-    apply(appliers: Array<(defaults: Defaults_2) => void>): void;
+    apply(appliers: any): void;
     // (undocumented)
     backgroundColor: string;
     // (undocumented)
@@ -2330,7 +2357,7 @@ class Defaults_2 {
     // (undocumented)
     onHover: any;
     // (undocumented)
-    override(scope: string | object, values?: object): any;
+    override(scope: any, values: any): any;
     // (undocumented)
     parsing: boolean;
     // (undocumented)
@@ -2360,7 +2387,9 @@ export class DomPlatform extends BasePlatform {}
 // @public
 class DomPlatform_2 extends BasePlatform_2 {
     // (undocumented)
-    removeEventListener(chart: Chart_6, type: string): void;
+    acquireContext(canvas: HTMLCanvasElement, aspectRatio?: number): CanvasRenderingContext2D | null;
+    // (undocumented)
+    removeEventListener(chart: Chart_8, type: string): void;
 }
 
 // @public (undocumented)
@@ -2421,7 +2450,6 @@ class DoughnutController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
-    protected _isDataVisible(index: any): boolean;
     // (undocumented)
     offsetX: number;
     // (undocumented)
@@ -2761,100 +2789,6 @@ export const layouts: {
 export const Legend: Plugin_2;
 
 // @public (undocumented)
-class Legend_2 extends Element_2<AnyObject, LegendOpts> implements LayoutItem {
-    constructor(config: {
-        ctx: CanvasRenderingContext2D;
-        options: LegendOpts;
-        chart: Chart;
-    });
-    // (undocumented)
-    _added: boolean;
-    // (undocumented)
-    adjustHitBoxes(): void;
-    // (undocumented)
-    bottom: number;
-    // (undocumented)
-    buildLabels(): void;
-    // (undocumented)
-    chart: Chart;
-    _columnRight(x: number, col: number): number;
-    // (undocumented)
-    columnSizes: LegendColumnSize[];
-    // (undocumented)
-    _computeTitleHeight(): number;
-    // (undocumented)
-    _computeTitleWidth(): number;
-    // (undocumented)
-    ctx: CanvasRenderingContext2D;
-    // (undocumented)
-    doughnutMode: boolean;
-    // (undocumented)
-    draw(): void;
-    // (undocumented)
-    _draw(): void;
-    // (undocumented)
-    drawTitle(): void;
-    // (undocumented)
-    fit(): void;
-    // (undocumented)
-    _fitCols(titleHeight: number, layout: LegendLabelLayout): number;
-    // (undocumented)
-    _fitRows(titleHeight: number, layout: LegendLabelLayout): number;
-    // (undocumented)
-    fullSize: boolean;
-    // (undocumented)
-    _getLegendItemAt(x: number, y: number): LegendItem | null;
-    handleEvent(e: ChartEvent): void;
-    // (undocumented)
-    height: number;
-    // (undocumented)
-    _hoveredItem: LegendItem | null;
-    // (undocumented)
-    isHorizontal(): boolean;
-    // (undocumented)
-    _labelLayout: LegendLabelLayout;
-    // (undocumented)
-    left: number;
-    // (undocumented)
-    legendHitBoxes: LegendHitBox[];
-    // (undocumented)
-    legendItems: LegendItem[];
-    // (undocumented)
-    lineWidths: number[];
-    // (undocumented)
-    _margins: ChartArea;
-    // (undocumented)
-    maxHeight: number;
-    // (undocumented)
-    maxWidth: number;
-    // (undocumented)
-    position: LayoutPosition;
-    // (undocumented)
-    right: number;
-    // (undocumented)
-    setDimensions(): void;
-    // (undocumented)
-    top: number;
-    // (undocumented)
-    update(maxWidth: number, maxHeight: number, margins: ChartArea): void;
-    // (undocumented)
-    weight: number;
-    // (undocumented)
-    width: number;
-}
-
-// @public (undocumented)
-type LegendCallback<R = void> = (this: Legend_2, ...args: unknown[]) => R;
-
-// @public (undocumented)
-interface LegendColumnSize {
-    // (undocumented)
-    height: number;
-    // (undocumented)
-    width: number;
-}
-
-// @public (undocumented)
 export interface LegendElement<TType extends ChartType> extends Element_2<AnyObject, LegendOptions<TType>>, LayoutItem {
     // (undocumented)
     chart: Chart<TType>;
@@ -2866,36 +2800,6 @@ export interface LegendElement<TType extends ChartType> extends Element_2<AnyObj
     legendItems?: LegendItem[];
     // (undocumented)
     options: LegendOptions<TType>;
-}
-
-// @public (undocumented)
-type LegendFont = ReturnType<typeof toFont>;
-
-// @public
-interface LegendHitBox {
-    // (undocumented)
-    col?: number;
-    // (undocumented)
-    height: number;
-    // (undocumented)
-    left: number;
-    // (undocumented)
-    row?: number;
-    _symbol: {
-        x: number;
-        y: number;
-    };
-    // (undocumented)
-    _text: {
-        width: number;
-        x: number;
-        y: number;
-        align: CanvasTextAlign;
-    };
-    // (undocumented)
-    top: number;
-    // (undocumented)
-    width: number;
 }
 
 // @public (undocumented)
@@ -2933,20 +2837,6 @@ export interface LegendItem {
     textAlign?: TextAlign;
 }
 
-// @public
-interface LegendLabelLayout {
-    // (undocumented)
-    boxHeight: number;
-    // (undocumented)
-    boxWidth: number;
-    // (undocumented)
-    font: LegendFont;
-    itemHeight: number;
-    // (undocumented)
-    pointStyleWidth: number;
-    usePointStyle: boolean;
-}
-
 // @public (undocumented)
 export interface LegendOptions<TType extends ChartType> {
     align: Align;
@@ -2978,9 +2868,9 @@ export interface LegendOptions<TType extends ChartType> {
     };
     maxHeight: number;
     maxWidth: number;
-    onClick(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
-    onHover(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
-    onLeave(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
+    onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+    onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+    onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
     position: LayoutPosition;
     reverse: boolean;
     rtl: boolean;
@@ -2993,28 +2883,6 @@ export interface LegendOptions<TType extends ChartType> {
         position: 'center' | 'start' | 'end';
         padding?: number | ChartArea;
         text: string;
-    };
-}
-
-// @public
-interface LegendOpts extends Omit<PublicLegendOptions, 'labels' | 'title' | 'onClick' | 'onHover' | 'onLeave' | 'textDirection'> {
-    // (undocumented)
-    events?: string[];
-    // (undocumented)
-    labels: WithResolvedFont<Omit<PublicLegendOptions['labels'], 'generateLabels'>> & {
-        generateLabels: LegendCallback<LegendItem[]>;
-    };
-    // (undocumented)
-    onClick: LegendCallback;
-    // (undocumented)
-    onHover: LegendCallback;
-    // (undocumented)
-    onLeave: LegendCallback;
-    // (undocumented)
-    textDirection: 'ltr' | 'rtl';
-    // (undocumented)
-    title: WithResolvedFont<Omit<PublicLegendOptions['title'], 'text'>> & {
-        text: string | string[];
     };
 }
 
@@ -3305,9 +3173,6 @@ interface MinMaxDecimationOptions extends BaseDecimationOptions {
 }
 
 // @public (undocumented)
-type NoInferType<T> = [T][T extends any ? 0 : never];
-
-// @public (undocumented)
 export type Overrides = {
     [key in ChartType]:
     CoreChartOptions<key> &
@@ -3483,21 +3348,15 @@ declare namespace plugins {
 }
 export { plugins }
 
-// @public (undocumented)
+// @public
 class PluginService {
-    constructor();
     // (undocumented)
     _cache: {
         plugin: any;
         options: any;
     }[];
     // (undocumented)
-    _createDescriptors(chart: Chart_3, all?: boolean): {
-        plugin: any;
-        options: any;
-    }[];
-    // @internal (undocumented)
-    _descriptors(chart: Chart_3): {
+    _createDescriptors(chart: any, all: any): {
         plugin: any;
         options: any;
     }[];
@@ -3508,14 +3367,7 @@ class PluginService {
     }[];
     // (undocumented)
     invalidate(): void;
-    notify(chart: Chart_3, hook: string, args?: object, filter?: filterCallback): boolean;
-    // @internal (undocumented)
-    _notify(descriptors: {
-        plugin: any;
-        options: any;
-    }[], chart: Chart_3, hook: string, args?: any): boolean;
-    // @internal (undocumented)
-    _notifyStateChanges(chart: Chart_3): void;
+    notify(chart: Chart_5, hook: string, args?: object, filter?: filterCallback): boolean;
     // (undocumented)
     _oldCache: {
         plugin: any;
@@ -3649,16 +3501,12 @@ export const PolarAreaController: ChartComponent & {
 
 // @public (undocumented)
 class PolarAreaController_2 extends DatasetController_2 {
-    constructor(chart: Chart_3, datasetIndex: number);
-    // @internal (undocumented)
-    _computeAngle(index: number, mode: UpdateMode, defaultAngle: number): number;
+    constructor(chart: any, datasetIndex: any);
     // (undocumented)
     countVisibleElements(): number;
     // (undocumented)
-    static defaults: any;
-    // (undocumented)
-    getLabelAndValue(index: number): {
-        label: string;
+    getLabelAndValue(index: any): {
+        label: any;
         value: string;
     };
     // (undocumented)
@@ -3670,21 +3518,15 @@ class PolarAreaController_2 extends DatasetController_2 {
     static id: string;
     // (undocumented)
     innerRadius: number;
-    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     outerRadius: number;
-    // (undocumented)
     static overrides: any;
     // (undocumented)
-    parseObjectData(meta: ChartMeta<'polarArea'>, data: AnyObject[], start: number, count: number): {
+    parseObjectData(meta: any, data: any, start: any, count: any): {
         r: unknown;
     }[];
     // (undocumented)
-    update(mode: UpdateMode): void;
-    // (undocumented)
-    updateElements(arcs: ArcElement[], start: number, count: number, mode: UpdateMode): void;
-    // @internal (undocumented)
-    _updateRadius(): void;
+    update(mode: any): void;
 }
 
 // @public (undocumented)
@@ -3705,9 +3547,6 @@ export interface PolarAreaControllerDatasetOptions extends DoughnutControllerDat
 }
 
 // @public (undocumented)
-type PublicLegendOptions = LegendOptions<ChartType>;
-
-// @public (undocumented)
 export type RadarController = DatasetController
 
 // @public (undocumented)
@@ -3719,24 +3558,19 @@ export const RadarController: ChartComponent & {
 // @public (undocumented)
 class RadarController_2 extends DatasetController_2 {
     // (undocumented)
-    static defaults: any;
-    // (undocumented)
-    protected getLabelAndValue(index: number): {
-        label: string;
+    protected getLabelAndValue(index: any): {
+        label: any;
         value: string;
     };
     // (undocumented)
     static id: string;
-    // (undocumented)
     static overrides: any;
     // (undocumented)
-    parseObjectData(meta: ChartMeta<'radar'>, data: AnyObject[], start: number, count: number): {
+    parseObjectData(meta: any, data: any, start: any, count: any): {
         r: unknown;
     }[];
     // (undocumented)
-    update(mode: UpdateMode): void;
-    // (undocumented)
-    updateElements(points: PointElement[], start: number, count: number, mode: UpdateMode): void;
+    update(mode: any): void;
 }
 
 // @public (undocumented)
@@ -3965,7 +3799,6 @@ export const registry: Registry;
 
 // @public
 class Registry_2 {
-    constructor();
     // (undocumented)
     add(...args: any[]): void;
     // (undocumented)
@@ -3978,22 +3811,14 @@ class Registry_2 {
     addScales(...args: (typeof Scale_2)[]): void;
     // (undocumented)
     controllers: TypedRegistry_2;
-    // @internal (undocumented)
-    _each(method: 'register' | 'unregister', args: any[], typedRegistry?: TypedRegistry_2): void;
     // (undocumented)
     elements: TypedRegistry_2;
-    // @internal (undocumented)
-    _exec(method: 'register' | 'unregister', registry: TypedRegistry_2, component: any): void;
-    // @internal (undocumented)
-    _get(id: string, typedRegistry: TypedRegistry_2, type: string): any;
     // (undocumented)
     getController(id: string): typeof DatasetController_2;
     // (undocumented)
     getElement(id: string): typeof Element_2;
     // (undocumented)
     getPlugin(id: string): object;
-    // @internal (undocumented)
-    _getRegistryForType(type: any): TypedRegistry_2;
     // (undocumented)
     getScale(id: string): typeof Scale_2;
     // (undocumented)
@@ -4308,8 +4133,8 @@ class Scale_2 extends Element_2<AnyObject, AnyObject> {
     parse(raw: any, index?: number): any;
     // (undocumented)
     _range: {
-        min: any;
-        max: any;
+        min: number;
+        max: number;
     };
     // (undocumented)
     protected _resolveTickFontOptions(index: number): object;
@@ -4729,20 +4554,10 @@ export interface TitleOptions {
     // (undocumented)
     font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     fullSize: boolean;
-    padding: Scriptable<number | { top: number; bottom: number }, ScriptableChartContext>;
+    padding: number | { top: number; bottom: number };
     position: 'top' | 'left' | 'bottom' | 'right';
     text: string | string[];
 }
-
-// @public
-function toFont(options: Partial<FontSpec>, fallback?: Partial<FontSpec>): {
-    family: string;
-    lineHeight: number;
-    size: number;
-    style: "normal" | "inherit" | "italic" | "oblique" | "initial";
-    weight: number | "bold" | "normal" | "lighter" | "bolder";
-    string: string;
-};
 
 // @public (undocumented)
 export interface Tooltip extends Plugin_2 {
@@ -5046,9 +4861,9 @@ export interface TypedRegistry<T> {
     unregister(item: ChartComponent): void;
 }
 
-// @public (undocumented)
+// @public
 class TypedRegistry_2 {
-    constructor(type: any, scope: string, override?: boolean);
+    constructor(type: any, scope: any, override: any);
     // (undocumented)
     get(id: string): object | null;
     // (undocumented)
@@ -5109,11 +4924,6 @@ export interface VisualElement {
     // (undocumented)
     inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
 }
-
-// @public (undocumented)
-type WithResolvedFont<T> = Omit<T, 'font'> & {
-    font: Partial<FontSpec>;
-};
 
 // (No @packageDocumentation comment for this package)
 

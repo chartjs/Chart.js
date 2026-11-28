@@ -188,7 +188,7 @@ export interface ArrayListener<T> {
 export function _arrayUnique<T>(items: T[]): T[];
 
 // @public
-export function _attachContext<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T>(proxy: ResolverProxy<T, R>, context: AnyObject, subProxy?: ContextProxy<T, R>, descriptorDefaults?: DescriptorDefaults): ContextProxy<T, R>;
+export function _attachContext<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T>(proxy: ResolverProxy<T, R>, context: AnyObject, subProxy?: ResolverProxy<T, R>, descriptorDefaults?: DescriptorDefaults): ContextProxy<T, R>;
 
 // @public (undocumented)
 interface BackdropOptions {
@@ -221,7 +221,6 @@ AnimationOptions<'bar'> {
     maxBarThickness: number;
     minBarLength: number;
     pointStyle: PointStyle;
-    skipNull?: boolean;
     xAxisID: string;
     yAxisID: string;
 }
@@ -289,7 +288,7 @@ class BasePlatform {
 export function _bezierCurveTo(ctx: CanvasRenderingContext2D, previous: SplinePoint, target: SplinePoint, flip?: boolean): void;
 
 // @public (undocumented)
-export function _bezierInterpolation(p1: SplinePoint, p2: SplinePoint, t: number, _mode?: any): {
+export function _bezierInterpolation(p1: SplinePoint, p2: SplinePoint, t: number, mode?: any): {
     x: number;
     y: number;
 };
@@ -659,10 +658,7 @@ class Chart_2 {
     // (undocumented)
     destroy(): void;
     // (undocumented)
-    _doResize: {
-        (mode?: any): number;
-        cancel(): void;
-    };
+    _doResize: (mode?: any) => number;
     // (undocumented)
     draw(): void;
     // (undocumented)
@@ -780,6 +776,9 @@ type Chart_3 = Chart_2;
 
 // @public (undocumented)
 type Chart_4 = Chart;
+
+// @public (undocumented)
+type Chart_5 = Chart_2;
 
 // @public (undocumented)
 interface ChartArea {
@@ -1206,12 +1205,6 @@ class Config {
     datasetAnimationScopeKeys(datasetType: string, transition: string): string[][];
     datasetElementScopeKeys(datasetType: string, elementType: string): string[][];
     datasetScopeKeys(datasetType: string): string[][];
-    _derived: {
-        scales: object;
-    };
-    get _derivedOptions(): {
-        scales: object;
-    };
     getOptionScopes(mainScope: object, keyLists: string[][], resetCache?: boolean): any;
     set options(arg: any);
     // (undocumented)
@@ -1228,10 +1221,6 @@ class Config {
     resolveNamedOptions(scopes: object[], names: string[], context: Function | object, prefixes?: string[]): object;
     // (undocumented)
     _resolverCache: Map<any, any>;
-    _scaleRecords: WeakMap<any, {
-        implied: boolean;
-    }>;
-    _scaleSources: object;
     // (undocumented)
     _scopeCache: Map<any, any>;
     set type(arg: any);
@@ -1258,7 +1247,7 @@ export interface ContextCache<T extends AnyObject[] = AnyObject[], R extends Any
     // (undocumented)
     _stack: Set<string>;
     // (undocumented)
-    _subProxy: ContextProxy<T, R>;
+    _subProxy: ResolverProxy<T, R>;
 }
 
 // @public (undocumented)
@@ -1583,11 +1572,8 @@ class DatasetController_2 {
     index: number;
     // (undocumented)
     initialize(): void;
-    protected _isDataVisible(index: number): boolean;
     // (undocumented)
     linkScales(): void;
-    // (undocumented)
-    _newElements: any[];
     // (undocumented)
     _objectData: any;
     // (undocumented)
@@ -1639,10 +1625,7 @@ class DatasetController_2 {
 }
 
 // @public
-export function debounce<TArgs extends Array<any>>(fn: (...args: TArgs) => void, delay: number): {
-    (...args: TArgs): number;
-    cancel(): void;
-};
+export function debounce<TArgs extends Array<any>>(fn: (...args: TArgs) => void, delay: number): (...args: TArgs) => number;
 
 // @public
 export function _decimalPlaces(x: number): number;
@@ -1700,11 +1683,11 @@ interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<Char
 
 // @public
 class Defaults_2 {
-    constructor(_descriptors: object, _appliers: Array<(defaults: Defaults_2) => void>);
+    constructor(_descriptors: any, _appliers: any);
     // (undocumented)
     animation: any;
     // (undocumented)
-    apply(appliers: Array<(defaults: Defaults_2) => void>): void;
+    apply(appliers: any): void;
     // (undocumented)
     backgroundColor: string;
     // (undocumented)
@@ -1756,7 +1739,7 @@ class Defaults_2 {
     // (undocumented)
     onHover: any;
     // (undocumented)
-    override(scope: string | object, values?: object): any;
+    override(scope: any, values: any): any;
     // (undocumented)
     parsing: boolean;
     // (undocumented)
@@ -2103,9 +2086,6 @@ interface GridLineOptions {
 // @public (undocumented)
 export const HALF_PI: number;
 
-// @public
-export function _hasOwn(object: object, key: PropertyKey): boolean;
-
 // @public (undocumented)
 type IChartComponent = {
     id: string;
@@ -2175,8 +2155,8 @@ export function isArray<T = unknown>(value: unknown): value is T[];
 // @public (undocumented)
 export function _isBetween(value: number, start: number, end: number, epsilon?: number): boolean;
 
-// @public
-export function _isClickEvent(e: ChartEvent, events?: string[]): boolean;
+// @public (undocumented)
+export function _isClickEvent(e: ChartEvent): boolean;
 
 // @public (undocumented)
 export function _isDomSupported(): boolean;
@@ -2202,11 +2182,6 @@ export function isPatternOrGradient(value: unknown): value is CanvasPattern | Ca
 
 // @public
 export function _isPointInArea(point: Point, area: TRBL, margin?: number): boolean;
-
-// @public
-export function _isRadialScale(scale: {
-    getPointPositionForValue?: unknown;
-} | undefined): boolean;
 
 // @public (undocumented)
 interface LabelItem {
@@ -2321,9 +2296,9 @@ interface LegendOptions<TType extends ChartType> {
     };
     maxHeight: number;
     maxWidth: number;
-    onClick(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
-    onHover(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
-    onLeave(this: LegendElement<NoInferType<TType>>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<NoInferType<TType>>): void;
+    onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+    onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
+    onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
     position: LayoutPosition;
     reverse: boolean;
     rtl: boolean;
@@ -2516,7 +2491,7 @@ export function _lookup<T>(table: T[], value: number, cmp: (value: number) => bo
 };
 
 // @public
-export function _lookupByKey(table: Record<string, number>[], key: string, value: number, last?: boolean): {
+export const _lookupByKey: (table: Record<string, number>[], key: string, value: number, last?: boolean) => {
     lo: number;
     hi: number;
 };
@@ -2599,9 +2574,6 @@ interface MinMaxDecimationOptions extends BaseDecimationOptions {
 
 // @public
 export function niceNum(range: number): number;
-
-// @public (undocumented)
-type NoInferType<T> = [T][T extends any ? 0 : never];
 
 // @public
 export function noop(): void;
@@ -2774,21 +2746,15 @@ interface PluginOptionsByType<TType extends ChartType> {
     tooltip: TooltipOptions<TType>;
 }
 
-// @public (undocumented)
+// @public
 class PluginService {
-    constructor();
     // (undocumented)
     _cache: {
         plugin: any;
         options: any;
     }[];
     // (undocumented)
-    _createDescriptors(chart: Chart_2, all?: boolean): {
-        plugin: any;
-        options: any;
-    }[];
-    // @internal (undocumented)
-    _descriptors(chart: Chart_2): {
+    _createDescriptors(chart: any, all: any): {
         plugin: any;
         options: any;
     }[];
@@ -2799,14 +2765,7 @@ class PluginService {
     }[];
     // (undocumented)
     invalidate(): void;
-    notify(chart: Chart_2, hook: string, args?: object, filter?: filterCallback): boolean;
-    // @internal (undocumented)
-    _notify(descriptors: {
-        plugin: any;
-        options: any;
-    }[], chart: Chart_2, hook: string, args?: any): boolean;
-    // @internal (undocumented)
-    _notifyStateChanges(chart: Chart_2): void;
+    notify(chart: Chart_5, hook: string, args?: object, filter?: filterCallback): boolean;
     // (undocumented)
     _oldCache: {
         plugin: any;
@@ -2880,7 +2839,7 @@ interface PointHoverOptions extends CommonHoverOptions {
 }
 
 // @public (undocumented)
-export function _pointInLine(p1: Point, p2: Point, t: number, _mode?: any): {
+export function _pointInLine(p1: Point, p2: Point, t: number, mode?: any): {
     x: number;
     y: number;
 };
@@ -3087,7 +3046,6 @@ interface Registry {
 
 // @public
 class Registry_2 {
-    constructor();
     // (undocumented)
     add(...args: any[]): void;
     // (undocumented)
@@ -3100,22 +3058,14 @@ class Registry_2 {
     addScales(...args: (typeof Scale_3)[]): void;
     // (undocumented)
     controllers: TypedRegistry_2;
-    // @internal (undocumented)
-    _each(method: 'register' | 'unregister', args: any[], typedRegistry?: TypedRegistry_2): void;
     // (undocumented)
     elements: TypedRegistry_2;
-    // @internal (undocumented)
-    _exec(method: 'register' | 'unregister', registry: TypedRegistry_2, component: any): void;
-    // @internal (undocumented)
-    _get(id: string, typedRegistry: TypedRegistry_2, type: string): any;
     // (undocumented)
     getController(id: string): typeof DatasetController_2;
     // (undocumented)
     getElement(id: string): typeof Element_2;
     // (undocumented)
     getPlugin(id: string): object;
-    // @internal (undocumented)
-    _getRegistryForType(type: any): TypedRegistry_2;
     // (undocumented)
     getScale(id: string): typeof Scale_3;
     // (undocumented)
@@ -3212,13 +3162,13 @@ export type ResolverObjectKey = string | boolean;
 export type ResolverProxy<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T> = Merge<T[number]> & ResolverCache<T, R>;
 
 // @public (undocumented)
-export function restoreTextDirection(ctx: CanvasRenderingContext2D, original?: [string, string]): void;
+export function restoreTextDirection(ctx: CanvasRenderingContext2D, _original?: [string, string]): void;
 
 // @public (undocumented)
 export function retinaScale(chart: Chart | Chart_2, forceRatio: number, forceStyle?: boolean): boolean | void;
 
 // @public
-export function _rlookupByKey(table: Record<string, number>[], key: string, value: number): {
+export const _rlookupByKey: (table: Record<string, number>[], key: string, value: number) => {
     lo: number;
     hi: number;
 };
@@ -3516,8 +3466,8 @@ class Scale_3 extends Element_2<AnyObject, AnyObject> {
     parse(raw: any, index?: number): any;
     // (undocumented)
     _range: {
-        min: any;
-        max: any;
+        min: number;
+        max: number;
     };
     // (undocumented)
     protected _resolveTickFontOptions(index: number): object;
@@ -3852,7 +3802,7 @@ interface TitleOptions {
     // (undocumented)
     font: ScriptableAndScriptableOptions<Partial<FontSpec>, ScriptableChartContext>;
     fullSize: boolean;
-    padding: Scriptable<number | { top: number; bottom: number }, ScriptableChartContext>;
+    padding: number | { top: number; bottom: number };
     position: 'top' | 'left' | 'bottom' | 'right';
     text: string | string[];
 }
@@ -4201,9 +4151,9 @@ interface TypedRegistry<T> {
     unregister(item: ChartComponent): void;
 }
 
-// @public (undocumented)
+// @public
 class TypedRegistry_2 {
-    constructor(type: any, scope: string, override?: boolean);
+    constructor(type: any, scope: any, override: any);
     // (undocumented)
     get(id: string): object | null;
     // (undocumented)
