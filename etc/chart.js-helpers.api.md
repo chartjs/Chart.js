@@ -831,7 +831,7 @@ TLabel = unknown
     // (undocumented)
     platform?: typeof BasePlatform;
     // (undocumented)
-    plugins?: Plugin_2<TType>[];
+    plugins?: Plugin_2<NoInferType<TType>>[];
     // (undocumented)
     type: TType;
 }
@@ -847,7 +847,7 @@ TLabel = unknown
     // (undocumented)
     options?: ChartOptions<TType> | undefined;
     // (undocumented)
-    plugins?: Plugin_2<TType>[];
+    plugins?: Plugin_2<NoInferType<TType>>[];
 }
 
 // @public
