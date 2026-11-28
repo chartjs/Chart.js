@@ -18,6 +18,7 @@ export function _buildStackLine(source) {
   const segments = line.segments;
   const sourcePoints = line.points;
   const linesBelow = getLinesBelow(scale, index);
+  const stepped = linesBelow.length ? linesBelow[0].options.stepped : false;
   linesBelow.push(_createBoundaryLine({x: null, y: scale.bottom}, line));
 
   for (let i = 0; i < segments.length; i++) {
@@ -26,7 +27,7 @@ export function _buildStackLine(source) {
       addPointsBelow(points, sourcePoints[j], linesBelow);
     }
   }
-  return new LineElement({points, options: {}});
+  return new LineElement({points, options: {stepped}});
 }
 
 /**
