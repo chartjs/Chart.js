@@ -129,9 +129,10 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
    - The chart's `onClick` is fixed in the same piece even though #11538 reports only the legend. It runs through the same helper with the same double call, and fixing one but not the other would split the rule.
 6. **Active elements remember where they came from.** The chart and the tooltip each keep a flag saying whether their active set was set by the pointer or by `setActiveElements`.
    - `setActiveElements` sets the flag before its "changed" test, so a legend `onHover` that sets the elements already active still marks them as set by code.
-   - An in-area pointer event clears the flag; so does a write of the pointer's set.
-     - The chart clears it at the start of `_handleEvent`, before `onHover` and `onClick`, so a handler that calls `setActiveElements` sets it again. It also clears it where the pointer's set replaces one a handler set.
-     - The tooltip clears it for an in-area event that is not a replay, and for a replay that changes the set. A replay or a position change alone never clears it, so both owners keep or end the same set.
+   - One rule, checked once after the handlers, in a shared helper `_pointerOwnsActive(inChartArea, replay, changed)`: the flag clears when `inChartArea && (!replay || changed)`.
+     - In the chart, `changed` is measured against what the handlers left. Inside the area the event writes the pointer's set over any other set a handler wrote, so a handler's set that survives equals the pointer's and is the pointer's.
+     - In the tooltip, `changed` is the change of the elements against the last ones. A position change alone does not count.
+     - A replay that changes nothing never clears it, so code that sets the element the pointer is on keeps it through an update. Nothing reads the flag inside the area, so it does not matter that it is cleared after the handlers.
    - Outside the chart area, a set made by the pointer becomes empty. A set made by code is kept, filtered by the chart's `_filterActive`, which also leaves out items whose element is gone. The tooltip's own validity filter is replaced by it.
 
    Both owners get the flag. Otherwise the tooltip would close while the slice stays drawn in its hover style, which is the same stale state.
@@ -139,7 +140,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
    Rejected: #11849's extra `update()` parameter. With it, moving back onto the same slice no longer showed the tooltip (found in its review), and it spreads the rule over the update path.
 
    This restores the pointer's behaviour before 3.7.0 and keeps what #9970 wanted for code. The two pinned tests are changed to set their active elements with `setActiveElements`.
-7. **Hidden data cannot be active.** One private chart method, `_filterActive(items)`, leaves out the items whose dataset is not visible or whose data item the dataset's controller does not show.
+7. **Hidden data cannot be active.** One private chart method, `_filterActive(items)`, leaves out the items whose dataset is not visible, whose data item the dataset's controller does not show, or whose data item no longer exists. The tooltip's set is filtered by it too, at update (its `afterUpdate` hook) and outside the chart area; the tooltip hides when none is left.
    - The data item part is the controller's private `_isDataVisible(index)`: by default the element is not `hidden`. Bar, doughnut and polar area also ask `chart.getDataVisibility(index)`, because they are the controllers that honour `toggleDataVisibility`. A line point at a toggled index is still drawn, so it can still be active.
    - The dataset part is decided once for each run of a dataset's items, the data item part for each item.
    - `_active` is filtered where it is assigned: in `setActiveElements` before its "changed" test, in `_handleEvent` before `onHover` and `onClick` get the elements and again after them (a handler may hide data, and its update has then already dropped it, so the event compares with what the update left), and at the start of `update()`, before the datasets update. The datasets then resolve their normal options, not their hover options.
@@ -291,8 +292,8 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
   - `_draw()` reads the hit boxes, `_labelLayout` and the styles and text of `legendItems`, and nothing else. It draws `legendItems[i].text`, because `afterUpdate` builds the items again after `fit()`.
   - A row's or column's size comes from the items `fit()` measured; the drawn text comes from the items `afterUpdate` rebuilt.
 - **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. The chart passes its `events` everywhere it calls the helper.
-- **P12 → P13:** the private chart method `_filterActive(items)` leaves out hidden data (dataset not visible, or `controller._isDataVisible(index)` false). P13 calls the same method for the tooltip's code-set elements, and sets its "set by code" flag from the call, before the filter and the "changed" test.
-- **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. An in-area pointer event clears the flag; so does a write of the pointer's set.
+- **P12 → P13:** the private chart method `_filterActive(items)` leaves out hidden data (dataset not visible, or `controller._isDataVisible(index)` false) and items whose data item no longer exists. P13 calls the same method for the tooltip's code-set elements outside the chart area and for the tooltip's set at update, and sets its "set by code" flag from the call, before the filter and the "changed" test.
+- **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. After the handlers, `_pointerOwnsActive(inChartArea, replay, changed)` clears it when `inChartArea && (!replay || changed)`, in both owners.
 - **P14 → P15:** `labels.boxYOffset` moves only the symbol's y.
 
 ## Open Questions

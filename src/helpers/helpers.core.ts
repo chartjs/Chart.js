@@ -425,6 +425,20 @@ export function _isClickEvent(e: ChartEvent, events?: string[]) {
 }
 
 /**
+ * Whether an event makes the active elements the pointer's, so they end outside the chart
+ * area: a pointer event in the chart area, or a replayed one that changes them. A replay that
+ * changes nothing, or an event outside the chart area, leaves elements set by code as they are.
+ * The chart and the tooltip both decide by it, so they keep or end the same elements.
+ * @param inChartArea - the event is in the chart area
+ * @param replay - the event is replayed by `update()`
+ * @param changed - the event changed the active elements
+ * @private
+ */
+export function _pointerOwnsActive(inChartArea: boolean, replay: boolean, changed: boolean): boolean {
+  return inChartArea && (!replay || changed);
+}
+
+/**
  * Whether `key` is an own property of `object`, also for an object without a
  * prototype.
  * @private

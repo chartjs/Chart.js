@@ -54,7 +54,7 @@ The `titleFont`, `bodyFont` and `footerFont` options default to the `Chart.defau
 If you need more visual customizations, please use an [HTML tooltip](../samples/tooltip/html.md).
 :::
 
-The tooltip that the pointer opens closes when the pointer leaves the chart area, for example onto the legend or an axis. A tooltip opened with [`chart.tooltip.setActiveElements()`](../samples/advanced/programmatic-events.md) stays outside the chart area until it is changed, so a legend `onHover` can show one for its item.
+The tooltip that the pointer opens closes when the pointer leaves the chart area, for example onto the legend or an axis. A tooltip opened with [`chart.tooltip.setActiveElements()`](../samples/advanced/programmatic-events.md) stays outside the chart area until it is changed, until a pointer event inside the chart area takes it over, or until its data is hidden or removed, so a legend `onHover` can show one for its item.
 
 ### Position Modes
 

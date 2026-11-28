@@ -1,7 +1,7 @@
 import Animations from '../core/core.animations.js';
 import Element from '../core/core.element.js';
 import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core.js';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject, _pointerOwnsActive} from '../helpers/helpers.core.js';
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options.js';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl.js';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math.js';
@@ -452,17 +452,6 @@ function invokeCallbackWithFallback(callbacks, name, ctx, arg) {
   }
 
   return result;
-}
-
-/**
- * Whether an event makes the active elements the pointer's: a pointer event in chartArea,
- * or a replayed one that changes them. A replay or a position change alone does not.
- * @param {boolean} inChartArea
- * @param {boolean} replay
- * @param {boolean} elementsChanged
- */
-function pointerOwnsActive(inChartArea, replay, elementsChanged) {
-  return inChartArea && (!replay || elementsChanged);
 }
 
 export class Tooltip extends Element {
@@ -1124,6 +1113,20 @@ export class Tooltip extends Element {
   }
 
   /**
+   * Drops the active elements whose data is hidden or no longer exists, after the chart
+   * updated its datasets, as the chart does with its own. The tooltip hides when none is left.
+   * @private
+   */
+  _dropHiddenActive() {
+    const lastActive = this._active;
+    const active = this.chart._filterActive(lastActive);
+    if (active.length !== lastActive.length) {
+      this._active = active;
+      this.update(true);
+    }
+  }
+
+  /**
 	 * Get active elements in the tooltip
 	 * @returns {Array} Array of elements that are active in the tooltip
 	 */
@@ -1190,7 +1193,8 @@ export class Tooltip extends Element {
     const elementsChanged = !_elementsEqual(active, lastActive);
     const changed = replay || elementsChanged || positionChanged;
 
-    if (pointerOwnsActive(inChartArea, replay, elementsChanged)) {
+    // A position change alone does not count: only the elements do, as in the chart.
+    if (_pointerOwnsActive(inChartArea, replay, elementsChanged)) {
       this._activeSetByCode = false;
     }
 
@@ -1271,6 +1275,12 @@ export default {
   beforeUpdate(chart, _args, options) {
     if (chart.tooltip) {
       chart.tooltip.initialize(options);
+    }
+  },
+
+  afterUpdate(chart) {
+    if (chart.tooltip) {
+      chart.tooltip._dropHiddenActive();
     }
   },
 

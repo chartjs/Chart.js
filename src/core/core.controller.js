@@ -6,7 +6,7 @@ import {_detectPlatform} from '../platform/index.js';
 import PluginService from './core.plugins.js';
 import registry from './core.registry.js';
 import Config, {determineAxis, getIndexAxis} from './core.config.js';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core.js';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent, _pointerOwnsActive} from '../helpers/helpers.core.js';
 import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea, _isDomSupported, retinaScale, getDatasetClipArea} from '../helpers/index.js';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -1317,10 +1317,6 @@ class Chart {
     // This is done so we do not have to evaluate the active elements each animation frame
     // - it would be expensive.
     const useFinalPosition = replay;
-    if (inChartArea && !replay) {
-      // The pointer takes over the active elements. A handler that sets them sets the flag again.
-      this._activeSetByCode = false;
-    }
     let active = this._filterActive(this._getActiveElements(e, lastActive, inChartArea, useFinalPosition));
     let previous = lastActive;
     const isClick = _isClickEvent(e, options.events);
@@ -1349,8 +1345,9 @@ class Chart {
       this._active = active;
       this._updateHoverStyles(active, previous, replay);
     }
-    if (changed && inChartArea) {
-      // The pointer's set replaced one that a handler set.
+    // After the handlers: in the chart area the pointer's set is written over any other set a
+    // handler wrote, so a set a handler made that is still active is the pointer's too.
+    if (_pointerOwnsActive(inChartArea, replay, changed)) {
       this._activeSetByCode = false;
     }
 
