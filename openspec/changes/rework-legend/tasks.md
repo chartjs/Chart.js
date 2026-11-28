@@ -90,10 +90,10 @@
 
 ## 14. P13: The pointer's active elements end outside the chart area
 
-- [ ] 14.1 Specs: hover a pie slice, move onto a legend item: the tooltip has no active elements (master 1); move back onto the slice: 1; a legend `onHover` that calls the tooltip's `setActiveElements` keeps the tooltip, also when it sets the element that the pointer had already made active.
-- [ ] 14.2 Change `plugin.tooltip.tests.js:1681`, `core.controller.tests.js:365` and the #12420 specs to set their active elements with `setActiveElements`.
-- [ ] 14.3 The chart and the tooltip remember whether their active elements came from the pointer or from code. `setActiveElements` sets the flag before its "changed" test. Outside the chart area, the pointer's set becomes empty, and the code's set stays, filtered by P12's method.
-- [ ] 14.4 tooltip.md and interactions.md. Close #11849 as superseded. The pull request says `Closes #11801` and carries the release-note line.
+- [x] 14.1 Specs: hover a pie slice, move onto a legend item: the tooltip has no active elements (master 1); move back onto the slice: 1; a legend `onHover` that calls the tooltip's `setActiveElements` keeps the tooltip, also when it sets the element that the pointer had already made active.
+- [x] 14.2 Change `plugin.tooltip.tests.js:1681`, `core.controller.tests.js:365` and the #12420 specs to set their active elements with `setActiveElements`.
+- [x] 14.3 The chart and the tooltip remember whether their active elements came from the pointer or from code. `setActiveElements` sets the flag before its "changed" test. Outside the chart area, the pointer's set becomes empty, and the code's set stays, filtered by P12's method.
+- [x] 14.4 tooltip.md and interactions.md. Close #11849 as superseded (left to the maintainers). The pull request says `Closes #11801` and carries the release-note line.
 
 ## 15. P14: labels.boxYOffset (#12242)
 

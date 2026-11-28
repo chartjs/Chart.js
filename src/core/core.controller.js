@@ -6,7 +6,7 @@ import {_detectPlatform} from '../platform/index.js';
 import PluginService from './core.plugins.js';
 import registry from './core.registry.js';
 import Config, {determineAxis, getIndexAxis} from './core.config.js';
-import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent} from '../helpers/helpers.core.js';
+import {each, callback as callCallback, uid, valueOrDefault, _elementsEqual, isNullOrUndef, setsEqual, defined, isFunction, _isClickEvent, _pointerOwnsActive} from '../helpers/helpers.core.js';
 import {clearCanvas, clipArea, createContext, unclipArea, _isPointInArea, _isDomSupported, retinaScale, getDatasetClipArea} from '../helpers/index.js';
 // @ts-ignore
 import {version} from '../../package.json';
@@ -158,6 +158,8 @@ class Chart {
     this.currentDevicePixelRatio = undefined;
     this.chartArea = undefined;
     this._active = [];
+    // Whether `_active` was set by `setActiveElements`: such a set stays outside chartArea.
+    this._activeSetByCode = false;
     this._lastEvent = undefined;
     this._listeners = {};
     /** @type {?{attach?: function, detach?: function, resize?: function}} */
@@ -1181,6 +1183,8 @@ class Chart {
         index,
       };
     }).filter(({element}) => element));
+    // Before the "changed" test: setting the elements that are already active still makes them the code's.
+    this._activeSetByCode = true;
     const changed = !_elementsEqual(active, lastActive);
 
     if (changed) {
@@ -1232,8 +1236,8 @@ class Chart {
   }
 
   /**
-   * Returns a test of whether an active item may stay active: its dataset is visible and
-   * its data item is not hidden. The dataset is checked once for each run of its items.
+   * Returns a test of whether an active item may stay active: its dataset is visible, and
+   * its data item still exists and is not hidden. The dataset is checked once for each run of its items.
    * @returns {(item: {datasetIndex: number, index: number}) => boolean}
    * @private
    */
@@ -1244,12 +1248,14 @@ class Chart {
         datasetIndex = item.datasetIndex;
         controller = this.isDatasetVisible(datasetIndex) && this.getDatasetMeta(datasetIndex).controller;
       }
-      return !!controller && controller._isDataVisible(item.index);
+      // An index past the data has no element left: its data item was removed.
+      return !!controller && !!controller._cachedMeta.data[item.index] && controller._isDataVisible(item.index);
     };
   }
 
   /**
-   * Leaves out the items whose dataset or data item is hidden: hidden data cannot be active.
+   * Leaves out the items whose dataset or data item is hidden, or whose data item was removed:
+   * hidden data cannot be active. The tooltip uses it for the elements set by code.
    * @param {import('../types/index.js').ActiveElement[]} items
    * @returns {import('../types/index.js').ActiveElement[]}
    * @private
@@ -1339,6 +1345,11 @@ class Chart {
       this._active = active;
       this._updateHoverStyles(active, previous, replay);
     }
+    // After the handlers: in the chart area the pointer's set is written over any other set a
+    // handler wrote, so a set a handler made that is still active is the pointer's too.
+    if (_pointerOwnsActive(inChartArea, replay, changed)) {
+      this._activeSetByCode = false;
+    }
 
     this._lastEvent = lastEvent;
 
@@ -1359,8 +1370,8 @@ class Chart {
     }
 
     if (!inChartArea) {
-      // Let user control the active elements outside chartArea. Eg. using Legend.
-      return lastActive;
+      // Outside chartArea, the elements set by code stay (eg. by a legend onHover), and the pointer's end.
+      return this._activeSetByCode ? lastActive : [];
     }
 
     const hoverOptions = this.options.hover;

@@ -1839,7 +1839,7 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.getActiveElements().length).toBe(0);
     });
 
-    it('should not change the active elements on events outside chartArea, except for mouseout', async function() {
+    it('should not change the active elements set by code on events outside chartArea, except for mouseout', async function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -1861,7 +1861,7 @@ describe('Plugin.Tooltip', function() {
 
       var point = chart.getDatasetMeta(0).data[0];
 
-      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], {x: point.x, y: point.y});
       expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
       await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
@@ -1943,7 +1943,7 @@ describe('Plugin.Tooltip', function() {
     const point = meta.data[1];
     const expectedPoints = [expect.objectContaining({datasetIndex: 0, index: 1}), expect.objectContaining({datasetIndex: 1, index: 1})];
 
-    await triggerMouseEvent(chart, 'mousemove', point);
+    chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}, {datasetIndex: 1, index: 1}], point);
     await triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
 
     expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
@@ -1979,7 +1979,7 @@ describe('Plugin.Tooltip', function() {
 
     const point = chart.getDatasetMeta(0).data[1];
 
-    await triggerMouseEvent(chart, 'mousemove', point);
+    chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}], point);
     expect(chart.tooltip.getActiveElements().length).toBe(1);
 
     // Detaching the canvas stops the chart, which destroys the dataset metas,
@@ -2019,7 +2019,7 @@ describe('Plugin.Tooltip', function() {
     const point = meta.data[1];
     const expectedPoints = [expect.objectContaining({datasetIndex: 0, index: 1}), expect.objectContaining({datasetIndex: 1, index: 1})];
 
-    await triggerMouseEvent(chart, 'mousemove', point);
+    chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}, {datasetIndex: 1, index: 1}], point);
     await triggerMouseEvent(chart, 'mousemove', {x: chart.chartArea.left - 5, y: point.y});
 
     expect(chart.tooltip.getActiveElements()).toEqual(expectedPoints);
@@ -2031,6 +2031,350 @@ describe('Plugin.Tooltip', function() {
     await triggerMouseEvent(chart, 'mousemove', {x: 2, y: 1});
 
     expect(chart.tooltip.getActiveElements()).toEqual([]);
+  });
+
+  // https://github.com/chartjs/Chart.js/issues/11801
+  describe('outside the chart area', function() {
+    function acquirePie(legendOnHover) {
+      return window.acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['Red', 'Green', 'Blue'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          plugins: {
+            legend: {onHover: legendOnHover}
+          }
+        }
+      });
+    }
+
+    function legendItemCenter(chart, index) {
+      const hitBox = chart.legend.legendHitBoxes[index];
+      return {x: hitBox.left + hitBox.width / 2, y: hitBox.top + hitBox.height / 2};
+    }
+
+    function sliceCenter(chart, index) {
+      return chart.getDatasetMeta(0).data[index].getCenterPoint();
+    }
+
+    it('should end the tooltip and the hover the pointer started when the pointer moves onto the legend', async function() {
+      const chart = acquirePie();
+      const slice = chart.getDatasetMeta(0).data[0];
+
+      await triggerMouseEvent(chart, 'mousemove', sliceCenter(chart, 0));
+      expect(chart.tooltip.getActiveElements().length).toBe(1);
+      expect(slice.active).toBe(true);
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 1));
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(slice.active).toBe(false);
+
+      await triggerMouseEvent(chart, 'mousemove', sliceCenter(chart, 0));
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: slice}]);
+      expect(chart.tooltip.opacity).toBe(1);
+    });
+
+    it('should keep a tooltip that a legend onHover sets', async function() {
+      const chart = acquirePie((e, item, legend) => {
+        legend.chart.tooltip.setActiveElements([{datasetIndex: 0, index: item.index}], sliceCenter(legend.chart, item.index));
+      });
+      const slice = chart.getDatasetMeta(0).data[1];
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 1));
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: slice}]);
+
+      // Another move over the same legend item.
+      const center = legendItemCenter(chart, 1);
+      await triggerMouseEvent(chart, 'mousemove', {x: center.x + 1, y: center.y});
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 1, element: slice}]);
+    });
+
+    it('should keep a tooltip that a legend onHover sets for the element the pointer had made active', async function() {
+      const chart = acquirePie((e, item, legend) => {
+        legend.chart.tooltip.setActiveElements([{datasetIndex: 0, index: item.index}], sliceCenter(legend.chart, item.index));
+      });
+      const slice = chart.getDatasetMeta(0).data[0];
+
+      await triggerMouseEvent(chart, 'mousemove', sliceCenter(chart, 0));
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: slice}]);
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 0));
+      expect(chart.tooltip.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: slice}]);
+      expect(chart.tooltip.opacity).toBe(1);
+    });
+
+    function expectNothingActive(chart) {
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(chart.getDatasetMeta(0).data[0].active).toBe(false);
+    }
+
+    it('should end the elements set by code in both owners once the pointer has hovered them', async function() {
+      const chart = acquirePie();
+      const center = sliceCenter(chart, 0);
+
+      chart.setActiveElements([{datasetIndex: 0, index: 0}]);
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], center);
+
+      // The pointer hovers the same slice, moves within it, and the update replays the event.
+      await triggerMouseEvent(chart, 'mousemove', center);
+      await triggerMouseEvent(chart, 'mousemove', {x: center.x + 1, y: center.y});
+      chart.update();
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 2));
+      expectNothingActive(chart);
+    });
+
+    it('should end the elements set by code when the pointer re-hovers them and leaves', async function() {
+      const chart = acquirePie();
+      const center = sliceCenter(chart, 0);
+
+      chart.setActiveElements([{datasetIndex: 0, index: 0}]);
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], center);
+
+      await triggerMouseEvent(chart, 'mousemove', center);
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 2));
+      expectNothingActive(chart);
+    });
+
+    it('should end the pointer\'s elements that replaced the ones a chart onHover set', async function() {
+      const chart = window.acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['Red', 'Green', 'Blue'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          onHover: (e, active, c) => c.setActiveElements([{datasetIndex: 0, index: 2}])
+        }
+      });
+
+      await triggerMouseEvent(chart, 'mousemove', sliceCenter(chart, 0));
+      expect(chart.getActiveElements().map(({index}) => index)).toEqual([0]);
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 2));
+      expect(chart.getActiveElements()).toEqual([]);
+    });
+
+    [false, true].forEach((withTooltip) => {
+      it(`should end the elements a chart onHover re-sets to the pointer's${withTooltip ? ', also in the tooltip,' : ''} when the pointer leaves`, async function() {
+        const chart = window.acquireChart({
+          type: 'pie',
+          data: {
+            labels: ['Red', 'Green', 'Blue'],
+            datasets: [{data: [1, 2, 3]}]
+          },
+          options: {
+            onHover: (e, elements, c) => {
+              const items = elements.map(({datasetIndex, index}) => ({datasetIndex, index}));
+              c.setActiveElements(items);
+              if (withTooltip && items.length) {
+                c.tooltip.setActiveElements(items, sliceCenter(c, items[0].index));
+              }
+            }
+          }
+        });
+
+        await triggerMouseEvent(chart, 'mousemove', sliceCenter(chart, 0));
+        expect(chart.getActiveElements().map(({index}) => index)).toEqual([0]);
+        expect(chart.tooltip.getActiveElements().map(({index}) => index)).toEqual([0]);
+
+        await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+        expectNothingActive(chart);
+      });
+    });
+
+    it('should keep the elements code sets over the pointer\'s when an update replays the pointer\'s event', async function() {
+      const chart = acquirePie();
+      const center = sliceCenter(chart, 0);
+
+      await triggerMouseEvent(chart, 'mousemove', center);
+      chart.setActiveElements([{datasetIndex: 0, index: 0}]);
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], center);
+      chart.update();
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 2));
+      expect(chart.getActiveElements().map(({index}) => index)).toEqual([0]);
+      expect(chart.tooltip.getActiveElements().map(({index}) => index)).toEqual([0]);
+    });
+
+    ['chart', 'tooltip'].forEach((owner) => {
+      it(`should give the ${owner}'s elements to the pointer when a replay changes them`, async function() {
+        const chart = window.acquireChart({
+          type: 'pie',
+          data: {
+            labels: ['Red', 'Green', 'Blue'],
+            datasets: [{data: [10, 1, 1]}]
+          }
+        });
+        const slice = chart.getDatasetMeta(0).data[0];
+
+        await triggerMouseEvent(chart, 'mousemove', slice.getCenterPoint());
+        expect(chart.getActiveElements().map(({index}) => index)).toEqual([0]);
+
+        // Code sets the slice the pointer already made active: equal, so nothing else changes.
+        if (owner === 'chart') {
+          chart.setActiveElements([{datasetIndex: 0, index: 0}]);
+        } else {
+          chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}], chart.tooltip._eventPosition);
+        }
+
+        // The replayed event now finds another slice under the pointer.
+        chart.data.datasets[0].data = [1, 1, 10];
+        chart.update('none');
+        expect(chart.getActiveElements().map(({index}) => index)).not.toEqual([0]);
+
+        await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 2));
+        expect(chart.getActiveElements()).toEqual([]);
+        expect(chart.tooltip.getActiveElements()).toEqual([]);
+      });
+    });
+
+    it('should drop a tooltip element set by code whose data item is removed', function() {
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c', 'd', 'e', 'f'],
+          datasets: [{data: [1, 2, 3, 4, 5, 6]}]
+        }
+      });
+      const point = chart.getDatasetMeta(0).data[5];
+
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 5}], point);
+      expect(chart.tooltip.opacity).toBe(1);
+
+      chart.data.datasets[0].data.pop();
+      expect(() => chart.update()).not.toThrow();
+
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(chart.tooltip.opacity).toBe(0);
+    });
+
+    ['pointer', 'code'].forEach((source) => it(`should not build a disabled tooltip when the update drops some of the elements the ${source} set`, async function() {
+      // Plain functions: the options resolver cannot wrap a vi.fn.
+      const calls = {title: 0, label: 0};
+      const title = () => {
+        calls.title++;
+        return 'title';
+      };
+      const label = () => {
+        calls.label++;
+        return 'label';
+      };
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}, {data: [3, 2, 1]}]
+        },
+        options: {
+          plugins: {
+            tooltip: {enabled: false, mode: 'index', intersect: false, callbacks: {title, label}}
+          }
+        }
+      });
+      const point = chart.getDatasetMeta(0).data[1];
+
+      if (source === 'pointer') {
+        await triggerMouseEvent(chart, 'mousemove', point);
+      } else {
+        chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}, {datasetIndex: 1, index: 1}], point);
+      }
+      expect(chart.tooltip.getActiveElements().length).toBe(2);
+      calls.title = calls.label = 0;
+
+      chart.hide(0);
+
+      expect(calls).toEqual({title: 0, label: 0});
+      expect(chart.tooltip.getActiveElements().map(({datasetIndex}) => datasetIndex)).toEqual([1]);
+    }));
+
+    it('should tell an external tooltip when the update drops its elements', function() {
+      const opacities = [];
+      const chart = window.acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['Red', 'Green', 'Blue'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          plugins: {
+            tooltip: {enabled: false, external: ({tooltip}) => opacities.push(tooltip.opacity)}
+          }
+        }
+      });
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}], sliceCenter(chart, 1));
+      opacities.length = 0;
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(opacities).toEqual([0]);
+    });
+
+    it('should lay out the tooltip at update only when the update drops some of its elements', function() {
+      const chart = acquirePie();
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}], sliceCenter(chart, 1));
+      const update = vi.spyOn(chart.tooltip, 'update');
+
+      chart.update();
+      expect(update).not.toHaveBeenCalled();
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+      expect(update).toHaveBeenCalledTimes(1);
+    });
+
+    it('should drop a tooltip element set by code whose data is hidden', function() {
+      const chart = window.acquireChart({
+        type: 'doughnut',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}]
+        }
+      });
+
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}], sliceCenter(chart, 1));
+      expect(chart.tooltip.opacity).toBe(1);
+
+      chart.toggleDataVisibility(1);
+      expect(() => chart.update()).not.toThrow();
+
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(chart.tooltip.opacity).toBe(0);
+    });
+
+    it('should keep the elements set by code after an event outside the chart area filters them', async function() {
+      const chart = acquirePie();
+      const items = [{datasetIndex: 0, index: 0}, {datasetIndex: 0, index: 1}];
+
+      chart.setActiveElements(items);
+      chart.tooltip.setActiveElements(items, sliceCenter(chart, 1));
+      // Hidden without an update: the next event outside the chart area filters it out.
+      chart.toggleDataVisibility(0);
+
+      const center = legendItemCenter(chart, 2);
+      await triggerMouseEvent(chart, 'mousemove', center);
+      await triggerMouseEvent(chart, 'mousemove', {x: center.x + 1, y: center.y});
+
+      expect(chart.getActiveElements().map(({index}) => index)).toEqual([1]);
+      expect(chart.tooltip.getActiveElements().map(({index}) => index)).toEqual([1]);
+    });
+
+    it('should leave out hidden data from the elements set by code', async function() {
+      const chart = acquirePie();
+
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 0}, {datasetIndex: 0, index: 1}], sliceCenter(chart, 0));
+      chart.toggleDataVisibility(0);
+      chart.update();
+
+      await triggerMouseEvent(chart, 'mousemove', legendItemCenter(chart, 2));
+      expect(chart.tooltip.getActiveElements().map(({index}) => index)).toEqual([1]);
+    });
   });
 
   describe('events', function() {

@@ -1,7 +1,7 @@
 import Animations from '../core/core.animations.js';
 import Element from '../core/core.element.js';
 import {addRoundedRectPath} from '../helpers/helpers.canvas.js';
-import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../helpers/helpers.core.js';
+import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject, _pointerOwnsActive} from '../helpers/helpers.core.js';
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options.js';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl.js';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math.js';
@@ -466,6 +466,8 @@ export class Tooltip extends Element {
 
     this.opacity = 0;
     this._active = [];
+    // Whether `_active` was set by `setActiveElements`: such a set stays outside chartArea.
+    this._activeSetByCode = false;
     this._eventPosition = undefined;
     this._size = undefined;
     this._cachedAnimations = undefined;
@@ -1111,6 +1113,23 @@ export class Tooltip extends Element {
   }
 
   /**
+   * Drops the active elements whose data is hidden or no longer exists, after the chart
+   * updated its datasets, as the chart does with its own. The tooltip hides when none is left.
+   * @private
+   */
+  _dropHiddenActive() {
+    const lastActive = this._active;
+    const active = this.chart._filterActive(lastActive);
+    if (active.length !== lastActive.length) {
+      this._active = active;
+      // As in handleEvent: a tooltip that is neither drawn nor external is not laid out.
+      if (this.options.enabled || this.options.external) {
+        this.update(true);
+      }
+    }
+  }
+
+  /**
 	 * Get active elements in the tooltip
 	 * @returns {Array} Array of elements that are active in the tooltip
 	 */
@@ -1138,6 +1157,8 @@ export class Tooltip extends Element {
         index,
       };
     }).filter(({element}) => element);
+    // Before the "changed" test: setting the elements that are already active still makes them the code's.
+    this._activeSetByCode = true;
     const changed = !_elementsEqual(lastActive, active);
     const positionChanged = this._positionChanged(active, eventPosition);
 
@@ -1172,7 +1193,13 @@ export class Tooltip extends Element {
     const positionChanged = this._positionChanged(active, e);
 
     // Remember Last Actives
-    const changed = replay || !_elementsEqual(active, lastActive) || positionChanged;
+    const elementsChanged = !_elementsEqual(active, lastActive);
+    const changed = replay || elementsChanged || positionChanged;
+
+    // A position change alone does not count: only the elements do, as in the chart.
+    if (_pointerOwnsActive(inChartArea, replay, elementsChanged)) {
+      this._activeSetByCode = false;
+    }
 
     // Only handle target event on tooltip change
     if (changed) {
@@ -1208,13 +1235,9 @@ export class Tooltip extends Element {
     }
 
     if (!inChartArea) {
-      // Let user control the active elements outside chartArea. Eg. using Legend.
-      // But make sure that active elements are still valid.
-      return lastActive.filter(i => {
-        // The controller is missing when the dataset metas have been destroyed, eg. after the canvas is detached.
-        const controller = this.chart.data.datasets[i.datasetIndex] && this.chart.getDatasetMeta(i.datasetIndex).controller;
-        return controller && controller.getParsed(i.index) !== undefined;
-      });
+      // Outside chartArea, the elements set by code stay (eg. by a legend onHover), and the pointer's end.
+      // The chart's filter leaves out the ones that are hidden, removed, or whose controller is gone.
+      return this._activeSetByCode ? this.chart._filterActive(lastActive) : [];
     }
 
     // Find Active Elements for tooltips
@@ -1255,6 +1278,12 @@ export default {
   beforeUpdate(chart, _args, options) {
     if (chart.tooltip) {
       chart.tooltip.initialize(options);
+    }
+  },
+
+  afterUpdate(chart) {
+    if (chart.tooltip) {
+      chart.tooltip._dropHiddenActive();
     }
   },
 

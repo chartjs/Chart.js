@@ -11,6 +11,8 @@ Namespace: `options.interaction`, the global interaction configuration is at `Ch
 
 By default, these options apply to both the hover and tooltip interactions. The same options can be set in the `options.hover` namespace, in which case they will only affect the hover interaction. Similarly, the options can be set in the `options.plugins.tooltip` namespace to independently configure the tooltip interactions.
 
+The elements that the pointer makes active stop being active when the pointer leaves the chart area, for example onto the legend or an axis. Elements made active with [`chart.setActiveElements()`](../developers/api.md#setactiveelements-activeelements) stay active outside the chart area until they are changed, until a pointer event inside the chart area takes them over, or until their data is hidden or removed.
+
 ## Events
 
 The following properties define how the chart interacts with events.
