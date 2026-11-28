@@ -434,7 +434,7 @@ export class Legend extends Element {
       }
     });
 
-    restoreTextDirection(this.ctx, opts.textDirection);
+    restoreTextDirection(this.ctx);
   }
 
   /**

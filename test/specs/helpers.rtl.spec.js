@@ -1,18 +1,24 @@
 const {overrideTextDirection, restoreTextDirection} = Chart.helpers;
 
 describe('helpers.rtl', function() {
-  it('restores the original canvas direction after an RTL override', function() {
-    const canvas = document.createElement('canvas');
-    const ctx = {canvas};
-    canvas.style.setProperty('direction', 'ltr', 'important');
+  it('sets the context direction and restores it', function() {
+    const ctx = document.createElement('canvas').getContext('2d');
 
     overrideTextDirection(ctx, 'rtl');
-    expect(canvas.style.getPropertyValue('direction')).toBe('rtl');
+    expect(ctx.direction).toBe('rtl');
 
-    restoreTextDirection(ctx, 'rtl');
+    restoreTextDirection(ctx);
+    expect(ctx.direction).toBe('inherit');
+    expect(ctx.canvas.style.direction).toBe('');
+  });
 
-    expect(canvas.style.getPropertyValue('direction')).toBe('ltr');
-    expect(canvas.style.getPropertyPriority('direction')).toBe('important');
-    expect(ctx.prevTextDirection).toBeUndefined();
+  it('works on an OffscreenCanvas', function() {
+    const ctx = new OffscreenCanvas(10, 10).getContext('2d');
+
+    overrideTextDirection(ctx, 'rtl');
+    expect(ctx.direction).toBe('rtl');
+
+    restoreTextDirection(ctx);
+    expect(ctx.direction).toBe('inherit');
   });
 });
