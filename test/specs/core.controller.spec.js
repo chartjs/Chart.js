@@ -393,6 +393,64 @@ describe('Chart', function() {
       await triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
       expect(chart.tooltip.getActiveElements()).toEqual([]);
     });
+
+    // https://github.com/chartjs/Chart.js/issues/11801
+    it('should end the active elements the pointer started when it moves outside chartArea', async function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{data: [10, 20, 30, 100]}],
+        },
+        options: {
+          scales: {
+            x: {display: false},
+            y: {display: false}
+          },
+          layout: {
+            padding: 5
+          }
+        }
+      });
+      const point = chart.getDatasetMeta(0).data[0];
+
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+
+      await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(point.active).toBe(false);
+
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+    });
+
+    it('should keep the active elements set by code outside chartArea, also when they were already active', async function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C', 'D'],
+          datasets: [{data: [10, 20, 30, 100]}],
+        },
+        options: {
+          scales: {
+            x: {display: false},
+            y: {display: false}
+          },
+          layout: {
+            padding: 5
+          }
+        }
+      });
+      const point = chart.getDatasetMeta(0).data[0];
+
+      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      chart.setActiveElements([{datasetIndex: 0, index: 0}]);
+
+      await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
+      expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+      expect(point.active).toBe(true);
+    });
   });
 
   describe('onClick on one press', function() {
