@@ -24,6 +24,17 @@ function removeData(chart) {
 }
 ```
 
+If your dataset stores [object points](../general/data-structures.md) on a [time axis](../axes/cartesian/time.md), put the timestamp in the new point's `x` property. Use milliseconds since the Unix epoch, or, with parsing enabled, a value accepted by your date adapter. This example appends a point to the first dataset of a chart with a time x-axis and a date adapter.
+
+```javascript
+function addTimePoint(chart, timestamp, value) {
+    chart.data.datasets[0].data.push({x: timestamp, y: value});
+    chart.update();
+}
+
+addTimePoint(myChart, Date.UTC(2026, 0, 2), 42);
+```
+
 ## Updating Options
 
 To update the options, mutating the `options` property in place or passing in a new options object are supported.
