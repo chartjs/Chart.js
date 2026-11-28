@@ -169,4 +169,155 @@ describe('Core.scale.autoskip', function() {
       91, 95, 99, 103, 107, 111, 115
     ]);
   });
+
+  describe('the number of labels that fit', function() {
+    // A linear-like scale of `length` px over the values `start` to
+    // `start + range`, with labels that need `tickSize` px each.
+    function valueScale({start, range, length, tickSize, offset = false}) {
+      return {
+        options: {offset, ticks: {major: {enabled: false}}},
+        _startValue: start,
+        _valueRange: range,
+        _length: length,
+        _maxLength: length,
+        _tickSize: () => tickSize
+      };
+    }
+
+    // Ticks `stepSize` apart from `from` to `to`, both included.
+    function valueTicks(from, to, stepSize) {
+      const ticks = [];
+      const count = Math.round(Math.abs(to - from) / stepSize);
+      const sign = to < from ? -1 : 1;
+      for (let i = 0; i <= count; i++) {
+        ticks.push({value: from + sign * i * stepSize});
+      }
+      return ticks;
+    }
+
+    // The smallest distance in px between two kept ticks.
+    function closest(scale, kept) {
+      const pxPerValue = scale._length / scale._valueRange;
+      let result = Infinity;
+      for (let i = 1; i < kept.length; i++) {
+        result = Math.min(result, Math.abs(kept[i].value - kept[i - 1].value) * pxPerValue);
+      }
+      return result;
+    }
+
+    it('should be counted over the part of the axis the ticks cover', function() {
+      // 0..1000 at 600 px, ticks every 10 over 0..500, labels of 18 px plus 3 px padding.
+      // Over the whole axis 28 would fit, every second tick: 12 px apart.
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+      const kept = autoSkip(scale, valueTicks(0, 500, 10));
+
+      expect(closest(scale, kept)).toBeGreaterThanOrEqual(21);
+      // 300 px / 21 = 14.3: 15 labels fit, one tick in four is kept.
+      expect(kept.map((tick) => tick.value)).toEqual(valueTicks(0, 480, 40).map((tick) => tick.value));
+    });
+
+    // Ticks `count` evenly over `from` to `to`.
+    function evenTicks(count, from, to) {
+      const ticks = [];
+      for (let i = 0; i < count; i++) {
+        ticks.push({value: from + (to - from) * i / (count - 1)});
+      }
+      return ticks;
+    }
+
+    it('should not count a label that only partly fits', function() {
+      // 312 px / 21 = 14.9: 15 labels fit, not 16. One tick in five is kept.
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+      const kept = autoSkip(scale, evenTicks(64, 0, 520));
+
+      expect(kept.length).toBe(13);
+      expect(closest(scale, kept)).toBeGreaterThanOrEqual(21);
+    });
+
+    it('should count the span from the first tick', function() {
+      // 300 px / 20 = 15: 16 labels fit, one tick in four of 61. A span from
+      // the second tick (294 px) fits 15, one tick in five.
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 20});
+
+      expect(autoSkip(scale, evenTicks(61, 0, 500)).length).toBe(16);
+    });
+
+    it('should be counted the same when the ticks descend', function() {
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+      const ascending = autoSkip(scale, valueTicks(0, 500, 10)).map((tick) => tick.value);
+      const descending = autoSkip(scale, valueTicks(500, 0, 10)).map((tick) => tick.value);
+
+      expect(descending.length).toBe(ascending.length);
+      expect(closest(scale, autoSkip(scale, valueTicks(500, 0, 10)))).toBeGreaterThanOrEqual(21);
+    });
+
+    it('should be counted over the axis when the ticks cover all of it', function() {
+      // 600 / 21 + 1 = 29.6, capped by the 600 px of the chart to 28.
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+      const kept = autoSkip(scale, valueTicks(0, 1000, 10));
+
+      expect(kept.map((tick) => tick.value)).toEqual(valueTicks(0, 1000, 40).map((tick) => tick.value));
+    });
+
+    it('should never be more than the axis length allows', function() {
+      // Ticks past the ends of the axis do not make more room.
+      const scale = valueScale({start: 0, range: 500, length: 600, tickSize: 21});
+      const kept = autoSkip(scale, valueTicks(-500, 1000, 10));
+
+      expect(kept.length).toBeLessThanOrEqual(28);
+    });
+
+    it('should count the labels that fill the span exactly', function() {
+      // (0.3 - 0.2) / 0.1 is a hair below 1 in floating point: 1000 px fit
+      // 10 labels of 100 px, 11 ticks.
+      const scale = valueScale({start: 0.2, range: 0.1, length: 1000, tickSize: 100});
+      scale._maxLength = 2000;
+      const ticks = [];
+      for (let i = 0; i <= 20; i++) {
+        ticks.push({value: i === 20 ? 0.3 : 0.2 + i * 0.005});
+      }
+
+      expect(autoSkip(scale, ticks).length).toBe(11);
+    });
+
+    it('should map the tick values into the space of the value range', function() {
+      // Decades, as a logarithmic scale counts them: 1..10 is one of two.
+      const scale = valueScale({start: 0, range: 2, length: 600, tickSize: 21});
+      scale._valueToAxis = Math.log10;
+      const ticks = [];
+      for (let i = 1; i <= 10; i += 0.25) {
+        ticks.push({value: i});
+      }
+
+      // 300 px / 21 = 14.3: 15 labels fit. Without the map, 9 of 2 decades is past the axis.
+      expect(autoSkip(scale, ticks).length).toBe(13);
+    });
+
+    it('should be counted over the axis when the labels have no size', function() {
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 0});
+
+      expect(autoSkip(scale, valueTicks(0, 500, 10)).length).toBe(51);
+      expect(autoSkip(scale, valueTicks(500, 500, 10)).length).toBe(1);
+    });
+
+    it('should keep a single tick', function() {
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+
+      expect(autoSkip(scale, [{value: 500}]).map((tick) => tick.value)).toEqual([500]);
+    });
+
+    it('should keep no ticks of none', function() {
+      const scale = valueScale({start: 0, range: 1000, length: 600, tickSize: 21});
+
+      expect(autoSkip(scale, [])).toEqual([]);
+    });
+
+    it('should be counted over the axis when the span is not finite', function() {
+      // A scale without a value range, as a time or radial scale may be.
+      const scale = valueScale({start: undefined, range: undefined, length: 600, tickSize: 21});
+      const kept = autoSkip(scale, valueTicks(0, 500, 10));
+
+      expect(kept.length).toBe(26);
+    });
+  });
 });

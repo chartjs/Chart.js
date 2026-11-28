@@ -15,7 +15,7 @@ import {_factorize} from '../helpers/helpers.math.js';
  */
 export function autoSkip(scale, ticks) {
   const tickOpts = scale.options.ticks;
-  const determinedMaxTicks = determineMaxTicks(scale);
+  const determinedMaxTicks = determineMaxTicks(scale, ticks);
   const ticksLimit = Math.min(tickOpts.maxTicksLimit || determinedMaxTicks, determinedMaxTicks);
   const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
   const numMajorIndices = majorIndices.length;
@@ -94,12 +94,57 @@ function isDescending(ticks) {
   return typeof first === 'number' && typeof last === 'number' && first > last;
 }
 
-function determineMaxTicks(scale) {
+/**
+ * @typedef {object} ValueRange
+ * @property {number} [_startValue]
+ * @property {number} [_valueRange]
+ * @property {number} _length
+ * @property {(value: number | string) => number} [_valueToAxis]
+ */
+
+/**
+ * The number of labels that fit: over the part of the axis the ticks cover,
+ * and never more than over the whole axis. The part is read from
+ * `_startValue` and `_valueRange`, which the scale's `configure` sets before
+ * autoSkip runs.
+ * @param {Tick[]} ticks
+ */
+function determineMaxTicks(scale, ticks) {
   const offset = scale.options.offset;
   const tickLength = scale._tickSize();
   const maxScale = scale._length / tickLength + (offset ? 0 : 1);
   const maxChart = scale._maxLength / tickLength;
-  return Math.floor(Math.min(maxScale, maxChart));
+  const maxTicks = Math.floor(Math.min(maxScale, maxChart));
+  const fromValues = countFromValues(scale, ticks, tickLength);
+  return Number.isFinite(fromValues) ? Math.min(maxTicks, fromValues) : maxTicks;
+}
+
+/**
+ * The number of labels that fit from the first to the last tick value. A
+ * scale whose tick values are in another space than `_startValue` and
+ * `_valueRange` maps them with `_valueToAxis` (the logarithmic scale counts
+ * decades). Without a value range (the time scale) the result is not finite.
+ * @param {ValueRange} scale
+ * @param {Tick[]} ticks
+ * @param {number} tickLength
+ */
+function countFromValues(scale, ticks, tickLength) {
+  if (!ticks.length) {
+    return NaN;
+  }
+  const first = toAxis(scale, ticks[0].value);
+  const last = toAxis(scale, ticks[ticks.length - 1].value);
+  const room = Math.abs(last - first) / scale._valueRange * scale._length / tickLength;
+  // A span that should fill the room exactly can come out a hair short.
+  return Math.floor(room * (1 + 1e-9)) + 1;
+}
+
+/**
+ * @param {ValueRange} scale
+ * @param {number | string} value
+ */
+function toAxis(scale, value) {
+  return scale._valueToAxis ? scale._valueToAxis(value) : +value;
 }
 
 /**

@@ -1397,4 +1397,19 @@ describe('Time scale tests', function() {
     expect(scale.ticks.map(t => t.value)).toEqual([26, 25, 24, 23, 22].map(h => moment('2015-01-01T00:00:00').add(h, 'hour').valueOf()));
     expect(scale.ticks.map(t => t.major)).toEqual([false, false, true, false, false]);
   });
+
+  // The time scale has no value range for its ticks to cover: the labels
+  // that fit are counted over the whole axis.
+  it('should keep the same labels when it skips labels', function() {
+    var scale = createScale({
+      datasets: [{data: [{x: '2021-08-04', y: 1}, {x: '2021-09-02', y: 2}]}]
+    }, {
+      min: '2021-08-04',
+      max: '2021-09-02',
+      time: {unit: 'day'},
+      ticks: {source: 'auto', maxRotation: 0}
+    }, {width: 200, height: 100});
+
+    expect(getLabels(scale)).toEqual(['Aug 4', 'Aug 12', 'Aug 20', 'Aug 28']);
+  });
 });

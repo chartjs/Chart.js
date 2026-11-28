@@ -1249,4 +1249,31 @@ describe('Category scale tests', function() {
       expect(parsedX(chart)).toEqual([0, 1]);
     });
   });
+
+  // With `offset`, the ticks cover all but half a category at each end. The
+  // labels that fit over them are never fewer than over the whole axis.
+  it('should keep the same labels with offset when it skips labels', function() {
+    var labels = [];
+    for (var i = 0; i < 60; i++) {
+      labels.push('L' + i);
+    }
+    var chart = window.acquireChart({
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{data: labels.map((label, index) => index)}]
+      },
+      options: {
+        plugins: {legend: false},
+        scales: {
+          x: {ticks: {maxRotation: 0}},
+          y: {display: false}
+        }
+      }
+    }, {
+      canvas: {width: 300, height: 100}
+    });
+
+    expect(chart.scales.x.ticks.map((tick) => tick.value)).toEqual([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]);
+  });
 });

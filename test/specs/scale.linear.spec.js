@@ -1867,4 +1867,94 @@ describe('Linear Scale', function() {
 
     expect(createChart).not.toThrow();
   });
+
+  // https://github.com/chartjs/Chart.js/issues/9614
+  // The closest two drawn labels are apart, and the room each label needs.
+  function labelsOverHalfTheAxis(reverse) {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{x: 0, y: 0}, {x: 1000, y: 1}]
+        }]
+      },
+      options: {
+        plugins: {legend: false},
+        scales: {
+          x: {
+            min: 0,
+            max: 1000,
+            reverse,
+            ticks: {stepSize: 10, maxRotation: 0},
+            afterBuildTicks: function(scale) {
+              scale.ticks = scale.ticks.filter((tick) => tick.value <= 500);
+            }
+          },
+          y: {display: false}
+        }
+      }
+    }, {
+      canvas: {width: 620, height: 100}
+    });
+
+    var scale = chart.scales.x;
+    var pixels = scale.ticks.map((tick) => scale.getPixelForValue(tick.value));
+    var closest = Infinity;
+    for (var i = 1; i < pixels.length; i++) {
+      closest = Math.min(closest, Math.abs(pixels[i] - pixels[i - 1]));
+    }
+    return {
+      count: scale.ticks.length,
+      closest,
+      room: scale._getLabelSizes().widest.width + scale.options.ticks.autoSkipPadding
+    };
+  }
+
+  it('should fit the labels into the part of the axis the ticks cover', function() {
+    var {count, closest, room} = labelsOverHalfTheAxis(false);
+
+    expect(count).toBeGreaterThan(1);
+    expect(closest).toBeGreaterThanOrEqual(room);
+  });
+
+  // The offset is half the room of a kept tick: `configure` runs again with them.
+  it('should pad an offset axis by the ticks kept over the part they cover', function() {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{
+          data: [{x: 0, y: 0}, {x: 500, y: 1}]
+        }]
+      },
+      options: {
+        plugins: {legend: false},
+        scales: {
+          x: {
+            min: 0,
+            max: 1000,
+            offset: true,
+            ticks: {stepSize: 10, maxRotation: 0},
+            afterBuildTicks: function(scale) {
+              scale.ticks = scale.ticks.filter((tick) => tick.value <= 500);
+            }
+          },
+          y: {display: false}
+        }
+      }
+    }, {
+      canvas: {width: 620, height: 100}
+    });
+
+    var scale = chart.scales.x;
+    expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440, 480]);
+    // Half of 1000 / 12 at each end.
+    expect(scale._valueRange).toBeCloseTo(1000 + 1000 / 12, 6);
+  });
+
+  it('should fit the labels into the part of a reversed axis the ticks cover', function() {
+    var {count, closest, room} = labelsOverHalfTheAxis(true);
+
+    expect(count).toBe(labelsOverHalfTheAxis(false).count);
+    expect(closest).toBeGreaterThanOrEqual(room);
+  });
 });

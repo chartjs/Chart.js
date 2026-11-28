@@ -207,6 +207,15 @@ export default class LogarithmicScale extends Scale {
     this._valueRange = log10(this.max) - log10(start);
   }
 
+  /**
+   * A tick value in the space of `_startValue` and `_valueRange`, decades.
+   * @param {number} value
+   * @private
+   */
+  _valueToAxis(value) {
+    return log10(value);
+  }
+
   getPixelForValue(value) {
     if (value === undefined || value === 0) {
       value = this.min;

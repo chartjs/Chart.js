@@ -81,12 +81,12 @@
 
 ## 11. P11: Fit counted from tick values
 
-- [ ] 11.1 Add specs:
+- [x] 11.1 Add specs:
   - linear x 0..1000 at 600 px with ticks only over 0..500: no two drawn labels are closer than the widest label plus `autoSkipPadding` (master: 11.3 px apart for 18 px labels);
   - a radar chart with a visible axis keeps its ticks and rings;
   - a fixture of a linear axis with `offset`.
-- [ ] 11.2 Count the span from `_startValue` and `_valueRange`. Take the smaller of this count and today's, and use today's count when the span is not finite.
-- [ ] 11.3 The pull request says `Part of #9614`.
+- [x] 11.2 Count the span from `_startValue` and `_valueRange`. Take the smaller of this count and today's, and use today's count when the span is not finite.
+- [x] 11.3 The pull request says `Part of #9614`.
 
 ## 12. P12: Offset grid lines on boundaries
 

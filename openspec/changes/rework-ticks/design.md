@@ -201,6 +201,11 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
     - data [0, 1e307], [0, 1.7e306], [-1e307, 0] and [-1.7e306, 0] with `precision: 2`. [0, 1.7e306] overflows only at its nice maximum, 1.8e306;
     - data [0.5, 1e308] with `bounds: 'data'`, where 0.5 needs a factor of 10. On master this gave NaN or Infinity ticks.
   - The contract between P2, P3, P5 and P11, P17 now allows ticks off the grid when a nice bound falls back to the data bound. Data [-MAX_VALUE, 0] falls back to the data minimum, so the ticks after it are spaced from there (-1.5977e308, …). No 4.6.x reader depends on the grid: autoskip and the offsets work by index, and `_setMinAndMaxByKey` reads only the ends.
+- P11: a logarithmic scale's `_startValue` and `_valueRange` are in decades, but its tick values are not. Counted from raw values, a log x axis 0.001..0.01 at 200 px kept one label where master keeps four. The log scale maps its values with a private `_valueToAxis` (log10), which autoskip calls when a scale has it.
+- P11: the count from values is `floor(room · (1 + 1e-9)) + 1`. The relative tolerance keeps a span that fills the axis exactly (as 0.3 - 0.2 over 0.1 does not, in floating point) from losing a label.
+- P11: the time scale has no `_startValue`, so its count stays today's. The time-scale example in #9614 (week ticks with empty space at the ends) is not fixed by P11.
+- P11: autoskip reads `_length` before `fit`, the same length master's whole-axis count reads. On a y axis it is longer than the final one, by the label half-heights the layout pads at the ends: y 0..1000 at 300 px with ticks over 0..480 counts over 290 px and draws over 279.6. 9 ticks are kept, 16.8 px apart where 17.4 is needed (master: 17 ticks, 8.4 px apart).
+- P11: with `offset: true` and ticks over part of the axis, `configure` runs again after skipping with the offset of the kept ticks, wider than the one autoskip counted with. The labels end 22–22.5 px apart where 23 is needed (master: 11). The spec scenario has no `offset`.
 
 ## Risks / Trade-offs
 
