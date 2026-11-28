@@ -2781,6 +2781,30 @@ describe('Chart', function() {
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element}]);
       expect(element.options.borderColor).toBe('blue');
     });
+
+    it('should drop active elements whose data was removed before update', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3, 4, 5, 6].map((y, x) => ({x, y})),
+            pointBackgroundColor: (ctx) => (ctx.raw.y > 1 ? 'red' : 'blue')
+          }]
+        },
+        options: {
+          scales: {x: {type: 'linear'}},
+          animation: false
+        }
+      });
+
+      chart.setActiveElements([{datasetIndex: 0, index: 5}]);
+      expect(chart.getActiveElements().length).toEqual(1);
+
+      chart.data.datasets[0].data.pop();
+
+      expect(() => chart.update()).not.toThrow();
+      expect(chart.getActiveElements()).toEqual([]);
+    });
   });
 
   // https://github.com/chartjs/Chart.js/issues/10882
