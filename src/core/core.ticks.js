@@ -108,14 +108,32 @@ const formatters = {
 function calculateDelta(tickValue, ticks) {
   // Figure out how many digits to show
   // The space between the first two ticks might be smaller than normal spacing
-  let delta = ticks.length > 3 ? ticks[2].value - ticks[1].value : ticks[1].value - ticks[0].value;
+  let delta = ticks.length > 3 ? difference(ticks[2].value, ticks[1].value) : difference(ticks[1].value, ticks[0].value);
 
   // If we have a number like 2.5 as the delta, figure out how many decimal places we need
   if (Math.abs(delta) >= 1 && tickValue !== Math.floor(tickValue)) {
     // not an integer
-    delta = tickValue - Math.floor(tickValue);
+    delta = difference(tickValue, Math.floor(tickValue));
   }
   return delta;
+}
+
+/**
+ * Returns a - b without the floating point error of the subtraction. The difference of two numbers
+ * with at most n decimal places has at most n decimal places, so 1.4 - 1.3 is 0.1 here, not
+ * 0.09999999999999987, which would ask for one more decimal than the ticks have.
+ * @param {number} a
+ * @param {number} b
+ * @return {number}
+ */
+function difference(a, b) {
+  // 20 is the most decimals the numeric formatter shows
+  for (let places = 0, factor = 1; places <= 20; places++, factor *= 10) {
+    if (Math.round(a * factor) / factor === a && Math.round(b * factor) / factor === b) {
+      return Math.round((a - b) * factor) / factor;
+    }
+  }
+  return a - b;
 }
 
 /**
