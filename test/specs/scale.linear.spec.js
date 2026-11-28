@@ -1397,6 +1397,13 @@ describe('Linear Scale', function() {
     expect(values).toEqual([12.5, 400, 600, 987.5]);
   });
 
+  it('Should size a data bound label with no more than one decimal more than the ticks', function() {
+    // 12.04 to one decimal is "12", not "12.04", so the 200 grid tick is clear of the label.
+    var values = getDataBoundsXScale([12.04, 987.5], 240).ticks.map(tick => tick.value);
+
+    expect(values).toEqual([12.04, 200, 400, 600, 987.5]);
+  });
+
   it('Should keep the same grid ticks whatever noise digits the data bounds carry', function() {
     var noisy = [1.8100024990071555, 98.81000249900715];
     var clean = [1.81, 98.81];
