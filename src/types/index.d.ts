@@ -3215,7 +3215,7 @@ export type CartesianTickOptions = TickOptions & {
   crossAlign: 'near' | 'center' | 'far';
 
   /**
-   * Should the defined `min` and `max` values be presented as ticks even if they are not "nice".
+   * Linear axes only. Should the bounds be presented as ticks even if they are not "nice". The bounds are the defined `min` and `max` values, and with `bounds: 'data'` also the data minimum and maximum. When a bound gets a tick, a grid tick too close to it is left out.
    * @default: true
    */
   includeBounds: boolean;

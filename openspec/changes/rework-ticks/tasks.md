@@ -116,7 +116,7 @@
   - [0.31, 0.97] gives 0.31, 0.4, …, 0.9, 0.97;
   - [1, 99] with `count: 3` gives 1, 50, 99.
 - [x] 15.2 Treat the data bounds like user `min` and `max`, and drop the offset-grid branch.
-- [x] 15.3 Update `_common_ticks.md` (`includeBounds`), `index.md` (Scale Bounds) and the `bounds-data.png` baseline. The pull request says `Closes #10066`.
+- [x] 15.3 Update `_common_ticks.md` and the `includeBounds` type comment, and the Scale Bounds section of `index.md`. Confirm that `bounds-data.png` does not change: its data is on the grid. The pull request says `Closes #10066`.
 
 ## 16. P16: `ticks.autoSkipKeepEnds` (4.7.0)
 
