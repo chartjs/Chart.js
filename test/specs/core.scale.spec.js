@@ -105,6 +105,94 @@ describe('Core.scale', function() {
     });
   });
 
+  describe('ticks.autoSkipKeepEnds', function() {
+    function labelsChart(count, width, ticks) {
+      var labels = [];
+      for (var i = 0; i < count; i++) {
+        labels.push('L' + i);
+      }
+      return window.acquireChart({
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{data: labels.map((label, index) => index)}]
+        },
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {ticks: Object.assign({maxRotation: 0}, ticks)}
+          }
+        }
+      }, {
+        canvas: {width, height: 100}
+      });
+    }
+
+    // Weekly bars on a time axis of 24 days with a tick each day. Every fifth
+    // tick is kept, and a label fits in the 4 days from the 20th to the 24th.
+    function barsOnTime(autoSkipKeepEnds) {
+      var data = [];
+      for (var day = 0; day <= 24; day += 7) {
+        data.push({x: Date.UTC(2024, 0, 1 + day), y: day});
+      }
+      return window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {
+              type: 'time',
+              min: Date.UTC(2024, 0, 1),
+              max: Date.UTC(2024, 0, 25),
+              time: {unit: 'day'},
+              ticks: {source: 'auto', maxRotation: 0, autoSkipKeepEnds}
+            },
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 270, height: 100}
+      });
+    }
+
+    it('should be off by default', function() {
+      expect(Chart.defaults.scale.ticks.autoSkipKeepEnds).toBe(false);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/11816
+    it('should keep the last label within maxTicksLimit', function() {
+      var chart = labelsChart(20, 512, {maxTicksLimit: 7, autoSkipKeepEnds: true});
+
+      expect(getLabels(chart.scales.x)).toEqual(['L0', 'L3', 'L6', 'L9', 'L12', 'L15', 'L19']);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/6154
+    it('should keep the last label when the labels fill the axis', function() {
+      var off = labelsChart(50, 300, {});
+      var on = labelsChart(50, 300, {autoSkipKeepEnds: true});
+
+      expect(getLabels(off.scales.x)).toEqual(['L0', 'L5', 'L10', 'L15', 'L20', 'L25', 'L30', 'L35', 'L40', 'L45']);
+      expect(getLabels(on.scales.x)).toEqual(['L0', 'L5', 'L10', 'L15', 'L20', 'L25', 'L30', 'L35', 'L40', 'L49']);
+    });
+
+    it('should keep the same labels when off', function() {
+      var chart = labelsChart(20, 512, {maxTicksLimit: 7, autoSkipKeepEnds: false});
+
+      expect(getLabels(chart.scales.x)).toEqual(['L0', 'L3', 'L6', 'L9', 'L12', 'L15', 'L18']);
+    });
+
+    it('should not make bars narrower', function() {
+      var off = barsOnTime(false);
+      var on = barsOnTime(true);
+      var days = (chart) => chart.scales.x.ticks.map((tick) => new Date(tick.value).getUTCDate());
+
+      expect(days(off)).toEqual([1, 6, 11, 16, 21]);
+      expect(days(on)).toEqual([1, 6, 11, 16, 21, 25]);
+      expect(on.getDatasetMeta(0).data[0].width).toBeCloseTo(off.getDatasetMeta(0).data[0].width, 6);
+    });
+  });
+
   var gridLineTests = [{
     labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
     offsetGridLines: false,
