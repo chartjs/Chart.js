@@ -69,8 +69,8 @@ function computeMinSampleSize(meta) {
   ilen = scale.ticks.length;
   // The last tick that `ticks.autoSkipKeepEnds` added can be closer than the
   // step: that gap at the end does not narrow the bars, while another gap is
-  // left. A tick recorded by an earlier update is another object.
-  if (ilen > 2 && scale._autoSkipAddedLast === scale.ticks[ilen - 1]) {
+  // left. autoSkip records the array it returned; any other array does not count.
+  if (ilen > 2 && scale._autoSkipKeptLast === scale.ticks) {
     ilen--;
   }
   for (i = 0; i < ilen; ++i) {

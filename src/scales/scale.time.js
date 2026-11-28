@@ -408,10 +408,10 @@ export default class TimeScale extends Scale {
     // ticks. Once ticks have been skipped, we re-compute the offsets.
     if (this.options.offsetAfterAutoskip) {
       const ticks = this.ticks;
-      // `ticks.autoSkipKeepEnds` added the last tick (autoSkip records it on
-      // the scale): the gap before it can be short.
-      const added = /** @type {{_autoSkipAddedLast?: object | null}} */ (this)._autoSkipAddedLast;
-      const keptLast = ticks.length > 0 && added === ticks[ticks.length - 1];
+      // `ticks.autoSkipKeepEnds` added the last tick (autoSkip records the
+      // array it returned on the scale): the gap before it can be short.
+      const record = /** @type {{_autoSkipKeptLast?: object[] | null}} */ (this)._autoSkipKeptLast;
+      const keptLast = record === ticks;
       this.initOffsets(ticks.map(tick => +tick.value), keptLast);
     }
   }

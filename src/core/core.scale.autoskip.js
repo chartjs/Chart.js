@@ -8,7 +8,7 @@ import {_factorize} from '../helpers/helpers.math.js';
 
 /**
  * Returns a subset of ticks to be plotted to avoid overlapping labels.
- * @param {import('./core.scale.js').default & {_autoSkipAddedLast?: Tick | null}} scale
+ * @param {import('./core.scale.js').default & {_autoSkipKeptLast?: Tick[] | null}} scale
  * @param {Tick[]} ticks
  * @return {Tick[]}
  * @private
@@ -18,9 +18,11 @@ export function autoSkip(scale, ticks) {
   const determinedMaxTicks = determineMaxTicks(scale, ticks);
   const ticksLimit = Math.min(tickOpts.maxTicksLimit || determinedMaxTicks, determinedMaxTicks);
   const kept = skipTicks(ticks, tickOpts, ticksLimit);
-  // The tick `ticks.autoSkipKeepEnds` added, or null. The bar width and the
-  // time offsets read it, and only when it is still the scale's last tick.
-  scale._autoSkipAddedLast = tickOpts.autoSkipKeepEnds ? keepLast(scale, ticks, kept, ticksLimit) : null;
+  // The kept ticks when `ticks.autoSkipKeepEnds` added the last one, or null.
+  // The bar width and the time offsets read it only while it is still the
+  // scale's ticks: when autoSkip does not run, `scale.ticks` is another array.
+  const added = tickOpts.autoSkipKeepEnds && keepLast(scale, ticks, kept, ticksLimit);
+  scale._autoSkipKeptLast = added ? kept : null;
   return kept;
 }
 

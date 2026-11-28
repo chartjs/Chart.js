@@ -279,6 +279,50 @@ describe('Core.scale', function() {
       expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(end * 0.8 * 0.9, 6);
     });
 
+    // A hook that hands back the same tick objects on every update.
+    function reusedTicksChart() {
+      var cache;
+      return window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data: [{x: 0, y: 1}, {x: 10, y: 2}, {x: 20, y: 3}]}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {
+              type: 'linear',
+              min: 0,
+              max: 25,
+              ticks: {stepSize: 9, includeBounds: true, autoSkipPadding: 40, autoSkipKeepEnds: true},
+              afterBuildTicks: function(scale) {
+                cache = cache || scale.ticks.slice();
+                scale.ticks = cache.slice();
+              }
+            },
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 130, height: 150}
+      });
+    }
+
+    ['autoSkip', 'display'].forEach(function(option) {
+      it('should forget the added last tick of reused ticks when ticks.' + option + ' is turned off', function() {
+        var chart = reusedTicksChart();
+        var scale = chart.scales.x;
+
+        // Wide labels: 0, and 25 added.
+        expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 25]);
+
+        chart.options.scales.x.ticks[option] = false;
+        chart.update();
+
+        var end = scale.getPixelForTick(3) - scale.getPixelForTick(2);
+        expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 9, 18, 25]);
+        expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(end * 0.8 * 0.9, 6);
+      });
+    });
+
     [false, true].forEach(function(autoSkipKeepEnds) {
       // Monthly ticks: February 2024 is the shortest gap, and the last. Nothing is skipped or added.
       function monthly(offsetAfterAutoskip) {
