@@ -324,6 +324,134 @@ describe('Chart.controllers.bar', function() {
     expect(meta.controller._getStackIndex(3)).toBe(1);
   });
 
+  describe('stack order with hidden datasets', function() {
+    it('should keep the stack order when the first dataset of a stack is hidden', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [
+            {data: [10, 20], stack: 'stack1'},
+            {data: [10, 20], stack: 'stack2'},
+            {data: [10, 20], stack: 'stack1'},
+            {data: [10, 20], stack: 'stack2'}
+          ],
+          labels: ['a', 'b']
+        },
+        options: {
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
+      });
+
+      var getX = (datasetIndex) => chart.getDatasetMeta(datasetIndex).data[0].getProps(['x'], true).x;
+      expect(getX(2)).toBeLessThan(getX(3));
+
+      chart.hide(0);
+
+      var meta = chart.getDatasetMeta(1);
+      expect(meta.controller._getStackCount()).toBe(2);
+      expect(meta.controller._getStackIndex(1, 'stack2')).toBe(1);
+      expect(meta.controller._getStackIndex(2, 'stack1')).toBe(0);
+      expect(meta.controller._getStackIndex(3, 'stack2')).toBe(1);
+      expect(getX(2)).toBeLessThan(getX(3));
+    });
+
+    it('should keep the stack order with skipNull when the hidden dataset has a null', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [
+            {data: [1, null], stack: 'stack1'},
+            {data: [1, 2], stack: 'stack2'},
+            {data: [1, 2], stack: 'stack1'}
+          ],
+          labels: ['a', 'b']
+        },
+        options: {
+          skipNull: true,
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
+      });
+
+      var getX = (datasetIndex) => chart.getDatasetMeta(datasetIndex).data[1].getProps(['x'], true).x;
+      var before = [getX(1), getX(2)];
+      expect(before[0]).toBeLessThan(before[1]);
+
+      chart.hide(0);
+
+      expect([getX(1), getX(2)]).toEqual(before);
+    });
+
+    it('should not keep a place for a stack whose visible bars are null with skipNull', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [
+            {data: [1, 2], stack: 'stack1'},
+            {data: [1, 2], stack: 'stack2'},
+            {data: [1, null], stack: 'stack1'}
+          ],
+          labels: ['a', 'b']
+        },
+        options: {
+          skipNull: true,
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
+      });
+
+      chart.hide(0);
+
+      var controller = chart.getDatasetMeta(1).controller;
+      expect(controller._getStackCount(0)).toBe(2);
+      expect(controller._getStackCount(1)).toBe(1);
+    });
+
+    it('should not keep a place for hidden datasets when the index axis is not stacked', function() {
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {
+          datasets: [
+            {data: [1, 2], stack: 'stack1'},
+            {data: [1, 2], stack: 'stack1'},
+            {data: [1, 2], stack: 'stack1'}
+          ],
+          labels: ['a', 'b']
+        },
+        options: {
+          scales: {
+            x: {
+              stacked: false
+            }
+          }
+        }
+      });
+
+      chart.hide(0);
+
+      expect(chart.getDatasetMeta(1).controller._getStackCount()).toBe(2);
+    });
+  });
+
   it('should correctly get the stack index when a group is not specified', function() {
     var chart = window.acquireChart({
       type: 'bar',
