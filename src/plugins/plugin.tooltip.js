@@ -1122,7 +1122,10 @@ export class Tooltip extends Element {
     const active = this.chart._filterActive(lastActive);
     if (active.length !== lastActive.length) {
       this._active = active;
-      this.update(true);
+      // As in handleEvent: a tooltip that is neither drawn nor external is not laid out.
+      if (this.options.enabled || this.options.external) {
+        this.update(true);
+      }
     }
   }
 

@@ -2253,6 +2253,82 @@ describe('Plugin.Tooltip', function() {
       expect(chart.tooltip.opacity).toBe(0);
     });
 
+    ['pointer', 'code'].forEach((source) => it(`should not build a disabled tooltip when the update drops some of the elements the ${source} set`, async function() {
+      // Plain functions: the options resolver cannot wrap a vi.fn.
+      const calls = {title: 0, label: 0};
+      const title = () => {
+        calls.title++;
+        return 'title';
+      };
+      const label = () => {
+        calls.label++;
+        return 'label';
+      };
+      const chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b', 'c'],
+          datasets: [{data: [1, 2, 3]}, {data: [3, 2, 1]}]
+        },
+        options: {
+          plugins: {
+            tooltip: {enabled: false, mode: 'index', intersect: false, callbacks: {title, label}}
+          }
+        }
+      });
+      const point = chart.getDatasetMeta(0).data[1];
+
+      if (source === 'pointer') {
+        await triggerMouseEvent(chart, 'mousemove', point);
+      } else {
+        chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}, {datasetIndex: 1, index: 1}], point);
+      }
+      expect(chart.tooltip.getActiveElements().length).toBe(2);
+      calls.title = calls.label = 0;
+
+      chart.hide(0);
+
+      expect(calls).toEqual({title: 0, label: 0});
+      expect(chart.tooltip.getActiveElements().map(({datasetIndex}) => datasetIndex)).toEqual([1]);
+    }));
+
+    it('should tell an external tooltip when the update drops its elements', function() {
+      const opacities = [];
+      const chart = window.acquireChart({
+        type: 'pie',
+        data: {
+          labels: ['Red', 'Green', 'Blue'],
+          datasets: [{data: [1, 2, 3]}]
+        },
+        options: {
+          plugins: {
+            tooltip: {enabled: false, external: ({tooltip}) => opacities.push(tooltip.opacity)}
+          }
+        }
+      });
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}], sliceCenter(chart, 1));
+      opacities.length = 0;
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+
+      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(opacities).toEqual([0]);
+    });
+
+    it('should lay out the tooltip at update only when the update drops some of its elements', function() {
+      const chart = acquirePie();
+      chart.tooltip.setActiveElements([{datasetIndex: 0, index: 1}], sliceCenter(chart, 1));
+      const update = vi.spyOn(chart.tooltip, 'update');
+
+      chart.update();
+      expect(update).not.toHaveBeenCalled();
+
+      chart.toggleDataVisibility(1);
+      chart.update();
+      expect(update).toHaveBeenCalledTimes(1);
+    });
+
     it('should drop a tooltip element set by code whose data is hidden', function() {
       const chart = window.acquireChart({
         type: 'doughnut',
