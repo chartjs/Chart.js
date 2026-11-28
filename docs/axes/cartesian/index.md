@@ -220,7 +220,7 @@ This will position the axis at a value of -20 on the axis with ID "x". For carte
 
 The `bounds` property controls the scale boundary strategy (bypassed by `min`/`max` options).
 
-* `'data'`: makes sure data are fully visible, labels outside are removed
+* `'data'`: makes sure data are fully visible, labels outside are removed. On a linear axis the scale ends at the data minimum and maximum, and the ticks between them are on multiples of the tick spacing (or of `ticks.stepSize`). With `ticks.count` they are spaced evenly from the data minimum to the data maximum instead. Like `min` and `max`, the data minimum and maximum get their own ticks unless `ticks.includeBounds` is `false`, and a grid tick too close to one of them is left out.
 * `'ticks'`: makes sure ticks are fully visible, data outside are truncated
 
 ### Tick Configuration

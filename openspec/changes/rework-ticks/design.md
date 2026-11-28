@@ -161,6 +161,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
   - With #12237, y 0..100 with `stepSize: 1` at 400 px draws 101 labels, about 1,450 px tall, in 370 px, where master draws 17. Its own test passes on master.
   - The docs say that `autoSkip: false` draws every step. That docs line is what #4048 asks for.
 - **`autoSkip` is already scriptable per scale** (a function gets `ctx.type === 'scale'`). #9973 is completed by keeping 0 on linear axes, not by a per-tick flag.
+- **The bound label-size fix ships in P15 (4.7.0)**, user's decision of 2026-11-28. It is not split into a 4.6.x fix, although it also brings back the lost `min` tick on master for a user `min`/`max` with `bounds: 'ticks'` on horizontal axes.
 
 ### Changed by the review
 
@@ -206,6 +207,15 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - P11: the time scale has no `_startValue`, so its count stays today's. The time-scale example in #9614 (week ticks with empty space at the ends) is not fixed by P11.
 - P11: autoskip reads `_length` before `fit`, the same length master's whole-axis count reads. On a y axis it is longer than the final one, by the label half-heights the layout pads at the ends: y 0..1000 at 300 px with ticks over 0..480 counts over 290 px and draws over 279.6. 9 ticks are kept, 16.8 px apart where 17.4 is needed (master: 17 ticks, 8.4 px apart).
 - P11: with `offset: true` and ticks over part of the axis, `configure` runs again after skipping with the offset of the kept ticks, wider than the one autoskip counted with. The labels end 22–22.5 px apart where 23 is needed (master: 11). The spec scenario has no `offset`.
+- P15:
+  - No image baseline changes. All 734 linear and radial scales in the image fixtures were dumped before and after (`min`, `max`, tick values), and none differs. The 9 fixtures with `bounds: 'data'` either have data bounds already on the grid (`bounds-data.png`: [50, 125] with a spacing of 10, so 125 was already its own tick) or use `count`.
+  - With `bounds: 'data'`, P5's two-bound fallback no longer fires for a finite range whose data minimum's decimals cannot be counted, or whose decimals set a factor that overflows. The grid now starts on a multiple of the spacing. [1e-310, 1] gives 1e-310, 0.1, …, 1. [0.5, 1e308] gives 0.5, 1e307, …, 1e308.
+  - The `MIN_SPACING` early return still tests only user bounds. Data [100, 100.00000000000003] with `bounds: 'data'` keeps its two ticks; testing the data bounds as well would repeat 100.
+  - The data range already holds a user `min` or `max`, so with `bounds: 'data'` the bounds are taken from the data range without testing which was set.
+  - `stepSize` with data bounds stays on multiples of the step. The "whole number of steps from `min` to `max`" case applies only to a user `min` and `max` together. Data [3, 53] with `stepSize: 10` gives 3, 10, 20, …, 50, 53, not 3, 13, …, 53.
+  - A bound's label is sized from the bound rounded to one decimal more than the ticks, not from every digit of the number. The max never replaces the tick at `min`.
+    - Before this, a data bound such as 1.8100024990071555 looked as long as the axis. On narrow horizontal axes the tick at the minimum was lost: in a sweep of widths, data and `minRotation`, 210 of 1,674 cases. Which grid ticks survived also depended on the noise digits.
+    - User `min`/`max` with `bounds: 'ticks'` go through the same test. In a sweep of 672 cases (16 bound pairs, x and y, 100–500 px), 106 change, all on horizontal axes: the tick at `min` comes back, or more grid ticks are kept. For example [-0.161490405286425, -0.1614903997258063] at 150 px gives both bounds; master gives only the max. No image fixture changes.
 
 ## Risks / Trade-offs
 
@@ -213,7 +223,6 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
   - `scale.logarithmic/large-values-small-range.png` (P6)
   - a new time fixture, `scale.time/autoskip-major-uneven` (P10)
   - bar charts that skip labels with `grid.offset` (P12)
-  - `controller.line/stacking/bounds-data.png` (P15)
   Each piece names its baselines, and the reviewer looks at them.
 - **Label text changes in a patch (P7).** Quarter-step axes go from "0.3" to "0.25", bound labels gain digits, and scientific labels gain or lose digits. Every changed label was wrong or a duplicate.
 - **Time axes change in a patch (P9, P10).** Which time ticks are drawn changes when majors are enabled. Log axes change with P10 too (decided by the user).
@@ -244,7 +253,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 | P12 | Offset grid lines on the boundaries of the generated ticks | `src/core/core.scale.js`, `docs/axes/styling.md`, `test/specs/core.scale.grid.spec.js` (new), bar fixtures | 12 categories at 300 px: lines on categories, first cell 33.5 px; the same with a callback returning `null` for odd indexes | ~80 | P8 (same file); #11188 (same lines region) | | #12100, #11278 | 4.6.x |
 | P13 | feat: `ticks.precision` caps label digits | `src/core/core.ticks.js`, `test/specs/core.ticks.spec.js`, `docs/axes/cartesian/linear.md` (precision) | `precision: 1` on 0.1234567..0.8765432: edges "0.12", "0.88" | ~30 | P7 (same file) | | #11954 | 4.7.0 |
 | P14 | feat: the label callback runs once on every generated tick, with full-set indexes; no second pass | `src/core/core.scale.js`, `test/specs/core.scale.labels.spec.js` (new), `docs/axes/_common_ticks.md` and `docs/general/performance.md` (`sampleSize`) | 50 categories, `sampleSize: 5`, i % 7: L0 and a misplaced L7 | ~60 | P12 (same file) | | | 4.7.0 |
-| P15 | feat: with `bounds: 'data'` ticks are on the grid and the data bounds follow `includeBounds` | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.spec.js`, `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/index.md`, `controller.line/stacking/bounds-data.png` | [0, 97] with `includeBounds: false` shows 97; [0.31, 0.97] gives 0.41 | ~120 + png | P5 (same file) | | #10066 | 4.7.0 |
+| P15 | feat: with `bounds: 'data'` ticks are on the grid and the data bounds follow `includeBounds` | `src/scales/scale.linearbase.js`, `test/specs/scale.linear.spec.js`, `docs/axes/cartesian/_common_ticks.md`, `docs/axes/cartesian/index.md`, `src/types/index.d.ts` | [0, 97] with `includeBounds: false` shows 97; [0.31, 0.97] gives 0.41 | ~150 | P5 (same file) | | #10066 | 4.7.0 |
 | P16 | feat: `ticks.autoSkipKeepEnds` keeps the last tick when skipping | `src/core/core.scale.autoskip.js`, `src/core/core.scale.defaults.js`, `src/types/index.d.ts`, `src/controllers/controller.bar.js` (skip the end gap), `docs/axes/cartesian/_common_ticks.md`, spec, a bar-on-time fixture | 20 labels, `maxTicksLimit: 7`: L19 missing | ~130 | P11 (same file) | | #11816, #6154 | 4.7.0 |
 | P17 | feat: skipping keeps round multiples of the step on linear axes; supersedes #12237 | `src/core/core.scale.autoskip.js`, `src/scales/scale.linearbase.js`, `docs/axes/cartesian/_common_ticks.md`, spec | 0..100 `stepSize: 1` at 400 px: 0, 6, …, 96 | ~150 | P16 (same file), P15 (same file) | | #4048, #9973 | 4.7.0 |
 | P18 | `ticks.autoSkipKeepEnds` on by default; migration note | `src/core/core.scale.defaults.js`, `docs/axes/cartesian/_common_ticks.md`, the v5 migration guide, `test/specs/core.scale.spec.js` ("should not display the last tick if it does not fit evenly") | that spec expects the last tick missing | ~30 + baselines | P16 | | | 5.0.0 |

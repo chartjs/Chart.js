@@ -35,6 +35,8 @@ function isWholeStepCount(lo, hi, step) {
  *
  * 4. Compute optimal spacing of ticks using niceNum algorithm
  *
+ * With bounds: 'data', the data minimum and maximum stand in for an unset min and max.
+ *
  * @param generationOptions the options used to generate the ticks
  * @param dataRange the range of the data
  * @returns {object[]} array of tick objects
@@ -46,10 +48,18 @@ function generateTicks(generationOptions, dataRange) {
   // for details.
 
   const MIN_SPACING = 1e-14;
-  const {bounds, step, min, max, precision, count, maxTicks, maxDigits, includeBounds} = generationOptions;
+  const {bounds, step, precision, count, maxTicks, maxDigits, includeBounds} = generationOptions;
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
+  const userMinDefined = !isNullOrUndef(generationOptions.min);
+  const userMaxDefined = !isNullOrUndef(generationOptions.max);
+  // With bounds: 'data' the data bounds are bounds: they are handled like a user
+  // min and max (includeBounds, a close grid tick dropped), on the same grid. The
+  // data range already holds a user min or max in place of the data's.
+  const dataBounds = bounds === 'data';
+  const min = dataBounds ? rmin : generationOptions.min;
+  const max = dataBounds ? rmax : generationOptions.max;
   const minDefined = !isNullOrUndef(min);
   const maxDefined = !isNullOrUndef(max);
   const countDefined = !isNullOrUndef(count);
@@ -58,8 +68,9 @@ function generateTicks(generationOptions, dataRange) {
   let factor, niceMin, niceMax, numSpaces;
 
   // Beyond MIN_SPACING floating point numbers begin to lose precision
-  // such that we can't do the math necessary to generate ticks
-  if (spacing < MIN_SPACING && !minDefined && !maxDefined) {
+  // such that we can't do the math necessary to generate ticks. Only bounds the
+  // user set keep the ticks going below it.
+  if (spacing < MIN_SPACING && !userMinDefined && !userMaxDefined) {
     return [{value: rmin}, {value: rmax}];
   }
 
@@ -75,23 +86,19 @@ function generateTicks(generationOptions, dataRange) {
     spacing = Math.ceil(spacing * factor) / factor;
   }
 
-  if (bounds === 'ticks') {
-    // Both are whole multiples of spacing, so they never need more decimals than
-    // spacing itself. Round the floating point error off here, otherwise
-    // _decimalPlaces below reports it as significant and the factor grows large
-    // enough that rounding the tick values becomes a no-op.
-    // A nice bound beyond the largest number (or one that cannot be rounded) falls
-    // back to the data bound.
-    const spacingFactor = Math.pow(10, _decimalPlaces(spacing));
-    niceMin = finiteOrDefault(Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor, rmin);
-    niceMax = finiteOrDefault(Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor, rmax);
-  } else {
-    niceMin = rmin;
-    niceMax = rmax;
-  }
+  // The nice bounds are whole multiples of spacing, so they never need more decimals
+  // than spacing itself. Round the floating point error off here, otherwise
+  // _decimalPlaces below reports it as significant and the factor grows large
+  // enough that rounding the tick values becomes a no-op.
+  // A nice bound beyond the largest number (or one that cannot be rounded) falls
+  // back to the data bound.
+  const spacingFactor = Math.pow(10, _decimalPlaces(spacing));
+  niceMin = finiteOrDefault(Math.round(Math.floor(rmin / spacing) * spacing * spacingFactor) / spacingFactor, rmin);
+  niceMax = finiteOrDefault(Math.round(Math.ceil(rmax / spacing) * spacing * spacingFactor) / spacingFactor, rmax);
 
-  if (minDefined && maxDefined && step && isWholeStepCount(min, max, step)) {
+  if (userMinDefined && userMaxDefined && step && isWholeStepCount(min, max, step)) {
     // Case 1: If min, max and stepSize are set and they make an evenly spaced scale use it.
+    // Data bounds do not count: their steps stay on multiples of stepSize.
     // spacing = step;
     // numSpaces = (max - min) / spacing;
     // Note that we round here to handle the case where almostWhole translated an FP error
@@ -142,6 +149,8 @@ function generateTicks(generationOptions, dataRange) {
   }
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
+  // A bound label shows at most one decimal more than the ticks.
+  const labelFactor = factor * 10;
 
   let j = 0;
   if (minDefined) {
@@ -152,7 +161,7 @@ function generateTicks(generationOptions, dataRange) {
         j++; // Skip niceMin
       }
       // If the next nice tick is close to min, skip it
-      if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, minSpacing, generationOptions))) {
+      if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, labelFactor, minSpacing, generationOptions))) {
         j++;
       }
     } else if (niceMin < min) {
@@ -169,15 +178,18 @@ function generateTicks(generationOptions, dataRange) {
   }
 
   if (maxDefined && includeBounds && niceMax !== max) {
-    // If the previous tick is too close to max, replace it with max, else add max
-    if (ticks.length && almostEquals(ticks[ticks.length - 1].value, max, relativeLabelSize(max, minSpacing, generationOptions))) {
-      ticks[ticks.length - 1].value = max;
+    // If the previous tick is too close to max, replace it with max, else add max.
+    // The tick at min is never replaced.
+    const last = ticks[ticks.length - 1];
+    const replaceable = last && last.value !== min;
+    if (replaceable && almostEquals(last.value, max, relativeLabelSize(max, labelFactor, minSpacing, generationOptions))) {
+      last.value = max;
     } else {
       ticks.push({value: max});
     }
   } else if (!maxDefined || niceMax === max) {
     // Avoid duplicating the last emitted tick when the rounded niceMax
-    // coincides with it (e.g. bounds: 'data' with a fractional data max).
+    // coincides with it.
     if (!ticks.length || ticks[ticks.length - 1].value !== niceMax) {
       ticks.push({value: niceMax});
     }
@@ -186,10 +198,20 @@ function generateTicks(generationOptions, dataRange) {
   return ticks;
 }
 
-function relativeLabelSize(value, minSpacing, {horizontal, minRotation}) {
+/**
+ * The space the label of a bound takes, in value units. The label is sized from
+ * the bound rounded to the decimals it can show, so the floating point noise of a
+ * data bound (1.8100024990071555) does not make it look longer than it is.
+ * @param {number} value - the bound
+ * @param {number} labelFactor - 10 to the power of the decimals the label shows
+ */
+function relativeLabelSize(value, labelFactor, minSpacing, {horizontal, minRotation}) {
   const rad = toRadians(minRotation);
   const ratio = (horizontal ? Math.sin(rad) : Math.cos(rad)) || 0.001;
-  const length = 0.75 * minSpacing * ('' + value).length;
+  // Near the largest number the scaled bound overflows to Infinity, which still
+  // counts as a label of 8 characters, about as long as "1.8e+308".
+  const rounded = Math.round(value * labelFactor) / labelFactor;
+  const length = 0.75 * minSpacing * String(rounded).length;
   return Math.min(minSpacing / ratio, length);
 }
 
