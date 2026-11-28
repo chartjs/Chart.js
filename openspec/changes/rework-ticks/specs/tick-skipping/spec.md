@@ -71,7 +71,7 @@ With `grid.offset`, each drawn tick SHALL have its grid line on the boundary bef
 
 ### Requirement: The ends can be kept when skipping
 
-With `ticks.autoSkipKeepEnds` on, skipping SHALL keep the first and the last tick. The tick before the last SHALL be dropped when it is closer than one label's room or when keeping it would exceed `ticks.maxTicksLimit`. Keeping the last tick SHALL NOT make bars narrower.
+With `ticks.autoSkipKeepEnds` on, skipping SHALL keep the last tick. The first kept tick SHALL be the same as with the option off, and SHALL never be dropped for the last one. The tick before the last SHALL be dropped when it is closer than one label's room or when keeping it would exceed `ticks.maxTicksLimit`. Keeping the last tick SHALL NOT make bars narrower.
 
 #### Scenario: Category limit
 

@@ -407,7 +407,7 @@ export default class TimeScale extends Scale {
     // Offsets for bar charts need to be handled with the auto skipped
     // ticks. Once ticks have been skipped, we re-compute the offsets.
     if (this.options.offsetAfterAutoskip) {
-      this.initOffsets(this.ticks.map(tick => +tick.value));
+      this.initOffsets(this.ticks.map(tick => +tick.value), this.options.ticks.autoSkipKeepEnds);
     }
   }
 
@@ -417,9 +417,12 @@ export default class TimeScale extends Scale {
 	 * They add extra margins on the both sides by scaling down the original scale.
 	 * Offsets are added when the `offset` option is true.
 	 * @param {number[]} timestamps
+	 * @param {boolean} [keptLast] - the timestamps are ticks that `ticks.autoSkipKeepEnds` kept: the
+	 *   last gap can be shorter than the step, and the end offset is sized from the gap before it.
 	 * @protected
 	 */
-  initOffsets(timestamps = []) {
+  initOffsets(timestamps = [], keptLast = false) {
+    const count = timestamps.length;
     let start = 0;
     let end = 0;
     let first, last;
@@ -435,7 +438,11 @@ export default class TimeScale extends Scale {
       if (timestamps.length === 1) {
         end = last;
       } else {
-        end = (last - this.getDecimalForValue(timestamps[timestamps.length - 2])) / 2;
+        const beforeLast = this.getDecimalForValue(timestamps[count - 2]);
+        end = (last - beforeLast) / 2;
+        if (keptLast && count > 2) {
+          end = Math.max(end, (beforeLast - this.getDecimalForValue(timestamps[count - 3])) / 2);
+        }
       }
     }
     const limit = timestamps.length < 3 ? 0.5 : 0.25;

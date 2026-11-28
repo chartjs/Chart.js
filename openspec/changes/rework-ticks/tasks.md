@@ -120,13 +120,13 @@
 
 ## 16. P16: `ticks.autoSkipKeepEnds` (4.7.0)
 
-- [ ] 16.1 Add specs:
+- [x] 16.1 Add specs:
   - on, 20 labels, `maxTicksLimit: 7`: L0, L3, …, L15, L19;
   - on, 50 labels at 300 px: L0 … L40, L49;
   - off: unchanged;
   - a bar chart on a time axis has the same bar width on and off (a fixture).
-- [ ] 16.2 Add the option to the defaults, the types and `_common_ticks.md`. Make `computeMinSampleSize` skip the gap that ends at the kept last tick.
-- [ ] 16.3 The pull request says `Closes #11816` and `Closes #6154`.
+- [x] 16.2 Add the option to the defaults, the types and `_common_ticks.md`. Make `computeMinSampleSize` skip the gap that ends at the kept last tick.
+- [x] 16.3 The pull request says `Closes #11816` and `Closes #6154`.
 
 ## 17. P17: Round multiples of the step (4.7.0)
 

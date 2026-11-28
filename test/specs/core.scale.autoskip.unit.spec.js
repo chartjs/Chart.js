@@ -327,6 +327,8 @@ describe('Core.scale.autoskip', function() {
     function keptValues(count, majors, fit, options, descending = false) {
       const scale = scaleFitting(fit);
       scale.options.ticks = Object.assign({major: {enabled: majors.length > 0}}, options);
+      // Categories with offset: each value in the middle of its 1 / count of the axis.
+      scale.getPixelForValue = (value) => (value + 0.5) * scale._length / count;
       const ticks = [];
       for (let i = 0; i < count; i++) {
         const value = descending ? count - 1 - i : i;
@@ -351,6 +353,17 @@ describe('Core.scale.autoskip', function() {
       // One label needs 99 / 12.9 = 7.7 ticks, and 90 is 8 ticks from 98: a shorter gap at the end.
       expect(keptValues(99, [], 12.9, {autoSkipKeepEnds: true}))
         .toEqual([0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 98]);
+    });
+
+    it('should never drop the first tick', function() {
+      // Room for one tick: the first stays, and the last is not added.
+      expect(keptValues(20, [], 100, {maxTicksLimit: 1, autoSkipKeepEnds: true})).toEqual([0]);
+      // Room for two: the first and the last.
+      expect(keptValues(20, [], 100, {maxTicksLimit: 2, autoSkipKeepEnds: true})).toEqual([0, 19]);
+      // With majors, the first kept tick follows them and stays.
+      expect(keptValues(40, [10, 30], 100, {maxTicksLimit: 2, autoSkipKeepEnds: true})).toEqual([10, 39]);
+      // A single major kept alone: the last tick is added even closer than one label.
+      expect(keptValues(5, [2], 2, {autoSkipKeepEnds: true})).toEqual([2, 4]);
     });
 
     it('should keep the same ticks when off', function() {

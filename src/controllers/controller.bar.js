@@ -66,7 +66,17 @@ function computeMinSampleSize(meta) {
   }
 
   prev = undefined;
-  for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
+  ilen = scale.ticks.length;
+  // The last tick that `ticks.autoSkipKeepEnds` keeps can be closer than the
+  // step: that shorter gap at the end does not narrow the bars.
+  if (scale.options.ticks.autoSkipKeepEnds && ilen > 2) {
+    const end = Math.abs(scale.getPixelForTick(ilen - 1) - scale.getPixelForTick(ilen - 2));
+    const before = Math.abs(scale.getPixelForTick(ilen - 2) - scale.getPixelForTick(ilen - 3));
+    if (end < before) {
+      ilen--;
+    }
+  }
+  for (i = 0; i < ilen; ++i) {
     curr = scale.getPixelForTick(i);
     updateMinAndPrev();
   }
