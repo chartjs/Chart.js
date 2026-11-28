@@ -287,7 +287,10 @@ function splitByStyles(line: LineElement, segments: Segment[], points: PointElem
 }
 
 function doSplitByStyles(line: LineElement, segments: Segment[], points: PointElement[], segmentOptions?: AnyObject): Segment[] {
-  const chartContext = line._chart.getContext();
+  // `createContext`'s overloads want a parent context that already has the segment context's keys,
+  // which the chart's context does not
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chartContext: any = line._chart.getContext();
   const baseStyle = readStyle(line.options);
   const {_datasetIndex: datasetIndex, options: {spanGaps}} = line;
   const count = points.length;

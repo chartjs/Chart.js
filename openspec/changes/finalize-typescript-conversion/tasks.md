@@ -103,11 +103,11 @@
 
 ## 14. P14: Convert LineElement to TypeScript
 
-- [ ] 14.1 Rename the modules to `.ts`. Show the gate's errors for LineElement before the fix.
-- [ ] 14.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
-- [ ] 14.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
-- [ ] 14.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
-- [ ] 14.5 Run the whole test suite; no fixture changes.
+- [x] 14.1 Rename the modules to `.ts`. Show the gate's errors for LineElement before the fix.
+- [x] 14.2 Apply the recipe (design.md, Decision 4): `declare` fields, annotations from JSDoc and the public declarations, `override`, `_` unused parameters, explicit returns.
+- [x] 14.3 Run the gate and `pnpm build`. Show bundle identity against master's build (`dist/*.js`, `dist/chunks/*`, `helpers/*.js`, UMD).
+- [x] 14.4 Regenerate the reports with `pnpm api-report --local`. The diff may only add (Decision 7); list any runtime-versus-type mismatch in the pull request for the ledger.
+- [x] 14.5 Run the whole test suite; no fixture changes.
 
 ## 15. P15: Convert the filler options, targets and entry to TypeScript
 

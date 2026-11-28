@@ -4,12 +4,35 @@ import {_computeSegments, _boundSegments} from '../helpers/helpers.segment.js';
 import {_steppedLineTo, _bezierCurveTo} from '../helpers/helpers.canvas.js';
 import {_updateBezierControlPoints} from '../helpers/helpers.curve.js';
 import {valueOrDefault} from '../helpers/index.js';
+import type Chart from '../core/core.controller.js';
+import type PointElementClass from './element.point.js';
+import type {Segment} from '../helpers/helpers.segment.js';
+import type {AnyObject} from '../types/basic.js';
+import type {ChartArea, LineOptions, LineProps} from '../types/index.js';
 
-/**
- * @typedef { import('./element.point.js').default } PointElement
- */
+export type PointElement = PointElementClass;
 
-function setStyle(ctx, options, style = options) {
+export type PathParams = {
+  /** move to starting point (vs line to it) */
+  move?: boolean,
+  /** path the segment from end to start */
+  reverse?: boolean,
+  /** limit segment to points starting from `start` index */
+  start?: number,
+  /** limit segment to points ending at `start` + `count` index */
+  end?: number
+};
+
+type PathSegment = {
+  /** start index of the segment, referring the points array */
+  start: number,
+  /** end index of the segment, referring the points array */
+  end: number,
+  /** indicates that the segment is a loop */
+  loop: boolean
+};
+
+function setStyle(ctx: CanvasRenderingContext2D, options: AnyObject, style: AnyObject = options) {
   ctx.lineCap = valueOrDefault(style.borderCapStyle, options.borderCapStyle);
   ctx.setLineDash(valueOrDefault(style.borderDash, options.borderDash));
   ctx.lineDashOffset = valueOrDefault(style.borderDashOffset, options.borderDashOffset);
@@ -18,14 +41,13 @@ function setStyle(ctx, options, style = options) {
   ctx.strokeStyle = valueOrDefault(style.borderColor, options.borderColor);
 }
 
-function lineTo(ctx, previous, target) {
+function lineTo(ctx: CanvasRenderingContext2D | Path2D, _previous: PointElement, target: PointElement) {
   ctx.lineTo(target.x, target.y);
 }
 
-/**
- * @returns {any}
- */
-function getLineMethod(options) {
+// The canvas helpers take a CanvasRenderingContext2D, but the line also draws into a Path2D
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getLineMethod(options: AnyObject): any {
   if (options.stepped) {
     return _steppedLineTo;
   }
@@ -37,7 +59,7 @@ function getLineMethod(options) {
   return lineTo;
 }
 
-function pathVars(points, segment, params = {}) {
+function pathVars(points: PointElement[], segment: PathSegment, params: PathParams = {}) {
   const count = points.length;
   const {start: paramsStart = 0, end: paramsEnd = count - 1} = params;
   const {start: segmentStart, end: segmentEnd} = segment;
@@ -56,19 +78,12 @@ function pathVars(points, segment, params = {}) {
 /**
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
- * @param {CanvasRenderingContext2D|Path2D} ctx - Context
- * @param {LineElement} line
- * @param {object} segment
- * @param {number} segment.start - start index of the segment, referring the points array
- * @param {number} segment.end - end index of the segment, referring the points array
- * @param {boolean} segment.loop - indicates that the segment is a loop
- * @param {object} params
- * @param {boolean} params.move - move to starting point (vs line to it)
- * @param {boolean} params.reverse - path the segment from end to start
- * @param {number} params.start - limit segment to points starting from `start` index
- * @param {number} params.end - limit segment to points ending at `start` + `count` index
+ * @param ctx - Context
+ * @param line
+ * @param segment
+ * @param params
  */
-function pathSegment(ctx, line, segment, params) {
+function pathSegment(ctx: CanvasRenderingContext2D | Path2D, line: LineElement, segment: PathSegment, params?: PathParams): boolean {
   const {points, options} = line;
   const {count, start, loop, ilen} = pathVars(points, segment, params);
   const lineMethod = getLineMethod(options);
@@ -103,19 +118,12 @@ function pathSegment(ctx, line, segment, params) {
 /**
  * Create path from points, grouping by truncated x-coordinate
  * Points need to be in order by x-coordinate for this to work efficiently
- * @param {CanvasRenderingContext2D|Path2D} ctx - Context
- * @param {LineElement} line
- * @param {object} segment
- * @param {number} segment.start - start index of the segment, referring the points array
- * @param {number} segment.end - end index of the segment, referring the points array
- * @param {boolean} segment.loop - indicates that the segment is a loop
- * @param {object} params
- * @param {boolean} params.move - move to starting point (vs line to it)
- * @param {boolean} params.reverse - path the segment from end to start
- * @param {number} params.start - limit segment to points starting from `start` index
- * @param {number} params.end - limit segment to points ending at `start` + `count` index
+ * @param ctx - Context
+ * @param line
+ * @param segment
+ * @param params
  */
-function fastPathSegment(ctx, line, segment, params) {
+function fastPathSegment(ctx: CanvasRenderingContext2D | Path2D, line: LineElement, segment: PathSegment, params?: PathParams): undefined {
   const points = line.points;
   const {count, start, ilen} = pathVars(points, segment, params);
   const {move = true, reverse} = params || {};
@@ -165,12 +173,13 @@ function fastPathSegment(ctx, line, segment, params) {
     lastY = y;
   }
   drawGroup(ctx, avgX, minY, maxY, lastY);
+  return undefined;
 }
 
 /**
  * Draws the vertical extent of a group of points that share a truncated x-coordinate
  */
-function drawGroup(ctx, avgX, minY, maxY, lastY) {
+function drawGroup(ctx: CanvasRenderingContext2D | Path2D, avgX: number, minY: number, maxY: number, lastY: number) {
   if (minY !== maxY) {
     // Draw line to maxY and minY, using the average x-coordinate
     ctx.lineTo(avgX, maxY);
@@ -182,11 +191,10 @@ function drawGroup(ctx, avgX, minY, maxY, lastY) {
 }
 
 /**
- * @param {LineElement} line - the line
- * @returns {function}
+ * @param line - the line
  * @private
  */
-function _getSegmentMethod(line) {
+function _getSegmentMethod(line: LineElement) {
   const opts = line.options;
   const borderDash = opts.borderDash && opts.borderDash.length;
   const useFastPath = !line._decimated && !line._loop && !opts.tension && opts.cubicInterpolationMode !== 'monotone' && !opts.stepped && !borderDash;
@@ -196,7 +204,7 @@ function _getSegmentMethod(line) {
 /**
  * @private
  */
-function _getInterpolationMethod(options) {
+function _getInterpolationMethod(options: AnyObject) {
   if (options.stepped) {
     return _steppedInterpolation;
   }
@@ -208,7 +216,7 @@ function _getInterpolationMethod(options) {
   return _pointInLine;
 }
 
-function strokePathWithCache(ctx, line, start, count) {
+function strokePathWithCache(ctx: CanvasRenderingContext2D, line: LineElement, start?: number, count?: number) {
   let path = line._path;
   if (!path) {
     path = line._path = new Path2D();
@@ -220,7 +228,7 @@ function strokePathWithCache(ctx, line, start, count) {
   ctx.stroke(path);
 }
 
-function strokePathDirect(ctx, line, start, count) {
+function strokePathDirect(ctx: CanvasRenderingContext2D, line: LineElement, start?: number, count?: number) {
   const {segments, options} = line;
   const segmentMethod = _getSegmentMethod(line);
 
@@ -236,7 +244,7 @@ function strokePathDirect(ctx, line, start, count) {
 
 const usePath2D = typeof Path2D === 'function';
 
-function draw(ctx, line, start, count) {
+function draw(ctx: CanvasRenderingContext2D, line: LineElement, start?: number, count?: number) {
   if (usePath2D && !line.options.segment) {
     strokePathWithCache(ctx, line, start, count);
   } else {
@@ -244,14 +252,15 @@ function draw(ctx, line, start, count) {
   }
 }
 
-export default class LineElement extends Element {
+export default class LineElement<
+  T extends LineProps = LineProps,
+  O extends LineOptions = LineOptions
+> extends Element<T, O> {
 
   static id = 'line';
 
-  /**
-   * @type {any}
-   */
-  static defaults = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static override defaults: any = {
     borderCapStyle: 'butt',
     borderDash: [],
     borderDashOffset: 0,
@@ -265,10 +274,8 @@ export default class LineElement extends Element {
     tension: 0,
   };
 
-  /**
-   * @type {any}
-   */
-  static defaultRoutes = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static override defaultRoutes: any = {
     backgroundColor: 'backgroundColor',
     borderColor: 'borderColor'
   };
@@ -276,11 +283,32 @@ export default class LineElement extends Element {
 
   static descriptors = {
     _scriptable: true,
-    _indexable: (name) => name !== 'borderDash' && name !== 'fill',
+    _indexable: (name: string) => name !== 'borderDash' && name !== 'fill',
   };
 
+  /** @internal */
+  declare animated: boolean;
+  declare options: O;
+  /** @internal */
+  declare _chart: Chart;
+  /** @internal */
+  declare _loop: boolean;
+  /** @internal */
+  declare _fullLoop: boolean;
+  /** @internal */
+  declare _path: Path2D;
+  /** @internal */
+  declare _points: PointElement[];
+  /** @internal */
+  declare _segments: Segment[];
+  /** @internal */
+  declare _decimated: boolean;
+  /** @internal */
+  declare _pointsUpdated: boolean;
+  /** @internal */
+  declare _datasetIndex: number;
 
-  constructor(cfg) {
+  constructor(cfg?: AnyObject) {
     super();
 
     this.animated = true;
@@ -300,7 +328,7 @@ export default class LineElement extends Element {
     }
   }
 
-  updateControlPoints(chartArea, indexAxis) {
+  updateControlPoints(chartArea: ChartArea, indexAxis?: 'x' | 'y'): void {
     const options = this.options;
     if ((options.tension || options.cubicInterpolationMode === 'monotone') && !options.stepped && !this._pointsUpdated) {
       const loop = options.spanGaps ? this._loop : this._fullLoop;
@@ -309,26 +337,25 @@ export default class LineElement extends Element {
     }
   }
 
-  set points(points) {
+  set points(points: PointElement[]) {
     this._points = points;
     delete this._segments;
     delete this._path;
     this._pointsUpdated = false;
   }
 
-  get points() {
+  get points(): PointElement[] {
     return this._points;
   }
 
-  get segments() {
+  get segments(): Segment[] {
     return this._segments || (this._segments = _computeSegments(this, this.options.segment));
   }
 
   /**
 	 * First non-skipped point on this line
-	 * @returns {PointElement|undefined}
 	 */
-  first() {
+  first(): PointElement | undefined {
     const segments = this.segments;
     const points = this.points;
     return segments.length && points[segments[0].start];
@@ -336,9 +363,8 @@ export default class LineElement extends Element {
 
   /**
 	 * Last non-skipped point on this line
-	 * @returns {PointElement|undefined}
 	 */
-  last() {
+  last(): PointElement | undefined {
     const segments = this.segments;
     const points = this.points;
     const count = segments.length;
@@ -348,18 +374,17 @@ export default class LineElement extends Element {
   /**
 	 * Interpolate a point in this line at the same value on `property` as
 	 * the reference `point` provided
-	 * @param {PointElement} point - the reference point
-	 * @param {string} property - the property to match on
-	 * @returns {PointElement|undefined}
+	 * @param point - the reference point
+	 * @param property - the property to match on
 	 */
-  interpolate(point, property) {
+  interpolate(point: PointElement, property: string): PointElement | undefined {
     const options = this.options;
     const value = point[property];
     const points = this.points;
     const segments = _boundSegments(this, {property, start: value, end: value});
 
     if (!segments.length) {
-      return;
+      return undefined;
     }
 
     const result = [];
@@ -383,31 +408,31 @@ export default class LineElement extends Element {
 
   /**
 	 * Append a segment of this line to current path.
-	 * @param {CanvasRenderingContext2D} ctx
-	 * @param {object} segment
-	 * @param {number} segment.start - start index of the segment, referring the points array
- 	 * @param {number} segment.end - end index of the segment, referring the points array
- 	 * @param {boolean} segment.loop - indicates that the segment is a loop
-	 * @param {object} params
-	 * @param {boolean} params.move - move to starting point (vs line to it)
-	 * @param {boolean} params.reverse - path the segment from end to start
-	 * @param {number} params.start - limit segment to points starting from `start` index
-	 * @param {number} params.end - limit segment to points ending at `start` + `count` index
-	 * @returns {undefined|boolean} - true if the segment is a full loop (path should be closed)
+	 * @param ctx
+	 * @param segment
+	 * @param segment.start - start index of the segment, referring the points array
+	 * @param segment.end - end index of the segment, referring the points array
+	 * @param segment.loop - indicates that the segment is a loop
+	 * @param [params]
+	 * @returns true if the segment is a full loop (path should be closed)
 	 */
-  pathSegment(ctx, segment, params) {
+  pathSegment(
+    ctx: CanvasRenderingContext2D,
+    segment: {start: number, end: number, loop: boolean},
+    params?: PathParams
+  ): undefined | boolean {
     const segmentMethod = _getSegmentMethod(this);
     return segmentMethod(ctx, this, segment, params);
   }
 
   /**
 	 * Append all segments of this line to current path.
-	 * @param {CanvasRenderingContext2D|Path2D} ctx
-	 * @param {number} [start]
-	 * @param {number} [count]
-	 * @returns {undefined|boolean} - true if line is a full loop (path should be closed)
+	 * @param ctx
+	 * @param [start]
+	 * @param [count]
+	 * @returns true if line is a full loop (path should be closed)
 	 */
-  path(ctx, start, count) {
+  path(ctx: CanvasRenderingContext2D | Path2D, start?: number, count?: number): undefined | boolean {
     const segments = this.segments;
     const segmentMethod = _getSegmentMethod(this);
     let loop = this._loop;
@@ -416,6 +441,7 @@ export default class LineElement extends Element {
     count = count || (this.points.length - start);
 
     for (const segment of segments) {
+      // @ts-expect-error `&=` on booleans is intended: it yields 0 or 1, and `!!loop` turns that back into a boolean
       loop &= segmentMethod(ctx, this, segment, {start, end: start + count - 1});
     }
     return !!loop;
@@ -423,13 +449,13 @@ export default class LineElement extends Element {
 
   /**
 	 * Draw
-	 * @param {CanvasRenderingContext2D} ctx
-	 * @param {object} chartArea
-	 * @param {number} [start]
-	 * @param {number} [count]
+	 * @param ctx
+	 * @param chartArea
+	 * @param [start]
+	 * @param [count]
 	 */
-  draw(ctx, chartArea, start, count) {
-    const options = this.options || {};
+  draw(ctx: CanvasRenderingContext2D, _chartArea: object, start?: number, count?: number): void {
+    const options: Partial<O> = this.options || {};
     const points = this.points || [];
 
     if (points.length && options.borderWidth) {

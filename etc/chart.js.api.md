@@ -3149,60 +3149,58 @@ export const LineElement: ChartComponent & {
 };
 
 // @public (undocumented)
-class LineElement_2 extends Element_2<AnyObject, AnyObject> {
-    constructor(cfg: any);
-    // (undocumented)
+class LineElement_2<T extends LineProps = LineProps, O extends LineOptions = LineOptions> extends Element_2<T, O> {
+    constructor(cfg?: AnyObject);
+    // @internal (undocumented)
     animated: boolean;
-    // (undocumented)
-    _chart: any;
-    // (undocumented)
-    _datasetIndex: any;
-    // (undocumented)
+    // @internal (undocumented)
+    _chart: Chart_3;
+    // @internal (undocumented)
+    _datasetIndex: number;
+    // @internal (undocumented)
     _decimated: boolean;
+    // (undocumented)
+    static defaultRoutes: any;
+    // (undocumented)
     static defaults: any;
     // (undocumented)
     static descriptors: {
         _scriptable: boolean;
-        _indexable: (name: any) => boolean;
+        _indexable: (name: string) => boolean;
     };
-    draw(ctx: CanvasRenderingContext2D, chartArea: object, start?: number, count?: number): void;
+    draw(ctx: CanvasRenderingContext2D, _chartArea: object, start?: number, count?: number): void;
     first(): PointElement_2 | undefined;
-    // (undocumented)
-    _fullLoop: any;
+    // @internal (undocumented)
+    _fullLoop: boolean;
     // (undocumented)
     static id: string;
     interpolate(point: PointElement_2, property: string): PointElement_2 | undefined;
     last(): PointElement_2 | undefined;
+    // @internal (undocumented)
+    _loop: boolean;
     // (undocumented)
-    _loop: any;
-    // (undocumented)
-    options: any;
+    options: O;
     path(ctx: CanvasRenderingContext2D | Path2D, start?: number, count?: number): undefined | boolean;
-    // (undocumented)
-    _path: any;
+    // @internal (undocumented)
+    _path: Path2D;
     pathSegment(ctx: CanvasRenderingContext2D, segment: {
         start: number;
         end: number;
         loop: boolean;
-    }, params: {
-        move: boolean;
-        reverse: boolean;
-        start: number;
-        end: number;
-    }): undefined | boolean;
-    set points(arg: any);
+    }, params?: PathParams): undefined | boolean;
+    set points(points: PointElement_2[]);
     // (undocumented)
-    get points(): any;
-    // (undocumented)
-    _points: any;
-    // (undocumented)
+    get points(): PointElement_2[];
+    // @internal (undocumented)
+    _points: PointElement_2[];
+    // @internal (undocumented)
     _pointsUpdated: boolean;
     // (undocumented)
     get segments(): Segment_2[];
-    // (undocumented)
+    // @internal (undocumented)
     _segments: Segment_2[];
     // (undocumented)
-    updateControlPoints(chartArea: any, indexAxis: any): void;
+    updateControlPoints(chartArea: ChartArea, indexAxis?: 'x' | 'y'): void;
 }
 
 // @public (undocumented)
@@ -3334,6 +3332,14 @@ export interface ParsingOptions {
     }
     | false;
 }
+
+// @public (undocumented)
+type PathParams = {
+    move?: boolean;
+    reverse?: boolean;
+    start?: number;
+    end?: number;
+};
 
 // @public (undocumented)
 export type PieAnimationOptions = DoughnutAnimationOptions;
