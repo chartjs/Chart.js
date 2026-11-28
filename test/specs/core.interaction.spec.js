@@ -910,6 +910,176 @@ describe('Core.Interaction', function() {
     });
   });
 
+  describe('bars cut off by the chart area', function() {
+    function acquireBarChart(data, y, interaction) {
+      return window.acquireChart({
+        type: 'bar',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data}]
+        },
+        options: {
+          animation: false,
+          interaction,
+          scales: {y},
+          plugins: {
+            tooltip: {animation: false}
+          }
+        }
+      });
+    }
+
+    it('finds a bar whose base is below the axis minimum and anchors the tooltip in its visible part', async function() {
+      const interaction = {mode: 'nearest', intersect: false, axis: 'x'};
+      const chart = acquireBarChart([1.5, 10], {min: 1}, interaction);
+      const {chartArea} = chart;
+      const bar = chart.getDatasetMeta(0).data[0];
+      const position = {x: bar.x, y: chartArea.top + 5};
+
+      const evt = {type: 'click', chart, native: true, ...position};
+      const elements = Chart.Interaction.modes.nearest(chart, evt, interaction).map(item => item.element);
+      expect(elements).toEqual([bar]);
+
+      await triggerMouseEvent(chart, 'mousemove', position);
+      const tooltip = chart.tooltip;
+      expect(tooltip.dataPoints.map(item => item.dataIndex)).toEqual([0]);
+      expect(tooltip.caretX).toBeCloseToPixel(bar.x);
+      expect(tooltip.caretY).toBeCloseToPixel((bar.y + chartArea.bottom) / 2);
+
+      // The centre of the whole bar is inside the area, but its base is not
+      const tall = chart.getDatasetMeta(0).data[1];
+      expect(tall.getCenterPoint().y).toBeLessThan(chartArea.bottom);
+      await triggerMouseEvent(chart, 'mousemove', {x: tall.x, y: chartArea.top + 5});
+      expect(tooltip.dataPoints.map(item => item.dataIndex)).toEqual([1]);
+      expect(tooltip.caretY).toBeCloseToPixel((tall.y + chartArea.bottom) / 2);
+    });
+
+    it('finds a bar whose head is above the axis maximum and anchors the tooltip in its visible part', async function() {
+      const interaction = {mode: 'index', intersect: true};
+      const chart = acquireBarChart([100, 20], {max: 50}, interaction);
+      const {chartArea} = chart;
+      const bar = chart.getDatasetMeta(0).data[0];
+      const position = {x: bar.x, y: chartArea.top + 10};
+
+      const evt = {type: 'click', chart, native: true, ...position};
+      const elements = Chart.Interaction.modes.index(chart, evt, interaction).map(item => item.element);
+      expect(elements).toEqual([bar]);
+
+      await triggerMouseEvent(chart, 'mousemove', position);
+      const tooltip = chart.tooltip;
+      expect(tooltip.dataPoints.map(item => item.dataIndex)).toEqual([0]);
+      expect(tooltip.caretX).toBeCloseToPixel(bar.x);
+      expect(tooltip.caretY).toBeCloseToPixel((chartArea.top + bar.base) / 2);
+    });
+
+    it('does not find a bar with no part inside the chart area unless includeInvisible is set', function() {
+      const interaction = {mode: 'nearest', intersect: false, axis: 'x'};
+      const chart = acquireBarChart([0.5, 10], {min: 1}, interaction);
+      const meta = chart.getDatasetMeta(0);
+      const evt = {type: 'click', chart, native: true, x: meta.data[0].x, y: chart.chartArea.top + 5};
+
+      let elements = Chart.Interaction.modes.nearest(chart, evt, interaction).map(item => item.element);
+      expect(elements).toEqual([meta.data[1]]);
+
+      elements = Chart.Interaction.modes.nearest(chart, evt, {...interaction, includeInvisible: true}).map(item => item.element);
+      expect(elements).toEqual([meta.data[0]]);
+    });
+
+    it('keeps the tooltip of a bar inside the chart area at its head', async function() {
+      const chart = acquireBarChart([10, 20], {}, {mode: 'index', intersect: true});
+      const bar = chart.getDatasetMeta(0).data[1];
+
+      await triggerMouseEvent(chart, 'mousemove', {x: bar.x, y: bar.y + 5});
+      const tooltip = chart.tooltip;
+      expect(tooltip.dataPoints.map(item => item.dataIndex)).toEqual([1]);
+      expect(tooltip.caretX).toBeCloseToPixel(bar.x);
+      expect(tooltip.caretY).toBeCloseToPixel(bar.y);
+    });
+
+    it('does not find a bar with no part inside the chart area in the padding around it', function() {
+      const chart = window.acquireChart({
+        data: {
+          labels: ['a', 'b'],
+          datasets: [
+            {type: 'bar', data: [0.98, 10]},
+            {type: 'line', data: [5, 5], pointRadius: 10}
+          ]
+        },
+        options: {animation: false, scales: {y: {min: 1}}}
+      });
+      const {chartArea} = chart;
+      const bar = chart.getDatasetMeta(0).data[0];
+      expect(bar.y).toBeGreaterThan(chartArea.bottom);
+      // The padding that the points need lets a pointer just below the area count as inside it
+      const evt = {type: 'click', chart, native: true, x: bar.x, y: bar.y + 1};
+      expect(chart.isPointInArea(evt)).toBe(true);
+      expect(bar.inRange(evt.x, evt.y)).toBe(true);
+
+      let elements = Chart.Interaction.modes.point(chart, evt, {intersect: true}).map(item => item.element);
+      expect(elements).not.toContain(bar);
+      elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: true}).map(item => item.element);
+      expect(elements).not.toContain(bar);
+    });
+
+    it('finds a bar of zero length on the edge of the chart area', function() {
+      const chart = acquireBarChart([0, 10], {min: 0}, {});
+      const meta = chart.getDatasetMeta(0);
+      const bar = meta.data[0];
+      expect(bar.y).toBeCloseToPixel(chart.chartArea.bottom);
+
+      const atBar = {type: 'click', chart, native: true, x: bar.x, y: bar.y};
+      let elements = Chart.Interaction.modes.point(chart, atBar, {intersect: true}).map(item => item.element);
+      expect(elements).toEqual([bar]);
+
+      const above = {type: 'click', chart, native: true, x: bar.x, y: chart.chartArea.top + 5};
+      elements = Chart.Interaction.modes.nearest(chart, above, {intersect: false, axis: 'x'}).map(item => item.element);
+      expect(elements).toEqual([bar]);
+    });
+
+    it('keeps the generic rule for a bar element subclass with its own geometry', async function() {
+      class OwnGeometryElement extends Chart.BarElement {
+        static id = 'ownGeometry';
+        getCenterPoint(useFinalPosition) {
+          return super.getCenterPoint(useFinalPosition);
+        }
+      }
+      class OwnGeometryController extends Chart.BarController {
+        static id = 'ownGeometry';
+        static defaults = {...Chart.BarController.defaults, dataElementType: 'ownGeometry'};
+      }
+      Chart.register(OwnGeometryElement, OwnGeometryController);
+      try {
+        const interaction = {mode: 'nearest', intersect: false, axis: 'x'};
+        const chart = window.acquireChart({
+          type: 'ownGeometry',
+          data: {labels: ['a', 'b'], datasets: [{data: [1.5, 10]}]},
+          options: {
+            animation: false,
+            interaction,
+            scales: {y: {min: 1}},
+            plugins: {tooltip: {animation: false}}
+          }
+        });
+        const meta = chart.getDatasetMeta(0);
+        const bar = meta.data[0];
+        expect(bar instanceof OwnGeometryElement).toBe(true);
+        // No opinion: the interaction modes and the tooltip keep the generic rule
+        expect(bar._getAreaCenter && bar._getAreaCenter(chart.chartArea)).toBeUndefined();
+
+        const position = {x: bar.x, y: chart.chartArea.top + 5};
+        const evt = {type: 'click', chart, native: true, ...position};
+        const elements = Chart.Interaction.modes.nearest(chart, evt, interaction).map(item => item.element);
+        expect(elements).toEqual([meta.data[1]]);
+
+        await triggerMouseEvent(chart, 'mousemove', {x: bar.x, y: bar.y + 5});
+        expect(chart.tooltip.dataPoints.map(item => item.dataIndex)).toEqual([0]);
+        expect(chart.tooltip.caretY).toBeCloseToPixel(bar.y);
+      } finally {
+        Chart.unregister(OwnGeometryElement, OwnGeometryController);
+      }
+    });
+  });
+
   const testCases = [
     {
       data: [12, 19, null, null, null, null, 5, 2],

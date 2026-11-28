@@ -5,6 +5,7 @@ import {_isPointInArea, isNullOrUndef} from '../helpers/index.js';
 import type PrivateChart from './core.controller.js';
 import type Element from './core.element.js';
 import type {
+  ChartArea,
   ChartEvent,
   ChartMeta,
   InteractionItem,
@@ -16,7 +17,19 @@ import type {
 export type Chart = PrivateChart;
 export type {ChartEvent, InteractionItem, InteractionOptions, Point};
 
-type InteractionElement = Element & VisualElement & {skip?: boolean};
+type InteractionElement = Element & VisualElement & {
+  skip?: boolean;
+  _getAreaCenter?(area: ChartArea, useFinalPosition?: boolean): Point | null | undefined;
+};
+
+/**
+ * The point to measure to for an element that knows its visible part (a bar): the centre of
+ * the part inside the chart area, or null when no part is inside. Undefined for any other
+ * element, which keeps the generic rule on its `x/y` or centre point.
+ */
+function getAreaCenter(element: InteractionElement, area: ChartArea, useFinalPosition?: boolean): Point | null | undefined {
+  return element._getAreaCenter ? element._getAreaCenter(area, useFinalPosition) : undefined;
+}
 
 /** The data elements, read by the lookup helpers through their axis keys. */
 type LookupTable = Record<string, number>[];
@@ -141,12 +154,17 @@ function getIntersectItems(
   }
 
   const evaluationFunc = function(element: InteractionElement, datasetIndex: number, index: number) {
-    if (!includeInvisible && !_isPointInArea(element, chart.chartArea, 0)) {
+    if (!element.inRange(position.x, position.y, useFinalPosition)) {
       return;
     }
-    if (element.inRange(position.x, position.y, useFinalPosition)) {
-      items.push({element, datasetIndex, index});
+    if (!includeInvisible) {
+      const areaCenter = getAreaCenter(element, chart.chartArea, useFinalPosition);
+      const visible = areaCenter === undefined ? _isPointInArea(element, chart.chartArea, 0) : areaCenter !== null;
+      if (!visible) {
+        return;
+      }
     }
+    items.push({element, datasetIndex, index});
   };
 
   evaluateInteractionItems(chart, axis, position, evaluationFunc, true);
@@ -181,6 +199,23 @@ function getNearestRadialItems(chart: Chart, position: Point, axis: string, useF
 }
 
 /**
+ * The point the nearest modes measure a bar by, from its `_getAreaCenter` result: the centre of its part
+ * inside the chart area. A bar with no part inside (`null`) is measured to its centre with
+ * `includeInvisible`, and is not a candidate (`null`) without it.
+ */
+function getBarMeasurePoint(
+  element: InteractionElement,
+  areaCenter: Point | null,
+  useFinalPosition?: boolean,
+  includeInvisible?: boolean
+): Point | null {
+  if (areaCenter) {
+    return areaCenter;
+  }
+  return includeInvisible ? element.getCenterPoint(useFinalPosition) : null;
+}
+
+/**
  * Helper function to get the items nearest to the event position for a cartesian chart
  * @param chart - the chart to look at elements from
  * @param position - the point to be nearest to, in relative coordinates
@@ -208,13 +243,26 @@ function getNearestCartesianItems(
       return;
     }
 
+    const areaCenter = getAreaCenter(element, chart.chartArea, useFinalPosition);
+    if (areaCenter !== undefined) {
+      // A bar (see getAreaCenter). A branch of its own: sharing the code below with it made
+      // points allocate a centre object per element and pointer event.
+      const barCenter = getBarMeasurePoint(element, areaCenter, useFinalPosition, includeInvisible);
+      if (barCenter) {
+        addItem(distanceMetric(position, barCenter), element, datasetIndex, index);
+      }
+      return;
+    }
+
     const center = element.getCenterPoint(useFinalPosition);
     const pointInArea = !!includeInvisible || chart.isPointInArea(center);
     if (!pointInArea && !inRange) {
       return;
     }
+    addItem(distanceMetric(position, center), element, datasetIndex, index);
+  }
 
-    const distance = distanceMetric(position, center);
+  function addItem(distance: number, element: InteractionElement, datasetIndex: number, index: number) {
     if (distance < minDistance) {
       items = [{element, datasetIndex, index}];
       minDistance = distance;

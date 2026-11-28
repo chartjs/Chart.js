@@ -5,7 +5,7 @@ import {each, noop, isNullOrUndef, isArray, _elementsEqual, isObject} from '../h
 import {toFont, toPadding, toTRBLCorners} from '../helpers/helpers.options.js';
 import {getRtlAdapter, overrideTextDirection, restoreTextDirection} from '../helpers/helpers.rtl.js';
 import {distanceBetweenPoints, _limitValue} from '../helpers/helpers.math.js';
-import {createContext, drawPoint} from '../helpers/index.js';
+import {createContext, drawPoint, _isPointInArea} from '../helpers/index.js';
 
 /**
  * @typedef { import('../platform/platform.base.js').Chart } Chart
@@ -13,6 +13,40 @@ import {createContext, drawPoint} from '../helpers/index.js';
  * @typedef { import('../types/index.js').ActiveElement } ActiveElement
  * @typedef { import('../core/core.interaction.js').InteractionItem } InteractionItem
  */
+
+/**
+ * The chart area of the tooltip a positioner runs for, when it runs for one.
+ * A positioner can also be called on its own, without a tooltip as `this`.
+ */
+function getChartArea(tooltip) {
+  return tooltip && tooltip.chart ? tooltip.chart.chartArea : undefined;
+}
+
+/**
+ * The point the interaction modes measure an element by: the centre of the visible part
+ * for a bar, the centre point for any other element.
+ */
+function getMeasurePoint(el, chartArea) {
+  const areaCenter = chartArea && el._getAreaCenter && el._getAreaCenter(chartArea);
+  return areaCenter || el.getCenterPoint();
+}
+
+/**
+ * The point the tooltip anchors to. A bar cut off by the chart area points at the centre
+ * of its visible part; a bar wholly inside, and any other element, at its `tooltipPosition`.
+ */
+function getAnchorPosition(el, chartArea) {
+  const position = el.tooltipPosition();
+  const areaCenter = chartArea && el._getAreaCenter && el._getAreaCenter(chartArea);
+  if (!areaCenter) {
+    return position;
+  }
+  // A bar's tooltip position is its head, and its centre is midway to its base,
+  // so the base is the head mirrored through the centre.
+  const center = el.getCenterPoint();
+  const base = {x: 2 * center.x - position.x, y: 2 * center.y - position.y};
+  return _isPointInArea(position, chartArea) && _isPointInArea(base, chartArea) ? position : areaCenter;
+}
 
 const positioners = {
   /**
@@ -23,6 +57,7 @@ const positioners = {
       return false;
     }
 
+    const chartArea = getChartArea(this);
     let i, len;
     let xSet = new Set();
     let y = 0;
@@ -31,7 +66,7 @@ const positioners = {
     for (i = 0, len = items.length; i < len; ++i) {
       const el = items[i].element;
       if (el && el.hasValue()) {
-        const pos = el.tooltipPosition();
+        const pos = getAnchorPosition(el, chartArea);
         xSet.add(pos.x);
         y += pos.y;
         ++count;
@@ -59,6 +94,7 @@ const positioners = {
       return false;
     }
 
+    const chartArea = getChartArea(this);
     let x = eventPosition.x;
     let y = eventPosition.y;
     let minDistance = Number.POSITIVE_INFINITY;
@@ -67,7 +103,7 @@ const positioners = {
     for (i = 0, len = items.length; i < len; ++i) {
       const el = items[i].element;
       if (el && el.hasValue()) {
-        const center = el.getCenterPoint();
+        const center = getMeasurePoint(el, chartArea);
         const d = distanceBetweenPoints(eventPosition, center);
 
         if (d < minDistance) {
@@ -78,7 +114,7 @@ const positioners = {
     }
 
     if (nearestElement) {
-      const tp = nearestElement.tooltipPosition();
+      const tp = getAnchorPosition(nearestElement, chartArea);
       x = tp.x;
       y = tp.y;
     }

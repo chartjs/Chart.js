@@ -7,7 +7,7 @@ Namespace: `options.interaction`, the global interaction configuration is at `Ch
 | `mode` | `string` | `'nearest'` | Sets which elements appear in the interaction. See [Interaction Modes](#modes) for details.
 | `intersect` | `boolean` | `true` | if true, the interaction mode only applies when the mouse position intersects an item on the chart.
 | `axis` | `string` | `'x'` | Can be set to `'x'`, `'y'`, `'xy'` or `'r'` to define which directions are used in calculating distances. Defaults to `'x'` for `'index'` mode and `'xy'` in `dataset` and `'nearest'` modes.
-| `includeInvisible` | `boolean` | `false` | if true, the invisible points that are outside of the chart area will also be included when evaluating interactions.
+| `includeInvisible` | `boolean` | `false` | if true, the invisible points that are outside of the chart area will also be included when evaluating interactions. A bar counts as visible when any part of it is inside the chart area.
 
 By default, these options apply to both the hover and tooltip interactions. The same options can be set in the `options.hover` namespace, in which case they will only affect the hover interaction. Similarly, the options can be set in the `options.plugins.tooltip` namespace to independently configure the tooltip interactions.
 
@@ -131,7 +131,7 @@ const chart = new Chart(ctx, {
 
 ### nearest
 
-Gets the items that are at the nearest distance to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). You can use the `axis` setting to define which coordinates are considered in distance calculation. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
+Gets the items that are at the nearest distance to the point. The nearest item is determined based on the distance to the center of the chart item (point, bar). For a bar cut off by the chart area, for example by the `min` or `max` of its value axis, the distance is measured to the center of the part inside the chart area, and the tooltip points there. You can use the `axis` setting to define which coordinates are considered in distance calculation. If `intersect` is true, this is only triggered when the mouse position intersects an item in the graph. This is very useful for combo charts where points are hidden behind bars.
 
 ```javascript
 const chart = new Chart(ctx, {
