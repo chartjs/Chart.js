@@ -972,6 +972,74 @@ describe('Core.Interaction', function() {
       expect(tooltip.caretY).toBeCloseToPixel((chartArea.top + bar.base) / 2);
     });
 
+    it('finds a horizontal bar whose base is left of the axis minimum and anchors the tooltip in its visible part', async function() {
+      const interaction = {mode: 'nearest', intersect: false, axis: 'y'};
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a', 'b'], datasets: [{data: [1.5, 10]}]},
+        options: {
+          animation: false,
+          indexAxis: 'y',
+          interaction,
+          scales: {x: {min: 1}},
+          plugins: {tooltip: {animation: false}}
+        }
+      });
+      const {chartArea} = chart;
+      const meta = chart.getDatasetMeta(0);
+      const bar = meta.data[0];
+      const position = {x: chartArea.right - 5, y: bar.y};
+
+      const evt = {type: 'click', chart, native: true, ...position};
+      const elements = Chart.Interaction.modes.nearest(chart, evt, interaction).map(item => item.element);
+      expect(elements).toEqual([bar]);
+
+      await triggerMouseEvent(chart, 'mousemove', position);
+      const tooltip = chart.tooltip;
+      expect(tooltip.dataPoints.map(item => item.dataIndex)).toEqual([0]);
+      expect(tooltip.caretX).toBeCloseToPixel((bar.x + chartArea.left) / 2);
+      expect(tooltip.caretY).toBeCloseToPixel(bar.y);
+
+      // The centre of the whole bar is inside the area, but its base is not
+      const long = meta.data[1];
+      expect(long.getCenterPoint().x).toBeGreaterThan(chartArea.left);
+      await triggerMouseEvent(chart, 'mousemove', {x: chartArea.right - 5, y: long.y});
+      expect(tooltip.dataPoints.map(item => item.dataIndex)).toEqual([1]);
+      expect(tooltip.caretX).toBeCloseToPixel((long.x + chartArea.left) / 2);
+    });
+
+    it('measures the distance to a cut-off bar from its visible part', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a'], datasets: [{data: [100]}, {data: [40]}]},
+        options: {animation: false, scales: {y: {max: 50}}}
+      });
+      const cutOff = chart.getDatasetMeta(0).data[0];
+      const inside = chart.getDatasetMeta(1).data[0];
+      // Nearer the visible centre of the cut-off bar (25) than the centre of the other (20),
+      // but further from the centre of the whole cut-off bar (50).
+      const evt = {type: 'click', chart, native: true, x: (cutOff.x + inside.x) / 2, y: chart.scales.y.getPixelForValue(27)};
+
+      const elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false, axis: 'xy'}).map(item => item.element);
+      expect(elements).toEqual([cutOff]);
+    });
+
+    it('measures a cut-off bar at its final position when asked to', function() {
+      const chart = window.acquireChart({
+        type: 'bar',
+        data: {labels: ['a'], datasets: [{data: [100]}, {data: [40]}]},
+        options: {animation: {duration: 60000}, scales: {y: {max: 50}}}
+      });
+      const cutOff = chart.getDatasetMeta(0).data[0];
+      const inside = chart.getDatasetMeta(1).data[0];
+      // Both bars still grow from their base
+      expect(cutOff.y).not.toBeCloseToPixel(cutOff.getProps(['y'], true).y);
+      const evt = {type: 'click', chart, native: true, x: (cutOff.x + inside.x) / 2, y: chart.scales.y.getPixelForValue(27)};
+
+      const elements = Chart.Interaction.modes.nearest(chart, evt, {intersect: false, axis: 'xy'}, true).map(item => item.element);
+      expect(elements).toEqual([cutOff]);
+    });
+
     it('does not find a bar with no part inside the chart area unless includeInvisible is set', function() {
       const interaction = {mode: 'nearest', intersect: false, axis: 'x'};
       const chart = acquireBarChart([0.5, 10], {min: 1}, interaction);

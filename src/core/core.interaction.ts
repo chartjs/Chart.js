@@ -199,23 +199,6 @@ function getNearestRadialItems(chart: Chart, position: Point, axis: string, useF
 }
 
 /**
- * The point the nearest modes measure a bar by, from its `_getAreaCenter` result: the centre of its part
- * inside the chart area. A bar with no part inside (`null`) is measured to its centre with
- * `includeInvisible`, and is not a candidate (`null`) without it.
- */
-function getBarMeasurePoint(
-  element: InteractionElement,
-  areaCenter: Point | null,
-  useFinalPosition?: boolean,
-  includeInvisible?: boolean
-): Point | null {
-  if (areaCenter) {
-    return areaCenter;
-  }
-  return includeInvisible ? element.getCenterPoint(useFinalPosition) : null;
-}
-
-/**
  * Helper function to get the items nearest to the event position for a cartesian chart
  * @param chart - the chart to look at elements from
  * @param position - the point to be nearest to, in relative coordinates
@@ -247,7 +230,8 @@ function getNearestCartesianItems(
     if (areaCenter !== undefined) {
       // A bar (see getAreaCenter). A branch of its own: sharing the code below with it made
       // points allocate a centre object per element and pointer event.
-      const barCenter = getBarMeasurePoint(element, areaCenter, useFinalPosition, includeInvisible);
+      // Measured to its visible part; with no part inside the area, only with includeInvisible.
+      const barCenter = areaCenter || (includeInvisible ? element.getCenterPoint(useFinalPosition) : null);
       if (barCenter) {
         addItem(distanceMetric(position, barCenter), element, datasetIndex, index);
       }
