@@ -12,12 +12,16 @@ export function fontString(pixelSize: number, fontStyle: string, fontFamily: str
 * Request animation polyfill
 */
 export const requestAnimFrame = (function() {
-  if (typeof window === 'undefined') {
+  const animationFrame = globalThis.requestAnimationFrame
+    || (typeof window !== 'undefined' && window.requestAnimationFrame);
+  if (typeof animationFrame !== 'function') {
     return function(callback) {
       return callback();
     };
   }
-  return window.requestAnimationFrame;
+  return function(callback) {
+    return animationFrame.call(globalThis, callback);
+  };
 }());
 
 /**
@@ -36,7 +40,7 @@ export function throttled<TArgs extends Array<any>>(
     argsToUse = args;
     if (!ticking) {
       ticking = true;
-      requestAnimFrame.call(window, () => {
+      requestAnimFrame(() => {
         ticking = false;
         fn.apply(thisArg, argsToUse);
       });
