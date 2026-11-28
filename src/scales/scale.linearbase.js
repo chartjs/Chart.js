@@ -150,7 +150,7 @@ function generateTicks(generationOptions, dataRange) {
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
   // A bound label shows at most one decimal more than the ticks.
-  const labelPlaces = (isNullOrUndef(precision) ? decimalPlaces : precision) + 1;
+  const labelFactor = factor * 10;
 
   let j = 0;
   if (minDefined) {
@@ -161,7 +161,7 @@ function generateTicks(generationOptions, dataRange) {
         j++; // Skip niceMin
       }
       // If the next nice tick is close to min, skip it
-      if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, labelPlaces, minSpacing, generationOptions))) {
+      if (almostEquals(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, labelFactor, minSpacing, generationOptions))) {
         j++;
       }
     } else if (niceMin < min) {
@@ -182,7 +182,7 @@ function generateTicks(generationOptions, dataRange) {
     // The tick at min is never replaced.
     const last = ticks[ticks.length - 1];
     const replaceable = last && last.value !== min;
-    if (replaceable && almostEquals(last.value, max, relativeLabelSize(max, labelPlaces, minSpacing, generationOptions))) {
+    if (replaceable && almostEquals(last.value, max, relativeLabelSize(max, labelFactor, minSpacing, generationOptions))) {
       last.value = max;
     } else {
       ticks.push({value: max});
@@ -202,13 +202,16 @@ function generateTicks(generationOptions, dataRange) {
  * The space the label of a bound takes, in value units. The label is sized from
  * the bound rounded to the decimals it can show, so the floating point noise of a
  * data bound (1.8100024990071555) does not make it look longer than it is.
+ * @param {number} value - the bound
+ * @param {number} labelFactor - 10 to the power of the decimals the label shows
  */
-function relativeLabelSize(value, places, minSpacing, {horizontal, minRotation}) {
+function relativeLabelSize(value, labelFactor, minSpacing, {horizontal, minRotation}) {
   const rad = toRadians(minRotation);
   const ratio = (horizontal ? Math.sin(rad) : Math.cos(rad)) || 0.001;
-  const shown = Math.min(Math.max(places, 0), 100);
-  const digits = String(Number(value.toFixed(shown))).length;
-  const length = 0.75 * minSpacing * digits;
+  // Near the largest number the scaled bound overflows to Infinity, which still
+  // counts as a label of 8 characters, about as long as "1.8e+308".
+  const rounded = Math.round(value * labelFactor) / labelFactor;
+  const length = 0.75 * minSpacing * String(rounded).length;
   return Math.min(minSpacing / ratio, length);
 }
 
