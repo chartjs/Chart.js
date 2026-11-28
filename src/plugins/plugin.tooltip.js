@@ -1104,7 +1104,7 @@ export class Tooltip extends Element {
       // Footer
       this.drawFooter(pt, ctx, options);
 
-      restoreTextDirection(ctx, options.textDirection);
+      restoreTextDirection(ctx);
 
       ctx.restore();
     }

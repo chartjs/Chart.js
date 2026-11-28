@@ -3212,7 +3212,7 @@ export type ResolverObjectKey = string | boolean;
 export type ResolverProxy<T extends AnyObject[] = AnyObject[], R extends AnyObject[] = T> = Merge<T[number]> & ResolverCache<T, R>;
 
 // @public (undocumented)
-export function restoreTextDirection(ctx: CanvasRenderingContext2D, original?: [string, string]): void;
+export function restoreTextDirection(ctx: CanvasRenderingContext2D, _original?: [string, string]): void;
 
 // @public (undocumented)
 export function retinaScale(chart: Chart | Chart_2, forceRatio: number, forceStyle?: boolean): boolean | void;

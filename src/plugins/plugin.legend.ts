@@ -604,8 +604,7 @@ export class Legend extends Element<AnyObject, LegendOpts> implements LayoutItem
       });
     });
 
-    // @ts-expect-error restoreTextDirection takes the [value, priority] pair that overrideTextDirection saved, not the direction.
-    restoreTextDirection(this.ctx, opts.textDirection);
+    restoreTextDirection(this.ctx);
   }
 
   /**

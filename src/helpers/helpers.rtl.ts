@@ -1,3 +1,5 @@
+type DirectionContext = CanvasRenderingContext2D & { prevTextDirection?: CanvasDirection };
+
 export interface RTLAdapter {
   x(x: number): number;
   setWidth(w: number): void;
@@ -53,22 +55,16 @@ export function getRtlAdapter(rtl: boolean, rectX: number, width: number) {
 }
 
 export function overrideTextDirection(ctx: CanvasRenderingContext2D, direction: 'ltr' | 'rtl') {
-  let style: CSSStyleDeclaration, original: [string, string];
   if (direction === 'ltr' || direction === 'rtl') {
-    style = ctx.canvas.style;
-    original = [
-      style.getPropertyValue('direction'),
-      style.getPropertyPriority('direction'),
-    ];
-
-    style.setProperty('direction', direction, 'important');
-    (ctx as { prevTextDirection?: [string, string] }).prevTextDirection = original;
+    (ctx as DirectionContext).prevTextDirection = ctx.direction;
+    ctx.direction = direction;
   }
 }
 
-export function restoreTextDirection(ctx: CanvasRenderingContext2D, original?: [string, string]) {
+export function restoreTextDirection(ctx: CanvasRenderingContext2D, _original?: [string, string]) { // eslint-disable-line @typescript-eslint/no-unused-vars
+  const original = (ctx as DirectionContext).prevTextDirection;
   if (original !== undefined) {
-    delete (ctx as { prevTextDirection?: [string, string] }).prevTextDirection;
-    ctx.canvas.style.setProperty('direction', original[0], original[1]);
+    delete (ctx as DirectionContext).prevTextDirection;
+    ctx.direction = original;
   }
 }
