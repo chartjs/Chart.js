@@ -1,6 +1,3 @@
-env:
-  jasmine: true
-
 globals:
   acquireChart: true
   afterEvent: true
@@ -10,3 +7,31 @@ globals:
 
 rules:
   max-statements: ["warn", 50]
+
+overrides:
+  # Specs that run under Vitest (vitest.config.js, `globals: true`) and the
+  # setups of its browser and unit projects, and the smoke suite of the built
+  # bundle (vitest.umd.config.js).
+  - files: ['specs/**/*.spec.js', 'setup.js', 'setup.node.js', 'vitest.shared.js', 'umd/**/*.spec.js', 'setup.umd.js']
+    globals:
+      afterAll: readonly
+      afterEach: readonly
+      beforeAll: readonly
+      beforeEach: readonly
+      createMockContext: readonly
+      describe: readonly
+      expect: readonly
+      it: readonly
+      releaseChart: readonly
+      test: readonly
+      triggerMouseEvent: readonly
+      vi: readonly
+  # Image fixtures, evaluated by test/specs/fixtures.spec.js with the globals of
+  # test/setup.js.
+  - files: ['fixtures/**/*.js']
+    globals:
+      triggerMouseEvent: readonly
+  # The classic web worker of the smoke suite (importScripts, postMessage).
+  - files: ['umd/worker.js']
+    env:
+      worker: true

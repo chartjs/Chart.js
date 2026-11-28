@@ -9,6 +9,6 @@ Namespace: `options.scales[scaleId]`
 | `position` | `string` \| `object` | | Position of the axis. [more...](./index.md#axis-position)
 | `stack` | `string` | | Stack group. Axes at the same `position` with same `stack` are stacked.
 | `stackWeight` | `number` | 1 | Weight of the scale in stack group. Used to determine the amount of allocated space for the scale within the group.
-| `axis` | `string` | | Which type of axis this is. Possible values are: `'x'`, `'y'`. If not set, this is inferred from the first character of the ID which should be `'x'` or `'y'`.
+| `axis` | `string` | | Which type of axis this is. Possible values are: `'x'`, `'y'`. If not set, it is decided by `position`, then by the dataset that names the scale in `xAxisID` or `yAxisID`, then by the first character of the ID. [more...](../index.md#the-axis-of-a-scale)
 | `offset` | `boolean` | `false` | If true, extra space is added to the both edges and the axis is scaled to fit into the chart area. This is set to `true` for a bar chart by default.
 | `title` | `object` | | Scale title configuration. [more...](../labelling.md#scale-title-configuration)

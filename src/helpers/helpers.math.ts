@@ -109,13 +109,16 @@ export function toDegrees(radians: number) {
  */
 export function _decimalPlaces(x: number) {
   if (!isFiniteNumber(x)) {
-    return;
+    return undefined;
   }
   let e = 1;
   let p = 0;
   while (Math.round(x * e) / e !== x) {
     e *= 10;
     p++;
+    if (!isFinite(e)) {
+      return undefined;
+    }
   }
   return p;
 }

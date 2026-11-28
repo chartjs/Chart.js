@@ -641,7 +641,28 @@ export class Tooltip extends Element {
     let properties;
     let tooltipItems = [];
 
-    if (!active.length) {
+    if (active.length) {
+      tooltipItems = this._createItems(options);
+    }
+
+    // Hide the tooltip when nothing is active or every item was filtered
+    // out, so content callbacks are not invoked with an empty item array
+    if (!tooltipItems.length) {
+      if (active.length) {
+        // Every item was filtered out: clear the content so the previous
+        // body is not drawn with the cleared label colors while fading out
+        this.title = [];
+        this.beforeBody = [];
+        this.body = [];
+        this.afterBody = [];
+        this.footer = [];
+        const position = positioners[options.position].call(this, active, this._eventPosition);
+        if (position !== false) {
+          // _positionChanged() compares against the caret, so a repeated event on a filtered item is not a position change
+          this.caretX = position.x;
+          this.caretY = position.y;
+        }
+      }
       if (this.opacity !== 0) {
         properties = {
           opacity: 0
@@ -649,7 +670,6 @@ export class Tooltip extends Element {
       }
     } else {
       const position = positioners[options.position].call(this, active, this._eventPosition);
-      tooltipItems = this._createItems(options);
 
       this.title = this.getTitle(tooltipItems, options);
       this.beforeBody = this.getBeforeBody(tooltipItems, options);
@@ -1117,7 +1137,7 @@ export class Tooltip extends Element {
         element: meta.data[index],
         index,
       };
-    });
+    }).filter(({element}) => element);
     const changed = !_elementsEqual(lastActive, active);
     const positionChanged = this._positionChanged(active, eventPosition);
 
@@ -1190,10 +1210,11 @@ export class Tooltip extends Element {
     if (!inChartArea) {
       // Let user control the active elements outside chartArea. Eg. using Legend.
       // But make sure that active elements are still valid.
-      return lastActive.filter(i =>
-        this.chart.data.datasets[i.datasetIndex] &&
-        this.chart.getDatasetMeta(i.datasetIndex).controller.getParsed(i.index) !== undefined
-      );
+      return lastActive.filter(i => {
+        // The controller is missing when the dataset metas have been destroyed, eg. after the canvas is detached.
+        const controller = this.chart.data.datasets[i.datasetIndex] && this.chart.getDatasetMeta(i.datasetIndex).controller;
+        return controller && controller.getParsed(i.index) !== undefined;
+      });
     }
 
     // Find Active Elements for tooltips

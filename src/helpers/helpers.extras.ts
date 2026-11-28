@@ -49,15 +49,18 @@ export function throttled<TArgs extends Array<any>>(
  */
 export function debounce<TArgs extends Array<any>>(fn: (...args: TArgs) => void, delay: number) {
   let timeout;
-  return function(...args: TArgs) {
+  const debounced = function(...args: TArgs) {
     if (delay) {
       clearTimeout(timeout);
-      timeout = setTimeout(fn, delay, args);
+      timeout = setTimeout(fn, delay, ...args);
     } else {
       fn.apply(this, args);
     }
     return delay;
   };
+
+  debounced.cancel = () => clearTimeout(timeout);
+  return debounced;
 }
 
 /**

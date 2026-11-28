@@ -4,3 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # `v3` of this action is an unreleased branch, not a tag. Dependabot has
+      # proposed it as a version before; stay on tagged 2.x releases.
+      - dependency-name: "preactjs/compressed-size-action"
+        update-types: ["version-update:semver-major"]

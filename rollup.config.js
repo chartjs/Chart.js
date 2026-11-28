@@ -2,7 +2,7 @@ import cleanup from 'rollup-plugin-cleanup';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import {swc} from 'rollup-plugin-swc3';
-import {terser} from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import {readFileSync} from 'fs';
 
 const {version, homepage} = JSON.parse(readFileSync('./package.json'));
@@ -34,12 +34,14 @@ const plugins = (minify) =>
     }),
     minify
       ? terser({
-        output: {
+        format: {
           preamble: banner
         }
       })
       : cleanup({
-        comments: ['some', /__PURE__/]
+        comments: ['some', /__PURE__/],
+        // Own array: the plugin strips the dots from it in place, and resolve shares the other one.
+        extensions: ['js', 'ts']
       })
   ];
 

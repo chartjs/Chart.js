@@ -30,14 +30,16 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 24
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - name: Use Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
           cache: pnpm
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           filters: |
@@ -49,9 +51,12 @@ jobs:
               - 'src/**'
               - 'package.json'
             test:
+              - '.github/workflows/ci.yml'
               - 'test/**'
-              - 'karma.conf.js'
+              - 'rollup.config.js'
+              - 'vitest*.config.js'
               - 'package.json'
+              - 'pnpm-lock.yaml'
             types:
               - 'package.json'
               - 'tsconfig.json'
@@ -61,6 +66,12 @@ jobs:
         run: pnpm run lint
       - name: Build
         run: pnpm run build
+      - name: Install Playwright browsers
+        if: |
+          (steps.changes.outputs.src == 'true' ||
+          steps.changes.outputs.test == 'true') &&
+          runner.os != 'Windows'
+        run: pnpm exec playwright install --with-deps chromium firefox
       - name: Test
         if: |
           (steps.changes.outputs.src == 'true' ||
@@ -68,36 +79,40 @@ jobs:
           runner.os != 'Windows'
         run: |
           pnpm run build
-          if [ "${{ runner.os }}" == "macOS" ]; then
-            pnpm run test-ci --browsers chrome,safari
-          else
-            xvfb-run --auto-servernum pnpm run test-ci
-          fi
-        shell: bash
+          pnpm run test-ci
+      # No browsers on Windows: run the unit specs, which need none, in Node.
+      - name: Test unit specs
+        if: |
+          (steps.changes.outputs.src == 'true' ||
+          steps.changes.outputs.test == 'true') &&
+          runner.os == 'Windows'
+        run: pnpm run test-unit
       - name: Package
         if: steps.changes.outputs.docs == 'true'
         run: |
           pnpm run docs
           pnpm pack
-      - name: Coveralls Parallel - Chrome
+      # The VitePress site that will replace VuePress: checked until it does,
+      # so that a docs change cannot break it unnoticed.
+      - name: Type-check docs
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm run docs:typecheck
+      - name: Test docs site code
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm --filter chartjs-docs-vitepress test
+      - name: Build VitePress docs
+        if: steps.changes.outputs.docs == 'true'
+        run: pnpm run docs:vitepress
+      - name: Coveralls Parallel - Vitest
         if: |
           steps.changes.outputs.src == 'true' &&
           runner.os != 'Windows'
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-lcov: './coverage/chrome/lcov.info'
-          flag-name: ${{ matrix.os }}-chrome
-          parallel: true
-      - name: Coveralls Parallel - Firefox
-        if: |
-          steps.changes.outputs.src == 'true' &&
-          runner.os != 'Windows'
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.github_token }}
-          path-to-lcov: './coverage/firefox/lcov.info'
-          flag-name: ${{ matrix.os }}-firefox
+          file: './coverage/vitest/lcov.info'
+          coverage-reporter-version: v0.6.22
+          flag-name: ${{ matrix.os }}-vitest
           parallel: true
 
   finish:
@@ -108,7 +123,8 @@ jobs:
     steps:
       - name: Coveralls Finished
         if: needs.build.outputs.coveralls == 'true'
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.github_token }}
+          coverage-reporter-version: v0.6.22
           parallel-finished: true

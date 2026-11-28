@@ -1,7 +1,17 @@
 import DatasetController from '../core/core.datasetController.js';
-import {isNullOrUndef} from '../helpers/index.js';
+import {isFinite, isNullOrUndef} from '../helpers/index.js';
 import {isNumber} from '../helpers/helpers.math.js';
 import {_getStartAndCountOfVisiblePoints, _scaleRangesChanged} from '../helpers/helpers.extras.js';
+
+/**
+ * The label of the point's own category: from the index axis when it is a category axis,
+ * else from the value axis when that one is.
+ */
+function categoryLabel({iScale, vScale}, parsed) {
+  const scale = iScale.type === 'category' ? iScale : vScale.type === 'category' ? vScale : null;
+  const value = scale ? parsed[scale.axis] : null;
+  return isFinite(value) ? scale.getLabelForValue(value) : '';
+}
 
 export default class ScatterController extends DatasetController {
 
@@ -48,7 +58,7 @@ export default class ScatterController extends DatasetController {
     const y = yScale.getLabelForValue(parsed.y);
 
     return {
-      label: labels[index] || '',
+      label: labels[index] || categoryLabel(meta, parsed),
       value: '(' + x + ', ' + y + ')'
     };
   }

@@ -144,9 +144,13 @@ The style of each bar can be controlled with the following properties:
 
 All these values, if `undefined`, fallback to the associated [`elements.bar.*`](../configuration/elements.md#bar-configuration) options.
 
+:::tip Borders are filled, not stroked
+The border of a bar is drawn by filling the area between the bar's outer rectangle and an inner one that is [`borderWidth`](#borderwidth) smaller on each side, not with a canvas stroke. Options that only shape a stroke, such as `borderDash`, `borderDashOffset`, `borderCapStyle` and `borderJoinStyle`, therefore have no effect on bars, and bar datasets do not pass them to the legend box either. A dashed bar outline needs a [plugin](../developers/plugins.md) that strokes the bars itself.
+:::
+
 #### borderSkipped
 
-This setting is used to avoid drawing the bar stroke at the base of the fill, or disable the border radius.
+This setting is used to avoid drawing the bar border at the base of the fill, or disable the border radius.
 In general, this does not need to be changed except when creating chart types
 that derive from a bar chart.
 
@@ -222,7 +226,7 @@ The bar chart sets unique default values for the following configuration from th
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `offset` | `boolean` | `true` | If true, extra space is added to both edges and the axis is scaled to fit into the chart area.
-| `grid.offset` | `boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offsetgridlines)
+| `grid.offset` | `boolean` | `true` | If true, the bars for a particular data point fall between the grid lines. The grid line will move to the left by one half of the tick interval. If false, the grid line will go right down the middle of the bars. [more...](#offset-grid-lines)
 
 ### Example scale configuration
 

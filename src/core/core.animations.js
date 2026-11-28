@@ -1,7 +1,8 @@
 import animator from './core.animator.js';
 import Animation from './core.animation.js';
 import defaults from './core.defaults.js';
-import {isArray, isObject} from '../helpers/helpers.core.js';
+import {isArray, isFunction, isObject} from '../helpers/helpers.core.js';
+import {_descriptors} from '../helpers/helpers.config.js';
 
 export default class Animations {
   constructor(chart, config) {
@@ -129,6 +130,53 @@ export default class Animations {
       return true;
     }
   }
+}
+
+/**
+ * Whether an option resolves through the context: a scriptable function or an indexable array
+ */
+function readsContext(descriptors, prop, value) {
+  return (descriptors.isScriptable(prop) && isFunction(value))
+    || (descriptors.isIndexable(prop) && isArray(value));
+}
+
+/**
+ * Whether the `animations` of a resolver would resolve differently with an element's context.
+ * Checks the options that `Animations.configure` reads, with the descriptors
+ * that a resolver with a context would use for them. Not `needContext` of the config:
+ * it counts any function in an object, so callbacks like `onComplete` would stop the sharing.
+ * @param {object} resolver - options resolver without a context
+ * @returns {boolean}
+ * @private
+ */
+export function _animationsNeedContext(resolver) {
+  const descriptors = _descriptors(resolver);
+  const config = resolver.animations;
+  if (readsContext(descriptors, 'animations', config)) {
+    return true;
+  }
+  if (!isObject(config)) {
+    return false;
+  }
+
+  const configDescriptors = _descriptors(/** @type {any} */ (config), descriptors);
+  const options = [...Object.keys(defaults.animation), 'properties'];
+  for (const key of Object.getOwnPropertyNames(config)) {
+    const cfg = config[key];
+    if (readsContext(configDescriptors, key, cfg)) {
+      return true;
+    }
+    if (!isObject(cfg)) {
+      continue;
+    }
+    const cfgDescriptors = _descriptors(/** @type {any} */ (cfg), configDescriptors);
+    for (const option of options) {
+      if (readsContext(cfgDescriptors, option, cfg[option])) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function awaitAll(animations, properties) {

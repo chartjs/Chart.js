@@ -6,10 +6,6 @@ The chart legend displays data about the datasets that are appearing on the char
 
 Namespace: `options.plugins.legend`, the global options for the chart legend is defined in `Chart.defaults.plugins.legend`.
 
-:::warning
-The doughnut, pie, and polar area charts override the legend defaults. To change the overrides for those chart types, the options are defined in `Chart.overrides[type].plugins.legend`.
-:::
-
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | `display` | `boolean` | `true` | Is the legend shown?
@@ -18,14 +14,18 @@ The doughnut, pie, and polar area charts override the legend defaults. To change
 | `maxHeight` | `number` | | Maximum height of the legend, in pixels
 | `maxWidth` | `number` | | Maximum width of the legend, in pixels
 | `fullSize` | `boolean` | `true` | Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
-| `onClick` | `function` | | A callback that is called when a click event is registered on a label item. Arguments: `[event, legendItem, legend]`.
-| `onHover` | `function` | | A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: `[event, legendItem, legend]`.
-| `onLeave` | `function` | | A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item. Arguments: `[event, legendItem, legend]`.
+| `onClick` | `function` | | A callback that is called when a `'click'` event is registered on a label item, or a `'mouseup'` (also from `'touchend'` and `'pointerup'`) when the [legend's events](./interactions.md#event-option) do not include `'click'`. A right-click (`'contextmenu'`) does not call it. Arguments: `[event, legendItem, legend]`.
+| `onHover` | `function` | | A callback that is called when a `'mousemove'` event moves the pointer onto a label item. Arguments: `[event, legendItem, legend]`. [more...](#hover-and-scrolling)
+| `onLeave` | `function` | | A callback that is called when a `'mousemove'` event is registered outside of a previously hovered label item, or when the pointer leaves the canvas (`'mouseout'`) while a label item is hovered. Arguments: `[event, legendItem, legend]`. [more...](#hover-and-scrolling)
 | `reverse` | `boolean` | `false` | Legend will show datasets in reverse order.
 | `labels` | `object` | | See the [Legend Label Configuration](#legend-label-configuration) section below.
 | `rtl` | `boolean` | | `true` for rendering the legends from right to left.
 | `textDirection` | `string` | canvas' default | This will force the text direction `'rtl'` or `'ltr'` on the canvas for rendering the legend, regardless of the css specified on the canvas
 | `title` | `object` | | See the [Legend Title Configuration](#legend-title-configuration) section below.
+
+:::warning
+The doughnut, pie, and polar area charts override the legend defaults. To change the defaults for one of these chart types, use `Chart.overrides[type].plugins.legend`, where `type` is `'doughnut'`, `'pie'`, or `'polarArea'` (for example, `Chart.overrides.pie.plugins.legend`).
+:::
 
 :::tip Note
 If you need more visual customizations, please use an [HTML legend](../samples/legend/html.md).
@@ -52,6 +52,10 @@ Alignment of the legend. Options are:
 * `'end'`
 
 Defaults to `'center'` for unrecognized values.
+
+## Hover and scrolling
+
+`onHover` and `onLeave` run only on pointer events, the chart's `'mousemove'` and `'mouseout'`. Scrolling the page does not move the pointer, and in Chromium and Firefox it sends no `'mousemove'` to the canvas. So when a hovered label scrolls away from a pointer that stays over the canvas, `onLeave` is called only when the pointer next moves. When the scroll takes the whole canvas out from under the pointer, Chromium and Firefox send `'mouseout'` and `onLeave` is called. If your page needs to react to the scroll itself, listen for the page's `'scroll'` event.
 
 ## Legend Label Configuration
 
@@ -99,8 +103,11 @@ Items passed to the legend `onClick` function are the ones returned from `labels
     // Introduced in 3.1.0
     borderRadius?: number | BorderRadius,
 
-    // Index of the associated dataset
-    datasetIndex: number,
+    // Index of the associated dataset (charts other than doughnut, pie and polarArea)
+    datasetIndex?: number,
+
+    // Index of the associated data item (doughnut, pie and polarArea charts)
+    index?: number,
 
     // Fill style of the legend box
     fillStyle: Color,
@@ -162,7 +169,9 @@ const chart = new Chart(ctx, {
 
 It can be common to want to trigger different behaviour when clicking an item in the legend. This can be easily achieved using a callback in the config object.
 
-The default legend click handler is:
+A legend item stands for a dataset in most charts, and for a data item in doughnut, pie and polar area charts. The click handler has to match: an item of a doughnut, pie or polar area chart has an `index` and no `datasetIndex`.
+
+The default legend click handler, `Chart.defaults.plugins.legend.onClick`, hides and shows the dataset:
 
 ```javascript
 function(e, legendItem, legend) {
@@ -178,23 +187,25 @@ function(e, legendItem, legend) {
 }
 ```
 
-Let's say we wanted instead to link the display of the first two datasets. We could change the click handler accordingly.
+The doughnut, pie and polar area charts use their own handler, `Chart.overrides[type].plugins.legend.onClick`, which hides and shows the data item:
+
+```javascript
+function(e, legendItem, legend) {
+    legend.chart.toggleDataVisibility(legendItem.index);
+    legend.chart.update();
+}
+```
+
+Let's say we wanted instead to link the display of the first two datasets of a line chart. We could change the click handler accordingly.
 
 ```javascript
 const defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
-const pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
 const newLegendClickHandler = function (e, legendItem, legend) {
     const index = legendItem.datasetIndex;
-    const type = legend.chart.config.type;
 
     if (index > 1) {
         // Do the original logic
-        if (type === 'pie' || type === 'doughnut') {
-            pieDoughnutLegendClickHandler(e, legendItem, legend)
-        } else {
-            defaultLegendClickHandler(e, legendItem, legend);
-        }
-
+        defaultLegendClickHandler(e, legendItem, legend);
     } else {
         let ci = legend.chart;
         [
@@ -221,3 +232,29 @@ const chart = new Chart(ctx, {
 ```
 
 Now when you click the legend in this chart, the visibility of the first two datasets will be linked together.
+
+In a doughnut, pie or polar area chart, a custom handler works on data items. This one keeps at least one slice of a pie chart visible, and otherwise does what the built-in handler does. `Chart.overrides.pie` holds the handler once the pie controller is registered.
+
+```javascript
+const pieLegendClickHandler = Chart.overrides.pie.plugins.legend.onClick;
+const newLegendClickHandler = function (e, legendItem, legend) {
+    const ci = legend.chart;
+    const visibleCount = ci.data.labels.filter((label, i) => ci.getDataVisibility(i)).length;
+
+    if (legendItem.hidden || visibleCount > 1) {
+        pieLegendClickHandler(e, legendItem, legend);
+    }
+};
+
+const chart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: {
+        plugins: {
+            legend: {
+                onClick: newLegendClickHandler
+            }
+        }
+    }
+});
+```

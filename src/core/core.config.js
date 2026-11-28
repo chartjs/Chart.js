@@ -1,5 +1,6 @@
 import defaults, {overrides, descriptors} from './core.defaults.js';
-import {mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject} from '../helpers/helpers.core.js';
+import registry from './core.registry.js';
+import {_hasOwn, mergeIf, resolveObjectKey, isArray, isFunction, valueOrDefault, isObject, _isRadialScale} from '../helpers/helpers.core.js';
 import {_attachContext, _createResolver, _descriptors} from '../helpers/helpers.config.js';
 
 export function getIndexAxis(type, options) {
@@ -37,42 +38,83 @@ function axisFromPosition(position) {
   }
 }
 
-export function determineAxis(id, ...scaleOptions) {
+/**
+ * The axis of the first letter of the id, when the scale's type allows it:
+ * `r` only for a type that is radial, `x` and `y` only for one that is not.
+ * A type that is not registered limits nothing.
+ */
+function axisFromFirstLetter(id, scaleClass) {
+  const axis = id.length > 1 && idMatchesAxis(id[0].toLowerCase());
+  if (!axis || !scaleClass) {
+    return axis;
+  }
+  return (axis === 'r') === _isRadialScale(scaleClass.prototype) ? axis : undefined;
+}
+
+/**
+ * The axis that the scale's type gives the id: the first letter when the type
+ * allows it, then `axis` or `position` in the defaults of the type, then `r`
+ * when the type is radial.
+ */
+function axisFromType(id, type) {
+  const scaleClass = /** @type {{prototype: {getPointPositionForValue?: unknown}} | undefined} */ (registry.scales.get(type));
+  const typeDefaults = defaults.scales[type] || {};
+  return axisFromFirstLetter(id, scaleClass)
+    || typeDefaults.axis
+    || axisFromPosition(typeDefaults.position)
+    || (scaleClass && _isRadialScale(scaleClass.prototype) ? 'r' : undefined);
+}
+
+/**
+ * Decides the axis of the scale `id`: the id when it is exactly `x`, `y` or
+ * `r`, then `axis`, `position`, the axis by which a dataset binds the id, and
+ * what the scale's type gives it (see `axisFromType`).
+ * @param {string} id
+ * @param {object} scaleOptions - the scale's options, its `type` included
+ * @param {string} [boundAxis] - the axis of the first dataset that names the id
+ */
+export function determineAxis(id, scaleOptions, boundAxis) {
   if (idMatchesAxis(id)) {
     return id;
   }
-  for (const opts of scaleOptions) {
-    const axis = opts.axis
-      || axisFromPosition(opts.position)
-      || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
-    if (axis) {
-      return axis;
-    }
+  const axis = scaleOptions.axis
+    || axisFromPosition(scaleOptions.position)
+    || boundAxis
+    || axisFromType(id, scaleOptions.type);
+  if (axis) {
+    return axis;
   }
   throw new Error(`Cannot determine type of '${id}' axis. Please provide 'axis' or 'position' option.`);
 }
 
-function getAxisFromDataset(id, axis, dataset) {
-  if (dataset[axis + 'AxisID'] === id) {
-    return {axis};
-  }
-}
-
 function retrieveAxisFromDatasets(id, config) {
-  if (config.data && config.data.datasets) {
-    const boundDs = config.data.datasets.filter((d) => d.xAxisID === id || d.yAxisID === id);
-    if (boundDs.length) {
-      return getAxisFromDataset(id, 'x', boundDs[0]) || getAxisFromDataset(id, 'y', boundDs[0]);
-    }
+  const datasets = config.data && config.data.datasets || [];
+  const dataset = datasets.find((d) => d.xAxisID === id || d.yAxisID === id || d.rAxisID === id);
+  if (dataset) {
+    return ['x', 'y', 'r'].find((axis) => dataset[axis + 'AxisID'] === id);
   }
-  return {};
 }
 
-function mergeScaleConfig(config, options) {
+const hasOwnType = (obj) => isObject(obj) && _hasOwn(obj, 'type');
+
+/**
+ * The scale options of a chart, in two parts. Per scale id:
+ * - `stored[id]`, the stored entry: a clone of `axis` and what the chart gave;
+ * - `sources[id]`, the defaults the scale takes, in the order the merge takes
+ *   them: `chart`, the chart type's scale overrides; `datasets`, the dataset
+ *   types' scale overrides; `scaleType`, `defaults.scales[type]`. `implied` is
+ *   the record's.
+ * `records` maps each stored entry object to its record, `{implied}`: true when
+ * a dataset created the entry for an id that `options.scales` does not have.
+ * The record of an entry from the previous merge goes over to the new entry.
+ * @returns {{stored: object, sources: object}}
+ */
+function splitScaleConfig(config, options, records) {
   const chartDefaults = overrides[config.type] || {scales: {}};
   const configScales = options.scales || {};
   const chartIndexAxis = getIndexAxis(config.type, options);
-  const scales = Object.create(null);
+  const stored = Object.create(null);
+  const sources = Object.create(null);
 
   // First figure out first scale id's per axis.
   Object.keys(configScales).forEach(id => {
@@ -83,13 +125,21 @@ function mergeScaleConfig(config, options) {
     if (scaleConf._proxy) {
       return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
     }
-    const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config), defaults.scales[scaleConf.type]);
+    const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config));
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
-    scales[id] = mergeIf(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
+    const record = records.get(scaleConf) || {implied: false};
+    stored[id] = mergeIf(Object.create(null), [{axis}, scaleConf]);
+    sources[id] = {
+      chart: [defaultScaleOptions[axis], defaultScaleOptions[defaultId]],
+      datasets: [],
+      scaleType: undefined,
+      implied: record.implied
+    };
+    records.set(stored[id], record);
   });
 
-  // Then merge dataset defaults to scale configs
+  // Then add the defaults of the dataset types, creating the scales only a dataset names
   config.data.datasets.forEach(dataset => {
     const type = dataset.type || config.type;
     const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
@@ -98,25 +148,70 @@ function mergeScaleConfig(config, options) {
     Object.keys(defaultScaleOptions).forEach(defaultID => {
       const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
       const id = dataset[axis + 'AxisID'] || axis;
-      scales[id] = scales[id] || Object.create(null);
-      mergeIf(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
+      if (!stored[id]) {
+        const record = records.get(configScales[id]) || {implied: true};
+        stored[id] = mergeIf(Object.create(null), [{axis}, configScales[id]]);
+        sources[id] = {chart: [], datasets: [], scaleType: undefined, implied: record.implied};
+        records.set(stored[id], record);
+      }
+      sources[id].datasets.push(defaultScaleOptions[defaultID]);
     });
   });
 
-  // apply scale defaults, if not overridden by dataset defaults
-  Object.keys(scales).forEach(key => {
-    const scale = scales[key];
-    mergeIf(scale, [defaults.scales[scale.type], defaults.scale]);
+  // Then the defaults of the scale's type, read as the merge reads `type`
+  Object.keys(stored).forEach(id => {
+    const {chart, datasets} = sources[id];
+    const typed = hasOwnType(stored[id]) ? stored[id] : chart.find(hasOwnType) || datasets.find(hasOwnType);
+    sources[id].scaleType = defaults.scales[typed && typed.type];
   });
 
-  return scales;
+  return {stored, sources};
 }
 
-function initOptions(config) {
+/**
+ * The derived object, `{scales: {[id]: …}}`: per scale id, a clone of the
+ * defaults the scale takes from the chart type (unless only a dataset implies
+ * the scale), the dataset types and its scale type (see `splitScaleConfig`).
+ * `defaults.scale` is not in it: the resolver reaches it through the `scales`
+ * to `scale` fallback.
+ */
+function deriveScaleOptions(sources) {
+  const scales = Object.create(null);
+  Object.keys(sources).forEach(id => {
+    const {chart, datasets, scaleType, implied} = sources[id];
+    const scale = scales[id] = Object.create(null);
+    if (!implied) {
+      mergeIf(scale, chart);
+    }
+    mergeIf(scale, datasets);
+    mergeIf(scale, scaleType);
+  });
+  return {scales};
+}
+
+/**
+ * Builds `options.scales`: each stored entry with its sources and
+ * `defaults.scale` merged in, in that order. Unlike the derived object, an
+ * entry takes the chart type's defaults whenever `options.scales` has its id,
+ * which after the first merge is every id. Returns the sources.
+ */
+function mergeScaleConfig(config, options, records) {
+  const {stored, sources} = splitScaleConfig(config, options, records);
+  Object.keys(stored).forEach(id => {
+    const {chart, datasets, scaleType} = sources[id];
+    mergeIf(stored[id], chart);
+    mergeIf(stored[id], datasets);
+    mergeIf(stored[id], [scaleType, defaults.scale]);
+  });
+  options.scales = stored;
+  return sources;
+}
+
+function initOptions(config, records) {
   const options = config.options || (config.options = {});
 
   options.plugins = valueOrDefault(options.plugins, {});
-  options.scales = mergeScaleConfig(config, options);
+  return mergeScaleConfig(config, options, records);
 }
 
 function initData(data) {
@@ -129,9 +224,6 @@ function initData(data) {
 function initConfig(config) {
   config = config || {};
   config.data = initData(config.data);
-
-  initOptions(config);
-
   return config;
 }
 
@@ -158,8 +250,32 @@ const addIfFound = (set, obj, key) => {
 export default class Config {
   constructor(config) {
     this._config = initConfig(config);
+    /**
+     * The record of each stored scale entry, see `splitScaleConfig`.
+     * @type {WeakMap<object, {implied: boolean}>}
+     */
+    this._scaleRecords = new WeakMap();
+    /**
+     * The defaults each scale took at the last update, see `splitScaleConfig`.
+     * @type {object}
+     */
+    this._scaleSources = initOptions(this._config, this._scaleRecords);
+    /**
+     * The derived object once it is read after an update, see `_derivedOptions`.
+     * @type {{scales: object} | undefined}
+     */
+    this._derived = undefined;
     this._scopeCache = new Map();
     this._resolverCache = new Map();
+  }
+
+  /**
+   * What the scales take from the defaults, `{scales: {[id]: object}}`: a
+   * clone built from the sources of the last update when it is first read.
+   * @type {{scales: object}}
+   */
+  get _derivedOptions() {
+    return this._derived || (this._derived = deriveScaleOptions(this._scaleSources));
   }
 
   get platform() {
@@ -197,7 +313,8 @@ export default class Config {
   update() {
     const config = this._config;
     this.clearCache();
-    initOptions(config);
+    this._scaleSources = initOptions(config, this._scaleRecords);
+    this._derived = undefined;
   }
 
   clearCache() {

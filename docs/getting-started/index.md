@@ -7,7 +7,7 @@ Let's get started with Chart.js!
 * [Integrate Chart.js](./integration) with bundlers, loaders, and front-end frameworks
 * [Use Chart.js from Node.js](./using-from-node-js)
 
-Alternatively, see the example below or check [samples](../samples).
+Alternatively, see the example below or check [samples](../samples/information.md).
 
 ## Create a Chart
 

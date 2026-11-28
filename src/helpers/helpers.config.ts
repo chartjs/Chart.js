@@ -62,8 +62,10 @@ export function _createResolver<
      * A trap for getting property values.
      */
     get(target, prop: string) {
-      return _cached(target, prop,
-        () => _resolveWithPrefixes(prop, prefixes, scopes, target));
+      if (_isCached(target, prop)) {
+        return target[prop];
+      }
+      return _cache(target, prop, _resolveWithPrefixes(prop, prefixes, scopes, target));
     },
 
     /**
@@ -111,7 +113,7 @@ export function _createResolver<
  * Returns an Proxy for resolving option values with context.
  * @param proxy - The Proxy returned by `_createResolver`
  * @param context - Context object for scriptable/indexable options
- * @param subProxy - The proxy provided for scriptable options
+ * @param subProxy - The proxy, with context, provided for scriptable options
  * @param descriptorDefaults - Defaults for descriptors
  * @private
  */
@@ -121,7 +123,7 @@ export function _attachContext<
 >(
   proxy: ResolverProxy<T, R>,
   context: AnyObject,
-  subProxy?: ResolverProxy<T, R>,
+  subProxy?: ContextProxy<T, R>,
   descriptorDefaults?: DescriptorDefaults
 ) {
   const cache: ContextCache<T, R> = {
@@ -131,8 +133,10 @@ export function _attachContext<
     _subProxy: subProxy,
     _stack: new Set(),
     _descriptors: _descriptors(proxy, descriptorDefaults),
-    setContext: (ctx: AnyObject) => _attachContext(proxy, ctx, subProxy, descriptorDefaults),
-    override: (scope: AnyObject) => _attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
+    // The second proxy follows the new context and the override, so a scriptable option
+    // reads the options it is resolved with
+    setContext: (ctx: AnyObject) => _attachContext(proxy, ctx, subProxy && subProxy.setContext(ctx), descriptorDefaults),
+    override: (scope: AnyObject) => _attachContext(proxy.override(scope), context, subProxy && subProxy.override(scope), descriptorDefaults)
   };
   return new Proxy(cache, {
     /**
@@ -148,8 +152,10 @@ export function _attachContext<
      * A trap for getting property values.
      */
     get(target, prop: string, receiver) {
-      return _cached(target, prop,
-        () => _resolveWithContext(target, prop, receiver));
+      if (_isCached(target, prop)) {
+        return target[prop];
+      }
+      return _cache(target, prop, _resolveWithContext(target, prop, receiver));
     },
 
     /**
@@ -172,7 +178,7 @@ export function _attachContext<
     /**
      * A trap for the in operator.
      */
-    has(target, prop) {
+    has(_target, prop) {
       return Reflect.has(proxy, prop);
     },
 
@@ -215,17 +221,13 @@ const readKey = (prefix: string, name: string) => prefix ? prefix + _capitalize(
 const needsSubResolver = (prop: string, value: unknown) => isObject(value) && prop !== 'adapters' &&
   (Object.getPrototypeOf(value) === null || value.constructor === Object);
 
-function _cached(
-  target: AnyObject,
-  prop: string,
-  resolve: () => unknown
-) {
-  if (Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor') {
-    return target[prop];
-  }
+// The get traps check the cache before resolving: a closure passed to a shared helper
+// would be allocated on every read, also when the value is already cached.
+function _isCached(target: AnyObject, prop: string) {
+  return Object.prototype.hasOwnProperty.call(target, prop) || prop === 'constructor';
+}
 
-  const value = resolve();
-  // cache the resolved value
+function _cache(target: AnyObject, prop: string, value: unknown) {
   target[prop] = value;
   return value;
 }
@@ -278,7 +280,7 @@ function _resolveArray(
   target: ContextCache,
   isIndexable: (key: string) => boolean
 ) {
-  const {_proxy, _context, _subProxy, _descriptors: descriptors} = target;
+  const {_proxy, _context, _descriptors: descriptors} = target;
 
   if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
     return value[_context.index % value.length];
@@ -289,7 +291,9 @@ function _resolveArray(
     value = [];
     for (const item of arr) {
       const resolver = createSubResolver(scopes, _proxy, prop, item);
-      value.push(_attachContext(resolver, _context, _subProxy && _subProxy[prop], descriptors));
+      // No second proxy: a scriptable option in an item reads the item's own options,
+      // not the array of the second proxy
+      value.push(_attachContext(resolver, _context, undefined, descriptors));
     }
   }
   return value;
@@ -315,6 +319,10 @@ function addScopes(
 ) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
+    if (isArray(scope)) {
+      // The array holding the item being resolved has no options for that item
+      continue;
+    }
     if (scope) {
       set.add(scope);
       const fallback = resolveFallback(scope._fallback, key, value);

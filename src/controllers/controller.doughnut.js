@@ -79,7 +79,7 @@ export default class DoughnutController extends DatasetController {
 
   static descriptors = {
     _scriptable: (name) => name !== 'spacing' && name !== 'spacingMode',
-    _indexable: (name) => name !== 'spacing' && name !== 'spacingMode' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash'),
+    _indexable: (name) => name !== 'spacing' && name !== 'spacingMode' && !name.startsWith('borderDash'),
   };
 
   /**
@@ -327,6 +327,14 @@ export default class DoughnutController extends DatasetController {
       label: labels[index] || '',
       value,
     };
+  }
+
+  /**
+   * An arc hidden by `chart.toggleDataVisibility` has no circumference.
+   * @protected
+   */
+  _isDataVisible(index) {
+    return this.chart.getDataVisibility(index) && super._isDataVisible(index);
   }
 
   getMaxBorderWidth(arcs) {

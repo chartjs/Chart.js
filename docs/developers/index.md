@@ -41,7 +41,7 @@ Thanks to [BrowserStack](https://browserstack.com) for allowing our team to test
 
 ## Previous versions
 
-To migrate from version 2 to version 3, please see [the v3 migration guide](../getting-started/v3-migration).
+To migrate from version 2 to version 3, please see [the v3 migration guide](../migration/v3-migration.md).
 
 Version 3 has a largely different API than earlier versions.
 

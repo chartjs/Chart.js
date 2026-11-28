@@ -1,0 +1,58 @@
+const {color, getHoverColor} = Chart.helpers;
+
+describe('Color helper', function() {
+  function isColorInstance(obj) {
+    return typeof obj === 'object' && obj.valid;
+  }
+
+  it('should return a color when called with a color', function() {
+    expect(isColorInstance(color('rgb(1, 2, 3)'))).toBe(true);
+  });
+
+  it('should parse oklch() colors', function() {
+    expect(isColorInstance(color('oklch(62.8% 0.2577 29.23)'))).toBe(true);
+    expect(color('oklch(62.8% 0.2577 29.23)').rgbString()).toEqual('rgb(255, 0, 0)');
+    expect(color('oklch(0.628 0.2577 29.23 / 50%)').rgbString()).toEqual('rgba(255, 0, 0, 0.5)');
+  });
+});
+
+describe('Background hover color helper', function() {
+  it('should return a modified version of color when called with a color', function() {
+    var originalColorRGB = 'rgb(70, 191, 189)';
+
+    expect(getHoverColor('#46BFBD')).not.toEqual(originalColorRGB);
+  });
+
+  it('should return a modified version of color when called with an oklch() color', function() {
+    expect(getHoverColor('oklch(62.8% 0.2577 29.23)')).toEqual(getHoverColor('#FF0000'));
+  });
+});
+
+describe('color and getHoverColor helpers', function() {
+  it('should return a CanvasPattern when called with a CanvasPattern', async function() {
+    var dots = new Image();
+    var loaded = new Promise((resolve) => {
+      dots.onload = resolve;
+    });
+    dots.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAMAAAAolt3jAAAAD1BMVEUAAAD///////////////+PQt5oAAAABXRSTlMAHlFhZsfk/BEAAAAqSURBVHgBY2BgZGJmYmSAAUYWEIDzmcBcJhiXGcxlRpPFrhdmMiqgvX0AcGIBEUAo6UAAAAAASUVORK5CYII=';
+    await loaded;
+
+    var chartContext = document.createElement('canvas').getContext('2d');
+    var patternCanvas = document.createElement('canvas');
+    var patternContext = patternCanvas.getContext('2d');
+    var pattern = patternContext.createPattern(dots, 'repeat');
+    patternContext.fillStyle = pattern;
+    var chartPattern = chartContext.createPattern(patternCanvas, 'repeat');
+
+    expect(color(chartPattern) instanceof CanvasPattern).toBe(true);
+    expect(getHoverColor(chartPattern) instanceof CanvasPattern).toBe(true);
+  });
+
+  it('should return a CanvasGradient when called with a CanvasGradient', function() {
+    var context = document.createElement('canvas').getContext('2d');
+    var gradient = context.createLinearGradient(0, 1, 2, 3);
+
+    expect(color(gradient) instanceof CanvasGradient).toBe(true);
+    expect(getHoverColor(gradient) instanceof CanvasGradient).toBe(true);
+  });
+});

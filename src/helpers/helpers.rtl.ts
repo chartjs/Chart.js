@@ -36,7 +36,7 @@ const getLeftToRightAdapter = function(): RTLAdapter {
     x(x) {
       return x;
     },
-    setWidth(w) { // eslint-disable-line no-unused-vars
+    setWidth(_w) { // eslint-disable-line @typescript-eslint/no-unused-vars
     },
     textAlign(align) {
       return align;

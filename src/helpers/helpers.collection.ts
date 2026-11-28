@@ -22,14 +22,13 @@ export function _lookup(
   value: number,
   cmp?: (value: number) => boolean
 ) {
-  cmp = cmp || ((index) => table[index] < value);
   let hi = table.length - 1;
   let lo = 0;
-  let mid: number;
 
   while (hi - lo > 1) {
-    mid = (lo + hi) >> 1;
-    if (cmp(mid)) {
+    const mid = (lo + hi) >> 1;
+    const below = cmp ? cmp(mid) : (table[mid] as number) < value;
+    if (below) {
       lo = mid;
     } else {
       hi = mid;
@@ -47,18 +46,27 @@ export function _lookup(
  * @param last - lookup last index
  * @private
  */
-export const _lookupByKey = (
+export function _lookupByKey(
   table: Record<string, number>[],
   key: string,
   value: number,
   last?: boolean
-) =>
-  _lookup(table, value, last
-    ? index => {
-      const ti = table[index][key];
-      return ti < value || ti === value && table[index + 1][key] === value;
+) {
+  let hi = table.length - 1;
+  let lo = 0;
+
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    const v = table[mid][key];
+    if (v < value || last && v === value && table[mid + 1][key] === value) {
+      lo = mid;
+    } else {
+      hi = mid;
     }
-    : index => table[index][key] < value);
+  }
+
+  return {lo, hi};
+}
 
 /**
  * Reverse binary search
@@ -67,12 +75,25 @@ export const _lookupByKey = (
  * @param value - value to find
  * @private
  */
-export const _rlookupByKey = (
+export function _rlookupByKey(
   table: Record<string, number>[],
   key: string,
   value: number
-) =>
-  _lookup(table, value, index => table[index][key] >= value);
+) {
+  let hi = table.length - 1;
+  let lo = 0;
+
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (table[mid][key] >= value) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+
+  return {lo, hi};
+}
 
 /**
  * Return subset of `values` between `min` and `max` inclusive.
@@ -107,10 +128,39 @@ export interface ArrayListener<T> {
   _onDataUnshift?(...item: T[]): void;
 }
 
+function applySplice(array, base, args) {
+  const length = array.length;
+  const start = args[0];
+  const normalizeStart = () => {
+    const relative = Math.trunc(+start) || 0;
+    args[0] = relative < 0 ? Math.max(length + relative, 0) : Math.min(relative, length);
+    return args[0];
+  };
+
+  const native = base === Array.prototype.splice;
+  if (native && start !== null && (typeof start === 'object' || typeof start === 'function')) {
+    // Native splice snapshots the length before running user-defined coercions.
+    args[0] = {valueOf: normalizeStart};
+  } else {
+    normalizeStart();
+  }
+  if (!native) {
+    const remaining = length - args[0];
+    args[1] = args.length === 1 ? remaining : Math.min(Math.max(Math.trunc(+args[1]) || 0, 0), remaining);
+  }
+
+  const removed = base.apply(array, args);
+  if (native) {
+    args[1] = removed.length;
+  }
+  return removed;
+}
+
 /**
  * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
  * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
- * called on the '_onData*' callbacks (e.g. _onDataPush, etc.) with same arguments.
+ * called on the '_onData*' callbacks (e.g. _onDataPush). Splice listeners receive
+ * the effective start and delete count.
  */
 export function listenArrayEvents<T>(array: T[], listener: ArrayListener<T>): void;
 export function listenArrayEvents(array, listener) {
@@ -135,7 +185,7 @@ export function listenArrayEvents(array, listener) {
       configurable: true,
       enumerable: false,
       value(...args) {
-        const res = base.apply(this, args);
+        const res = key === 'splice' && args.length ? applySplice(this, base, args) : base.apply(this, args);
 
         array._chartjs.listeners.forEach((object) => {
           if (typeof object[method] === 'function') {

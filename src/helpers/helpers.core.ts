@@ -108,6 +108,7 @@ export function callback<T extends (this: TA, ...restArgs: unknown[]) => R, TA, 
   if (fn && typeof fn.call === 'function') {
     return fn.apply(thisArg, args);
   }
+  return undefined;
 }
 
 /**
@@ -333,13 +334,14 @@ export function _deprecated(scope: string, value: unknown, previous: string, cur
 }
 
 // resolveObjectKey resolver cache
-const keyResolvers = {
-  // Chart.helpers.core resolveObjectKey should resolve empty key to root object
-  '': v => v,
-  // default resolvers
-  x: o => o.x,
-  y: o => o.y
-};
+// Use a null-prototype object so keys colliding with Object.prototype members
+// (e.g. 'toString', 'hasOwnProperty', '__proto__') don't resolve to inherited values.
+const keyResolvers = Object.create(null);
+// Chart.helpers.core resolveObjectKey should resolve empty key to root object
+keyResolvers[''] = v => v;
+// default resolvers
+keyResolvers.x = o => o.x;
+keyResolvers.y = o => o.y;
 
 /**
  * @private
@@ -408,9 +410,35 @@ export const setsEqual = <T>(a: Set<T>, b: Set<T>) => {
 };
 
 /**
+ * Whether the event is a click: `click`, `contextmenu`, or a `mouseup` (also
+ * mapped from `touchend` and `pointerup`). With `events`, a `mouseup` counts
+ * only when `click` is not listened to, so one press is not two clicks.
  * @param e - The event
+ * @param events - The events that are listened to
  * @private
  */
-export function _isClickEvent(e: ChartEvent) {
-  return e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu';
+export function _isClickEvent(e: ChartEvent, events?: string[]) {
+  if (e.type === 'mouseup') {
+    return !events || !events.includes('click');
+  }
+  return e.type === 'click' || e.type === 'contextmenu';
+}
+
+/**
+ * Whether `key` is an own property of `object`, also for an object without a
+ * prototype.
+ * @private
+ */
+export function _hasOwn(object: object, key: PropertyKey): boolean {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+/**
+ * Whether a scale is radial: it has a `getPointPositionForValue` method,
+ * whatever class it extends.
+ * @param scale - A scale, or the prototype of a scale class
+ * @private
+ */
+export function _isRadialScale(scale: {getPointPositionForValue?: unknown} | undefined): boolean {
+  return !!scale && isFunction(scale.getPointPositionForValue);
 }
