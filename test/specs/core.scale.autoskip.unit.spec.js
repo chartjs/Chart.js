@@ -324,11 +324,13 @@ describe('Core.scale.autoskip', function() {
   describe('autoSkipKeepEnds', function() {
     // The values autoSkip keeps of `count` ticks with majors at `majors`, with
     // room for `fit` labels and `options` added to the tick options.
-    function keptValues(count, majors, fit, options, descending = false) {
+    // `reversePixels`: the pixels run from the end of the axis, as on a reversed axis.
+    function keptValues(count, majors, fit, options, descending = false, reversePixels = false) {
       const scale = scaleFitting(fit);
       scale.options.ticks = Object.assign({major: {enabled: majors.length > 0}}, options);
       // Categories with offset: each value in the middle of its 1 / count of the axis.
-      scale.getPixelForValue = (value) => (value + 0.5) * scale._length / count;
+      const pixel = (value) => (value + 0.5) * scale._length / count;
+      scale.getPixelForValue = reversePixels ? (value) => scale._length - pixel(value) : pixel;
       const ticks = [];
       for (let i = 0; i < count; i++) {
         const value = descending ? count - 1 - i : i;
@@ -364,6 +366,21 @@ describe('Core.scale.autoskip', function() {
       expect(keptValues(40, [10, 30], 100, {maxTicksLimit: 2, autoSkipKeepEnds: true})).toEqual([10, 39]);
       // A single major kept alone: the last tick is added even closer than one label.
       expect(keptValues(5, [2], 2, {autoSkipKeepEnds: true})).toEqual([2, 4]);
+    });
+
+    it('should measure the room to the last tick on a reversed axis', function() {
+      // The pixels descend; the kept ticks are those of the ascending pixels.
+      expect(keptValues(99, [], 12.9, {autoSkipKeepEnds: true}, false, true))
+        .toEqual([0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 98]);
+      expect(keptValues(181, [0, 31, 59, 90, 120, 151], 30, {autoSkipKeepEnds: true}, false, true).slice(-3))
+        .toEqual([165, 172, 180]);
+    });
+
+    it('should keep the tick before the last one when exactly one label fits between them', function() {
+      // 135 px fit 13 whole labels: 108 / 13 = 8.3 ticks per label, a step of 9.
+      // 99 is 8 ticks of 1.25 px from 107: exactly the 10 px of one label.
+      expect(keptValues(108, [], 13.5, {autoSkipKeepEnds: true}))
+        .toEqual([0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 99, 107]);
     });
 
     it('should keep the same ticks when off', function() {

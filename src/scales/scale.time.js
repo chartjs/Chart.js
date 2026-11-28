@@ -407,7 +407,12 @@ export default class TimeScale extends Scale {
     // Offsets for bar charts need to be handled with the auto skipped
     // ticks. Once ticks have been skipped, we re-compute the offsets.
     if (this.options.offsetAfterAutoskip) {
-      this.initOffsets(this.ticks.map(tick => +tick.value), this.options.ticks.autoSkipKeepEnds);
+      const ticks = this.ticks;
+      // `ticks.autoSkipKeepEnds` added the last tick (autoSkip records it on
+      // the scale): the gap before it can be short.
+      const added = /** @type {{_autoSkipAddedLast?: object | null}} */ (this)._autoSkipAddedLast;
+      const keptLast = ticks.length > 0 && added === ticks[ticks.length - 1];
+      this.initOffsets(ticks.map(tick => +tick.value), keptLast);
     }
   }
 
