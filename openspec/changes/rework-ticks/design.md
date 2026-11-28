@@ -161,6 +161,7 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
   - With #12237, y 0..100 with `stepSize: 1` at 400 px draws 101 labels, about 1,450 px tall, in 370 px, where master draws 17. Its own test passes on master.
   - The docs say that `autoSkip: false` draws every step. That docs line is what #4048 asks for.
 - **`autoSkip` is already scriptable per scale** (a function gets `ctx.type === 'scale'`). #9973 is completed by keeping 0 on linear axes, not by a per-tick flag.
+- **The bound label-size fix ships in P15 (4.7.0)**, user's decision of 2026-11-28. It is not split into a 4.6.x fix, although it also brings back the lost `min` tick on master for a user `min`/`max` with `bounds: 'ticks'` on horizontal axes.
 
 ### Changed by the review
 
