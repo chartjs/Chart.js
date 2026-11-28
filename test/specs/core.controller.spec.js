@@ -361,7 +361,7 @@ describe('Chart', function() {
       expect(chart.getActiveElements()).toEqual([]);
     });
 
-    it('should not change the active elements when outside chartArea, except for mouseout', async function() {
+    it('should not change the active elements set by code when outside chartArea, except for mouseout', async function() {
       var chart = acquireChart({
         type: 'line',
         data: {
@@ -384,14 +384,14 @@ describe('Chart', function() {
 
       var point = chart.getDatasetMeta(0).data[0];
 
-      await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
+      chart.setActiveElements([{datasetIndex: 0, index: 0}]);
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
       await triggerMouseEvent(chart, 'mousemove', {x: 1, y: 1});
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
 
       await triggerMouseEvent(chart, 'mouseout', {x: 1, y: 1});
-      expect(chart.tooltip.getActiveElements()).toEqual([]);
+      expect(chart.getActiveElements()).toEqual([]);
     });
 
     // https://github.com/chartjs/Chart.js/issues/11801
@@ -423,6 +423,30 @@ describe('Chart', function() {
 
       await triggerMouseEvent(chart, 'mousemove', {x: point.x, y: point.y});
       expect(chart.getActiveElements()).toEqual([{datasetIndex: 0, index: 0, element: point}]);
+    });
+
+    it('should drop an active element whose data item was removed', function() {
+      const chart = acquireChart({
+        type: 'line',
+        data: {
+          datasets: [{
+            data: [1, 2, 3, 4, 5, 6].map((y, x) => ({x, y})),
+            // Reads the data item, which an index past the data does not have.
+            pointBackgroundColor: (ctx) => (ctx.raw.y > 1 ? 'red' : 'blue')
+          }]
+        },
+        options: {
+          scales: {x: {type: 'linear'}}
+        }
+      });
+      const element = chart.getDatasetMeta(0).data[5];
+
+      chart.setActiveElements([{datasetIndex: 0, index: 5}]);
+      chart.data.datasets[0].data.pop();
+
+      expect(() => chart.update()).not.toThrow();
+      expect(chart.getActiveElements()).toEqual([]);
+      expect(element.active).toBe(false);
     });
 
     it('should keep the active elements set by code outside chartArea, also when they were already active', async function() {

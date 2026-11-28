@@ -158,6 +158,8 @@ class Chart {
     this.currentDevicePixelRatio = undefined;
     this.chartArea = undefined;
     this._active = [];
+    // Whether `_active` was set by `setActiveElements`: such a set stays outside chartArea.
+    this._activeSetByCode = false;
     this._lastEvent = undefined;
     this._listeners = {};
     /** @type {?{attach?: function, detach?: function, resize?: function}} */
@@ -1181,6 +1183,8 @@ class Chart {
         index,
       };
     }).filter(({element}) => element));
+    // Before the "changed" test: setting the elements that are already active still makes them the code's.
+    this._activeSetByCode = true;
     const changed = !_elementsEqual(active, lastActive);
 
     if (changed) {
@@ -1232,8 +1236,8 @@ class Chart {
   }
 
   /**
-   * Returns a test of whether an active item may stay active: its dataset is visible and
-   * its data item is not hidden. The dataset is checked once for each run of its items.
+   * Returns a test of whether an active item may stay active: its dataset is visible, and
+   * its data item still exists and is not hidden. The dataset is checked once for each run of its items.
    * @returns {(item: {datasetIndex: number, index: number}) => boolean}
    * @private
    */
@@ -1244,12 +1248,14 @@ class Chart {
         datasetIndex = item.datasetIndex;
         controller = this.isDatasetVisible(datasetIndex) && this.getDatasetMeta(datasetIndex).controller;
       }
-      return !!controller && controller._isDataVisible(item.index);
+      // An index past the data has no element left: its data item was removed.
+      return !!controller && !!controller._cachedMeta.data[item.index] && controller._isDataVisible(item.index);
     };
   }
 
   /**
-   * Leaves out the items whose dataset or data item is hidden: hidden data cannot be active.
+   * Leaves out the items whose dataset or data item is hidden, or whose data item was removed:
+   * hidden data cannot be active. The tooltip uses it for the elements set by code.
    * @param {import('../types/index.js').ActiveElement[]} items
    * @returns {import('../types/index.js').ActiveElement[]}
    * @private
@@ -1311,6 +1317,10 @@ class Chart {
     // This is done so we do not have to evaluate the active elements each animation frame
     // - it would be expensive.
     const useFinalPosition = replay;
+    if (inChartArea && !replay) {
+      // The pointer takes over the active elements. A handler that sets them sets the flag again.
+      this._activeSetByCode = false;
+    }
     let active = this._filterActive(this._getActiveElements(e, lastActive, inChartArea, useFinalPosition));
     let previous = lastActive;
     const isClick = _isClickEvent(e, options.events);
@@ -1339,6 +1349,10 @@ class Chart {
       this._active = active;
       this._updateHoverStyles(active, previous, replay);
     }
+    if (changed && inChartArea) {
+      // The pointer's set replaced one that a handler set.
+      this._activeSetByCode = false;
+    }
 
     this._lastEvent = lastEvent;
 
@@ -1359,8 +1373,8 @@ class Chart {
     }
 
     if (!inChartArea) {
-      // Let user control the active elements outside chartArea. Eg. using Legend.
-      return lastActive;
+      // Outside chartArea, the elements set by code stay (eg. by a legend onHover), and the pointer's end.
+      return this._activeSetByCode ? lastActive : [];
     }
 
     const hoverOptions = this.options.hover;

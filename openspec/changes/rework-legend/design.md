@@ -129,8 +129,10 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
    - The chart's `onClick` is fixed in the same piece even though #11538 reports only the legend. It runs through the same helper with the same double call, and fixing one but not the other would split the rule.
 6. **Active elements remember where they came from.** The chart and the tooltip each keep a flag saying whether their active set was set by the pointer or by `setActiveElements`.
    - `setActiveElements` sets the flag before its "changed" test, so a legend `onHover` that sets the elements already active still marks them as set by code.
-   - A pointer event that changes the set clears the flag.
-   - Outside the chart area, a set made by the pointer becomes empty. A set made by code is kept, validity-filtered as today.
+   - An in-area pointer event clears the flag; so does a write of the pointer's set.
+     - The chart clears it at the start of `_handleEvent`, before `onHover` and `onClick`, so a handler that calls `setActiveElements` sets it again. It also clears it where the pointer's set replaces one a handler set.
+     - The tooltip clears it for an in-area event that is not a replay, and for a replay that changes the set. A replay or a position change alone never clears it, so both owners keep or end the same set.
+   - Outside the chart area, a set made by the pointer becomes empty. A set made by code is kept, filtered by the chart's `_filterActive`, which also leaves out items whose element is gone. The tooltip's own validity filter is replaced by it.
 
    Both owners get the flag. Otherwise the tooltip would close while the slice stays drawn in its hover style, which is the same stale state.
 
@@ -290,7 +292,7 @@ Each bug was reproduced on master ab3ac077 with a probe spec. Each comes from th
   - A row's or column's size comes from the items `fit()` measured; the drawn text comes from the items `afterUpdate` rebuilt.
 - **P6:** `_isClickEvent(e, events?)`. With `events` given, `mouseup` counts only when `events` lacks `click`. The chart passes its `events` everywhere it calls the helper.
 - **P12 → P13:** the private chart method `_filterActive(items)` leaves out hidden data (dataset not visible, or `controller._isDataVisible(index)` false). P13 calls the same method for the tooltip's code-set elements, and sets its "set by code" flag from the call, before the filter and the "changed" test.
-- **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. A pointer event that changes the set clears it.
+- **P13:** the chart and the tooltip each keep a flag for "set by code". `setActiveElements` sets it before its "changed" test. An in-area pointer event clears the flag; so does a write of the pointer's set.
 - **P14 → P15:** `labels.boxYOffset` moves only the symbol's y.
 
 ## Open Questions
