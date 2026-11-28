@@ -206,6 +206,11 @@ Each case ran on master 5c2cbe21 with the built bundle, a stub 2D context that m
 - P11: the time scale has no `_startValue`, so its count stays today's. The time-scale example in #9614 (week ticks with empty space at the ends) is not fixed by P11.
 - P11: autoskip reads `_length` before `fit`, the same length master's whole-axis count reads. On a y axis it is longer than the final one, by the label half-heights the layout pads at the ends: y 0..1000 at 300 px with ticks over 0..480 counts over 290 px and draws over 279.6. 9 ticks are kept, 16.8 px apart where 17.4 is needed (master: 17 ticks, 8.4 px apart).
 - P11: with `offset: true` and ticks over part of the axis, `configure` runs again after skipping with the offset of the kept ticks, wider than the one autoskip counted with. The labels end 22–22.5 px apart where 23 is needed (master: 11). The spec scenario has no `offset`.
+- P15:
+  - No image baseline changes. All 734 linear and radial scales in the image fixtures were dumped before and after (`min`, `max`, tick values), and none differs. The 9 fixtures with `bounds: 'data'` either have data bounds already on the grid (`bounds-data.png`: [50, 125] with a spacing of 10, so 125 was already its own tick) or use `count`.
+  - With `bounds: 'data'`, P5's two-bound fallback no longer fires for a finite range whose data minimum's decimals cannot be counted, or whose decimals set a factor that overflows. The grid now starts on a multiple of the spacing. [1e-310, 1] gives 1e-310, 0.1, …, 1. [0.5, 1e308] gives 0.5, 1e307, …, 1e308.
+  - The `MIN_SPACING` early return still tests only user bounds. Data [100, 100.00000000000003] with `bounds: 'data'` keeps its two ticks; testing the data bounds as well would repeat 100.
+  - The data range already holds a user `min` or `max`, so with `bounds: 'data'` the bounds are taken from the data range without testing which was set.
 
 ## Risks / Trade-offs
 

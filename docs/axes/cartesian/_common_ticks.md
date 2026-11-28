@@ -9,7 +9,7 @@ Namespace: `options.scales[scaleId].ticks`
 | `sampleSize` | `number` | `ticks.length` | The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
 | `autoSkip` | `boolean` | `true` | If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to `maxRotation` before skipping any. Turn `autoSkip` off to show all labels no matter what.
 | `autoSkipPadding` | `number` | `3` | Padding between the ticks on the horizontal axis when `autoSkip` is enabled.
-| `includeBounds` | `boolean` | `true` | Should the defined `min` and `max` values be presented as ticks even if they are not "nice".
+| `includeBounds` | `boolean` | `true` | Linear axes only. Should the bounds be presented as ticks even if they are not "nice". The bounds are the defined `min` and `max` values, and with `bounds: 'data'` also the data minimum and maximum. When a bound gets a tick, a grid tick too close to it is left out.
 | `labelOffset` | `number` | `0` | Distance in pixels to offset the label from the centre point of the tick (in the x-direction for the x-axis, and the y-direction for the y-axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
 | `maxRotation` | `number` | `50` | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
 | `minRotation` | `number` | `0` | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*

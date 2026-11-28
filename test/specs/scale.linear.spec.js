@@ -1302,13 +1302,21 @@ describe('Linear Scale', function() {
     expect(scale.ticks.map(tick => tick.value)).toEqual([0.31, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.97]);
   });
 
+  it('Should give a data range below the minimum spacing only its two bounds with bounds: data', function() {
+    // The data bounds are not user bounds: they do not keep the ticks going below
+    // the minimum spacing, where 100 would repeat.
+    var scale = getDataBoundsScale([100, 100.00000000000003], {});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([100, 100.00000000000003]);
+  });
+
   it('Should space count ticks evenly between the data bounds with bounds: data', function() {
     var scale = getDataBoundsScale([1, 99], {ticks: {count: 3}});
 
     expect(scale.ticks.map(tick => tick.value)).toEqual([1, 50, 99]);
   });
 
-  it('Should not produce a duplicate final tick when bounding to a fractional data max', function() {
+  it('Should give a fractional data max its own tick, without a duplicate, when bounding to data', function() {
     var chart = window.acquireChart({
       type: 'line',
       data: {
@@ -1330,7 +1338,8 @@ describe('Linear Scale', function() {
       }
     });
 
-    expect(getLabels(chart.scales.y)).toEqual(['0', '1', '2', '3', '4', '5']);
+    // 4.7.0 data-bounds rule: the data max is a bound, so it gets a tick after the grid.
+    expect(getLabels(chart.scales.y)).toEqual(['0', '1', '2', '3', '4', '5', '5.4']);
   });
 
   it('Should keep every spacing tick below a data max that is not a multiple of the spacing', function() {
@@ -1429,8 +1438,6 @@ describe('Linear Scale', function() {
     // the decimals of the spacing cannot be counted
     {data: [0, 1e-310], y: {bounds: 'ticks', min: 0}, expected: [0, 1e-310]},
     {data: [0, 1e-310], y: {bounds: 'data', min: 0}, expected: [0, 1e-310]},
-    // the decimals of the minimum cannot be counted
-    {data: [1e-310, 1], y: {bounds: 'data'}, expected: [1e-310, 1]},
     // the nice bounds times the rounding factor are beyond the largest number:
     // from precision,
     {data: [0, 1e307], y: {ticks: {precision: 2}}, expected: [0, 1e307]},
@@ -1438,8 +1445,7 @@ describe('Linear Scale', function() {
     // (1.7e306 * 100 is finite, but its nice bound 1.8e306 * 100 is not)
     {data: [0, 1.7e306], y: {ticks: {precision: 2}}, expected: [0, 1.7999999999999998e306]},
     {data: [-1.7e306, 0], y: {ticks: {precision: 2}}, expected: [-1.7999999999999998e306, 0]},
-    // or from the decimals of the minimum (0.5 needs a factor of 10)
-    {data: [0.5, 1e308], y: {bounds: 'data'}, expected: [0.5, 1e308]},
+    // or from the decimals of the minimum (0.001 needs a factor of 1000)
     {data: [0.001, 1e307], y: {bounds: 'data', ticks: {count: 5}}, expected: [0.001, 1e307]}
   ].forEach(function({data, y, expected}) {
     it('Should generate the two bounds as ticks for data ' + JSON.stringify(data) + ' with ' + JSON.stringify(y), function() {
@@ -1458,21 +1464,29 @@ describe('Linear Scale', function() {
     });
   });
 
-  it('Should round to the precision when the decimals of the minimum cannot be counted', function() {
-    var chart = window.acquireChart({
-      type: 'line',
-      data: {
-        labels: ['a', 'b'],
-        datasets: [{data: [1e-310, 1]}]
-      },
-      options: {
-        scales: {
-          y: {bounds: 'data', ticks: {precision: 2}}
+  // 4.7.0 data-bounds rule: the grid starts on a multiple of the spacing, not on a data
+  // minimum whose decimals cannot be counted (1e-310) or set a factor that overflows (0.5).
+  [
+    {data: [1e-310, 1], ticks: {}, expected: [1e-310, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]},
+    {data: [1e-310, 1], ticks: {precision: 2}, expected: [1e-310, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]},
+    {data: [0.5, 1e308], ticks: {}, expected: [0.5, 1e307, 2e307, 3e307, 4e307, 5e307, 6e307, 7e307, 8e307, 9e307, 1e308]}
+  ].forEach(function({data, ticks, expected}) {
+    it('Should keep the grid after the data minimum of ' + JSON.stringify(data) + ' with ' + JSON.stringify(ticks) + ' when bounding to data', function() {
+      var chart = window.acquireChart({
+        type: 'line',
+        data: {
+          labels: ['a', 'b'],
+          datasets: [{data}]
+        },
+        options: {
+          scales: {
+            y: {bounds: 'data', ticks}
+          }
         }
-      }
-    });
+      });
 
-    expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+      expect(chart.scales.y.ticks.map(tick => tick.value)).toEqual(expected);
+    });
   });
 
   it('Should build labels using the user supplied callback', function() {
