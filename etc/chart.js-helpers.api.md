@@ -625,6 +625,8 @@ class Chart_2 {
     // (undocumented)
     _active: any[];
     // (undocumented)
+    _activeSetByCode: boolean;
+    // (undocumented)
     _animationsDisabled: boolean;
     // (undocumented)
     get aspectRatio(): any;
@@ -2873,6 +2875,9 @@ class PointElement_2 extends Element_2<PointProps, PointOptions & PointHoverOpti
 
 // @public (undocumented)
 type PointElement_3 = PointElement_2;
+
+// @public
+export function _pointerOwnsActive(inChartArea: boolean, replay: boolean, changed: boolean): boolean;
 
 // @public (undocumented)
 interface PointHoverOptions extends CommonHoverOptions {

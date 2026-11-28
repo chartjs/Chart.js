@@ -912,6 +912,8 @@ class Chart_3 {
     // (undocumented)
     _active: any[];
     // (undocumented)
+    _activeSetByCode: boolean;
+    // (undocumented)
     _animationsDisabled: boolean;
     // (undocumented)
     get aspectRatio(): any;
@@ -2100,6 +2102,8 @@ namespace _default_6 {
     function afterEvent(chart: any, args: any): void;
     // (undocumented)
     function afterInit(chart: any, _args: any, options: any): void;
+    // (undocumented)
+    function afterUpdate(chart: any): void;
     // (undocumented)
     function beforeUpdate(chart: any, _args: any, options: any): void;
     // (undocumented)
