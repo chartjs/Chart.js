@@ -3206,6 +3206,13 @@ export type CartesianTickOptions = TickOptions & {
    * @default 0
    */
   autoSkipPadding: number;
+  /**
+   * If true, skipping keeps the last tick. The kept tick before it is dropped when the two labels are
+   * closer than the room of one label, or when keeping both would exceed `maxTicksLimit`.
+   * @default false
+   * @since 4.7.0
+   */
+  autoSkipKeepEnds: boolean;
 
   /**
    * How is the label positioned perpendicular to the axis direction.

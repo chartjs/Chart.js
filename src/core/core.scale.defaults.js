@@ -69,6 +69,7 @@ export function applyScaleDefaults(defaults) {
       display: true,
       autoSkip: true,
       autoSkipPadding: 3,
+      autoSkipKeepEnds: false,
       labelOffset: 0,
       // We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
       callback: Ticks.formatters.values,

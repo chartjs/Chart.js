@@ -105,6 +105,426 @@ describe('Core.scale', function() {
     });
   });
 
+  describe('ticks.autoSkipKeepEnds', function() {
+    function labelsChart(count, width, ticks) {
+      var labels = [];
+      for (var i = 0; i < count; i++) {
+        labels.push('L' + i);
+      }
+      return window.acquireChart({
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{data: labels.map((label, index) => index)}]
+        },
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {ticks: Object.assign({maxRotation: 0}, ticks)}
+          }
+        }
+      }, {
+        canvas: {width, height: 100}
+      });
+    }
+
+    // Weekly bars on a time axis of 24 days with a tick each day. Every fifth
+    // tick is kept, and a label fits in the 4 days from the 20th to the 24th.
+    function barsOnTime(autoSkipKeepEnds) {
+      var data = [];
+      for (var day = 0; day <= 24; day += 7) {
+        data.push({x: Date.UTC(2024, 0, 1 + day), y: day});
+      }
+      return window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {
+              type: 'time',
+              min: Date.UTC(2024, 0, 1),
+              max: Date.UTC(2024, 0, 25),
+              time: {unit: 'day'},
+              ticks: {source: 'auto', maxRotation: 0, autoSkipKeepEnds}
+            },
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 270, height: 100}
+      });
+    }
+
+    it('should be off by default', function() {
+      expect(Chart.defaults.scale.ticks.autoSkipKeepEnds).toBe(false);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/11816
+    it('should keep the last label within maxTicksLimit', function() {
+      var chart = labelsChart(20, 512, {maxTicksLimit: 7, autoSkipKeepEnds: true});
+
+      expect(getLabels(chart.scales.x)).toEqual(['L0', 'L3', 'L6', 'L9', 'L12', 'L15', 'L19']);
+    });
+
+    // https://github.com/chartjs/Chart.js/issues/6154
+    it('should keep the last label when the labels fill the axis', function() {
+      var off = labelsChart(50, 300, {});
+      var on = labelsChart(50, 300, {autoSkipKeepEnds: true});
+
+      expect(getLabels(off.scales.x)).toEqual(['L0', 'L5', 'L10', 'L15', 'L20', 'L25', 'L30', 'L35', 'L40', 'L45']);
+      expect(getLabels(on.scales.x)).toEqual(['L0', 'L5', 'L10', 'L15', 'L20', 'L25', 'L30', 'L35', 'L40', 'L49']);
+    });
+
+    it('should keep the same labels when off', function() {
+      var chart = labelsChart(20, 512, {maxTicksLimit: 7, autoSkipKeepEnds: false});
+
+      expect(getLabels(chart.scales.x)).toEqual(['L0', 'L3', 'L6', 'L9', 'L12', 'L15', 'L18']);
+    });
+
+    it('should not make bars narrower', function() {
+      var off = barsOnTime(false);
+      var on = barsOnTime(true);
+      var days = (chart) => chart.scales.x.ticks.map((tick) => new Date(tick.value).getUTCDate());
+      // In days: the last label makes room for itself, so the axis is shorter in pixels.
+      var widthInDays = (chart) => {
+        var scale = chart.scales.x;
+        var day = scale.getPixelForValue(Date.UTC(2024, 0, 2)) - scale.getPixelForValue(Date.UTC(2024, 0, 1));
+        return chart.getDatasetMeta(0).data[0].width / day;
+      };
+
+      expect(days(off)).toEqual([1, 6, 11, 16, 21]);
+      expect(days(on)).toEqual([1, 6, 11, 16, 21, 25]);
+      expect(widthInDays(on)).toBeCloseTo(widthInDays(off), 6);
+    });
+
+    // Bars on a daily time axis from `days[0]` to `days[1]`, at the days of `data`.
+    function barsOnDays(days, data, x) {
+      return window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data: data.map((day) => ({x: Date.UTC(2024, 0, 1 + day), y: day + 1}))}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: Object.assign({
+              type: 'time',
+              min: Date.UTC(2024, 0, 1 + days[0]),
+              max: Date.UTC(2024, 0, 1 + days[1]),
+              time: {unit: 'day'}
+            }, x),
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 600, height: 100}
+      });
+    }
+
+    function tickDays(scale) {
+      return scale.ticks.map((tick) => Math.round((tick.value - Date.UTC(2024, 0, 1)) / 864e5));
+    }
+
+    it('should size bars by the gap between two kept ticks', function() {
+      // Bars 40 days apart on an axis of 20 days: the gap from the first to
+      // the added last tick, the only one, sizes them.
+      var chart = barsOnDays([0, 20], [0, 40], {
+        offsetAfterAutoskip: true,
+        ticks: {source: 'auto', maxRotation: 0, maxTicksLimit: 2, autoSkipKeepEnds: true}
+      });
+      var scale = chart.scales.x;
+      var gap = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+
+      expect(tickDays(scale)).toEqual([0, 20]);
+      expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(gap * 0.8 * 0.9, 6);
+      // The end offset is half that gap: no third tick to size it from.
+      expect(scale.right - scale.getPixelForTick(1)).toBeCloseTo(gap / 2, 4);
+    });
+
+    it('should size bars by the gap before an added last tick of three', function() {
+      // 4 daily ticks with room for 3: 0 and 2 kept, 3 added a day after 2.
+      var chart = barsOnDays([0, 3], [0, 3], {
+        ticks: {source: 'auto', maxRotation: 0, maxTicksLimit: 3, autoSkipKeepEnds: true}
+      });
+      var scale = chart.scales.x;
+      var gap = scale.getPixelForTick(1) - scale.getPixelForTick(0);
+
+      expect(tickDays(scale)).toEqual([0, 2, 3]);
+      expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(gap * 0.8 * 0.9, 6);
+    });
+
+    it('should forget the added last tick when autoSkip is turned off', function() {
+      // 0, 5, …, 20 and the bound 23. With wide labels: 0, 10 and the added 23.
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data: [{x: 0, y: 1}, {x: 10, y: 2}, {x: 20, y: 3}]}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {type: 'linear', min: 0, max: 23, ticks: {stepSize: 5, autoSkipPadding: 90, autoSkipKeepEnds: true}},
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 400, height: 150}
+      });
+      var scale = chart.scales.x;
+
+      expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 10, 23]);
+
+      chart.options.scales.x.ticks.autoSkip = false;
+      chart.update();
+
+      var end = scale.getPixelForTick(5) - scale.getPixelForTick(4);
+      expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 5, 10, 15, 20, 23]);
+      expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(end * 0.8 * 0.9, 6);
+    });
+
+    // A hook that hands back the same tick objects on every update.
+    function reusedTicksChart() {
+      var cache;
+      return window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data: [{x: 0, y: 1}, {x: 10, y: 2}, {x: 20, y: 3}]}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {
+              type: 'linear',
+              min: 0,
+              max: 25,
+              ticks: {stepSize: 9, includeBounds: true, autoSkipPadding: 40, autoSkipKeepEnds: true},
+              afterBuildTicks: function(scale) {
+                cache = cache || scale.ticks.slice();
+                scale.ticks = cache.slice();
+              }
+            },
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 130, height: 150}
+      });
+    }
+
+    ['autoSkip', 'display'].forEach(function(option) {
+      it('should forget the added last tick of reused ticks when ticks.' + option + ' is turned off', function() {
+        var chart = reusedTicksChart();
+        var scale = chart.scales.x;
+
+        // Wide labels: 0, and 25 added.
+        expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 25]);
+
+        chart.options.scales.x.ticks[option] = false;
+        chart.update();
+
+        var end = scale.getPixelForTick(3) - scale.getPixelForTick(2);
+        expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 9, 18, 25]);
+        expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(end * 0.8 * 0.9, 6);
+      });
+    });
+
+    [false, true].forEach(function(autoSkipKeepEnds) {
+      // Monthly ticks: February 2024 is the shortest gap, and the last. Nothing is skipped or added.
+      function monthly(offsetAfterAutoskip) {
+        return window.acquireChart({
+          type: 'bar',
+          data: {datasets: [{data: [{x: Date.UTC(2024, 0, 1), y: 1}, {x: Date.UTC(2024, 2, 1), y: 2}]}]},
+          options: {
+            plugins: {legend: false},
+            scales: {
+              x: {
+                type: 'time',
+                offsetAfterAutoskip,
+                min: Date.UTC(2024, 0, 1),
+                max: Date.UTC(2024, 2, 1),
+                time: {unit: 'month'},
+                ticks: {source: 'auto', maxRotation: 0, autoSkipKeepEnds}
+              },
+              y: {display: false}
+            }
+          }
+        }, {
+          canvas: {width: 300, height: 100}
+        });
+      }
+
+      it('should size bars by a shorter last gap of uneven ticks, autoSkipKeepEnds: ' + autoSkipKeepEnds, function() {
+        var chart = monthly(false);
+        var scale = chart.scales.x;
+        var february = scale.getPixelForTick(2) - scale.getPixelForTick(1);
+
+        expect(scale.ticks.length).toBe(3);
+        expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(february * 0.8 * 0.9, 6);
+      });
+
+      it('should size the end offset by the last gap of uneven ticks, autoSkipKeepEnds: ' + autoSkipKeepEnds, function() {
+        var scale = monthly(true).scales.x;
+        var february = scale.getPixelForTick(2) - scale.getPixelForTick(1);
+
+        expect(scale.right - scale.getPixelForTick(2)).toBeCloseTo(february / 2, 4);
+      });
+
+      it('should size bars by a shorter last gap of generated linear ticks, autoSkipKeepEnds: ' + autoSkipKeepEnds, function() {
+        // Ticks 0, 10, 20 and the bound 25: the gap of 5 is generated, not added.
+        var chart = window.acquireChart({
+          type: 'bar',
+          data: {datasets: [{data: [{x: 0, y: 1}, {x: 10, y: 2}, {x: 20, y: 3}]}]},
+          options: {
+            plugins: {legend: false},
+            scales: {
+              x: {type: 'linear', min: 0, max: 25, ticks: {includeBounds: true, stepSize: 10, autoSkipKeepEnds}},
+              y: {display: false}
+            }
+          }
+        }, {
+          canvas: {width: 400, height: 150}
+        });
+        var scale = chart.scales.x;
+        var end = scale.getPixelForTick(3) - scale.getPixelForTick(2);
+
+        expect(scale.ticks.map((tick) => tick.value)).toEqual([0, 10, 20, 25]);
+        expect(chart.getDatasetMeta(0).data[0].width).toBeCloseTo(end * 0.8 * 0.9, 6);
+      });
+    });
+
+    it('should not clip the last bar on a timeseries axis', function() {
+      // The timeseries scale sizes its offsets from all its timestamps, not the kept ticks.
+      var data = [0, 3, 6, 9, 12, 15, 19].map((day) => ({x: Date.UTC(2024, 0, 1 + day), y: day + 1}));
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {
+              type: 'timeseries',
+              offsetAfterAutoskip: true,
+              min: Date.UTC(2024, 0, 1),
+              max: Date.UTC(2024, 0, 20),
+              time: {unit: 'day'},
+              ticks: {source: 'auto', maxRotation: 0, maxTicksLimit: 8, autoSkipKeepEnds: true}
+            },
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 1000, height: 100}
+      });
+      var scale = chart.scales.x;
+      var bars = chart.getDatasetMeta(0).data;
+      var lastBar = bars[bars.length - 1];
+
+      expect(scale.ticks.map((tick) => new Date(tick.value).getUTCDate())).toEqual([1, 4, 7, 10, 13, 16, 20]);
+      expect(lastBar.x + lastBar.width / 2).toBeLessThanOrEqual(scale.right + 1e-6);
+    });
+
+    it('should not clip the last bar when the offsets follow the kept ticks', function() {
+      // Bars at least 3 days apart, about 2.2 days wide; daily ticks every third
+      // one kept, and the last a day after the one before it.
+      var data = [0, 3, 6, 9, 12, 15, 19].map((day) => ({x: Date.UTC(2024, 0, 1 + day), y: day + 1}));
+      var chart = window.acquireChart({
+        type: 'bar',
+        data: {datasets: [{data}]},
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: {
+              type: 'time',
+              offsetAfterAutoskip: true,
+              min: Date.UTC(2024, 0, 1),
+              max: Date.UTC(2024, 0, 20),
+              time: {unit: 'day'},
+              ticks: {source: 'auto', maxRotation: 0, maxTicksLimit: 8, autoSkipKeepEnds: true}
+            },
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width: 1000, height: 100}
+      });
+      var scale = chart.scales.x;
+      var days = scale.ticks.map((tick) => new Date(tick.value).getUTCDate());
+      var bars = chart.getDatasetMeta(0).data;
+      var lastBar = bars[bars.length - 1];
+
+      expect(days).toEqual([1, 4, 7, 10, 13, 16, 19, 20]);
+      expect(lastBar.x + lastBar.width / 2).toBeLessThanOrEqual(scale.right + 1e-6);
+    });
+
+    // The kept last label is at least one label's room from the one before it.
+    // (The other gaps are the step, counted before the axis is fit, as without the option.)
+    function expectRoom(scale) {
+      var count = scale.ticks.length;
+      var end = scale.getPixelForTick(count - 1) - scale.getPixelForTick(count - 2);
+
+      expect(Math.abs(end)).toBeGreaterThanOrEqual(scale._tickSize());
+    }
+
+    function axisChart(type, x, data, width) {
+      var generated;
+      var chart = window.acquireChart({
+        type,
+        data,
+        options: {
+          plugins: {legend: false},
+          scales: {
+            x: Object.assign({
+              afterBuildTicks: function(scale) {
+                generated = scale.ticks.slice();
+              }
+            }, x),
+            y: {display: false}
+          }
+        }
+      }, {
+        canvas: {width, height: 100}
+      });
+      return {scale: chart.scales.x, last: generated[generated.length - 1]};
+    }
+
+    it('should keep the last tick a label apart on a logarithmic axis', function() {
+      var {scale, last} = axisChart('scatter', {
+        type: 'logarithmic', min: 1, max: 100000, ticks: {maxRotation: 0, autoSkipKeepEnds: true}
+      }, {datasets: [{data: [{x: 1, y: 1}, {x: 100000, y: 2}]}]}, 300);
+
+      expect(scale.ticks[scale.ticks.length - 1]).toBe(last);
+      expectRoom(scale);
+    });
+
+    it('should keep the last tick a label apart on a reversed linear axis', function() {
+      var {scale, last} = axisChart('scatter', {
+        min: 0, max: 97, reverse: true, ticks: {stepSize: 1, maxRotation: 0, autoSkipKeepEnds: true}
+      }, {datasets: [{data: [{x: 0, y: 1}, {x: 97, y: 2}]}]}, 300);
+
+      expect(last.value).toBe(0);
+      expect(scale.ticks[scale.ticks.length - 1]).toBe(last);
+      expectRoom(scale);
+    });
+
+    it('should keep the last tick a label apart on a time axis', function() {
+      var {scale, last} = axisChart('line', {
+        type: 'time', min: Date.UTC(2024, 0, 1), max: Date.UTC(2024, 1, 11),
+        time: {unit: 'day'}, ticks: {source: 'auto', maxRotation: 0, autoSkipKeepEnds: true}
+      }, {datasets: [{data: [{x: Date.UTC(2024, 0, 1), y: 1}, {x: Date.UTC(2024, 1, 11), y: 2}]}]}, 300);
+
+      expect(scale.ticks[scale.ticks.length - 1]).toBe(last);
+      expectRoom(scale);
+    });
+
+    it('should keep the last tick a label apart on a category axis with offset', function() {
+      var labels = [];
+      for (var i = 0; i < 50; i++) {
+        labels.push('L' + i);
+      }
+      var {scale, last} = axisChart('bar', {
+        ticks: {maxRotation: 0, autoSkipKeepEnds: true}
+      }, {labels, datasets: [{data: labels.map((label, index) => index)}]}, 300);
+
+      expect(scale.ticks[scale.ticks.length - 1]).toBe(last);
+      expectRoom(scale);
+    });
+  });
+
   var gridLineTests = [{
     labels: ['tick1', 'tick2', 'tick3', 'tick4', 'tick5'],
     offsetGridLines: false,

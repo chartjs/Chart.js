@@ -470,6 +470,7 @@ type CartesianTickOptions = TickOptions & {
     align: Align | 'inner';
     autoSkip: boolean;
     autoSkipPadding: number;
+    autoSkipKeepEnds: boolean;
 
     crossAlign: 'near' | 'center' | 'far';
 

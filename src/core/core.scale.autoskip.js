@@ -8,7 +8,7 @@ import {_factorize} from '../helpers/helpers.math.js';
 
 /**
  * Returns a subset of ticks to be plotted to avoid overlapping labels.
- * @param {import('./core.scale.js').default} scale
+ * @param {import('./core.scale.js').default & {_autoSkipKeptLast?: Tick[] | null}} scale
  * @param {Tick[]} ticks
  * @return {Tick[]}
  * @private
@@ -17,6 +17,49 @@ export function autoSkip(scale, ticks) {
   const tickOpts = scale.options.ticks;
   const determinedMaxTicks = determineMaxTicks(scale, ticks);
   const ticksLimit = Math.min(tickOpts.maxTicksLimit || determinedMaxTicks, determinedMaxTicks);
+  const kept = skipTicks(ticks, tickOpts, ticksLimit);
+  // The kept ticks when `ticks.autoSkipKeepEnds` added the last one, or null.
+  // The bar width and the time offsets read it only while it is still the
+  // scale's ticks: when autoSkip does not run, `scale.ticks` is another array.
+  const added = tickOpts.autoSkipKeepEnds && keepLast(scale, ticks, kept, ticksLimit);
+  scale._autoSkipKeptLast = added ? kept : null;
+  return kept;
+}
+
+/**
+ * Adds the last tick to the kept ones, and drops the kept tick before it when
+ * the two are closer than one label, or when keeping both would exceed the
+ * limit. The first kept tick is never dropped: with room for one tick only,
+ * the last one is not added.
+ * @param {*} scale - the scale, for its pixels and its label size
+ * @param {Tick[]} ticks
+ * @param {Tick[]} kept - ticks of `ticks`, in order; the last tick is appended in place
+ * @param {number} ticksLimit
+ * @return {Tick | null} the tick appended, or null
+ */
+function keepLast(scale, ticks, kept, ticksLimit) {
+  const last = ticks[ticks.length - 1];
+  const count = kept.length;
+  if (!count || kept[count - 1] === last || ticksLimit < 2) {
+    return null;
+  }
+  if (count > 1) {
+    const room = Math.abs(scale.getPixelForValue(last.value) - scale.getPixelForValue(kept[count - 1].value));
+    if (count + 1 > ticksLimit || room < scale._tickSize()) {
+      kept.pop();
+    }
+  }
+  kept.push(last);
+  return last;
+}
+
+/**
+ * @param {Tick[]} ticks
+ * @param {object} tickOpts
+ * @param {number} ticksLimit
+ * @return {Tick[]}
+ */
+function skipTicks(ticks, tickOpts, ticksLimit) {
   const majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
   const numMajorIndices = majorIndices.length;
   const newTicks = [];

@@ -320,4 +320,106 @@ describe('Core.scale.autoskip', function() {
       expect(kept.length).toBe(26);
     });
   });
+
+  describe('autoSkipKeepEnds', function() {
+    // The values autoSkip keeps of `count` ticks with majors at `majors`, with
+    // room for `fit` labels and `options` added to the tick options.
+    // `reversePixels`: the pixels run from the end of the axis, as on a reversed axis.
+    function keptValues(count, majors, fit, options, descending = false, reversePixels = false) {
+      const scale = scaleFitting(fit);
+      scale.options.ticks = Object.assign({major: {enabled: majors.length > 0}}, options);
+      // Categories with offset: each value in the middle of its 1 / count of the axis.
+      const pixel = (value) => (value + 0.5) * scale._length / count;
+      scale.getPixelForValue = reversePixels ? (value) => scale._length - pixel(value) : pixel;
+      const ticks = [];
+      for (let i = 0; i < count; i++) {
+        const value = descending ? count - 1 - i : i;
+        ticks.push({value, major: majors.includes(value)});
+      }
+      return autoSkip(scale, ticks).map((tick) => tick.value);
+    }
+
+    it('should keep the last tick and drop the one before it beyond maxTicksLimit', function() {
+      expect(keptValues(20, [], 100, {maxTicksLimit: 7, autoSkipKeepEnds: true}))
+        .toEqual([0, 3, 6, 9, 12, 15, 19]);
+    });
+
+    it('should drop the tick before the last one when it is closer than one label', function() {
+      // 50 / 10 = 5 ticks per label: 45 is 4 ticks from 49.
+      expect(keptValues(50, [], 10, {autoSkipKeepEnds: true}))
+        .toEqual([0, 5, 10, 15, 20, 25, 30, 35, 40, 49]);
+    });
+
+    it('should keep the tick before the last one when a label fits between them', function() {
+      // 129 px fit 12 whole labels: 99 / 12 = 8.25 ticks per label, a step of 9.
+      // One label needs 99 / 12.9 = 7.7 ticks, and 90 is 8 ticks from 98: a shorter gap at the end.
+      expect(keptValues(99, [], 12.9, {autoSkipKeepEnds: true}))
+        .toEqual([0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 98]);
+    });
+
+    it('should never drop the first tick', function() {
+      // Room for one tick: the first stays, and the last is not added.
+      expect(keptValues(20, [], 100, {maxTicksLimit: 1, autoSkipKeepEnds: true})).toEqual([0]);
+      // Room for two: the first and the last.
+      expect(keptValues(20, [], 100, {maxTicksLimit: 2, autoSkipKeepEnds: true})).toEqual([0, 19]);
+      // With majors, the first kept tick follows them and stays.
+      expect(keptValues(40, [10, 30], 100, {maxTicksLimit: 2, autoSkipKeepEnds: true})).toEqual([10, 39]);
+      // A single major kept alone: the last tick is added even closer than one label.
+      expect(keptValues(5, [2], 2, {autoSkipKeepEnds: true})).toEqual([2, 4]);
+    });
+
+    it('should measure the room to the last tick on a reversed axis', function() {
+      // The pixels descend; the kept ticks are those of the ascending pixels.
+      expect(keptValues(99, [], 12.9, {autoSkipKeepEnds: true}, false, true))
+        .toEqual([0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 98]);
+      expect(keptValues(181, [0, 31, 59, 90, 120, 151], 30, {autoSkipKeepEnds: true}, false, true).slice(-3))
+        .toEqual([165, 172, 180]);
+    });
+
+    it('should keep the tick before the last one when exactly one label fits between them', function() {
+      // 135 px fit 13 whole labels: 108 / 13 = 8.3 ticks per label, a step of 9.
+      // 99 is 8 ticks of 1.25 px from 107: exactly the 10 px of one label.
+      expect(keptValues(108, [], 13.5, {autoSkipKeepEnds: true}))
+        .toEqual([0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 99, 107]);
+    });
+
+    it('should keep the same ticks when off', function() {
+      expect(keptValues(20, [], 100, {maxTicksLimit: 7})).toEqual([0, 3, 6, 9, 12, 15, 18]);
+      expect(keptValues(20, [], 100, {maxTicksLimit: 7, autoSkipKeepEnds: false})).toEqual([0, 3, 6, 9, 12, 15, 18]);
+      expect(keptValues(50, [], 10, {autoSkipKeepEnds: false})).toEqual([0, 5, 10, 15, 20, 25, 30, 35, 40, 45]);
+    });
+
+    it('should keep the same ticks when the last one is kept anyway', function() {
+      // 19 / 7 = 2.7, a step of 3 lands on 18.
+      expect(keptValues(19, [], 100, {maxTicksLimit: 7, autoSkipKeepEnds: true}))
+        .toEqual([0, 3, 6, 9, 12, 15, 18]);
+    });
+
+    it('should keep the last tick of descending ticks, the smallest value', function() {
+      expect(keptValues(20, [], 100, {maxTicksLimit: 7, autoSkipKeepEnds: true}, true))
+        .toEqual([19, 16, 13, 10, 7, 4, 0]);
+    });
+
+    it('should keep the last tick after the majors', function() {
+      // 181 / 30 = 6 ticks per label: 172 is 8 ticks from 180, so both stay.
+      const kept = keptValues(181, [0, 31, 59, 90, 120, 151], 30, {autoSkipKeepEnds: true});
+
+      expect(kept.slice(-3)).toEqual([165, 172, 180]);
+    });
+
+    it('should drop a major that is closer than one label to the last tick', function() {
+      // 33 / 10 = 3.3 ticks per label, a step of 5 from the majors 0 and 30.
+      expect(keptValues(33, [0, 30], 10, {autoSkipKeepEnds: true})).toEqual([0, 5, 10, 15, 20, 25, 32]);
+      expect(keptValues(33, [0, 30], 10, {})).toEqual([0, 5, 10, 15, 20, 25, 30]);
+    });
+
+    it('should keep the last tick when only some majors are kept', function() {
+      // 50 majors with room for 10: every fifth major, and 99 in place of 90.
+      const majors = [];
+      for (let i = 0; i < 100; i += 2) {
+        majors.push(i);
+      }
+      expect(keptValues(100, majors, 10, {autoSkipKeepEnds: true})).toEqual([0, 10, 20, 30, 40, 50, 60, 70, 80, 99]);
+    });
+  });
 });

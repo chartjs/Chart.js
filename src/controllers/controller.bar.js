@@ -66,7 +66,14 @@ function computeMinSampleSize(meta) {
   }
 
   prev = undefined;
-  for (i = 0, ilen = scale.ticks.length; i < ilen; ++i) {
+  ilen = scale.ticks.length;
+  // The last tick that `ticks.autoSkipKeepEnds` added can be closer than the
+  // step: that gap at the end does not narrow the bars, while another gap is
+  // left. autoSkip records the array it returned; any other array does not count.
+  if (ilen > 2 && scale._autoSkipKeptLast === scale.ticks) {
+    ilen--;
+  }
+  for (i = 0; i < ilen; ++i) {
     curr = scale.getPixelForTick(i);
     updateMinAndPrev();
   }

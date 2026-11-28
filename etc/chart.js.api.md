@@ -716,6 +716,7 @@ export type CartesianTickOptions = TickOptions & {
     align: Align | 'inner';
     autoSkip: boolean;
     autoSkipPadding: number;
+    autoSkipKeepEnds: boolean;
 
     crossAlign: 'near' | 'center' | 'far';
 
@@ -4638,7 +4639,7 @@ class TimeScale_2 extends Scale_2 {
     static id: string;
     // (undocumented)
     init(scaleOpts: any, opts?: {}): void;
-    protected initOffsets(timestamps?: number[]): void;
+    protected initOffsets(timestamps?: number[], keptLast?: boolean): void;
     _majorUnit: Unit | undefined;
     // (undocumented)
     protected normalize(values: number[]): number[];
