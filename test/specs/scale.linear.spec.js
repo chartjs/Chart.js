@@ -1316,6 +1316,64 @@ describe('Linear Scale', function() {
     expect(scale.ticks.map(tick => tick.value)).toEqual([1, 50, 99]);
   });
 
+  it('Should leave the data minimum out of the ticks with bounds: data and includeBounds: false', function() {
+    var scale = getDataBoundsScale([0.31, 0.97], {ticks: {includeBounds: false}});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([0.4, 0.5, 0.6, 0.7, 0.8, 0.9]);
+    expect(scale.min).toBe(0.31);
+    expect(scale.max).toBe(0.97);
+  });
+
+  it('Should drop a grid tick within one label of the data minimum with bounds: data', function() {
+    var scale = getDataBoundsScale([0.39, 0.97], {});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([0.39, 0.5, 0.6, 0.7, 0.8, 0.9, 0.97]);
+  });
+
+  it('Should align stepSize ticks to multiples of the step after an off-grid data minimum', function() {
+    var scale = getDataBoundsScale([3, 53], {ticks: {stepSize: 10}});
+
+    expect(scale.ticks.map(tick => tick.value)).toEqual([3, 10, 20, 30, 40, 50, 53]);
+  });
+
+  function getDataBoundsXScale(data, width) {
+    var chart = window.acquireChart({
+      type: 'scatter',
+      data: {
+        datasets: [{data: data.map((x, i) => ({x, y: i}))}]
+      },
+      options: {
+        scales: {
+          x: {bounds: 'data', ticks: {autoSkip: false}}
+        }
+      }
+    }, {
+      canvas: {width, height: 200}
+    });
+    return chart.scales.x;
+  }
+
+  it('Should keep the tick at the data minimum on a narrow horizontal axis', function() {
+    var data = [1.8100024990071555, 98.81000249900715];
+    var values = getDataBoundsXScale(data, 150).ticks.map(tick => tick.value);
+
+    expect(values[0]).toBe(data[0]);
+    expect(values[values.length - 1]).toBe(data[1]);
+  });
+
+  it('Should keep the same grid ticks whatever noise digits the data bounds carry', function() {
+    var noisy = [1.8100024990071555, 98.81000249900715];
+    var clean = [1.81, 98.81];
+    var inner = values => values.slice(1, -1);
+    var noisyValues = getDataBoundsXScale(noisy, 300).ticks.map(tick => tick.value);
+    var cleanValues = getDataBoundsXScale(clean, 300).ticks.map(tick => tick.value);
+
+    expect(noisyValues[0]).toBe(noisy[0]);
+    expect(noisyValues[noisyValues.length - 1]).toBe(noisy[1]);
+    expect(inner(noisyValues)).toEqual(inner(cleanValues));
+    expect(inner(noisyValues).length).toBeGreaterThan(0);
+  });
+
   it('Should give a fractional data max its own tick, without a duplicate, when bounding to data', function() {
     var chart = window.acquireChart({
       type: 'line',
