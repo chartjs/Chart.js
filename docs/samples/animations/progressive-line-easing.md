@@ -15,14 +15,14 @@ for (let i = 0; i < 1000; i++) {
 }
 // </block:data>
 
-// <block:animation:1>
+// <block:animations:1>
 let easing = helpers.easingEffects.easeOutQuad;
 let restart = false;
 const totalDuration = 5000;
 const duration = (ctx) => easing(ctx.index / data.length) * totalDuration / data.length;
 const delay = (ctx) => easing(ctx.index / data.length) * totalDuration;
 const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
-const animation = {
+const animations = {
   x: {
     type: 'number',
     easing: 'linear',
@@ -50,7 +50,7 @@ const animation = {
     }
   }
 };
-// </block:animation>
+// </block:animations>
 
 // <block:config:0>
 const config = {
@@ -70,7 +70,7 @@ const config = {
     }]
   },
   options: {
-    animation,
+    animations,
     interaction: {
       intersect: false
     },
@@ -177,7 +177,7 @@ module.exports = {
   * [`getPixelForValue`](../../api/classes/Scale.md#getpixelforvalue)
 ## Docs
 * [Animations](../../configuration/animations.md)
-  * [animation](../../configuration/animations.md#animation)
+  * [animations](../../configuration/animations.md#animations-2)
     * `delay`
     * `duration`
     * `easing`
